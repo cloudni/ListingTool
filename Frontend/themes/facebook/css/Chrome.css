@@ -1,0 +1,28 @@
+
+.loggedin_menubar img{
+    position: relative;
+    top: 8px;
+}
+
+.loggedin_menubar label{
+    position: relative;
+    top: 24px;
+    color: #fff;
+    font-weight: bold;
+    padding-left: 6px;
+    font-size: 1.7em;
+}
+
+.loggedin_menubar ul{
+    position: relative;
+    height: 22px;
+    margin: 10px 0 10px 5px;
+    display: block;
+    list-style-type: none;
+    color: whitesmoke;
+    top: 12px;
+}
+
+.loggedin_menubar ul li img{
+    position: inherit;
+}

@@ -2601,5 +2601,9 @@ INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (330,'after_create_store_ebay_authorize_help',2,0,'After submit, we will redirect you to eBay to authorize, so we could access your data and do our job.',1425519330,1,1425519330,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (331,'btn_view',1,0,'查看',1425520992,1,1425520992,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (332,'btn_view',2,0,'View',1425521000,1,1425521000,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (333,'ebay_token_expired_date',1,0,'eBay令牌过期时间',1425522965,1,1425522965,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (335,'ebay_token_expired_date',2,0,'Token Expired Date',1425522987,1,1425522987,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (336,'ebay_token_renew_link_text',1,0,'如有需要，请点击链接更新您的eBay令牌',1425523086,1,1425523086,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (337,'ebay_token_renew_link_text',2,0,'Please click here to renew your authorized token if needed.',1425523101,1,1425523101,1);
 UNLOCK TABLES;
 /*end 2015-03-05*/

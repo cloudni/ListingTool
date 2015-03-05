@@ -9,7 +9,7 @@
 
 return array(
     'logRequest'=>true,
-    'logPath'=>dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR.'log'.DIRECTORY_SEPARATOR.'ebay',
+    'logPath'=>dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR./*"..".DIRECTORY_SEPARATOR.*/'log'.DIRECTORY_SEPARATOR.'ebay',
     'echoAttributeDetail'=>false,
     'defaultAPIId'=>1,
     'maxAuthNum'=>5,

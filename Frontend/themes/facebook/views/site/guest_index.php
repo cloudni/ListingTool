@@ -141,7 +141,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
     <div>
         <div>
             <div style="width: 300px;">
-                What’s your name? You'll use this when you log in and if you ever need to reset your password. At least 6 English word, digital and underscore only!
+                <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'index_signup_username_help');?>
             </div>
             <i style="top: 37%; margin-top: 12px;"></i>
         </div>
@@ -151,7 +151,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
     <div>
         <div>
             <div style="width: 200px;">
-                Please enter your email address.
+                <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'index_signup_email_help');?>
             </div>
             <i style="top: 0%; margin-top: 12px;"></i>
         </div>
@@ -161,7 +161,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
     <div>
         <div>
             <div style="width: 300px;">
-                Enter a combination of at least six numbers, letters and punctuation marks (like ! and &).
+                <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'index_signup_password_help');?>
             </div>
             <i style="top: 0%; margin-top: 12px;"></i>
         </div>
@@ -171,7 +171,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
     <div>
         <div>
             <div style="width: 200px;">
-                Please re-enter your password.
+                <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'index_signup_re_password_help');?>
             </div>
             <i style="background-position: -121px -481px; height: 11px; top: -11px; width: 22px; left: 30%; margin-left: 12px;"></i>
         </div>
@@ -181,7 +181,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
     <div>
         <div>
             <div style="width: 220px;">
-                Please enter your company's name.
+                <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'index_signup_company_help');?>
             </div>
             <i style="top: 0%; margin-top: 12px;"></i>
         </div>
@@ -191,7 +191,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
     <div>
         <div>
             <div style="width: 300px;">
-                Please enter your mobile or phone number. We will use this number to contact you.
+                <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'index_signup_phone_help');?>
             </div>
             <i style="top: 0%; margin-top: 12px;"></i>
         </div>
@@ -201,7 +201,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
     <div>
         <div>
             <div style="width: 260px;">
-                Please enter your located country or region.
+                <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'index_signup_location_help');?>
             </div>
             <i style="top: 0%; margin-top: 12px;"></i>
         </div>

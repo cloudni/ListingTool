@@ -213,7 +213,6 @@
         </ul><br/>
         Copyright &copy; <?php echo date('Y'); ?> by Nirvana Info.<br/>
         All Rights Reserved.<br/>
-        <?php echo Yii::powered(); ?><br/>
         <?php $result = @CDbConnection::getStats(); echo "SQL executed: {$result[0]}, Time usage: {$result[1]}"?>
     </div>
 

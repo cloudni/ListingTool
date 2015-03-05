@@ -357,4 +357,8 @@ div.breadcrumbs
      font-size: 100%;
 }
 
+div.form label
+{
+    font-size: 11px;
+}
 

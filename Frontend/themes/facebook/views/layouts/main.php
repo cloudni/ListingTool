@@ -30,11 +30,11 @@
 
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/main.css" />
 
+	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+
     <script type="text/javascript">
         window.onload = function () {setstyle('facebook');}
     </script>
-
-	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 
 <body>

@@ -13,6 +13,13 @@ $this->menu=array(
 );
 ?>
 
+<style>
+    table.detail-view th, table.detail-view td
+    {
+        font-size: 11px;
+    }
+</style>
+
 
 <div class="title">
     <h1><?php echo $model->title; ?></h1>

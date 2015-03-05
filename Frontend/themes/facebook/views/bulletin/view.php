@@ -4,6 +4,12 @@
 $this->pageTitle=Yii::app()->name . ' - '.Yii::t('models/Bulletins','View Bulletin');
 ?>
 
+<style>
+    table.detail-view th, table.detail-view td
+    {
+        font-size: 11px;
+    }
+</style>
 
 <div style="width: 990px;margin-top: 15px;">
     <div class="title" style="width:400px;margin: 0px auto ;">

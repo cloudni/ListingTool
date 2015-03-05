@@ -52,7 +52,7 @@ require_once("reference.php");
     <div id="platform_<?php echo Store::PLATFORM_EBAY;?>" class="platform">
         <div class="container">
             <div class="row left span-4">
-                <?php echo $form->labelEx($model,'ebay_site_code'); ?>
+                <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_store') ?>
             </div>
             <div class="row left">
                 <?php echo $form->dropDownList($model,'ebay_site_code', eBaySiteIdCodeType::getSiteIdCodeTypeOptions()); ?>
@@ -72,7 +72,7 @@ require_once("reference.php");
         <?php endif;?>
         <div class="container">
             <div class="row left">
-                <?php if($model->isNewRecord) echo CHtml::label("After submit, we will redirect you to eBay to authorize, so we could access your data and do our job.", false);?>
+                <?php if($model->isNewRecord) echo CHtml::label(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'after_create_store_ebay_authorize_help'), false);?>
             </div>
         </div>
     </div>

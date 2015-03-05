@@ -14,6 +14,13 @@ $this->breadcrumbs=array(
 
 <!--<h1>View Notification #<?php /*echo $model->id; */?></h1>-->
 
+<style>
+    table.detail-view th, table.detail-view td
+    {
+        font-size: 11px;
+    }
+</style>
+
 <div style="width: 990px;margin-top: 15px;">
     <div class="title" style="width:400px;margin: 0px auto ;">
         <div style="text-align: center;font-size: 18px;">

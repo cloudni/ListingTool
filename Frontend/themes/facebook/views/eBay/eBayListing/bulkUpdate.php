@@ -63,7 +63,7 @@ $this->breadcrumbs=array(
                         <?php echo CHtml::dropDownList('ebay_site', NULL, eBaySiteIdCodeType::getSiteIdCodeTypeOptions(), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_ebay_sites'))));?>
                         <?php echo CHtml::dropDownList('ebay_category', NULL, array(), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_ebay_categories'))));?>
                         <?php echo CHtml::button(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'search'), array('id'=>'search_button', 'name'=>'search_button'));?><br />
-                        <a id="advanced_search_switch">Show Advanced Search...</a>
+                        <a id="advanced_search_switch" style="display: none;">Show Advanced Search...</a>
                     </div>
                     <div id="advanced_search_panel" style="display: none;">
                         <div class="container padding-top-7">

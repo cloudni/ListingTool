@@ -55,19 +55,19 @@ $this->menu=array(
                 if($model->platform==Store::PLATFORM_EBAY)
                 {
                     $attributes[] = array(
-                        'name'=>CHtml::encode('eBay Site'),
+                        'name'=>CHtml::encode(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_sites')),
                         'value'=>CHtml::encode(eBaySiteIdCodeType::getSiteIdCodeTypeText($model->ebay_site_code)),
                     );
                     if($model->is_active == Store::ACTIVE_YES)
                     {
                         $attributes[] = array(
-                            'name'=>CHtml::encode('Token Expired Date'),
+                            'name'=>CHtml::encode(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_token_expired_date')),
                             'value'=>CHtml::encode(date("Y/m/d h:i:sa", $model->HardExpirationTime)),
                         );
                     }
                     $attributes[] = array(
                         'name' => '',
-                        'value' => CHtml::link("Please click here to renew your authorized token if needed", $this->createAbsoluteUrl("store/getToken",array('id'=>$model->id))),
+                        'value' => CHtml::link(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_token_renew_link_text'), $this->createAbsoluteUrl("store/getToken",array('id'=>$model->id))),
                         'type'=>'html',
                     );
                 }

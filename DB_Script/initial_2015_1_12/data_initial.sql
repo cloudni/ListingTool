@@ -2594,3 +2594,12 @@ INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (328,'function_coming_soon',2,0,'This function is coming soon.',1425397828,1,1425397828,1);
 UNLOCK TABLES;
 /*end 2015-03-03*/
+
+/*start 2015-03-05*/
+LOCK TABLES `lt_resource_string` WRITE;
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (329,'after_create_store_ebay_authorize_help',1,0,'提交后，我们将引导您到eBay网站进行授权，这样我们就可以开始干活啦。',1425519317,1,1425519317,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (330,'after_create_store_ebay_authorize_help',2,0,'After submit, we will redirect you to eBay to authorize, so we could access your data and do our job.',1425519330,1,1425519330,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (331,'btn_view',1,0,'查看',1425520992,1,1425520992,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (332,'btn_view',2,0,'View',1425521000,1,1425521000,1);
+UNLOCK TABLES;
+/*end 2015-03-05*/

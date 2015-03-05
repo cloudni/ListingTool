@@ -12,6 +12,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'list_ebay_items'), 'url'=>array('index')),
+    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'bulk_update_ebay_listing'), 'url'=>array('/eBay/eBayListing/bulkUpdate')), 
 	//array('label'=>'Update eBayListing', 'url'=>array('update', 'id'=>$model->id)),
 	//array('label'=>'Delete eBayListing', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
 );

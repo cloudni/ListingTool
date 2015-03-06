@@ -2619,5 +2619,7 @@ INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (350,'index_signup_phone_help',2,0,'Please enter your mobile or phone number. We will use this number to contact you.',1425527843,1,1425527843,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (351,'index_signup_location_help',1,0,'请输入您所在的国家或地区。',1425527865,1,1425527865,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (352,'index_signup_location_help',2,0,'Please enter your located country or region.',1425527881,1,1425527881,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (353,'platform_dashboard',1,0,'平台总览',1425621842,1,1425621842,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (354,'platform_dashboard',2,0,'Platform Dashboard',1425621855,1,1425621855,1);
 UNLOCK TABLES;
 /*end 2015-03-05*/

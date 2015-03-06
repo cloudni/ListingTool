@@ -163,12 +163,12 @@ textarea, .inputtext, .inputpassword {
 }
 body, button, input, label, select, td, textarea {
     font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 #pageFooter {
     color: #737373;
-    font-size: 11px;
+    font-size: 12px;
     margin: 0 auto;
     width: 990px;
 }
@@ -223,7 +223,7 @@ body, button, input, label, select, td, textarea {
 
 #menu-top{
     background: #fff;
-    height: 28px;
+    height: 30px;
 }
 
 ul.dropdown li{
@@ -359,6 +359,8 @@ div.breadcrumbs
 
 div.form label
 {
-    font-size: 11px;
+    font-size: 12px;
 }
+
+body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, dialog, figure, footer, header, nav, section {font-size: 12px;/* font:inherit; */}
 

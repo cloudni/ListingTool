@@ -21,7 +21,7 @@ $this->menu=array(
 <style>
     table.detail-view th, table.detail-view td
     {
-        font-size: 11px;
+        font-size: 12px;
     }
 </style>
 

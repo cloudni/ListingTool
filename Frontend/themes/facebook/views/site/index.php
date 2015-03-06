@@ -76,6 +76,10 @@ Yii::app()->clientScript->registerCoreScript('jquery');
                             <?php echo CHtml::link(CHtml::encode(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'create_more_store')), array("/store/create"), array());?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'or');?>&nbsp;
                             <?php echo CHtml::link(CHtml::encode(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'manage_store')), array("/store"), array());?>
                         </div>
+                        <div style="font-size: 12px; height: 20px; vertical-align: middle; padding-top: 10px;">4.
+                            <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'platform_dashboard');?>:&nbsp;
+                            <?php echo CHtml::link(CHtml::encode('eBay'), array("/ebay/ebay"), array());?>
+                        </div>
                     </div>
                 </div>
             </div>

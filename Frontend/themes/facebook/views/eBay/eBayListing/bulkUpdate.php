@@ -193,6 +193,17 @@ $this->breadcrumbs=array(
                 </div>
                 <div style="padding: 0px 10px 0px 10px;">
                     <h4>
+                        <input id="update_exclude_ship_location_panel_enable" name="update_exclude_ship_location_panel_enable" type="checkbox" checked="checked" onclick="updateRulePanel(this, 'exclude_ship_location');"/>
+                        <span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'update');?><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'item_inventory_level');?></span>
+                    </h4>
+                    <div id="update_exclude_ship_location_panel" class="update_panel">
+                        <?php echo CHtml::label(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'item_inventory_level').': ', NULL);?>
+                        <?php echo CHtml::textField('update_quantity_value', NULL, array('size'=>24, 'onkeyup'=>"CheckInputIntFloat(this)"));?>
+                    </div>
+                    <hr style="margin-top: 7px;" />
+                </div>
+                <div style="padding: 0px 10px 0px 10px;">
+                    <h4>
                         <input id="update_description_panel_enable" name="update_description_panel_enable" type="checkbox" checked="checked" onclick="updateRulePanel(this, 'description');"/>
                         <span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'update');?><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'item_description');?></span>
                     </h4>

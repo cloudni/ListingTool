@@ -240,7 +240,18 @@ class EBayListingController extends Controller
                     $command->bindValue(":secondarycate", $params['searchCategory'], PDO::PARAM_STR);
                 }
                 $listings = $command->queryAll();
-                $result = array('status'=>'success', 'data'=>$listings);
+                /*test for site code start*/
+                $allSameSite = true;
+                $siteID = -1;
+                $index = 0;
+                foreach($listings as $list)
+                {
+                    if($index ==0) $siteID = $list['site_id'];
+                    if($siteID != $list['site_id']) { $allSameSite = false; break; }
+                    $index++;
+                }
+                /*test for site code end*/
+                $result = array('status'=>'success', 'data'=>$listings, 'allSameSite'=>$allSameSite, 'siteID'=>$siteID);
                 echo json_encode($result);
             }
             else

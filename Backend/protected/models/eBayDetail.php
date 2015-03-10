@@ -179,7 +179,7 @@ class eBayDetail extends NIAdminActiveRecord
 
 		//find a;; available entity attribute value
 		$query = "SELECT valuetable.*
-            FROM lt_ebay_entity_{$valueType} valuetable
+            FROM lt_ebay_prefetch_{$valueType} valuetable
             where valuetable.ebay_entity_type_id = :ebay_entity_type_id
             and valuetable.ebay_attribute_id = :ebay_attribute_id
             and valuetable.ebay_entity_attribute_id = :ebay_entity_attribute_id

@@ -250,18 +250,34 @@ class EBayListingController extends Controller
                     if($siteID != $list['site_id']) { $allSameSite = false; break; }
                     $index++;
                 }
+                //if same site, pull exclude ship location detail
+                $siteDetail = eBayDetail::model()->find("site_id=:site_id", array(':site_id'=>$siteID));
+                $excludeShipLocationDetail = $siteDetail->getEntityAttributeValueByCodeWithAllChildren("ExcludeShippingLocationDetails");
+                $domestic = array(); $worldwide = array(); $additional = array();
+                foreach($excludeShipLocationDetail as $detail)
+                {
+                    if($detail['Region'] == 'Domestic Location') $domestic[] = array('Location'=>$detail['Location'], 'Description'=>$detail['Description']);
+                    if($detail['Region'] == 'Additional Locations') $additional[] = array('Location'=>$detail['Location'], 'Description'=>$detail['Description']);
+                    if($detail['Region'] == 'Worldwide') $worldwide[$detail['Location']] = array('values'=>array(),'Location'=>$detail['Location'], 'Description'=>$detail['Description']);
+                }
+                foreach($excludeShipLocationDetail as $detail)
+                {
+                    if($detail['Region'] == 'Domestic Location' || $detail['Region'] == 'Additional Locations' || $detail['Region'] == 'Worldwide') continue;
+                    if(!isset($worldwide[$detail['Region']])) $worldwide[$detail['Region']] = array('values'=>array(),'Location'=>$detail['Region'], 'Description'=>$detail['Region']);
+                    $worldwide[$detail['Region']]['values'][] = array('Location'=>$detail['Location'], 'Description'=>$detail['Description']);
+                }
                 /*test for site code end*/
-                $result = array('status'=>'success', 'data'=>$listings, 'allSameSite'=>$allSameSite, 'siteID'=>$siteID);
+                $result = array('status'=>'success', 'data'=>$listings, 'allSameSite'=>$allSameSite, 'siteID'=>$siteID, 'excludeLocation'=>array('domestic'=>$domestic, 'additional'=>$additional, 'worldwide'=>$worldwide));
                 echo json_encode($result);
             }
             else
             {
-
+                //todo advanced search
             }
         }
         catch(Exception $ex)
         {
-            $result = array('status'=>'success', 'data'=>"Error Code: ".$ex->getCode().", ".$ex->getMessage());
+            $result = array('status'=>'fail', 'data'=>"Error Code: ".$ex->getCode().", ".$ex->getMessage());
             echo json_encode($result);
         }
     }

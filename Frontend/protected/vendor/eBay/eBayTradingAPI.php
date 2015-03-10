@@ -86,7 +86,7 @@ class eBayTradingAPI
             if((string)$result->Ack===eBayAckCodeType::Success)
             {
                 /*process seller information */
-                //eBayTradingAPI::processeBaySeller($store, $result->Seller);
+                eBayTradingAPI::processeBaySeller($store, $result->Seller);
 
                 //change all active item's status to ended. in case any update leak
                 $eBayAttributeSet = eBayAttributeSet::model()->find(
@@ -278,8 +278,8 @@ class eBayTradingAPI
             $transaction->commit();$transaction = null;
 
             //useing GetItem to retreive item description
-            if(isset($item->SellingStatus->ListingStatus) && (string)$item->SellingStatus->ListingStatus == eBayListingStatusCodeType::Active)
-                return eBayTradingAPI::GetItem($eBayListing);
+            /*if(isset($item->SellingStatus->ListingStatus) && (string)$item->SellingStatus->ListingStatus == eBayListingStatusCodeType::Active)
+                return eBayTradingAPI::GetItem($eBayListing);*/
 
             $transaction= Yii::app()->db->beginTransaction();
             //start to process attribute by attribute

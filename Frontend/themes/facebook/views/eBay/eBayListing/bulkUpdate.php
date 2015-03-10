@@ -32,6 +32,12 @@ $this->breadcrumbs=array(
         padding-left: 20px;
         margin-top: 8px;;
     }
+
+    .excludeLocationUL{
+        list-style: none;
+        padding: 5px 0px 5px 8px;
+        margin: auto;
+    }
 </style>
 
 <div>
@@ -194,11 +200,47 @@ $this->breadcrumbs=array(
                 <div style="padding: 0px 10px 0px 10px;">
                     <h4>
                         <input id="update_exclude_ship_location_panel_enable" name="update_exclude_ship_location_panel_enable" type="checkbox" checked="checked" onclick="updateRulePanel(this, 'exclude_ship_location');"/>
-                        <span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'update');?><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'item_inventory_level');?></span>
+                        <span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'update');?><?php echo 'Exclude Shipping Locations';?></span>
                     </h4>
                     <div id="update_exclude_ship_location_panel" class="update_panel">
-                        <?php echo CHtml::label(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'item_inventory_level').': ', NULL);?>
-                        <?php echo CHtml::textField('update_quantity_value', NULL, array('size'=>24, 'onkeyup'=>"CheckInputIntFloat(this)"));?>
+                        <div class="borderBlock">
+                            <div>
+                                <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
+                                    <div style="height: 36px; color: #9197a3; font-weight: normal;">
+                                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">Select the regions or countries you don't ship to</h1>
+                                    </div>
+                                </div>
+                                <div class="clearfix" style="border-top: 1px solid transparent;">
+                                    <div class="boldFont" style="padding: 10px 0px 7px 12px;">Domestic</div>
+                                    <div id="exclude_ship_location_domestic" style="display: block; clear: both;">
+                                        <ul class="excludeLocationUL"></ul>
+                                    </div>
+                                    <div style="margin: 10px 10px 10px 10px; border-bottom: 1px solid #ddd; display: block; clear: both;">&nbsp;</div>
+                                    <div class="boldFont" style="padding: 5px 0px 7px 12px;">International</div>
+                                    <div id="exclude_ship_location_worldwide">
+                                        <ul class="excludeLocationUL"></ul>
+                                    </div>
+                                    <div style="margin: 10px 10px 10px 10px; border-bottom: 1px solid #ddd;display: block; clear: both;">&nbsp;</div>
+                                    <div class="boldFont" style="padding: 5px 0px 7px 12px;">Additional Locations</div>
+                                    <div id="exclude_ship_location_additional">
+                                        <ul style="list-style: none; padding: 5px 0px 5px 8px; margin: auto; "></ul>
+                                    </div>
+                                    <div style="display: block; clear: both;">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="borderBlock">
+                            <div>
+                                <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
+                                    <div style="height: 36px; color: #9197a3; font-weight: normal;">
+                                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; /*line-height: 38px;*/ position: relative;"><span style="font-weight: normal;">You've excluded: </span><span id="exclude_ship_location_result"></span></h1>
+                                    </div>
+                                </div>
+                                <div class="clearfix" style="border-top: 1px solid transparent; padding-left: 12px;">
+                                    Note: When you apply your shipping exclusions, eBay will block buyers who's primary address is in a location you don't ship to.
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <hr style="margin-top: 7px;" />
                 </div>
@@ -261,6 +303,20 @@ $this->breadcrumbs=array(
 </div>
 
 <script>
+    function count(o){
+        var t = typeof o;
+        if(t == 'string'){
+            return o.length;
+        }else if(t == 'object'){
+            var n = 0;
+            for(var i in o){
+                n++;
+            }
+            return n;
+        }
+        return false;
+    };
+
     $(function(){
         $("#advanced_search_switch").click(function(){
             if($("#advanced_search_panel").css('display') == 'none')
@@ -343,6 +399,66 @@ $this->breadcrumbs=array(
                             $("#applied_listing_div").removeClass('applied_listing_table_div');
                         }
                         //deal with exclude ship location if any
+                        $("#exclude_ship_location_domestic ul li").remove();
+                        $("#exclude_ship_location_additional ul li").remove();
+                        $("#exclude_ship_location_worldwide ul li").remove();
+                        if(data['allSameSite'] == true && data['siteID'] >= 0)
+                        {
+                            if(data['excludeLocation']['domestic'].length>0)
+                            {
+                                for(var i=0;i<data['excludeLocation']['domestic'].length;i++)
+                                {
+                                    $("#exclude_ship_location_domestic ul").append("<li class='lfloat' style='padding-right: 15px; width: 40%;'><input id='exclude_ship_location_domestic_list[]' name='exclude_ship_location_domestic_list[]' type='checkbox' value='"+data['excludeLocation']['domestic'][i]['Location']+"' /><span>"+data['excludeLocation']['domestic'][i]['Description']+"</span></li>");
+                                }
+                            }
+                            if(data['excludeLocation']['additional'].length>0)
+                            {
+                                for(var i=0;i<data['excludeLocation']['additional'].length;i++)
+                                {
+                                    $("#exclude_ship_location_additional ul").append("<li class='lfloat' style='padding-right: 15px; width: 40%;'><input id='exclude_ship_location_additional_list[]' name='exclude_ship_location_additional_list[]' type='checkbox' value='"+data['excludeLocation']['additional'][i]['Location']+"' /><span>"+data['excludeLocation']['additional'][i]['Description']+"</span></li>");
+                                }
+                            }
+                            if(count(data['excludeLocation']['worldwide'])>0)
+                            {
+                                for(var region in data['excludeLocation']['worldwide'])
+                                {
+                                    var str = "<li class='lfloat' style='padding-right: 15px; width: 40%;'>"+
+                                                "<input onclick='checkExcludeWorldWideRegion(this);' id='exclude_ship_location_worldwide_list[]' name='exclude_ship_location_worldwide_list[]' type='checkbox' value='"+data['excludeLocation']['worldwide'][region]['Location']+"' />"+
+                                                "<span class='boldFont' onclick='updateExcludeWorldWideRegion(this);'>"+data['excludeLocation']['worldwide'][region]['Description']+"</span>";
+                                    if(data['excludeLocation']['worldwide'][region]['values'].length>0)
+                                    {
+                                        str += "<ul class='excludeLocationUL' style='display: none;' id='exclude_ship_location_worldwide_list_"+data['excludeLocation']['worldwide'][region]['Location'].replace(/ /g, '_')+"_ul'>";
+                                        for (var i = 0; i < data['excludeLocation']['worldwide'][region]['values'].length; i++)
+                                        {
+                                            str += "<li style='padding-right: 15px;'><input id='exclude_ship_location_worldwide_list_"+data['excludeLocation']['worldwide'][region]['Location']+"[]' name='exclude_ship_location_worldwide_list_"+data['excludeLocation']['worldwide'][region]['Location']+"[]' type='checkbox' value='"+data['excludeLocation']['worldwide'][region]['values'][i]['Location']+"' /><span>"+data['excludeLocation']['worldwide'][region]['values'][i]['Description']+"</span></li>";
+                                        }
+                                        str += "</ul>";
+
+                                    }
+                                    str += "</li>";
+                                    $("#exclude_ship_location_worldwide ul:first").append(str);
+                                }
+                            }
+
+                            $("#update_exclude_ship_location_panel").css('display', '');
+                            $("#update_exclude_ship_location_panel_enable").removeAttr('disabled');
+                            $("#update_exclude_ship_location_panel_enable").prop('checked', true);
+
+                            $("#update_exclude_ship_location_panel input:checkbox").click(function(obj, even){
+                                var str = "";
+                                for(var i=0;i<$("#update_exclude_ship_location_panel input:checkbox:checked").length;i++)
+                                {
+                                    str += $("#update_exclude_ship_location_panel input:checkbox:checked")[i].nextSibling.innerHTML+", ";
+                                }
+                                $("#exclude_ship_location_result").html(str);
+                            });
+                        }
+                        else
+                        {
+                            $("#update_exclude_ship_location_panel").css('display', 'none');
+                            $("#update_exclude_ship_location_panel_enable").prop('disabled', true);
+                            $("#update_exclude_ship_location_panel_enable").removeAttr('checked');
+                        }
                     }
                     else
                     {
@@ -598,6 +714,28 @@ $this->breadcrumbs=array(
         if('' != oInput.value.replace(/\d{1,}\.{0,1}\d{0,}/,''))
         {
             oInput.value = oInput.value.match(/\d{1,}\.{0,1}\d{0,}/) == null ? '' :oInput.value.match(/\d{1,}\.{0,1}\d{0,}/);
+        }
+    }
+
+    function updateExcludeWorldWideRegion(obj)
+    {
+        if($(obj.nextSibling).css('display') == 'none')
+            $(obj.nextSibling).css('display', '');
+        else
+            $(obj.nextSibling).css('display', 'none');
+    }
+
+    function checkExcludeWorldWideRegion(obj)
+    {
+        if($(obj).prop('checked'))
+        {
+            $("input[id^='exclude_ship_location_worldwide_list_"+$(obj).val()+"'").prop('checked', true);
+            $("#exclude_ship_location_worldwide_list_"+$(obj).val().replace(/ /g, '_')+"_ul").css('display', '');
+        }
+        else
+        {
+            $("input[id^='exclude_ship_location_worldwide_list_"+$(obj).val()+"'").removeAttr('checked');
+            $("#exclude_ship_location_worldwide_list_"+$(obj).val().replace(/ /g, '_')+"_ul").css('display', 'none');
         }
     }
 </script>

@@ -342,6 +342,7 @@ $this->breadcrumbs=array(
                         {
                             $("#applied_listing_div").removeClass('applied_listing_table_div');
                         }
+                        //deal with exclude ship location if any
                     }
                     else
                     {

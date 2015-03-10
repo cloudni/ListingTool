@@ -78,7 +78,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
                         </div>
                         <div style="font-size: 12px; height: 20px; vertical-align: middle; padding-top: 10px;">4.
                             <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'platform_dashboard');?>:&nbsp;
-                            <?php echo CHtml::link(CHtml::encode('eBay'), array("/ebay/ebay"), array());?>
+                            <?php echo CHtml::link(CHtml::encode('eBay'), array("/eBay/eBay"), array());?>
                         </div>
                     </div>
                 </div>

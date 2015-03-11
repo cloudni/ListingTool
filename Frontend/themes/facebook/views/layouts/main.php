@@ -166,7 +166,7 @@
                     'items'=>array(
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ticket_title'), 'url'=>array('/ticket'), 'visible'=>!Yii::app()->user->isGuest),
                         //array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'notification_title'), 'url'=>array('/notification'), 'visible'=>!Yii::app()->user->isGuest),
-                        array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_help_bulletion'), 'url'=>array('/bulletin'), 'visible'=>!Yii::app()->user->isGuest),
+                        //array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_help_bulletion'), 'url'=>array('/bulletin'), 'visible'=>!Yii::app()->user->isGuest),
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_help_about'), 'url'=>array('/site/page', 'view'=>'about')),
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'contact_title'), 'url'=>array('/site/contact')),
                     ),

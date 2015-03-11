@@ -9,76 +9,19 @@ $this->breadcrumbs=array(
 );
 ?>
 
-<h1><?php echo Yii::t('models/ContactForm','Contact Us');?></h1>
-
-<?php if(Yii::app()->user->hasFlash('contact')): ?>
-
-<div class="flash-success">
-	<?php echo Yii::app()->user->getFlash('contact'); ?>
+<div style="clear: both; width: 100%; position: relative; top: -5px;">
+    <div class="borderBlock">
+        <div>
+            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
+                <div style="height: 36px; color: #9197a3; font-weight: normal;">
+                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo Yii::t('models/ContactForm','Contact Us');?></h1>
+                </div>
+            </div>
+            <div style="display: block; padding: 0px 10px 0px 10px;">
+                <h1 style="padding: 12px;">Address: 200 East Guoding Road, Building 3, 3rd floor, YangPu District Shanghai 200433, China </h1>
+                <h1 style="padding: 12px;">Phone: 86-21-55786978        Fax: 86-21-32550700 </h1>
+                <h1 style="padding: 12px;">Email: marketing@nirvana-info.com </h1>
+            </div>
+        </div>
+    </div>
 </div>
-
-<?php else: ?>
-
-<p>
-    <?php echo Yii::t('models/ContactForm','If you have business inquiries or other questions, please fill out the following form to contact us. Thank you.')?>
-</p>
-
-<div class="form">
-
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'contact-form',
-	'enableClientValidation'=>true,
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
-	),
-)); ?>
-
-	<p class="note"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'warning') ?></p>
-
-	<?php echo $form->errorSummary($model); ?>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'name'); ?>
-		<?php echo $form->textField($model,'name'); ?>
-		<?php echo $form->error($model,'name'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'email'); ?>
-		<?php echo $form->textField($model,'email'); ?>
-		<?php echo $form->error($model,'email'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'subject'); ?>
-		<?php echo $form->textField($model,'subject',array('size'=>60,'maxlength'=>128)); ?>
-		<?php echo $form->error($model,'subject'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'body'); ?>
-		<?php echo $form->textArea($model,'body',array('rows'=>6, 'cols'=>50)); ?>
-		<?php echo $form->error($model,'body'); ?>
-	</div>
-
-	<?php if(CCaptcha::checkRequirements()): ?>
-	<div class="row">
-		<?php echo $form->labelEx($model,'verifyCode'); ?>
-		<div>
-		<?php $this->widget('CCaptcha'); ?>
-		<?php echo $form->textField($model,'verifyCode'); ?>
-		</div>
-		<div class="hint"><?php echo Yii::t('models/ContactForm','Please enter the letters as they are shown in the image above.<br/>Letters are not case-sensitive.');?> </div>
-		<?php echo $form->error($model,'verifyCode'); ?>
-	</div>
-	<?php endif; ?>
-
-	<div class="row buttons">
-		<?php echo CHtml::submitButton(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'btn_submit')); ?>
-	</div>
-
-<?php $this->endWidget(); ?>
-
-</div><!-- form -->
-
-<?php endif; ?>

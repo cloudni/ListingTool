@@ -55,11 +55,11 @@ INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (54,'btn_delete',1,0,'删除',1416885512,1,1416885512,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (55,'btn_delete',2,0,'Delete',1416885528,1,1416885528,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (56,'ticket_title',2,0,'Tickets',1416887996,1,1416887996,1);
-INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (57,'ticket_title',1,0,'标签',1416888005,1,1416888005,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (57,'ticket_title',1,0,'技术支持',1416888005,1,1416888005,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (58,'ticket_create_menu',2,0,'Create Ticket',1416888049,1,1416888049,1);
-INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (59,'ticket_create_menu',1,0,'新建标签',1416888065,1,1416888065,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (59,'ticket_create_menu',1,0,'新建技术支持',1416888065,1,1416888065,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (60,'ticket_list_menu',2,0,'List Ticket',1416888104,1,1416888104,1);
-INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (61,'ticket_list_menu',1,0,'标签列表',1416888125,1,1416888125,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (61,'ticket_list_menu',1,0,'技术支持请求列表',1416888125,1,1416888125,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (62,'store_title',2,0,'Stores',1416896087,1,1416896087,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (63,'store_title',1,0,'商店',1416896113,1,1416896113,1);
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (64,'store_create_menu',2,0,'Create Store',1416896173,1,1416896173,1);
@@ -2623,3 +2623,22 @@ INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,
 INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (354,'platform_dashboard',2,0,'Platform Dashboard',1425621855,1,1425621855,1);
 UNLOCK TABLES;
 /*end 2015-03-05*/
+
+/*start 2015-03-11*/
+LOCK TABLES `lt_resource_string` WRITE;
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (355,'exclude_shipping_location',1,0,'不发货地区',1426058215,1,1426058215,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (356,'exclude_shipping_location',2,0,'Exclude Shipping Location',1426058229,1,1426058229,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (357,'exclude_shipping_location_panel_help',1,0,'当所选产品同属于一个eBay站点的时候，可设置不发货国家及地区。',1426058402,1,1426058402,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (358,'exclude_shipping_location_panel_help',2,0,'When filtered eBay listings are all belong to the same eBay site, the exclude shipping location will be enabled.',1426058450,1,1426058450,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (359,'select_exclude_shipping_location',1,0,'请选择不发货的国家及地区',1426058539,1,1426058539,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (360,'select_exclude_shipping_location',2,0,'Select the regions or countries you don\'t ship to',1426058550,1,1426058550,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (361,'you_have_excluded',1,0,'您选择了：',1426058614,1,1426058614,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (362,'you_have_excluded',2,0,'You\'ve excluded: ',1426058628,1,1426058628,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (363,'exclude_shipping_location_note',1,0,'请注意：当您设置不发货国家及地区时，eBay将排除那些默认地址在您选择列表中的买家。',1426058810,1,1426058810,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (364,'exclude_shipping_location_note',2,0,'Note: When you apply your shipping exclusions, eBay will block buyers who\'s primary address is in a location you don\'t ship to.',1426058825,1,1426058825,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (365,'last_login_time',1,0,'最后登录时间',1426077977,1,1426077977,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (366,'last_login_time',2,0,'Last Login Time',1426078002,1,1426078002,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (367,'parent_department',1,0,'上级部门',1426078845,1,1426078845,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (368,'parent_department',2,0,'Superior department',1426078886,1,1426078886,1);
+UNLOCK TABLES;
+/*end 2015-03-11*/

@@ -116,9 +116,6 @@
 
 </div><!-- form --><!-- form -->
 
-<?php
-Yii::app()->clientScript->registerScriptFile('http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js');
-?>
 <script>
     function addUserId(){
         var to=document.getElementById("changeDepartment");

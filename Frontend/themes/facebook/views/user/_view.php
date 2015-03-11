@@ -26,30 +26,7 @@
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('last_login_time_utc')); ?>:</b>
-	<?php echo CHtml::encode($data->last_login_time_utc); ?>
+	<?php echo CHtml::encode(date("Y-m-d H:i:s", $data->last_login_time_utc)); ?>
 	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('last_login_ip')); ?>:</b>
-	<?php echo CHtml::encode($data->last_login_ip); ?>
-	<br />
-
-	<?php /*
-	<b><?php echo CHtml::encode($data->getAttributeLabel('create_time_utc')); ?>:</b>
-	<?php echo CHtml::encode($data->create_time_utc); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('create_user_id')); ?>:</b>
-	<?php echo CHtml::encode($data->create_user_id); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('update_time_utc')); ?>:</b>
-	<?php echo CHtml::encode($data->update_time_utc); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('update_user_id')); ?>:</b>
-	<?php echo CHtml::encode($data->update_user_id); ?>
-	<br />
-
-	*/ ?>
 
 </div>

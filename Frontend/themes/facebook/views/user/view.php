@@ -36,8 +36,15 @@ $this->menu=array(
 					'attributes'=>array(
 						'email',
 						'username',
-						'department_id',
-						'last_login_time_utc',
+
+                        array(
+                            'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'departments_title'),
+                            'value'=>$model->department->name,
+                        ),
+                        array(
+                            'name'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_login_time'),
+                            'value'=>date("Y-m-d H:i:s", $model->last_login_time_utc),
+                        ),
 					),
 				)); ?>
 			</div>

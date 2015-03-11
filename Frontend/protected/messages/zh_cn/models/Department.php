@@ -9,7 +9,7 @@
  return array(
      'ID'=>'ID',
      'Name'=>'名称',
-     'Parent'=>'直属上级',
+     'Parent'=>'上级部门',
      'Company'=>'公司名称',
      'Note'=>'备注',
      'Action'=>'操作',

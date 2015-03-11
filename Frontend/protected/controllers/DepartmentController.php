@@ -114,6 +114,11 @@ class DepartmentController extends Controller
 	 */
 	public function actionDelete($id)
 	{
+        if(Department::model()->count("company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id)) <= 1)
+        {
+            throw new CHttpException(404, 'You cannot delete all department.');
+            exit();
+        }
         $users= User::model()->findAll("department_id=:department_id",array(":department_id"=>$id));
         if(!empty($users))
         {

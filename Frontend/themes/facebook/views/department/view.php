@@ -38,7 +38,10 @@ $this->menu=array(
 					'data'=>$model,
 					'attributes'=>array(
 						'name',
-						'parent_id',
+                        array(
+                            'name'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'parent_department'),
+                            'value'=>isset($model->parentDepartment) ? $model->parentDepartment->name : null,
+                        ),
 						'note',
 					),
 				)); ?>

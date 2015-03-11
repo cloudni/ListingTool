@@ -27,7 +27,6 @@ $this->menu=array(
                             <th><?php echo Yii::t('models/Department','ID') ?></th>
                             <th><?php echo Yii::t('models/Department','Name') ?></th>
                             <th><?php echo Yii::t('models/Department','Parent') ?></th>
-                            <th><?php echo Yii::t('models/Department','Create User') ?></th>
                             <th><?php echo Yii::t('models/Department','Action') ?></th>
                         </tr>
                         <?php $this->widget('zii.widgets.CListView', array(

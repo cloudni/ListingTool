@@ -112,13 +112,21 @@ class UserController extends Controller
 	public function actionDelete($id)
 	{
 		$user = $this->loadModel($id);
-        if($user->id === $user->create_user_id)
-            throw new CHttpException(404,'You cannot delete account owner.');
+        if($user->id === Yii::app()->session['company']->create_user_id)
+        {
+            throw new CHttpException(404, 'You cannot delete account owner.');
+            exit();
+        }
+        if($user->id === Yii::app()->session['user']->id)
+        {
+            throw new CHttpException(404, 'You cannot delete yourself.');
+            exit();
+        }
         $user->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
 	}
 
 	/**

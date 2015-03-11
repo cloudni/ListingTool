@@ -943,6 +943,9 @@ class eBayTradingAPI
                 //update description
                 if(!empty($params['update_rules']['description']))
                 {
+                    //update item description if needed
+                    eBayTradingAPI::GetItem($eBayListing);
+
                     if($params['update_rules']['description']['action'] == 'add')
                     {
                         $input['Description'] = eBayService::createXMLElement($params['update_rules']['description']['tag'],$params['update_rules']['description']['value']);

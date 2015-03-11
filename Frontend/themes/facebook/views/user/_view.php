@@ -22,7 +22,7 @@
 	<br />-->
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('company_id')); ?>:</b>
-	<?php echo CHtml::encode($data->company_id); ?>
+	<?php echo CHtml::encode($data->company->name); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('last_login_time_utc')); ?>:</b>

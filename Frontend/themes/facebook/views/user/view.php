@@ -39,7 +39,7 @@ $this->menu=array(
 
                         array(
                             'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'departments_title'),
-                            'value'=>$model->department->name,
+                            'value'=>isset($model->department) ? $model->department->name : null,
                         ),
                         array(
                             'name'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_login_time'),

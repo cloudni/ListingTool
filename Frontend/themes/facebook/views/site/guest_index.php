@@ -49,7 +49,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
                                 <div style="position: relative; width: 415px;">
                                     <div style="width: 415px; height: 40px; background: white; -webkit-border-radius: 5px; display: inline-block; position: relative;">
                                         <div class="placeholder" style="font-size: 20px; top: 5px; padding: 8px 10px; -webkit-box-sizing: border-box; overflow: hidden;text-overflow: ellipsis; white-space: nowrap;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'user_name');?></div>
-                                        <input type="text" class="inputtext" tooltip="tooltipUserName" style="width: 393px; font-size: 18px; padding: 8px 10px; border-color: #bdc7d8; -webkit-border-radius: 5px; margin: 0; background-color: transparent; position: relative; border: 1px solid #bdc7d8;-webkit-user-select: text;-webkit-rtl-ordering: logical;" data-type="text" maxlength="20" name="SignUpForm[username]" id="SignUpForm_username" onkeyup="changeInputBackground(this);" onfocus="focusWarningIcon(this);" onblur="blurWarningIcon(this);" />
+                                        <input type="text" class="inputtext" tooltip="tooltipUserName" style="width: 393px; font-size: 18px; padding: 8px 10px; border-color: #bdc7d8; -webkit-border-radius: 5px; margin: 0; background-color: transparent; position: relative; border: 1px solid #bdc7d8;-webkit-user-select: text;-webkit-rtl-ordering: logical;" data-type="text" maxlength="20" name="SignUpForm[username]" id="SignUpForm_username" onkeyup="changeInputBackground(this); CheckInputSignUpName(this);" onfocus="focusWarningIcon(this);" onblur="blurWarningIcon(this);" />
                                     </div>
                                     <i style="background-image:url(/themes/facebook/images/oTjqmTwIShG.png); background-size: auto;background-repeat: no-repeat;width: 21px;height: 21px;background-position: -122px -494px;display: none;position: absolute;right: 9px;top: 9px;"></i>
                                 </div>
@@ -60,7 +60,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
                                 <div style="position: relative; width: 415px;">
                                     <div style="width: 415px; height: 40px; background: white; -webkit-border-radius: 5px; display: inline-block; position: relative;">
                                         <div class="placeholder" style="font-size: 20px; top: 5px; padding: 8px 10px; -webkit-box-sizing: border-box; overflow: hidden;text-overflow: ellipsis; white-space: nowrap;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'email_address');?></div>
-                                        <input type="text" class="inputtext" style="width: 393px; font-size: 18px; padding: 8px 10px; border-color: #bdc7d8; -webkit-border-radius: 5px; margin: 0; background-color: transparent; position: relative; border: 1px solid #bdc7d8;-webkit-user-select: text;-webkit-rtl-ordering: logical;" data-type="text" maxlength="256" name="SignUpForm[email]" id="SignUpForm_email" tooltip="tooltipEmail" onkeyup="changeInputBackground(this);" onfocus="focusWarningIcon(this);" onblur="blurWarningIcon(this);" />
+                                        <input type="text" class="inputtext" style="width: 393px; font-size: 18px; padding: 8px 10px; border-color: #bdc7d8; -webkit-border-radius: 5px; margin: 0; background-color: transparent; position: relative; border: 1px solid #bdc7d8;-webkit-user-select: text;-webkit-rtl-ordering: logical;" data-type="text" maxlength="256" name="SignUpForm[email]" id="SignUpForm_email" tooltip="tooltipEmail" onkeyup="changeInputBackground(this); CheckInputEmailAddress(this);" onfocus="focusWarningIcon(this);" onblur="blurWarningIcon(this);" />
                                     </div>
                                     <i style="background-image:url(/themes/facebook/images/oTjqmTwIShG.png); background-size: auto;background-repeat: no-repeat;width: 21px;height: 21px;background-position: -122px -494px;display: none;position: absolute;right: 9px;top: 9px;"></i>
                                 </div>
@@ -71,14 +71,14 @@ Yii::app()->clientScript->registerCoreScript('jquery');
                                 <div class="lfloat" style="position: relative;">
                                     <div style="width: 194px; height: 40px; background: white; -webkit-border-radius: 5px; display: inline-block; position: relative;">
                                         <div class="placeholder" style="font-size: 20px; top: 5px; padding: 8px 10px; -webkit-box-sizing: border-box; overflow: hidden;text-overflow: ellipsis; white-space: nowrap;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'password');?></div>
-                                        <input type="password" class="inputtext" style="width: 172px; font-size: 18px; padding: 8px 10px; border-color: #bdc7d8; -webkit-border-radius: 5px; margin: 0; background-color: transparent; position: relative; border: 1px solid #bdc7d8;-webkit-user-select: text;-webkit-rtl-ordering: logical;" data-type="text" maxlength="20" name="SignUpForm[password]" id="SignUpForm_password" tooltip="tooltipPassword" onkeyup="changeInputBackground(this);" onfocus="focusWarningIcon(this);" onblur="blurWarningIcon(this);" />
+                                        <input type="password" class="inputtext" style="width: 172px; font-size: 18px; padding: 8px 10px; border-color: #bdc7d8; -webkit-border-radius: 5px; margin: 0; background-color: transparent; position: relative; border: 1px solid #bdc7d8;-webkit-user-select: text;-webkit-rtl-ordering: logical;" data-type="text" maxlength="20" name="SignUpForm[password]" id="SignUpForm_password" tooltip="tooltipPassword" onkeyup="changeInputBackground(this); CheckInputPassword(this);" onfocus="focusWarningIcon(this);" onblur="blurWarningIcon(this);" />
                                     </div>
                                     <i style="background-image:url(/themes/facebook/images/oTjqmTwIShG.png); background-size: auto;background-repeat: no-repeat;width: 21px;height: 21px;background-position: -122px -494px;display: none;position: absolute;right: 9px;top: 9px;"></i>
                                 </div>
                                 <div class="lfloat" style="position: relative; left: 27px;">
                                     <div style="width: 194px; height: 40px; background: white; -webkit-border-radius: 5px; display: inline-block; position: relative;">
                                         <div class="placeholder" style="font-size: 20px; top: 5px; padding: 8px 10px; -webkit-box-sizing: border-box; overflow: hidden;text-overflow: ellipsis; white-space: nowrap;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'re_password');?></div>
-                                        <input type="password" class="inputtext" style="width: 172px; font-size: 18px; padding: 8px 10px; border-color: #bdc7d8; -webkit-border-radius: 5px; margin: 0; background-color: transparent; position: relative; border: 1px solid #bdc7d8;-webkit-user-select: text;-webkit-rtl-ordering: logical;" data-type="text" maxlength="20" name="SignUpForm[password_repeat]" id="SignUpForm_password_repeat" tooltip="tooltipRePassword" onkeyup="changeInputBackground(this);" onfocus="focusWarningIcon(this);" onblur="blurWarningIcon(this);" />
+                                        <input type="password" class="inputtext" style="width: 172px; font-size: 18px; padding: 8px 10px; border-color: #bdc7d8; -webkit-border-radius: 5px; margin: 0; background-color: transparent; position: relative; border: 1px solid #bdc7d8;-webkit-user-select: text;-webkit-rtl-ordering: logical;" data-type="text" maxlength="20" name="SignUpForm[password_repeat]" id="SignUpForm_password_repeat" tooltip="tooltipRePassword" onkeyup="changeInputBackground(this); CheckInputPassword(this);" onfocus="focusWarningIcon(this);" onblur="blurWarningIcon(this);" />
                                     </div>
                                     <i style="background-image:url(/themes/facebook/images/oTjqmTwIShG.png); background-size: auto;background-repeat: no-repeat;width: 21px;height: 21px;background-position: -122px -494px;display: none;position: absolute;right: 9px;top: 9px;"></i>
                                 </div>
@@ -223,6 +223,15 @@ Yii::app()->clientScript->registerCoreScript('jquery');
             blurWarningIcon($("#SignUpForm_email")[0], true);
             error = true;
         }
+        else
+        {
+            var Regex = /^(?:\w+\.?)*\w+@(?:\w+\.)*\w+$/;
+            if(!Regex.test($("#SignUpForm_email").val()))
+            {
+                blurWarningIcon($("#SignUpForm_email")[0], true);
+                error = true;
+            }
+        }
 
         if($("#SignUpForm_password").val().length < 6 || $("#SignUpForm_password").val().length > 20)
         {
@@ -289,5 +298,29 @@ Yii::app()->clientScript->registerCoreScript('jquery');
             $(obj).css('background-color', '#fff');
         else
             $(obj).css('background-color', 'transparent');
+    }
+
+    function CheckInputSignUpName(oInput)
+    {
+        if('' != oInput.value.replace(/[a-zA-Z_0-9]{1,20}/,''))
+        {
+            oInput.value = oInput.value.match(/[a-zA-Z_0-9]{1,20}/) == null ? '' :oInput.value.match(/[a-zA-Z_0-9]{1,20}/);
+        }
+    }
+
+    function CheckInputPassword(oInput)
+    {
+        if('' != oInput.value.replace(/[a-zA-Z0-9!@#$%^&*()_+]{1,20}/,''))
+        {
+            oInput.value = oInput.value.match(/[a-zA-Z0-9!@#$%^&*()_+]{1,20}/) == null ? '' :oInput.value.match(/[a-zA-Z0-9!@#$%^&*()_+]{1,20}/);
+        }
+    }
+
+    function CheckInputEmailAddress(oInput)
+    {
+        if('' != oInput.value.replace(/[a-zA-Z0-9@._]{1,}/,''))
+        {
+            oInput.value = oInput.value.match(/[a-zA-Z0-9@._]{1,}/) == null ? '' :oInput.value.match(/[a-zA-Z0-9@._]{1,}/);
+        }
     }
 </script>

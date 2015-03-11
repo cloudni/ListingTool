@@ -22,6 +22,9 @@
         // There is a call to performAjaxValidation() commented in generated controller code.
         // See class documentation of CActiveForm for details on this.
         'enableAjaxValidation'=>false,
+        'htmlOptions'=>array(
+            'onsubmit'=>' return validate()',
+        ),
     )); ?>
 
     <p class="note"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'warning') ?></p>
@@ -33,7 +36,7 @@
             <?php echo $form->labelEx($model,'name', array('style'=>'padding-top: 5px;')); ?>
         </div>
         <div class="row left">
-            <?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>255,)); ?>
+            <?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>30,)); ?>
             <?php echo $form->error($model,'name'); ?>
         </div>
         <div class="row buttons prepend-1 left"  id="departmentButt">
@@ -201,6 +204,18 @@
             $("#userId").val(userId);
             $("#removeId").val(selectValue)
         }
+    }
+
+    function validate()
+    {
+        var error = '';
+        if($("#Department_name").val().length < 6 || $("#Department_name").val().length > 30)
+        {
+            error += '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'create_department_name_help');?>'+"\n";
+            $("#Department_name").focus();
+        }
+
+        if(error.length>0) { alert(error); return false; } else return true;
     }
 
 </script>

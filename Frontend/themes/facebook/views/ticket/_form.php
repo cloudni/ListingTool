@@ -48,7 +48,7 @@ Yii::app()->getClientScript()->registerCoreScript('jquery');
         <?php echo $form->error($model,'type'); ?>
     </div>
 
-    <div class="row">
+    <div class="row" style="display: none;">
         <div><?php echo CHtml::label("Attach Files", false, array('style'=>'display: inline;'));?>&nbsp;&nbsp;<?php echo CHtml::image("/images/addicon.gif", 'Add another file', array('class'=>'attachFile', 'onClick'=>'addAttachFile();'));?></div>
         <div id="attachPanel">
             <div id="attachRow"><?php echo CHtml::fileField("attach[]", '');?><?php echo CHtml::image("/images/delicon.gif", 'Remove file', array('class'=>'attachFile', 'onClick'=>'removeAttachFile(this);'));?></div>

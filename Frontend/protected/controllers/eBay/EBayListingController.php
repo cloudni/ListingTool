@@ -333,7 +333,7 @@ class EBayListingController extends Controller
     public function actionBulkUpdateSubmit()
     {
         $verifyonly = false;
-        if(isset($_POST['params']))
+        if(isset($_POST['params']))//submit from bulk update confirm
         {
             $inputs = json_decode($_POST['params']);
             if(!isset($inputs->Success)) $this->redirect('bulkUpdate');
@@ -360,8 +360,12 @@ class EBayListingController extends Controller
                     'position'=>$inputs->update_rules->description->position,
                 );
             }
+            if(isset($inputs->update_rules->excludeShipLocation))
+            {
+                $params['update_rules']['excludeShipLocation'] = $inputs->update_rules->excludeShipLocation;
+            }
         }
-        else
+        else //submit from bulk update
         {
             $params = array();
             $verifyonly = isset($_POST['verifyonly']) ? true : false;
@@ -390,6 +394,20 @@ class EBayListingController extends Controller
                     'position'=>(string)$_POST['update_description_position'],
                 );
             }
+            //process update exclude shipping location
+            if(isset($_POST['update_exclude_ship_location_panel_enable']))
+            {
+                $params['update_rules']['excludeShipLocation'] = array();
+                if(isset($_POST['exclude_ship_location_domestic_list']) && count($_POST['exclude_ship_location_domestic_list']) > 0 )
+                    $params['update_rules']['excludeShipLocation'] = array_merge($params['update_rules']['excludeShipLocation'], $_POST['exclude_ship_location_domestic_list']);
+                if(isset($_POST['exclude_ship_location_additional_list']) && count($_POST['exclude_ship_location_additional_list']) > 0 )
+                    $params['update_rules']['excludeShipLocation'] = array_merge($params['update_rules']['excludeShipLocation'], $_POST['exclude_ship_location_additional_list']);
+                foreach($_POST as $key => $value)
+                {
+                    if(substr($key,0, strlen("exclude_ship_location_worldwide_list_")) == "exclude_ship_location_worldwide_list_")
+                        $params['update_rules']['excludeShipLocation'] = array_merge($params['update_rules']['excludeShipLocation'], $value);
+                }
+            }
         }
 
         if(!isset($params['applied_listings']) || empty($params['applied_listings']))
@@ -400,7 +418,7 @@ class EBayListingController extends Controller
 
         $params["company_id"] = Yii::app()->session['user']->company_id;
 
-        if(count($params['applied_listings'])>3)
+        if(count($params['applied_listings'])>1)
         {
             $instantJob = new InstantJob();
             $instantJob->action = InstantJob::ACTION_BULKUPDATEITEMS;

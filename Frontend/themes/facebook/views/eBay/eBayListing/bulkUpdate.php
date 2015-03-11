@@ -200,14 +200,16 @@ $this->breadcrumbs=array(
                 <div style="padding: 0px 10px 0px 10px;">
                     <h4>
                         <input id="update_exclude_ship_location_panel_enable" name="update_exclude_ship_location_panel_enable" type="checkbox" checked="checked" onclick="updateRulePanel(this, 'exclude_ship_location');"/>
-                        <span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'update');?><?php echo 'Exclude Shipping Locations';?></span>
+                        <span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'update');?><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'exclude_shipping_location');?></span>
+                        <img height="16" width="24" border="0" src="/images/help.gif" onmouseout="HideHelp('update_exclude_ship_location_help');" onmouseover="ShowHelp('update_exclude_ship_location_help', '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'exclude_shipping_location');?>', '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'exclude_shipping_location_panel_help');?>')" >
+                        <div id="update_exclude_ship_location_help" style="display: none;"></div>
                     </h4>
                     <div id="update_exclude_ship_location_panel" class="update_panel">
                         <div class="borderBlock">
                             <div>
                                 <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                                     <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">Select the regions or countries you don't ship to</h1>
+                                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'select_exclude_shipping_location');?></h1>
                                     </div>
                                 </div>
                                 <div class="clearfix" style="border-top: 1px solid transparent;">
@@ -232,12 +234,12 @@ $this->breadcrumbs=array(
                         <div class="borderBlock">
                             <div>
                                 <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                                    <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; /*line-height: 38px;*/ position: relative;"><span style="font-weight: normal;">You've excluded: </span><span id="exclude_ship_location_result"></span></h1>
+                                    <div style="/*height: 36px;*/ color: #9197a3; font-weight: normal;">
+                                        <h1 style="color: #4e5665; font-weight: 700; padding: 12px;/*line-height: 38px;*/ position: relative;"><span style="font-weight: normal;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'you_have_excluded');?></span><span id="exclude_ship_location_result"></span></h1>
                                     </div>
                                 </div>
                                 <div class="clearfix" style="border-top: 1px solid transparent; padding-left: 12px;">
-                                    Note: When you apply your shipping exclusions, eBay will block buyers who's primary address is in a location you don't ship to.
+                                    <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'exclude_shipping_location_note');?>
                                 </div>
                             </div>
                         </div>
@@ -367,6 +369,7 @@ $this->breadcrumbs=array(
                 dataType: "JSON",
                 success: function(data, status, xhr) {
                     $("#ajaxloading").css("display", "none");
+
                     if(data['status']=='success')
                     {
                         if($("#applied_listing_panel").css('display') == 'none')
@@ -459,6 +462,7 @@ $this->breadcrumbs=array(
                             $("#update_exclude_ship_location_panel_enable").prop('disabled', true);
                             $("#update_exclude_ship_location_panel_enable").removeAttr('checked');
                         }
+                        updateRuleAndSubmitPanel();
                     }
                     else
                     {
@@ -467,6 +471,7 @@ $this->breadcrumbs=array(
                 },
                 error: function(data, status, xhr) {
                     $("#ajaxloading").css("display", "none");
+                    updateRuleAndSubmitPanel();
                     alert("Search Listing Failed!\nPlease try again.");
                 }
             });
@@ -666,6 +671,15 @@ $this->breadcrumbs=array(
             if($("#update_quantity_value").val() == "")
             {
                 errorStr += "Please input Inventory Level to update.\n";
+            }
+        }
+
+        if($("#update_exclude_ship_location_panel_enable").prop('checked'))
+        {
+            panelEnabled = true;
+            if($("#update_exclude_ship_location_panel input:checkbox:checked").length<=0)
+            {
+                errorStr += "Please select exclude shipping location to update.\n";
             }
         }
 

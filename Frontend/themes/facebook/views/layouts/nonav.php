@@ -54,7 +54,7 @@
                         <div class="lfloat">
                             <h1 style="display: block; font-size: 2em; -webkit-margin-before: 0.67em; -webkit-margin-after: 0.67em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;">
                                 <a href="/" title="Go to ItemTool Home">
-                                    <span style="color: whitesmoke;font-size: 1.7em;position: relative; top: 10px; font-weight: bold;">item tool</span>
+                                    <span style="color: whitesmoke;font-size: 3.7em;position: relative; top: 10px; font-weight: bold;">item tool</span>
                                 </a>
                             </h1>
                         </div>

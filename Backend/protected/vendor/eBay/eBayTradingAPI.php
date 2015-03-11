@@ -955,6 +955,12 @@ class eBayTradingAPI
                     }
                 }
 
+                //update exclude ship locations
+                if(!empty($params['update_rules']['excludeShipLocation']))
+                {
+                    $input['ExcludeShipToLocation'] = $params['update_rules']['excludeShipLocation'];
+                }
+
                 $Variations = $eBayListing->getEntityAttributeValueByCodeWithAllChildren('Variations');
                 if(isset($Variations) && !empty($Variations))
                 {
@@ -1187,6 +1193,13 @@ class eBayTradingAPI
             $xml .= eBayService::createXMLElement('Description', $params['Description']);
             $xml .= eBayService::createXMLElement('DescriptionReviseMode', $params['DescriptionReviseMode']);
         }
+        if(isset($params['ExcludeShipToLocation']))
+        {
+            $temp = "";
+            foreach($params['ExcludeShipToLocation'] as $exclude)
+                $temp .= eBayService::createXMLElement('ExcludeShipToLocation', $exclude);
+            $xml .= eBayService::createXMLElement('ShippingDetails', $temp);
+        }
 
         $xml = eBayService::createXMLElement('Item',$xml);
         //standard input
@@ -1291,6 +1304,13 @@ class eBayTradingAPI
         {
             $xml .= eBayService::createXMLElement('Description', $params['Description']);
             $xml .= eBayService::createXMLElement('DescriptionReviseMode', $params['DescriptionReviseMode']);
+        }
+        if(isset($params['ExcludeShipToLocation']))
+        {
+            $temp = "";
+            foreach($params['ExcludeShipToLocation'] as $exclude)
+                $temp .= eBayService::createXMLElement('ExcludeShipToLocation', $exclude);
+            $xml .= eBayService::createXMLElement('ShippingDetails', $temp);
         }
         $xml = eBayService::createXMLElement('Item',$xml);
 

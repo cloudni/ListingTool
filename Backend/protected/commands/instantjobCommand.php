@@ -105,6 +105,19 @@ class instantjobCommand extends CConsoleCommand
                     'type'=>$inputs->update_rules->price->type,
                 );
             }
+            if(isset($inputs->update_rules->description))
+            {
+                $params['update_rules']['description'] = array(
+                    'action'=>$inputs->update_rules->description->action,
+                    'tag'=>$inputs->update_rules->description->tag,
+                    'value'=>$inputs->update_rules->description->value,
+                    'position'=>$inputs->update_rules->description->position,
+                );
+            }
+            if(isset($inputs->update_rules->excludeShipLocation))
+            {
+                $params['update_rules']['excludeShipLocation'] = $inputs->update_rules->excludeShipLocation;
+            }
 
             $result = eBayTradingAPI::ReviseListing($params, false);
 

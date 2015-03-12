@@ -661,7 +661,7 @@ class EBayListingController extends Controller
                 left join lt_ebay_entity_int eeisq on eeisq.ebay_entity_id = el.id and eeisq.ebay_entity_attribute_id = {$soldQuantityAttribute->id} /*sold quantity*/
                 left join lt_ebay_entity_varchar eevviu on eevviu.ebay_entity_id = el.id and eevviu.ebay_entity_attribute_id = {$viewItemURLAttribute->id} /*listing status*/
                 left join lt_ebay_entity_varchar eevt on eevt.ebay_entity_id = el.id and eevt.ebay_entity_attribute_id = {$titleAttribute->id} /*listing status*/
-                where el.company_id = 1 ";
+                where el.company_id = ".Yii::app()->session['user']->company_id;
 
         $where = "";
         if(strtolower($status) == 'active')

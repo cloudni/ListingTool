@@ -135,29 +135,9 @@ class StoreController extends Controller
                 }
                 catch(Exception $ex)
                 {
-                    Yii::app()->user->setFlash('Error', 'Exception happened while getting API key<br />code: '.$ex->getCode().', msg: '.$ex->getMessage());
+                    Yii::app()->user->setFlash('Error', 'Exception happened while getting API key<br />code: ' . $ex->getCode() . ', msg: ' . $ex->getMessage());
                 }
 
-                /*$sql = "SELECT eak.*
-                            FROM lt_ebay_api_key eak
-                            left join (SELECT ebay_api_key_id, count(ebay_api_key_id) as total FROM lt_store
-                                where is_active = :is_active
-                                group by ebay_api_key_id) as api on eak.id = api.ebay_api_key_id
-                            where api.total < :total and eak.type = :type
-                            order by eak.id asc; ";
-                try
-                {
-                    $result = eBayApiKey::model()->findBySql($sql, array(':is_active'=>Store::ACTIVE_YES, ':total'=>Yii::app()->params['ebay']['maxAuthNum'], ':type'=>eBayApiKey::TYPE_PROD));
-                }
-                catch(Exception $ex)
-                {
-                    Yii::app()->user->setFlash('Error', 'Exception happened while getting API key<br />code: '.$ex->getCode().', msg: '.$ex->getMessage());
-                }
-
-                if(!isset($result) || empty($result))
-                {
-                    Yii::app()->user->setFlash('Error', 'No available API to authorize, Please contact with us!');
-                }*/
                 if(!isset($ebay_api_key_id[0]))
                 {
                     Yii::app()->user->setFlash('Error', 'No available API to authorize, Please contact with us!');

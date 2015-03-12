@@ -123,28 +123,35 @@ class StoreController extends Controller
         {
             case Store::PLATFORM_EBAY:
 
-                $sql = "select ebay_api_key_id from (SELECT ebay_api_key_id, count(ebay_api_key_id) as total FROM {{store}} t
-                        left join {{ebay_api_key}} eap on t.ebay_api_key_id = eap.id
-                        where t.is_active = ".Store::ACTIVE_YES." and t.platform = ".Store::PLATFORM_EBAY." and (ebay_api_key_id <> 3 and ebay_api_key_id <>4) and eap.type = ".eBayApiKey::TYPE_PROD."
-                        group by ebay_api_key_id
-                        order by count(ebay_api_key_id) desc) temp where total < ".Yii::app()->params['ebay']['maxAuthNum']." limit 0, 1";
-                $command = Yii::app()->db->createCommand($sql);
+                $sql = "select a.*
+                from lt_ebay_api_key a
+                left join (select ebay_api_key_id, count(ebay_api_key_id) as total from lt_store t
+                where is_active = :is_active and t.platform = :platform
+                group by ebay_api_key_id) as temp on temp.ebay_api_key_id = a.id
+                where a.type = :type and a.id <> 3 and a.id <> 4 and IFNULL(temp.total, 0) < :max_count
+                order by temp.total desc; ";
+                $eBayApiKey = null;
                 try
                 {
-                    $ebay_api_key_id = $command->queryAll();
+                    $eBayApiKey = eBayApiKey::model()->findBySql($sql, array(
+                        ':is_active'=>Store::ACTIVE_YES,
+                        ':platform'=>Store::PLATFORM_EBAY,
+                        ':type'=>eBayApiKey::TYPE_PROD,
+                        ':max_count'=>Yii::app()->params['ebay']['maxAuthNum'],
+                    ));
                 }
                 catch(Exception $ex)
                 {
                     Yii::app()->user->setFlash('Error', 'Exception happened while getting API key<br />code: ' . $ex->getCode() . ', msg: ' . $ex->getMessage());
                 }
 
-                if(!isset($ebay_api_key_id[0]))
+                if(!isset($eBayApiKey))
                 {
                     Yii::app()->user->setFlash('Error', 'No available API to authorize, Please contact with us!');
                 }
                 else
                 {
-                    $model->ebay_api_key_id = $ebay_api_key_id[0]['ebay_api_key_id'];
+                    $model->ebay_api_key_id = $eBayApiKey->id;
                     if($model->save())
                     {
                         $sessionId = eBayTradingAPI::GetSessionID($model->ebay_api_key_id);

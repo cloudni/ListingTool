@@ -123,7 +123,22 @@ class StoreController extends Controller
         {
             case Store::PLATFORM_EBAY:
 
-                $sql = "SELECT eak.*
+                $sql = "select ebay_api_key_id from (SELECT ebay_api_key_id, count(ebay_api_key_id) as total FROM {{store}} t
+                        left join {{ebay_api_key}} eap on t.ebay_api_key_id = eap.id
+                        where t.is_active = ".Store::ACTIVE_YES." and t.platform = ".Store::PLATFORM_EBAY." and (ebay_api_key_id <> 3 and ebay_api_key_id <>4) and eap.type = ".eBayApiKey::TYPE_PROD."
+                        group by ebay_api_key_id
+                        order by count(ebay_api_key_id) desc) temp where total < ".Yii::app()->params['ebay']['maxAuthNum']." limit 0, 1";
+                $command = Yii::app()->db->createCommand($sql);
+                try
+                {
+                    $ebay_api_key_id = $command->queryAll();
+                }
+                catch(Exception $ex)
+                {
+                    Yii::app()->user->setFlash('Error', 'Exception happened while getting API key<br />code: '.$ex->getCode().', msg: '.$ex->getMessage());
+                }
+
+                /*$sql = "SELECT eak.*
                             FROM lt_ebay_api_key eak
                             left join (SELECT ebay_api_key_id, count(ebay_api_key_id) as total FROM lt_store
                                 where is_active = :is_active
@@ -142,10 +157,14 @@ class StoreController extends Controller
                 if(!isset($result) || empty($result))
                 {
                     Yii::app()->user->setFlash('Error', 'No available API to authorize, Please contact with us!');
+                }*/
+                if(!isset($ebay_api_key_id[0]))
+                {
+                    Yii::app()->user->setFlash('Error', 'No available API to authorize, Please contact with us!');
                 }
                 else
                 {
-                    $model->ebay_api_key_id = $result->id;
+                    $model->ebay_api_key_id = $ebay_api_key_id[0]['ebay_api_key_id'];
                     if($model->save())
                     {
                         $sessionId = eBayTradingAPI::GetSessionID($model->ebay_api_key_id);
@@ -207,10 +226,25 @@ class StoreController extends Controller
             $model->is_active = Store::ACTIVE_NO;
             if($model->platform == Store::PLATFORM_EBAY)
             {
+                /*$sql = "select ebay_api_key_id from (SELECT ebay_api_key_id, count(ebay_api_key_id) as total FROM {{store}} t
+                        left join {{ebay_api_key}} eap on t.ebay_api_key_id = eap.id
+                        where t.is_active = ".Store::ACTIVE_YES." and t.platform = ".Store::PLATFORM_EBAY." and (ebay_api_key_id <> 3 and ebay_api_key_id <>4) and eap.type = ".eBayApiKey::TYPE_PROD."
+                        group by ebay_api_key_id
+                        order by count(ebay_api_key_id) desc) temp where total < ".Yii::app()->params['ebay']['maxAuthNum']." limit 0, 1";
+                $command = Yii::app()->db->createCommand($sql);
+                $ebay_api_key_id = $command->queryAll();
+                if(isset($ebay_api_key_id[0]))
+                {
+                    $model->ebay_api_key_id = $ebay_api_key_id[0]['ebay_api_key_id'];
+                }
+                else
+                {
+                    //todo
+                }*/
                 //$model->ebay_api_key_id = Yii::app()->params['ebay']['defaultAPIId'];
                 //$model->ebay_token = "";
             }
-			if($model->save())
+			if($model->save(false))
             {
                 switch($model->platform)
                 {

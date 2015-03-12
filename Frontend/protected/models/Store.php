@@ -229,7 +229,7 @@ class Store extends NIActiveRecord
 
     public static function getStoreOptions($platform=NULL)
     {
-        $stores = Store::model()->findAll('platform=:platform', array(':platform'=>(int)$platform));
+        $stores = Store::model()->findAll('platform=:platform and company_id=:company_id', array(':platform'=>(int)$platform, ':company_id' => Yii::app()->session['user']->company_id));
         if(empty($stores)) return array();
         $resultList = array();
         foreach($stores as $store)

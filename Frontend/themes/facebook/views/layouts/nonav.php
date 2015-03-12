@@ -150,6 +150,9 @@
         Copyright &copy; <?php echo date('Y'); ?> by Nirvana Info.<br/>
         All Rights Reserved.<br/>
         <?php $result = @CDbConnection::getStats(); echo "SQL executed: {$result[0]}, Time usage: {$result[1]}"?>
+        <div style="padding-top: 15px;">
+            <span id="siteseal"><script type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=gbXKobng9O3TlVzsMWwwmkQRGkJ3MmywygAxWfYccuQWIqDA59F9srHMQUgQ"></script></span>
+        </div>
     </div><!-- footer -->
 
 </div><!-- page -->

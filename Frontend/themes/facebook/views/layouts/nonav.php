@@ -151,7 +151,11 @@
         All Rights Reserved.<br/>
         <?php $result = @CDbConnection::getStats(); echo "SQL executed: {$result[0]}, Time usage: {$result[1]}"?>
         <div style="padding-top: 15px;">
-            <span id="siteseal"><script type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=gbXKobng9O3TlVzsMWwwmkQRGkJ3MmywygAxWfYccuQWIqDA59F9srHMQUgQ"></script></span>
+            <span id="siteseal">
+                <a herf="https://seal.godaddy.com/getSeal?sealID=gbXKobng9O3TlVzsMWwwmkQRGkJ3MmywygAxWfYccuQWIqDA59F9srHMQUgQ">
+                    <img style="cursor:pointer;cursor:hand" src="https://seal.godaddy.com/images/3/en/siteseal_gd_3_h_l_m.gif" alt="SSL site seal - click to verify">
+                </a>
+            </span>
         </div>
     </div><!-- footer -->
 

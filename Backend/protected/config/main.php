@@ -98,6 +98,13 @@ $config = array(
             'itemChildTable'=>'lt_AuthItemChild',
             'assignmentTable'=>'lt_AuthAssignment',
         ),
+        'cache'=>array(
+            //'class'=>'system.caching.CDummyCache',
+            'class'=>'system.caching.CMemCache',
+            'servers'=>array(
+                array('host'=>'127.0.0.1', 'port'=>11211, 'weight'=>60),
+            ),
+        ),
 	),
 
 	// application-level parameters that can be accessed

@@ -46,38 +46,40 @@ class EBayController extends Controller
 
     public function actionIndex()
     {
-        $criteria= new CDbCriteria();
-        $criteria->join = "left join {{ebay_entity_type}} et on et.id = t.entity_type_id";
-        $criteria->condition = "t.is_active = 1 and et.entity_model = 'eBayUser'";
-        $eBayUserAttributeSet = eBayAttributeSet::model()->find($criteria);
-        if(empty($eBayUserAttributeSet)) throw new CHttpException(404,'The requested page does not exist.');
+        $rawData = Yii::app()->cache->get(sprintf("%S_ebay_dashboard", Yii::app()->session['user']->company_id));
+        if($rawData === false) {
+            $criteria = new CDbCriteria();
+            $criteria->join = "left join {{ebay_entity_type}} et on et.id = t.entity_type_id";
+            $criteria->condition = "t.is_active = 1 and et.entity_model = 'eBayUser'";
+            $eBayUserAttributeSet = eBayAttributeSet::model()->find($criteria);
+            if(empty($eBayUserAttributeSet)) throw new CHttpException(404, 'The requested page does not exist.');
 
-        $criteria= new CDbCriteria();
-        $criteria->join = "left join {{ebay_entity_type}} et on et.id = t.entity_type_id";
-        $criteria->condition = "t.is_active = 1 and et.entity_model = 'eBaySellerDashboard'";
-        $eBaySellerDashboardAttributeSet = eBayAttributeSet::model()->find($criteria);
-        if(empty($eBaySellerDashboardAttributeSet)) throw new CHttpException(404,'The requested page does not exist.');
+            $criteria = new CDbCriteria();
+            $criteria->join = "left join {{ebay_entity_type}} et on et.id = t.entity_type_id";
+            $criteria->condition = "t.is_active = 1 and et.entity_model = 'eBaySellerDashboard'";
+            $eBaySellerDashboardAttributeSet = eBayAttributeSet::model()->find($criteria);
+            if(empty($eBaySellerDashboardAttributeSet)) throw new CHttpException(404, 'The requested page does not exist.');
 
-        /*Get User attribute*/
-        $feedbackScoreAttribute = $eBayUserAttributeSet->getEntityAttribute('FeedbackScore');
-        $positiveFeedbackPercentScoreAttribute = $eBayUserAttributeSet->getEntityAttribute('PositiveFeedbackPercent');
-        $feedbackRatingStarAttribute = $eBayUserAttributeSet->getEntityAttribute('FeedBackRatingStar');
-        $eBayGoodStandingAttribute = $eBayUserAttributeSet->getEntityAttribute('eBayGoodStanding');
-        $userIDAttribute = $eBayUserAttributeSet->getEntityAttribute('UserID');
-        $storeURLAttribute = $eBayUserAttributeSet->getEntityAttribute('SellerInfo->StoreURL');
-        $uniquePositiveFeedbackAttribute = $eBayUserAttributeSet->getEntityAttribute('UniquePositiveFeedbackCount');
-        $uniqueNeutralFeedbackAttribute = $eBayUserAttributeSet->getEntityAttribute('UniqueNeutralFeedbackCount');
-        $uniqueNegativeFeedbackAttribute = $eBayUserAttributeSet->getEntityAttribute('UniqueNegativeFeedbackCount');
-        $eBaySubscriptionAttribute = $eBayUserAttributeSet->getEntityAttribute('EBaySubscription');
-        $topRatedSellerAttribute = $eBayUserAttributeSet->getEntityAttribute('SellerInfo->TopRatedSeller');
-        $topRatedProgramAttribute = $eBayUserAttributeSet->getEntityAttribute('SellerInfo->TopRatedSellerDetails->TopRatedProgram');
+            /*Get User attribute*/
+            $feedbackScoreAttribute = $eBayUserAttributeSet->getEntityAttribute('FeedbackScore');
+            $positiveFeedbackPercentScoreAttribute = $eBayUserAttributeSet->getEntityAttribute('PositiveFeedbackPercent');
+            $feedbackRatingStarAttribute = $eBayUserAttributeSet->getEntityAttribute('FeedBackRatingStar');
+            $eBayGoodStandingAttribute = $eBayUserAttributeSet->getEntityAttribute('eBayGoodStanding');
+            $userIDAttribute = $eBayUserAttributeSet->getEntityAttribute('UserID');
+            $storeURLAttribute = $eBayUserAttributeSet->getEntityAttribute('SellerInfo->StoreURL');
+            $uniquePositiveFeedbackAttribute = $eBayUserAttributeSet->getEntityAttribute('UniquePositiveFeedbackCount');
+            $uniqueNeutralFeedbackAttribute = $eBayUserAttributeSet->getEntityAttribute('UniqueNeutralFeedbackCount');
+            $uniqueNegativeFeedbackAttribute = $eBayUserAttributeSet->getEntityAttribute('UniqueNegativeFeedbackCount');
+            $eBaySubscriptionAttribute = $eBayUserAttributeSet->getEntityAttribute('EBaySubscription');
+            $topRatedSellerAttribute = $eBayUserAttributeSet->getEntityAttribute('SellerInfo->TopRatedSeller');
+            $topRatedProgramAttribute = $eBayUserAttributeSet->getEntityAttribute('SellerInfo->TopRatedSellerDetails->TopRatedProgram');
 
-        /*Get Seller Dashboard attribute*/
-        $sellerFeeDiscountAttribute = $eBaySellerDashboardAttributeSet->getEntityAttribute('SellerFeeDiscount->Percent');
-        $powerSellerStatusAttribute = $eBaySellerDashboardAttributeSet->getEntityAttribute('PowerSellerStatus->Level');
-        //$performanceAttribute = $eBaySellerDashboardAttributeSet->getEntityAttribute('Performance');
+            /*Get Seller Dashboard attribute*/
+            $sellerFeeDiscountAttribute = $eBaySellerDashboardAttributeSet->getEntityAttribute('SellerFeeDiscount->Percent');
+            $powerSellerStatusAttribute = $eBaySellerDashboardAttributeSet->getEntityAttribute('PowerSellerStatus->Level');
+            //$performanceAttribute = $eBaySellerDashboardAttributeSet->getEntityAttribute('Performance');
 
-        $sql = "select fbs.value as feedbackscore, pfbp.value as positivefeedbackpercent, fbrs.value as feedbackratingstar,
+            $sql = "select fbs.value as feedbackscore, pfbp.value as positivefeedbackpercent, fbrs.value as feedbackratingstar,
                 egs.value as ebaygoodstanding, ui.value as userid, surl.value as storeurl,
                 upf.value as positivefeedback, unf.value as neutralfeedback, unegaf.value as negativefeedback,
                 es.value as ebaysubscription,
@@ -115,9 +117,11 @@ class EBayController extends Controller
                 left join lt_ebay_entity_varchar as pss on pss.ebay_entity_id = sellerdashboard.id and pss.ebay_entity_attribute_id = {$powerSellerStatusAttribute->id}
                 left join lt_ebay_entity_decimal as sfdd on sfdd.ebay_entity_id = sellerdashboard.id and sfdd.ebay_entity_attribute_id = {$sellerFeeDiscountAttribute->id}
 
-                where t.platform = ".Store::PLATFORM_EBAY." and t.is_active = ".Store::ACTIVE_YES." and company_id = ".Yii::app()->session['user']->company_id." ";
-//var_dump($sql);die();
-        $rawData=Yii::app()->db->createCommand($sql)->queryAll();
+                where t.platform = " . Store::PLATFORM_EBAY . " and t.is_active = " . Store::ACTIVE_YES . " and company_id = " . Yii::app()->session['user']->company_id . " ";
+
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll();
+            Yii::app()->cache->set(sprintf("%S_ebay_dashboard", Yii::app()->session['user']->company_id),$rawData, 60 * 60 * 2);
+        }
 
         $dataProvider=new CArrayDataProvider($rawData, array(
             'id'=>'id',

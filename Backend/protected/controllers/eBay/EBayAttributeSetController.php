@@ -46,13 +46,78 @@ class EBayAttributeSetController extends Controller
 
     public function actionTestGetSellerList()
     {
+        eBayTradingAPI::GeteBayDetails(eBaySiteIdCodeType::eBayMotors, 2);die();
+        $siteID = eBaySiteIdCodeType::US;
+        $siteDetail = eBayDetail::model()->find("site_id=:site_id", array(':site_id' => $siteID));
+        $excludeShipLocationDetail = $siteDetail->getEntityAttributeValueByCodeWithAllChildren("ExcludeShippingLocationDetails");
+        $excludeLocationList= array();
+        foreach($excludeShipLocationDetail as $detail)
+        {
+            if($detail['Region'] == 'Domestic Location' )
+            {
+                $excludeLocationList['domestic'][] = $detail;
+            }
+            else if($detail['Region'] == 'Additional Locations' )
+            {
+                $excludeLocationList['additional'][] = $detail;
+            }
+            else if($detail['Region'] == 'Worldwide' || $detail['Location'] == 'Middle East' || $detail['Location'] == 'Southeast Asia' )
+            {
+                if(!isset($excludeLocationList['worldwide'][$detail['Location']]))
+                {
+                    $excludeLocationList['worldwide'][$detail['Location']] = $detail;
+                }
+                else
+                {
+                    $excludeLocationList['worldwide'][$detail['Location']]['Location'] = $detail['Location'];
+                    $excludeLocationList['worldwide'][$detail['Location']]['Description'] = $detail['Description'];
+                }
+            }
+            else
+            {
+                if(!isset($excludeLocationList['worldwide'][$detail['Region']]))
+                    $excludeLocationList['worldwide'][$detail['Region']] = array();
+                $excludeLocationList['worldwide'][$detail['Region']]['values'][] = $detail;
+            }
+        }
+        var_dump($excludeLocationList);die();
+        /*$sql = "select a.*
+                from lt_ebay_api_key a
+                left join (select ebay_api_key_id, count(ebay_api_key_id) as total from lt_store t
+                where is_active = :is_active and t.platform = :platform
+                group by ebay_api_key_id) as temp on temp.ebay_api_key_id = a.id
+                where a.type = :type and a.id <> 3 and a.id <> 4 and IFNULL(temp.total, 0) < :max_count";
+        $eBayApiKey = eBayApiKey::model()->findAllBySql($sql, array(
+            ':is_active'=>Store::ACTIVE_YES,
+            ':platform'=>Store::PLATFORM_EBAY,
+            ':type'=>eBayApiKey::TYPE_PROD,
+            ':max_count'=>Yii::app()->params['ebay']['maxAuthNum'],
+        ));*/
+        //var_dump($eBayApiKey);die();
+        /*$siteDetail = eBayDetail::model()->find("site_id=:site_id", array(':site_id'=>100));
+        $excludeShipLocationDetail = $siteDetail->getEntityAttributeValueByCodeWithAllChildren("ExcludeShippingLocationDetails");
+        $domestic = array(); $worldwide = array(); $additional = array();
+        foreach($excludeShipLocationDetail as $detail)
+        {
+            if($detail['Region'] == 'Domestic Location') $domestic[] = array('Location'=>$detail['Location'], 'Description'=>$detail['Description']);
+            if($detail['Region'] == 'Additional Locations') $additional[] = array('Location'=>$detail['Location'], 'Description'=>$detail['Description']);
+            if($detail['Region'] == 'Worldwide') $worldwide[$detail['Location']] = array('values'=>array(),'Location'=>$detail['Location'], 'Description'=>$detail['Description']);
+        }
+        foreach($excludeShipLocationDetail as $detail)
+        {
+            if($detail['Region'] == 'Domestic Location' || $detail['Region'] == 'Additional Locations' || $detail['Region'] == 'Worldwide') continue;
+            if(!isset($worldwide[$detail['Region']])) $worldwide[$detail['Region']] = array('values'=>array(),'Location'=>$detail['Region'], 'Description'=>$detail['Region']);
+            $worldwide[$detail['Region']]['values'][] = array('Location'=>$detail['Location'], 'Description'=>$detail['Description']);
+        }
+        var_dump($domestic, $additional, $worldwide);*/
+        //eBayTradingAPI::GeteBayDetails(eBaySiteIdCodeType::US, 2);
         //eBayTradingAPI::GetSellerList(3);
-        eBayTradingAPI::GetSellerDashboard(1);
+        /*eBayTradingAPI::GetSellerDashboard(1);
         eBayTradingAPI::GetSellerDashboard(2);
         eBayTradingAPI::GetSellerDashboard(3);
         eBayTradingAPI::GetUser(1);
-        eBayTradingAPI::GetUser(2);
-        eBayTradingAPI::GetUser(3);
+        eBayTradingAPI::GetUser(2);*/
+        //eBayTradingAPI::GetUser(3);
         //eBayTradingAPI::GetCategoryFeatures($param=array('site_id'=>0, 'CategoryID'=>'', 'ViewAllNodes'=>true, 'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll, 'LevelLimit'=>2), 2);
         //eBayTradingAPI::GeteBayDetails(0, 2);
         /*$scheduleJob = new ScheduleJob();

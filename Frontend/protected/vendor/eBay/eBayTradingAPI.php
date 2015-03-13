@@ -1367,6 +1367,10 @@ class eBayTradingAPI
                     $item = $result->Item;
 
                     $transaction= Yii::app()->db->beginTransaction();
+                    //clear all item's attribute value record
+                    self::clearAlleBayEntityAttributeValue($eBayListing);
+                    echo "all attribute value have been cleared.\n";
+
                     //start to process attribute by attribute
                     echo("start to process eBay item ".(string)$item->ItemID." attribute:\n");
                     eBayTradingAPI::processeBayEntityAttributesRC($eBayListing, $eBayAttributeSet, $item);
@@ -1557,7 +1561,12 @@ class eBayTradingAPI
                     {
                         $eBayDetail->save(false);
                     }
+                    //clear all item's attribute value record
+                    self::clearAlleBayEntityAttributeValue($eBayDetail);
+                    echo "all attribute value have been cleared.\n";
+                    $transaction->commit();$transaction=null;
 
+                    $transaction= Yii::app()->db->beginTransaction();
                     echo("start to process eBay detail for site ".$siteId." attribute:\n");
                     eBayTradingAPI::processeBayEntityAttributesRC($eBayDetail, $eBayAttributeSet, (array)$result);
                     $transaction->commit();
@@ -1724,6 +1733,10 @@ class eBayTradingAPI
                 return false;
             }
 
+            //clear all item's attribute value record
+            self::clearAlleBayEntityAttributeValue($eBayCategoryFeatureDefinitionAndDefault);
+            echo "all attribute value have been cleared.\n";
+
             echo("start to process eBay Category Feature, Feature Definition And site Default for site ".$param['site_id']." attribute:\n");
             eBayTradingAPI::processeBayEntityAttributesRC($eBayCategoryFeatureDefinitionAndDefault, $eBayAttributeSet, $result);
             $transaction->commit();
@@ -1786,6 +1799,10 @@ class eBayTradingAPI
                 if(isset($transaction)) $transaction->rollback();
                 return false;
             }
+
+            //clear all item's attribute value record
+            self::clearAlleBayEntityAttributeValue($eBayCategoryFeature);
+            echo "all attribute value have been cleared.\n";
 
             echo("start to process eBay Category Feature for site: ".$param['site_id'].", category: ".(string)$category['CategoryID']."\n");
             eBayTradingAPI::processeBayEntityAttributesRC($eBayCategoryFeature, $eBayAttributeSet, $category);

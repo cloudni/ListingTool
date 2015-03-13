@@ -245,6 +245,7 @@ class EBayListingController extends Controller
                 $siteID = -1;
                 $index = 0;
                 $domestic = array(); $worldwide = array(); $additional = array();
+                $excludeLocationList = array('domestic' => $domestic, 'additional' => $additional, 'worldwide' => $worldwide);
                 foreach($listings as $list)
                 {
                     if($index ==0) $siteID = $list['site_id'];
@@ -254,23 +255,49 @@ class EBayListingController extends Controller
                 //if same site, pull exclude ship location detail
                 if($allSameSite && $siteID >= 0)
                 {
-                    $siteDetail = eBayDetail::model()->find("site_id=:site_id", array(':site_id' => $siteID));
-                    $excludeShipLocationDetail = $siteDetail->getEntityAttributeValueByCodeWithAllChildren("ExcludeShippingLocationDetails");
-                    foreach($excludeShipLocationDetail as $detail)
+                    $excludeLocationList = Yii::app()->cache->get(sprintf("ebay_site_%S_exclude_ship_location", $siteID));
+                    if($excludeLocationList===false)
                     {
-                        if($detail['Region'] == 'Domestic Location') $domestic[] = array('Location' => $detail['Location'], 'Description' => $detail['Description']);
-                        if($detail['Region'] == 'Additional Locations') $additional[] = array('Location' => $detail['Location'], 'Description' => $detail['Description']);
-                        if($detail['Region'] == 'Worldwide') $worldwide[$detail['Location']] = array('values' => array(), 'Location' => $detail['Location'], 'Description' => $detail['Description']);
-                    }
-                    foreach($excludeShipLocationDetail as $detail)
-                    {
-                        if($detail['Region'] == 'Domestic Location' || $detail['Region'] == 'Additional Locations' || $detail['Region'] == 'Worldwide') continue;
-                        if(!isset($worldwide[$detail['Region']])) $worldwide[$detail['Region']] = array('values' => array(), 'Location' => $detail['Region'], 'Description' => $detail['Region']);
-                        $worldwide[$detail['Region']]['values'][] = array('Location' => $detail['Location'], 'Description' => $detail['Description']);
+                        $siteDetail = eBayDetail::model()->find("site_id=:site_id", array(':site_id' => $siteID));
+                        if(!empty($siteDetail))
+                        {
+                            $excludeShipLocationDetail = $siteDetail->getEntityAttributeValueByCodeWithAllChildren("ExcludeShippingLocationDetails");
+                            foreach($excludeShipLocationDetail as $detail)
+                            {
+                                if($detail['Region'] == 'Domestic Location')
+                                {
+                                    $excludeLocationList['domestic'][] = $detail;
+                                }
+                                else if($detail['Region'] == 'Additional Locations')
+                                {
+                                    $excludeLocationList['additional'][] = $detail;
+                                }
+                                else if($detail['Region'] == 'Worldwide' || $detail['Location'] == 'Middle East' || $detail['Location'] == 'Southeast Asia')
+                                {
+                                    if(!isset($excludeLocationList['worldwide'][$detail['Location']]))
+                                    {
+                                        $excludeLocationList['worldwide'][$detail['Location']] = $detail;
+                                    }
+                                    else
+                                    {
+                                        $excludeLocationList['worldwide'][$detail['Location']]['Location'] = $detail['Location'];
+                                        $excludeLocationList['worldwide'][$detail['Location']]['Description'] = $detail['Description'];
+                                    }
+                                }
+                                else
+                                {
+                                    if(!isset($excludeLocationList['worldwide'][$detail['Region']])) $excludeLocationList['worldwide'][$detail['Region']] = array();
+                                    $excludeLocationList['worldwide'][$detail['Region']]['values'][] = $detail;
+                                }
+                            }
+                            Yii::app()->cache->set(sprintf("ebay_site_%S_exclude_ship_location", $siteID), $excludeLocationList, 60 * 60 * 24 * 7);
+                        }
+                        else
+                            $excludeLocationList = array('domestic' => $domestic, 'additional' => $additional, 'worldwide' => $worldwide);
                     }
                 }
                 /*test for site code end*/
-                $result = array('status'=>'success', 'data'=>$listings, 'allSameSite'=>$allSameSite, 'siteID'=>$siteID, 'excludeLocation'=>array('domestic'=>$domestic, 'additional'=>$additional, 'worldwide'=>$worldwide));
+                $result = array('status'=>'success', 'data'=>$listings, 'allSameSite'=>$allSameSite, 'siteID'=>$siteID, 'excludeLocation'=>$excludeLocationList);
                 echo json_encode($result);
             }
             else

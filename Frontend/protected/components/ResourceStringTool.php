@@ -84,7 +84,7 @@ class ResourceStringTool {
                 if(isset($messages[0]))
                 {
                     $rawData = $messages[0]['message'];
-                    Yii::app()->cache->set(sprintf("resource_string_%S_%s", $languageType, $field),$rawData, 60 * 60 * 24);
+                    Yii::app()->cache->set(sprintf("resource_string_%S_%s", $languageType, $field),$rawData, 60 * 60 * 24 * 7);
                     return $rawData;
                 }
                 return ResourceStringTool::MESSAGE;

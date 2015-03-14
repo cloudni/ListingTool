@@ -69,27 +69,31 @@ class ResourceStringTool {
      */
     public static function getSourceStringByKeyAndLanguage($languageType,$field)
     {
-        try{
-            $type = self::getLanguageCodeByDisplayName($languageType);
-            $sql = "select *  from lt_resource_string where `key`=:key and `language`=:type and `environment`=:environment";
-            $command = Yii::app()->db->createCommand($sql);
-            $command->bindValue(":key", $field, PDO::PARAM_INT);
-            $command->bindValue(":type", $type, PDO::PARAM_INT);
-            $command->bindValue(":environment",Environment, PDO::PARAM_INT);
-            $messages = $command->queryAll();
-            foreach($messages as $message)
-            {
-                if(trim($message['key'])==trim($field) && $message['language'] == $type){
-                    return  $message['message'] ;
-                }
-            }
-            return ResourceStringTool::MESSAGE;
-        }
-        catch (Exception $ex)
+        $rawData = Yii::app()->cache->get(sprintf("%S_%s", $languageType, $field));
+        if($rawData === false)
         {
-            throw new CHttpException(ResourceStringTool::MESSAGE,"internal error");
+            try
+            {
+                $type = self::getLanguageCodeByDisplayName($languageType);
+                $sql = "select *  from lt_resource_string where `key`=:key and `language`=:type and `environment`=:environment limit 0, 1";
+                $command = Yii::app()->db->createCommand($sql);
+                $command->bindValue(":key", $field, PDO::PARAM_INT);
+                $command->bindValue(":type", $type, PDO::PARAM_INT);
+                $command->bindValue(":environment", Environment, PDO::PARAM_INT);
+                $messages = $command->queryAll();
+                if(isset($messages[0]))
+                {
+                    $rawData = $messages[0]['message'];
+                    Yii::app()->cache->set(sprintf("%S_%s", $languageType, $field),$rawData, 60 * 60 * 24);
+                    return $rawData;
+                }
+                return ResourceStringTool::MESSAGE;
+            } catch(Exception $ex)
+            {
+                throw new CHttpException(ResourceStringTool::MESSAGE, "internal error");
+            }
         }
-
+        return $rawData;
     }
 
 

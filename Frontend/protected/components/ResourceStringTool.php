@@ -85,6 +85,7 @@ class ResourceStringTool {
                 {
                     $rawData = $messages[0]['message'];
                     Yii::app()->cache->set(sprintf("%S_%s", $languageType, $field),$rawData, 60 * 60 * 24);
+                    return $rawData;
                 }
                 return ResourceStringTool::MESSAGE;
             } catch(Exception $ex)
@@ -92,6 +93,7 @@ class ResourceStringTool {
                 throw new CHttpException(ResourceStringTool::MESSAGE, "internal error");
             }
         }
+        return $rawData;
     }
 
 

@@ -27,7 +27,7 @@ $this->menu=array(
                             <th><?php echo Yii::t('models/Notifications','Title');?></th>
                             <th><?php echo Yii::t('models/Notifications','Content');?></th>
                             <th><?php echo Yii::t('models/Notifications','Company');?></th>
-                            <th><?php echo Yii::t('models/Notifications','IsImportant');?></th>
+                            <th><?php echo Yii::t('models/Notifications','Is New');?></th>
                             <th><?php echo Yii::t('models/Notifications','Create Time');?></th>
                         </tr>
                         <?php $this->widget('zii.widgets.CListView', array(

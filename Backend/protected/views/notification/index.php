@@ -14,10 +14,6 @@ $this->menu=array(
 
 <h1>Notifications</h1>
 
-<?php /*$this->widget('zii.widgets.CListView', array(
-	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
-)); */?>
 <div class="grid-view">
     <table class="items" width="100%">
         <tr>
@@ -25,7 +21,6 @@ $this->menu=array(
             <th>Title</th>
             <th>Content</th>
             <th>Company</th>
-            <th>CreateAdmin</th>
             <th>CreateTime</th>
             <th>Action</th>
         </tr>

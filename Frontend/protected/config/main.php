@@ -117,6 +117,7 @@ $config = array(
         'signInDisplayVerificationCode'=>false,
         'signUpDisplayVerificationCode'=>false,
         'pageSize'=>20,
+        'sitePrivateKey'=>'php_front_site_1',
 	),
     'language'=>'zh_cn',
 );

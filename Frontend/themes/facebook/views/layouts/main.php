@@ -259,7 +259,7 @@ Yii::import('application.vendor.*');
 require_once("Crypt.php");
 if(isset(Yii::app()->session['user']))
 {
-    setcookie("user", Crypt::urlsafe_b64encode(Yii::app()->session['user']->username), time() + 60 * 30, "", "it.net");
-    setcookie("user_key", md5(Yii::app()->session['user']->username . Yii::app()->params['sitePrivateKey']), time() + 60 * 30, "", "it.net");
+    setcookie("user", Crypt::urlsafe_b64encode(Yii::app()->session['user']->username), time() + 60 * 30, "", "itemtool.com");
+    setcookie("user_key", md5(Yii::app()->session['user']->username . Yii::app()->params['sitePrivateKey']), time() + 60 * 30, "", "itemtool.com");
 }
 ?>

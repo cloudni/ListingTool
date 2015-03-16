@@ -231,7 +231,7 @@ class StoreController extends Controller
                 //$model->ebay_api_key_id = Yii::app()->params['ebay']['defaultAPIId'];
                 //$model->ebay_token = "";
             }
-			if($model->save(false))
+			if($model->save())
             {
                 switch($model->platform)
                 {

@@ -143,6 +143,7 @@ class NotificationController extends Controller
 			'dataProvider'=>$dataProvider,
 		));*/
 	}
+
     public function actionClose($id)
     {
         $notification= $this->loadModel($id);

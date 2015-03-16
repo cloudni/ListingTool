@@ -4,6 +4,7 @@
  * This is the model class for table "{{department}}".
  *
  * The followings are the available columns in table '{{department}}':
+ * @property integer $id
  * @property string $name
  * @property integer $parent_id
  * @property integer $company_id

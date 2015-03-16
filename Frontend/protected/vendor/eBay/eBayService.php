@@ -108,16 +108,18 @@ class eBayService
 
         $this->httpHead = array(
             "X-EBAY-API-COMPATIBILITY-LEVEL:".$COMPATIBILITYLEVEL,
+            "X-EBAY-API-VERSION:".$COMPATIBILITYLEVEL,
             "X-EBAY-API-DEV-NAME:".$DEVID,
             "X-EBAY-API-APP-NAME:".$APPID,
             "X-EBAY-API-CERT-NAME:".$CERTID,
             "X-EBAY-API-CALL-NAME:".$CALLNAME,
-            "X-EBAY-API-SITEID:".($SITEID == eBaySiteIdCodeType::eBayMotors ? eBaySiteIdCodeType::US : $SITEID),
+            //"X-EBAY-API-SITEID:".($SITEID == eBaySiteIdCodeType::eBayMotors ? eBaySiteIdCodeType::US : $SITEID),
             "X-EBAY-API-REQUEST-ENCODING:XML",
             "Content-Type : text/xml",
             "X-EBAY-API-DETAIL-LEVEL: 0",
             //"X-EBAY-API-SESSION-CERTIFICATE: $SESSIONCERTIFICATE",
         );
+        if(!empty($SITEID)) $this->httpHead[] = "X-EBAY-API-SITEID:".($SITEID == eBaySiteIdCodeType::eBayMotors ? eBaySiteIdCodeType::US : $SITEID);
     }
 
     public function request($returnXML=false)

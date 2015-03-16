@@ -50,27 +50,8 @@ class EBayListingController extends Controller
 
     public function actionTestGetItem()
     {
-        $sql = "SELECT eevls.value as listingtstatus, eevlt.value as listingtype, eevld.value as listingduration, eeisq.value as soldquantity, el.*
-        FROM lt_ebay_listing el
-        left join lt_ebay_entity_varchar eevls on eevls.ebay_entity_id = el.id and eevls.ebay_entity_attribute_id = 247 /*listing status*/
-        left join lt_ebay_entity_varchar eevlt on eevlt.ebay_entity_id = el.id and eevlt.ebay_entity_attribute_id = 82 /*listing type*/
-        left join lt_ebay_entity_varchar eevld on eevld.ebay_entity_id = el.id and eevld.ebay_entity_attribute_id = 79 /*listing duration*/
-        left join lt_ebay_entity_int eeisq on eeisq.ebay_entity_id = el.id and eeisq.ebay_entity_attribute_id = 255 /*sold quantity*/
-        where el.company_id = 1 and el.site_id = 100 and el.store_id = 2 and eevls.value = 'Completed'";
-        $rawData=Yii::app()->db->createCommand($sql)->queryAll();
-        // or using: $rawData=User::model()->findAll();
-        $dataProvider=new CArrayDataProvider($rawData, array(
-            'id'=>'id',
-            'sort'=>array(
-                'attributes'=>array(
-                    'id'
-                ),
-            ),
-            'pagination'=>array(
-                'pageSize'=>10,
-            ),
-        ));
-        var_dump($dataProvider->getData());// will return a list of arrays.
+
+        //eBayShoppingAPI::GetItem();
         /*try
         {
             set_error_handler(array($this, 'errorHandler'));
@@ -83,7 +64,7 @@ class EBayListingController extends Controller
         }*/
         //var_dump(Yii::app()->params['eBay']['logPath']);die();
         //$this->redirect($this->createAbsoluteUrl("/index", array()));
-        //eBayTradingAPI::GetSellerList(1);
+        eBayTradingAPI::GetSellerDashboard(1);
         //eBayTradingAPI::GetItem(eBayListing::model()->findByPk(259));
         //Yii::app()->session['store_12_ebay_session_id'] = 'sfregeabvsfbaenethb';
         //eBayTradingAPI::FetchToken(Store::model()->findByPk(12));

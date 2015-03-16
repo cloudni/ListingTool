@@ -74,7 +74,7 @@ class Notification extends NIActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
+            'Company' => array(self::BELONGS_TO, 'Company', 'company_id'),
             'admin' => array(self::BELONGS_TO, 'Admin', 'create_user_id'),
         );
     }

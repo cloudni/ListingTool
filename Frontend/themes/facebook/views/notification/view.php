@@ -6,13 +6,7 @@ $this->breadcrumbs=array(
     ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'notification_title')=>array('index'),
 	$model->title,
 );
-
-/*$this->menu=array(
-	array('label'=>'List Notification', 'url'=>array('index')),
-);
-*/?>
-
-<!--<h1>View Notification #<?php /*echo $model->id; */?></h1>-->
+?>
 
 <style>
     table.detail-view th, table.detail-view td
@@ -21,14 +15,17 @@ $this->breadcrumbs=array(
     }
 </style>
 
-<div style="width: 990px;margin-top: 15px;">
-    <div class="title" style="width:400px;margin: 0px auto ;">
-        <div style="text-align: center;font-size: 18px;">
-            <span><?php echo $model->title; ?></span>
-        </div>
-        <div style="word-break:break-all">
-
-            <?php echo $model->content ?>
+<div style="clear: both; width: 100%; position: relative; top: -5px;">
+    <div class="borderBlock">
+        <div>
+            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
+                <div style="height: 36px; color: #9197a3; font-weight: normal;">
+                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo $model->title; ?></h1>
+                </div>
+            </div>
+            <div style="display: block;">
+                <div style="font-size: 14px; padding: 14px; font-weight: bold; word-wrap: normal;"><?php echo $model->content ?></div>
+            </div>
         </div>
     </div>
 </div>

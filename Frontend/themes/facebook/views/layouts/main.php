@@ -165,7 +165,7 @@
                     'itemOptions'=>array('class'=>'dir'),
                     'items'=>array(
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ticket_title'), 'url'=>array('/ticket'), 'visible'=>!Yii::app()->user->isGuest),
-                        //array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'notification_title'), 'url'=>array('/notification'), 'visible'=>!Yii::app()->user->isGuest),
+                        array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'notification_title'), 'url'=>array('/notification'), 'visible'=>!Yii::app()->user->isGuest),
                         //array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_help_bulletion'), 'url'=>array('/bulletin'), 'visible'=>!Yii::app()->user->isGuest),
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_help_about'), 'url'=>array('/site/page', 'view'=>'about')),
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'contact_title'), 'url'=>array('/site/contact')),
@@ -253,3 +253,11 @@
 </script>
 </body>
 </html>
+
+<?php
+if(isset(Yii::app()->session['user']))
+{
+    setcookie("user", base64_encode(Yii::app()->session['user']->username), time() + 60 * 30, "", "it.net");
+    setcookie("user_key", md5(Yii::app()->session['user']->username . Yii::app()->params['sitePrivateKey']), time() + 60 * 30, "", "it.net");
+}
+?>

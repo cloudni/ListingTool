@@ -128,7 +128,7 @@ class StoreController extends Controller
                 left join (select ebay_api_key_id, count(ebay_api_key_id) as total from lt_store t
                 where is_active = :is_active and t.platform = :platform
                 group by ebay_api_key_id) as temp on temp.ebay_api_key_id = a.id
-                where a.type = :type and a.id <> 3 and a.id <> 4 and IFNULL(temp.total, 0) < :max_count
+                where a.type = :type and a.id <> 3 and a.id <> 4 and a.id <> 6 and IFNULL(temp.total, 0) < :max_count
                 order by temp.total desc; ";
                 $eBayApiKey = null;
                 try

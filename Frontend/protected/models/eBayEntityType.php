@@ -22,6 +22,23 @@
  */
 class eBayEntityType extends NIAdminActiveRecord
 {
+	const EBAY_ENTITY='ebay_entity';
+	const EBAY_PREFETECH='ebay_prefetch';
+
+	public function getValueTableOptions()
+	{
+		return array(
+			self::EBAY_ENTITY=>'ebay_entity',
+			self::EBAY_PREFETECH=>'ebay_prefetch',
+		);
+	}
+
+	public function getValueTableText()
+	{
+		$ValueTables = $this->valueTableOptions;
+		return isset($ValueTables[$this->value_table]) ? $ValueTables[$this->value_table] : "unknown Value Table ({$this->value_table})";
+	}
+
 	/**
 	 * @return string the associated database table name
 	 */

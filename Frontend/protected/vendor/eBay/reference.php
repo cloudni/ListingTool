@@ -385,3 +385,12 @@ class eBaySellerDashboardAlertSeverityCodeType
     const StrongWarning='StrongWarning';
     const Warning='Warning';
 }
+
+class eBayIncludeSelectorCodeType
+{
+    const Details='Details';
+    const Description='Description';
+    const TextDescription='TextDescription';
+    const ItemSpecifics='ItemSpecifics';
+    const Variations='Variations';
+}

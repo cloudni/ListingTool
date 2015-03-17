@@ -14,6 +14,9 @@ require_once("ExceptionHandler/ExceptionCode.php");
 
 class eBayShoppingAPI
 {
+    const Prod_API_URL = 'http://open.api.ebay.com/shopping';
+    const Sandbox_API_URL = 'http://open.api.sandbox.ebay.com/shopping';
+
     public static function GetItem($params=array('includeSelector'=>array(eBayIncludeSelectorCodeType::Details, eBayIncludeSelectorCodeType::Description, eBayIncludeSelectorCodeType::ItemSpecifics, eBayIncludeSelectorCodeType::Variations), 'itemID'=>array('400844296652')))
     {
         if(empty($params['itemID'])) return false;
@@ -23,7 +26,7 @@ class eBayShoppingAPI
 
         $eBayService = new eBayService();
         $eBayService->post_data = $eBayService->getRequestAuthHead(null, "GetMultipleItems").eBayShoppingAPI::GetMultipleItemsXML($params).$eBayService->getRequestAuthFoot("GetMultipleItems");
-        $eBayService->api_url = 'http://open.api.ebay.com/shopping';
+        $eBayService->api_url = self::Prod_API_URL;
         $eBayService->createHTTPHead(null, $eBayAPIKey->compatibility_level, $eBayAPIKey->dev_id, $eBayAPIKey->app_id, $eBayAPIKey->cert_id, "GetMultipleItems");
 
         try

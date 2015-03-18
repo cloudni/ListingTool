@@ -39,7 +39,6 @@ $this->menu=array(
         margin-left: -8px;
         position: absolute;
         width: 17px;
-        display: none;
     }
 </style>
 
@@ -49,10 +48,10 @@ $this->menu=array(
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
                     <div style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative; background-color: #fff;">
-                        <span class="tabTitle"><?php echo $model->name; ?><span id="point_angle" class="tabSelected" style="left: 13%;"></span></span>
+                        <span class="tabTitle"><?php echo $model->name; ?></span></span>
                         <a id="transaction_detail_link" onclick="updateFinancePanel('transaction_detail');" class="tabTitle">Transaction Detail<span id="transaction_detail_point_angle" class="tabSelected" style="display: block;"></span></a>
-                        <a id="deposit_link" onclick="updateFinancePanel('deposit');" class="tabTitle">Deposit<span id="deposit_point_angle" class="tabSelected" style="left: 49%;"></span></a>
-                        <a id="withdraw_link" onclick="updateFinancePanel('withdraw');" class="tabTitle">Withdraw<span id="withdraw_point_angle" class="tabSelected" style="left: 60%;"></span></a>
+                        <a id="deposit_link" onclick="updateFinancePanel('deposit');" class="tabTitle">Deposit<span id="deposit_point_angle" class="tabSelected" style="left: 49%; display: none;"></span></a>
+                        <a id="withdraw_link" onclick="updateFinancePanel('withdraw');" class="tabTitle">Withdraw<span id="withdraw_point_angle" class="tabSelected" style="left: 60%; display: none;"></span></a>
                     </div>
                 </div>
             </div>

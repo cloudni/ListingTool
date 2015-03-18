@@ -147,6 +147,7 @@
                     'items'=>array(
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_listing'), 'url'=>array('/eBay/eBayListing')),
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'bulk_update_ebay_listing'), 'url'=>array('/eBay/eBayListing/bulkUpdate')),
+                        array('label'=>'Tracking', 'url'=>array('/eBay/eBay/tracking')),
                     ),
                 ),
                 array(

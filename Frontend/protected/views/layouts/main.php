@@ -110,6 +110,7 @@
                     'items'=>array(
                         array('label'=>'Manage Listing', 'url'=>array('/eBay/eBayListing')),
                         array('label'=>'Bulk Update Listing', 'url'=>array('/eBay/eBayListing/bulkUpdate')),
+                        array('label'=>'Tracking', 'url'=>array('/eBay/tracking')),
                     ),
                 ),
                 array(

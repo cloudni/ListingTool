@@ -6,11 +6,12 @@ CREATE TABLE `lt_ebay_item_shopping_api` (
   `site_id` INT NULL DEFAULT NULL,
   `ebay_entity_type_id` INT NOT NULL,
   `ebay_attribute_set_id` INT NOT NULL,
-  `note` VARCHAR(255) NULL,
+  `note` VARCHAR(255) NULL default null,
   `create_time_utc` INT NULL DEFAULT 0,
   `create_user_id` INT NULL DEFAULT 0,
   `update_time_utc` INT NULL DEFAULT 0,
   `update_user_id` INT NULL DEFAULT 0,
+  UNIQUE KEY `entity_table_UNIQUE` (`ebay_listing_id`),
   foreign key (`ebay_entity_type_id`) references lt_ebay_entity_type (`id`) on delete cascade on update cascade,
   foreign key (`ebay_attribute_set_id`) references lt_ebay_attribute_set (`id`) on delete cascade on update cascade
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -134,3 +135,22 @@ CREATE TABLE if not exists `lt_ebay_third_party_boolean` (
 	INDEX `entity_attribute_id` (`ebay_entity_attribute_id` ASC)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*end 2015/03/17 */
+
+/*start 2015/03/22*/
+drop table if exists `lt_ebay_target_and_track`;
+CREATE TABLE `lt_ebay_target_and_track` (
+  `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(256) NOT NULL,
+  `company_id` INT NOT NULL,
+  `target_ebay_item_id` VARCHAR(500) NOT NULL,
+  `tracking_ebay_listing_id` VARCHAR(500) NOT NULL,
+  `update_param` VARCHAR(1000) NOT NULL,
+  `is_active` tinyint(1) not null default 0,
+  `note` VARCHAR(256) NULL,
+  `create_time_utc` INT NULL DEFAULT 0,
+  `create_user_id` INT NULL DEFAULT 0,
+  `update_time_utc` INT NULL DEFAULT 0,
+  `update_user_id` INT NULL DEFAULT 0,
+  foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade
+);
+/*end 2015/03/22*/

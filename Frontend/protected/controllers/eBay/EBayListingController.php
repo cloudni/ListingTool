@@ -48,29 +48,6 @@ class EBayListingController extends Controller
 		);
 	}
 
-    public function actionTestGetItem()
-    {
-
-        //eBayShoppingAPI::GetItem();
-        /*try
-        {
-            set_error_handler(array($this, 'errorHandler'));
-            $str = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><GetCategoryFeaturesResponse xmlns=\"urn:ebay:apis:eBLBaseComponents\"><Timestamp>2015-01-15T03:27:52.422Z</Tim";
-            simplexml_load_string($str);
-        }
-        catch(Exception $ex)
-        {
-            echo 'eeee';
-        }*/
-        eBayShoppingAPI::GetItem();
-        //var_dump(Yii::app()->params['eBay']['logPath']);die();
-        //$this->redirect($this->createAbsoluteUrl("/index", array()));
-        //eBayTradingAPI::GetSellerDashboard(1);
-        //eBayTradingAPI::GetItem(eBayListing::model()->findByPk(259));
-        //Yii::app()->session['store_12_ebay_session_id'] = 'sfregeabvsfbaenethb';
-        //eBayTradingAPI::FetchToken(Store::model()->findByPk(12));
-    }
-
     /*
      * search eBay listings by input params, remotely
      */
@@ -124,14 +101,24 @@ class EBayListingController extends Controller
                 if(!empty($keywords) && $mainSKUAttribute && $variationSKUAttribute)
                 {
                     $searchWord = "";
+                    $variationSearchWord = "";
+                    $titleSearchWord = "";
                     foreach($keywords as $key=>$word)
                     {
                         if(empty($searchWord))
+                        {
                             $searchWord = " mainsku.value like '%$word%' ";
+                            $variationSearchWord = " variationsku.value like '%$word%' ";
+                            $titleSearchWord = " title.value like '%$word%' ";
+                        }
                         else
+                        {
                             $searchWord .= " or mainsku.value like '%$word%' ";
+                            $variationSearchWord .= " or variationsku.value like '%$word%' ";
+                            $titleSearchWord .= " or title.value like '%$word%' ";
+                        }
                     }
-                    $whereSQL .= " and ($searchWord) ";
+                    $whereSQL .= " and (($searchWord) or ($variationSearchWord) or ($titleSearchWord)) ";
                 }
                 if(strtolower($params['searchSite']) != 'all')
                 {
@@ -156,6 +143,7 @@ class EBayListingController extends Controller
                             vurl.value as viewurl
                             FROM `lt_ebay_listing` `t`
                             left join lt_ebay_entity_varchar as mainsku on mainsku.ebay_entity_id = t.id and mainsku.ebay_entity_attribute_id = {$mainSKUAttribute->id}
+                            left join lt_ebay_entity_varchar as variationsku on variationsku.ebay_entity_id = t.id and variationsku.ebay_entity_attribute_id = {$variationSKUAttribute->id}
                             left join lt_ebay_entity_varchar as pc on pc.ebay_entity_id = t.id and pc.ebay_entity_attribute_id = {$primaryCategoryAttribute->id}
                             left join lt_ebay_entity_varchar as sc on sc.ebay_entity_id = t.id and sc.ebay_entity_attribute_id = {$secondaryCategoryAttribute->id}
                             left join lt_ebay_entity_varchar as duration on duration.ebay_entity_id = t.id and duration.ebay_entity_attribute_id = {$listingDurationAttribute->id}
@@ -167,7 +155,7 @@ class EBayListingController extends Controller
                             where t.company_id=:company_id
                             and sstatus.value = '".eBayListingStatusCodeType::Active."'
                             $whereSQL
-                            order by msku asc; ";
+                            order by msku asc; ";echo json_encode($select);exit();
                 $command = Yii::app()->db->createCommand($select);
                 $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
                 if(strtolower($params['searchSite']) != 'all')

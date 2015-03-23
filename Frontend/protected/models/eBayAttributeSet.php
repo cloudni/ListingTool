@@ -152,9 +152,14 @@ class eBayAttributeSet extends NIAdminActiveRecord
 		return parent::model($className);
 	}
 
-    public function getEntityAttribute($codes, $separator='->')
+    public function getEntityAttribute($dataPoint, $separator='->')
     {
-        $codes = explode($separator, $codes);
+        $eBayEntityAttribute = Yii::app()->cache->get(sprintf("eBayAttributeSet_entity_%s_code_%s", $this->entity_type_id, $dataPoint));
+        if(!$eBayEntityAttribute)
+        {
+
+        }
+        $codes = explode($separator, $dataPoint);
         //get target entity attribute object recursively
         $parentEntityAttributeId = 0;
         foreach($codes as $code)
@@ -172,6 +177,8 @@ class eBayAttributeSet extends NIAdminActiveRecord
             if(empty($eBayEntityAttribute)) return NULL;
             $parentEntityAttributeId = $eBayEntityAttribute->id;
         }
+
+        Yii::app()->cache->set(sprintf("eBayAttributeSet_entity_%s_code_%s", $this->entity_type_id, $dataPoint), $eBayEntityAttribute, 60 * 60 * 24 * 7);
 
         return $eBayEntityAttribute;
     }

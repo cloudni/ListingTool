@@ -113,7 +113,7 @@ class eBayService
             "X-EBAY-API-APP-NAME:".$APPID,
             "X-EBAY-API-CERT-NAME:".$CERTID,
             "X-EBAY-API-CALL-NAME:".$CALLNAME,
-            //"X-EBAY-API-SITEID:".($SITEID == eBaySiteIdCodeType::eBayMotors ? eBaySiteIdCodeType::US : $SITEID),
+            "X-EBAY-API-SITEID:".($SITEID == eBaySiteIdCodeType::eBayMotors ? eBaySiteIdCodeType::US : $SITEID),
             "X-EBAY-API-REQUEST-ENCODING:XML",
             "Content-Type : text/xml",
             "X-EBAY-API-DETAIL-LEVEL: 0",

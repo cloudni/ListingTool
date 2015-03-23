@@ -48,7 +48,28 @@ class EBayListingController extends Controller
 		);
 	}
 
+    public function actionTestGetItem()
+    {
 
+        //eBayShoppingAPI::GetItem();
+        /*try
+        {
+            set_error_handler(array($this, 'errorHandler'));
+            $str = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><GetCategoryFeaturesResponse xmlns=\"urn:ebay:apis:eBLBaseComponents\"><Timestamp>2015-01-15T03:27:52.422Z</Tim";
+            simplexml_load_string($str);
+        }
+        catch(Exception $ex)
+        {
+            echo 'eeee';
+        }*/
+        eBayShoppingAPI::GetItem();
+        //var_dump(Yii::app()->params['eBay']['logPath']);die();
+        //$this->redirect($this->createAbsoluteUrl("/index", array()));
+        //eBayTradingAPI::GetSellerDashboard(1);
+        //eBayTradingAPI::GetItem(eBayListing::model()->findByPk(259));
+        //Yii::app()->session['store_12_ebay_session_id'] = 'sfregeabvsfbaenethb';
+        //eBayTradingAPI::FetchToken(Store::model()->findByPk(12));
+    }
 
     /*
      * search eBay listings by input params, remotely

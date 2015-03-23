@@ -381,7 +381,7 @@ class eBayTradingAPI
      */
     protected static function clearAlleBayEntityAttributeValue($eBayEntity)
     {
-        $clearSQL = "update {{ebay_entity_varchar}} set
+        $clearSQL = "update {{{$eBayEntity->eBayEntityType->value_table}_varchar}} set
                         `ebay_attribute_id` = null,
                         `ebay_entity_attribute_id` = null,
                         `parent_value_id` = null,
@@ -393,7 +393,7 @@ class eBayTradingAPI
         $command->bindValue(":ebay_entity_id", $eBayEntity->id, PDO::PARAM_INT);
         $result = $command->execute();
 
-        $clearSQL = "update {{ebay_entity_text}} set
+        $clearSQL = "update {{{$eBayEntity->eBayEntityType->value_table}_text}} set
                         `ebay_attribute_id` = null,
                         `ebay_entity_attribute_id` = null,
                         `parent_value_id` = null,
@@ -405,7 +405,7 @@ class eBayTradingAPI
         $command->bindValue(":ebay_entity_id", $eBayEntity->id, PDO::PARAM_INT);
         $result = $command->execute();
 
-        $clearSQL = "update {{ebay_entity_int}} set
+        $clearSQL = "update {{{$eBayEntity->eBayEntityType->value_table}_int}} set
                         `ebay_attribute_id` = null,
                         `ebay_entity_attribute_id` = null,
                         `parent_value_id` = null,
@@ -417,7 +417,7 @@ class eBayTradingAPI
         $command->bindValue(":ebay_entity_id", $eBayEntity->id, PDO::PARAM_INT);
         $result = $command->execute();
 
-        $clearSQL = "update {{ebay_entity_decimal}} set
+        $clearSQL = "update {{{$eBayEntity->eBayEntityType->value_table}_decimal}} set
                         `ebay_attribute_id` = null,
                         `ebay_entity_attribute_id` = null,
                         `parent_value_id` = null,
@@ -429,7 +429,7 @@ class eBayTradingAPI
         $command->bindValue(":ebay_entity_id", $eBayEntity->id, PDO::PARAM_INT);
         $result = $command->execute();
 
-        $clearSQL = "update {{ebay_entity_datetime}} set
+        $clearSQL = "update {{{$eBayEntity->eBayEntityType->value_table}_datetime}} set
                         `ebay_attribute_id` = null,
                         `ebay_entity_attribute_id` = null,
                         `parent_value_id` = null,
@@ -441,7 +441,7 @@ class eBayTradingAPI
         $command->bindValue(":ebay_entity_id", $eBayEntity->id, PDO::PARAM_INT);
         $result = $command->execute();
 
-        $clearSQL = "update {{ebay_entity_container}} set
+        $clearSQL = "update {{{$eBayEntity->eBayEntityType->value_table}_container}} set
                         `ebay_attribute_id` = null,
                         `ebay_entity_attribute_id` = null,
                         `parent_value_id` = null,
@@ -453,7 +453,7 @@ class eBayTradingAPI
         $command->bindValue(":ebay_entity_id", $eBayEntity->id, PDO::PARAM_INT);
         $result = $command->execute();
 
-        $clearSQL = "update {{ebay_entity_boolean}} set
+        $clearSQL = "update {{{$eBayEntity->eBayEntityType->value_table}_boolean}} set
                         `ebay_attribute_id` = null,
                         `ebay_entity_attribute_id` = null,
                         `parent_value_id` = null,

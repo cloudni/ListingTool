@@ -80,10 +80,9 @@ class EBayListingController extends Controller
         {
             $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
             $eBayAttributeSet = eBayAttributeSet::model()->find(
-                'entity_type_id=:entity_type_id and is_active=:is_active',
+                'entity_type_id=:entity_type_id',
                 array(
                     ':entity_type_id'=>$eBayEntityType->id,
-                    ':is_active'=>eBayAttributeSet::ACTIVE_YES,
                 )
             );
 
@@ -126,7 +125,7 @@ class EBayListingController extends Controller
                     $whereSQL .= " and (pc.value=:primarycate OR sc.value=:secondarycate) ";
                 }
 
-                $select = "SELECT t.*,
+                $select = "SELECT t.*, s.name as storename,
                             mainsku.value as msku,
                             pc.value as primarycate,
                             sc.value as secondarycate,
@@ -143,6 +142,7 @@ class EBayListingController extends Controller
                             left join lt_ebay_entity_varchar as title on title.ebay_entity_id = t.id and title.ebay_entity_attribute_id = {$titleAttribute->id}
                             left join lt_ebay_entity_varchar as sstatus on sstatus.ebay_entity_id = t.id and sstatus.ebay_entity_attribute_id = {$listingStatusAttribute->id}
                             left join lt_ebay_entity_varchar as vurl on vurl.ebay_entity_id = t.id and vurl.ebay_entity_attribute_id = {$viewUrlAttribute->id}
+                            left join lt_store as s on s.id = t.store_id
                             where t.company_id=:company_id
                             and sstatus.value = '".eBayListingStatusCodeType::Active."'
                             $whereSQL

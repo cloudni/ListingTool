@@ -63,7 +63,7 @@ class eBayTradingAPI
         )
     )
     {
-        if(empty($params['StartTimeFrom'])) $params['StartTimeFrom'] = date('c', time()-60*60*24*45);
+        if(empty($params['StartTimeFrom'])) $params['StartTimeFrom'] = date('c', time()-60*60*24*3);
         if(empty($params['StartTimeTo'])) $params['StartTimeTo'] = date('c', time());
         $store = Store::model()->findByPk($store_id);
         if(empty($store)) return false;

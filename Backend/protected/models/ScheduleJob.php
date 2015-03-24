@@ -26,6 +26,7 @@ class ScheduleJob extends CActiveRecord
     const ACTION_EBAYGETCATEGORYFEATURES=4;
     const ACTION_EBAYGETSELLERDASHBOARD=5;
     const ACTION_EBAYGETUSER=6;
+    const ACTION_EBAYSHOPPINGAPIGETMULTIPLEITEMS=7;
 
     public function getActionOptions()
     {
@@ -36,6 +37,7 @@ class ScheduleJob extends CActiveRecord
             self::ACTION_EBAYGETCATEGORYFEATURES=>'eBay Get Category Features',
             self::ACTION_EBAYGETSELLERDASHBOARD=>'eBay Get Seller Dashboard',
             self::ACTION_EBAYGETUSER=>'eBay Get User',
+            self::ACTION_EBAYSHOPPINGAPIGETMULTIPLEITEMS=>'eBay Shopping API Get Multiple Items',
         );
     }
 

@@ -17,32 +17,136 @@ class eBayShoppingAPI
     const Prod_API_URL = 'http://open.api.ebay.com/shopping';
     const Sandbox_API_URL = 'http://open.api.sandbox.ebay.com/shopping';
 
-    public static function GetItem($itemIDs=array('400844296652'),$params=array('includeSelector'=>array(eBayIncludeSelectorCodeType::Details, eBayIncludeSelectorCodeType::Description, eBayIncludeSelectorCodeType::ItemSpecifics, eBayIncludeSelectorCodeType::Variations)))
+    public static function GetItem($itemIDs=array(),$checkDataPoints=array('CurrentPrice->Value'),$params=array('includeSelector'=>array(eBayIncludeSelectorCodeType::Details, eBayIncludeSelectorCodeType::Description, eBayIncludeSelectorCodeType::ItemSpecifics, eBayIncludeSelectorCodeType::Variations)))
     {
         if(empty($itemIDs)) return false;
 
         $eBayAPIKey = eBayApiKey::model()->findByPk(6);
         if(empty($eBayAPIKey)) return false;
 
+        $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayItemShoppingAPI'));
+        if(empty($eBayEntityType)) return false;
+
         $eBayService = new eBayService();
         $eBayService->post_data = $eBayService->getRequestAuthHead(null, "GetMultipleItems").eBayShoppingAPI::GetMultipleItemsXML($itemIDs, $params).$eBayService->getRequestAuthFoot("GetMultipleItems");
         $eBayService->api_url = self::Prod_API_URL;
         $eBayService->createHTTPHead(null, $eBayAPIKey->compatibility_level, $eBayAPIKey->dev_id, $eBayAPIKey->app_id, $eBayAPIKey->cert_id, "GetMultipleItems");
 
+        $changeList = array('idList'=>array());
+        if(!empty($checkDataPoints))
+            foreach($checkDataPoints as $dataPoint) $changeList[$dataPoint] = array();
+
         try
         {
             $result = $eBayService->request();
-            var_dump($result);
+            if((string)$result->Ack===eBayAckCodeType::Success)
+            {
+                $eBayAttributeSet = eBayAttributeSet::model()->find(
+                    'entity_type_id=:entity_type_id and is_active=:is_active',
+                    array(
+                        ':entity_type_id'=>$eBayEntityType->id,
+                        ':is_active'=>true,
+                    )
+                );
+                if(empty($eBayAttributeSet)) return false;
+
+                if(!isset($result->Item))
+                {
+                    return false;
+                }
+
+                foreach($result->Item as $item)
+                {
+                    $eBayItemShoppingApi = eBayItemShoppingApi::model()->find('ebay_listing_id=:ebay_listing_id', array(':ebay_listing_id'=>(string)$item->ItemID));
+
+                    //check data point if changed
+                    if(!empty($eBayItemShoppingApi))
+                    {
+                        foreach($checkDataPoints as $checkPoint)
+                        {
+                            $currentPriceAttribute = $eBayAttributeSet->getEntityAttribute($checkPoint);
+                            $sql = "select value from {{{$eBayAttributeSet->eBayEntityType->value_table}_decimal}}
+                                where ebay_entity_attribute_id = :ebay_entity_attribute_id and ebay_entity_id = :ebay_entity_id";
+                            $command = Yii::app()->db->createCommand($sql);
+                            $command->bindValue(":ebay_entity_attribute_id", $currentPriceAttribute->id, PDO::PARAM_INT);
+                            $command->bindValue(":ebay_entity_id", $eBayItemShoppingApi->id, PDO::PARAM_INT);
+                            $result = $command->queryRow();
+                            if(!isset($result['value'])) continue;
+                            $codes = explode('->', $checkPoint);
+                            $temp = $item;
+                            foreach($codes as $code) $temp = isset($temp->$code) ? $temp->$code : null;
+                            if(gettype($temp) == 'array') $temp = isset($temp[0]) ? (string)$temp[0] : null;
+                            else
+                                $temp = (string)$temp;
+                            if(isset($temp) && $result['value'] == $temp)
+                            {
+                                $changeList[$checkPoint][$eBayItemShoppingApi->ebay_listing_id] = array('before'=>$result['value'], 'after'=>$temp);
+                                if(!in_array($eBayItemShoppingApi->ebay_listing_id, $changeList['idList'])) $changeList['idList'][] = $eBayItemShoppingApi->ebay_listing_id;
+                            }
+                        }
+                    }
+
+                    $transaction=NULL;
+                    try
+                    {
+                        $transaction= Yii::app()->db->beginTransaction();
+                        if(empty($eBayItemShoppingApi))
+                        {
+                            $eBayItemShoppingApi = new eBayItemShoppingApi();
+                            $eBayItemShoppingApi->create_time_utc = time();
+                        }
+                        $eBayItemShoppingApi->ebay_listing_id = (string)$item->ItemID;
+                        $eBayItemShoppingApi->site_id = eBaySiteName::geteBaySiteNameCode((string)$item->Site);
+                        $eBayItemShoppingApi->ebay_entity_type_id = $eBayEntityType->id;
+                        $eBayItemShoppingApi->ebay_attribute_set_id = $eBayAttributeSet->id;
+                        $eBayItemShoppingApi->update_time_utc = time();
+                        if(!$eBayItemShoppingApi->save())
+                        {
+                            $transaction->rollback();
+                            return false;
+                        }
+
+                        self::clearAlleBayEntityAttributeValue($eBayItemShoppingApi);
+                        $transaction->commit();$transaction = null;
+
+                        $transaction= Yii::app()->db->beginTransaction();
+                        //start to process attribute by attribute
+                        //echo("start to process eBay item  shopping API ".(string)$item->ItemID." attribute:\n");
+                        self::processeBayEntityAttributesRC($eBayItemShoppingApi, $eBayAttributeSet, $item);
+                        $transaction->commit();
+                        //echo("eBay item shopping API: ".(string)$item->ItemID." attribute process finished!\n".date("Y-m-d H:i:s", time())."item process finished\n\n");
+                    }
+                    catch(Exception $ex)
+                    {
+                        if(isset($transaction)) $transaction->rollback();
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                $Version = (string)$result->Version;
+                $Timestamp = (string)$result->Timestamp;
+                $Errors = array(
+                    'ErrorClassification'=>(string)$result->Errors->ErrorClassification,
+                    'ErrorCode'=>(string)$result->Errors->ErrorCode,
+                    'ShortMessage'=>(string)$result->Errors->ShortMessage,
+                    'LongMessage'=>(string)$result->Errors->LongMessage,
+                    'SeverityCode'=>(string)$result->Errors->SeverityCode,
+                );
+                var_dump($Version, $Timestamp, $Errors, $result);
+                return false;
+            }
         }
         catch(Exception $ex)
         {
-            var_dump($ex);
-            return array(
+            var_dump($ex, array(
                 'ErrorCode'=>$ex->getCode(),
                 'ShortMessage'=>$ex->getMessage(),
-            );
+            ));
+            return false;
         }
-        return true;
+        if(empty($checkDataPoints)) return true; else return $changeList;
     }
 
     protected static function GetMultipleItemsXML($itemIDs, $params)

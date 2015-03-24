@@ -1020,7 +1020,11 @@ class eBayTradingAPI
                 }
                 else
                 {
-                    $StartPrice = $eBayListing->getEntityAttributeValue('StartPrice->Value');
+                    $StartPrice = null;
+                    if(isset($params['update_rules']['price']['reference']))
+                        $StartPrice = $params['update_rules']['price']['reference'];
+                    else
+                        $StartPrice = $eBayListing->getEntityAttributeValue('StartPrice->Value');
 
                     if(!isset($StartPrice))
                     {

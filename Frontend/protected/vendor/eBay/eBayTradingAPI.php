@@ -63,8 +63,8 @@ class eBayTradingAPI
         )
     )
     {
-        $params['StartTimeFrom'] = date('c', time()-60*60*24*15);
-        $params['StartTimeTo'] = date('c', time());
+        if(empty($params['StartTimeFrom'])) $params['StartTimeFrom'] = date('c', time()-60*60*24*3);
+        if(empty($params['StartTimeTo'])) $params['StartTimeTo'] = date('c', time());
         $store = Store::model()->findByPk($store_id);
         if(empty($store)) return false;
 
@@ -1020,7 +1020,11 @@ class eBayTradingAPI
                 }
                 else
                 {
-                    $StartPrice = $eBayListing->getEntityAttributeValue('StartPrice->Value');
+                    $StartPrice = null;
+                    if(isset($params['update_rules']['price']['reference']))
+                        $StartPrice = $params['update_rules']['price']['reference'];
+                    else
+                        $StartPrice = $eBayListing->getEntityAttributeValue('StartPrice->Value');
 
                     if(!isset($StartPrice))
                     {

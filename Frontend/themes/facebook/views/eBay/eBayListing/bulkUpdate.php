@@ -518,12 +518,12 @@ $this->breadcrumbs=array(
                 }
                 else
                 {
-                    alert('Failed to load categories for site: '+ $("#ebay_site option:selected").text()+"\n"+data['msg']);
+                    alert("<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'fail_load_ebay_category');?>".replace("%s", $("#ebay_site option:selected").text()));
                     eBayCategorySelectReset();
                 }
             },
             error: function(data, status, xhr) {
-                alert('Failed to load categories for site: '+ $("#ebay_site option:selected").text());
+                alert("<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'fail_load_ebay_category');?>".replace("%s", $("#ebay_site option:selected").text()));
                 eBayCategorySelectReset();
             }
         });

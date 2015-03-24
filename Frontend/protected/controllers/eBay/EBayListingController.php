@@ -48,6 +48,7 @@ class EBayListingController extends Controller
 		);
 	}
 
+
     /*
      * search eBay listings by input params, remotely
      */

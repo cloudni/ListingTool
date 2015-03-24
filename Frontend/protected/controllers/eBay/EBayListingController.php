@@ -62,9 +62,10 @@ class EBayListingController extends Controller
         {
             echo 'eeee';
         }*/
+        eBayShoppingAPI::GetItem();
         //var_dump(Yii::app()->params['eBay']['logPath']);die();
         //$this->redirect($this->createAbsoluteUrl("/index", array()));
-        eBayTradingAPI::GetSellerDashboard(1);
+        //eBayTradingAPI::GetSellerDashboard(1);
         //eBayTradingAPI::GetItem(eBayListing::model()->findByPk(259));
         //Yii::app()->session['store_12_ebay_session_id'] = 'sfregeabvsfbaenethb';
         //eBayTradingAPI::FetchToken(Store::model()->findByPk(12));
@@ -138,10 +139,9 @@ class EBayListingController extends Controller
         {
             $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
             $eBayAttributeSet = eBayAttributeSet::model()->find(
-                'entity_type_id=:entity_type_id and is_active=:is_active',
+                'entity_type_id=:entity_type_id',
                 array(
                     ':entity_type_id'=>$eBayEntityType->id,
-                    ':is_active'=>eBayAttributeSet::ACTIVE_YES,
                 )
             );
 
@@ -162,14 +162,24 @@ class EBayListingController extends Controller
                 if(!empty($keywords) && $mainSKUAttribute && $variationSKUAttribute)
                 {
                     $searchWord = "";
+                    $variationSearchWord = "";
+                    $titleSearchWord = "";
                     foreach($keywords as $key=>$word)
                     {
                         if(empty($searchWord))
+                        {
                             $searchWord = " mainsku.value like '%$word%' ";
+                            $variationSearchWord = " variationsku.value like '%$word%' ";
+                            $titleSearchWord = " title.value like '%$word%' ";
+                        }
                         else
+                        {
                             $searchWord .= " or mainsku.value like '%$word%' ";
+                            $variationSearchWord .= " or variationsku.value like '%$word%' ";
+                            $titleSearchWord .= " or title.value like '%$word%' ";
+                        }
                     }
-                    $whereSQL .= " and ($searchWord) ";
+                    $whereSQL .= " and (($searchWord) or ($variationSearchWord) or ($titleSearchWord)) ";
                 }
                 if(strtolower($params['searchSite']) != 'all')
                 {
@@ -184,7 +194,7 @@ class EBayListingController extends Controller
                     $whereSQL .= " and (pc.value=:primarycate OR sc.value=:secondarycate) ";
                 }
 
-                $select = "SELECT t.*,
+                $select = "SELECT t.*, s.name as storename,
                             mainsku.value as msku,
                             pc.value as primarycate,
                             sc.value as secondarycate,
@@ -194,6 +204,7 @@ class EBayListingController extends Controller
                             vurl.value as viewurl
                             FROM `lt_ebay_listing` `t`
                             left join lt_ebay_entity_varchar as mainsku on mainsku.ebay_entity_id = t.id and mainsku.ebay_entity_attribute_id = {$mainSKUAttribute->id}
+                            left join lt_ebay_entity_varchar as variationsku on variationsku.ebay_entity_id = t.id and variationsku.ebay_entity_attribute_id = {$variationSKUAttribute->id}
                             left join lt_ebay_entity_varchar as pc on pc.ebay_entity_id = t.id and pc.ebay_entity_attribute_id = {$primaryCategoryAttribute->id}
                             left join lt_ebay_entity_varchar as sc on sc.ebay_entity_id = t.id and sc.ebay_entity_attribute_id = {$secondaryCategoryAttribute->id}
                             left join lt_ebay_entity_varchar as duration on duration.ebay_entity_id = t.id and duration.ebay_entity_attribute_id = {$listingDurationAttribute->id}
@@ -201,6 +212,7 @@ class EBayListingController extends Controller
                             left join lt_ebay_entity_varchar as title on title.ebay_entity_id = t.id and title.ebay_entity_attribute_id = {$titleAttribute->id}
                             left join lt_ebay_entity_varchar as sstatus on sstatus.ebay_entity_id = t.id and sstatus.ebay_entity_attribute_id = {$listingStatusAttribute->id}
                             left join lt_ebay_entity_varchar as vurl on vurl.ebay_entity_id = t.id and vurl.ebay_entity_attribute_id = {$viewUrlAttribute->id}
+                            left join lt_store as s on s.id = t.store_id
                             where t.company_id=:company_id
                             and sstatus.value = '".eBayListingStatusCodeType::Active."'
                             $whereSQL
@@ -243,35 +255,38 @@ class EBayListingController extends Controller
                         if(!empty($siteDetail))
                         {
                             $excludeShipLocationDetail = $siteDetail->getEntityAttributeValueByCodeWithAllChildren("ExcludeShippingLocationDetails");
-                            foreach($excludeShipLocationDetail as $detail)
+                            if(!empty($excludeShipLocationDetail))
                             {
-                                if($detail['Region'] == 'Domestic Location')
+                                foreach($excludeShipLocationDetail as $detail)
                                 {
-                                    $excludeLocationList['domestic'][] = $detail;
-                                }
-                                else if($detail['Region'] == 'Additional Locations')
-                                {
-                                    $excludeLocationList['additional'][] = $detail;
-                                }
-                                else if($detail['Region'] == 'Worldwide' || $detail['Location'] == 'Middle East' || $detail['Location'] == 'Southeast Asia')
-                                {
-                                    if(!isset($excludeLocationList['worldwide'][$detail['Location']]))
+                                    if($detail['Region'] == 'Domestic Location')
                                     {
-                                        $excludeLocationList['worldwide'][$detail['Location']] = $detail;
+                                        $excludeLocationList['domestic'][] = $detail;
+                                    }
+                                    else if($detail['Region'] == 'Additional Locations')
+                                    {
+                                        $excludeLocationList['additional'][] = $detail;
+                                    }
+                                    else if($detail['Region'] == 'Worldwide' || $detail['Location'] == 'Middle East' || $detail['Location'] == 'Southeast Asia')
+                                    {
+                                        if(!isset($excludeLocationList['worldwide'][$detail['Location']]))
+                                        {
+                                            $excludeLocationList['worldwide'][$detail['Location']] = $detail;
+                                        }
+                                        else
+                                        {
+                                            $excludeLocationList['worldwide'][$detail['Location']]['Location'] = $detail['Location'];
+                                            $excludeLocationList['worldwide'][$detail['Location']]['Description'] = $detail['Description'];
+                                        }
                                     }
                                     else
                                     {
-                                        $excludeLocationList['worldwide'][$detail['Location']]['Location'] = $detail['Location'];
-                                        $excludeLocationList['worldwide'][$detail['Location']]['Description'] = $detail['Description'];
+                                        if(!isset($excludeLocationList['worldwide'][$detail['Region']])) $excludeLocationList['worldwide'][$detail['Region']] = array();
+                                        $excludeLocationList['worldwide'][$detail['Region']]['values'][] = $detail;
                                     }
                                 }
-                                else
-                                {
-                                    if(!isset($excludeLocationList['worldwide'][$detail['Region']])) $excludeLocationList['worldwide'][$detail['Region']] = array();
-                                    $excludeLocationList['worldwide'][$detail['Region']]['values'][] = $detail;
-                                }
+                                Yii::app()->cache->set(sprintf("ebay_site_%S_exclude_ship_location", $siteID), $excludeLocationList, 60 * 60 * 24 * 7);
                             }
-                            Yii::app()->cache->set(sprintf("ebay_site_%S_exclude_ship_location", $siteID), $excludeLocationList, 60 * 60 * 24 * 7);
                         }
                         else
                             $excludeLocationList = array('domestic' => $domestic, 'additional' => $additional, 'worldwide' => $worldwide);

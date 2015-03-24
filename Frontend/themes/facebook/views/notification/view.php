@@ -24,7 +24,7 @@ $this->breadcrumbs=array(
                 </div>
             </div>
             <div style="display: block;">
-                <div style="font-size: 14px; padding: 14px; font-weight: bold; word-wrap: normal;"><?php echo $model->content ?></div>
+                <div style="font-size: 14px; padding: 14px; /*font-weight: bold;*/ word-wrap: normal;"><?php echo $model->content ?></div>
             </div>
         </div>
     </div>

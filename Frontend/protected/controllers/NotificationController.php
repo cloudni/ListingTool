@@ -130,7 +130,7 @@ class NotificationController extends Controller
                     'defaultOrder'=>'create_time_utc DESC',
                 ),*/
                 'condition'=>'company_id='.Yii::app()->session['user']->company_id,
-
+                'order'=>'id desc',
             )
         ));
 

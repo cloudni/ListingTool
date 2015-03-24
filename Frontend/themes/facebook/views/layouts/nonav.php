@@ -151,11 +151,6 @@
         All Rights Reserved.<br/>
         <?php $result = @CDbConnection::getStats(); echo "SQL executed: {$result[0]}, Time usage: {$result[1]}"?>
         <div style="padding-top: 15px;">
-            <span id="siteseal">
-                <a herf="https://seal.godaddy.com/getSeal?sealID=gbXKobng9O3TlVzsMWwwmkQRGkJ3MmywygAxWfYccuQWIqDA59F9srHMQUgQ">
-                    <img style="cursor:pointer;cursor:hand" src="https://seal.godaddy.com/images/3/en/siteseal_gd_3_h_l_m.gif" alt="SSL site seal - click to verify">
-                </a>
-            </span>
         </div>
     </div><!-- footer -->
 
@@ -176,16 +171,6 @@
             }
         });
     }
-</script>
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-60681293-1', 'auto');
-    ga('send', 'pageview');
-
 </script>
 </body>
 </html>

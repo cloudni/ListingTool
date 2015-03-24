@@ -376,14 +376,14 @@ $this->breadcrumbs=array(
                         {
                             $("#applied_listing_panel").css('display', 'block');
                         }
-                        $("#applied_listing_table tr:gt(0)").remove()
+                        $("#applied_listing_table tr:gt(0)").remove();
                         for(var i=0;i<data['data'].length;i++)
                         {
                             $("#applied_listing_table tr:last").after(
                                 "<tr>" +
                                     "<td><input type='checkbox' id='applied_listing[]' name='applied_listing[]' value='"+data['data'][i]['ebay_listing_id']+"' onclick='updateRuleAndSubmitPanel();' /></td>" +
                                     "<td>"+(data['data'][i]['msku'])+"</td>" +
-                                    "<td>"+(data['data'][i]['store_id'])+"</td>" +
+                                    "<td>"+(data['data'][i]['storename'])+"</td>" +
                                     "<td><a href='"+(data['data'][i]['viewurl'])+"' target='_blank'>"+(data['data'][i]['ebay_listing_id'])+"</a></td>" +
                                     "<td><span title='"+(data['data'][i]['title'])+"'>"+((data['data'][i]['title'].length > 20 ? data['data'][i]['title'].substring(0,20) : data['data'][i]['title'])+'...')+"</span></td>" +
                                     "<td>"+geteBaySiteCode(data['data'][i]['site_id'])+"</td>" +
@@ -518,12 +518,12 @@ $this->breadcrumbs=array(
                 }
                 else
                 {
-                    alert('Failed to load categories for site: '+ $("#ebay_site option:selected").text()+"\n"+data['msg']);
+                    alert("<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'fail_load_ebay_category');?>".replace("%s", $("#ebay_site option:selected").text()));
                     eBayCategorySelectReset();
                 }
             },
             error: function(data, status, xhr) {
-                alert('Failed to load categories for site: '+ $("#ebay_site option:selected").text());
+                alert("<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'fail_load_ebay_category');?>".replace("%s", $("#ebay_site option:selected").text()));
                 eBayCategorySelectReset();
             }
         });

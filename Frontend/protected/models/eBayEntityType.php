@@ -24,12 +24,14 @@ class eBayEntityType extends NIAdminActiveRecord
 {
 	const EBAY_ENTITY='ebay_entity';
 	const EBAY_PREFETECH='ebay_prefetch';
+    const EABY_THIRD_PARTY='ebay_third_party';
 
 	public function getValueTableOptions()
 	{
 		return array(
 			self::EBAY_ENTITY=>'ebay_entity',
 			self::EBAY_PREFETECH=>'ebay_prefetch',
+            self::EABY_THIRD_PARTY=>'ebay_third_party'
 		);
 	}
 

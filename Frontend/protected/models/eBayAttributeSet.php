@@ -155,30 +155,24 @@ class eBayAttributeSet extends NIAdminActiveRecord
     public function getEntityAttribute($dataPoint, $separator='->')
     {
         $eBayEntityAttribute = Yii::app()->cache->get(sprintf("eBayAttributeSet_entity_%s_code_%s", $this->entity_type_id, $dataPoint));
-        if(!$eBayEntityAttribute)
+        if($eBayEntityAttribute == false)
         {
+            $codes = explode($separator, $dataPoint);
+            //get target entity attribute object recursively
+            $parentEntityAttributeId = 0;
+            foreach($codes as $code)
+            {
+                $criteria = new CDbCriteria();
+                $criteria->join = 'left join {{ebay_attribute}} ea on ea.id = t.attribute_id';
+                $criteria->condition = 't.attribute_set_id=:attribute_set_id and ea.code=:code and t.parent_id=:parent_id and t.entity_type_id=:entity_type_id';
+                $criteria->params = array(':attribute_set_id' => $this->id, ':entity_type_id' => $this->entity_type_id, ':parent_id' => $parentEntityAttributeId, ':code' => $code,);
+                $eBayEntityAttribute = eBayEntityAttribute::model()->find($criteria);
+                if(empty($eBayEntityAttribute)) return NULL;
+                $parentEntityAttributeId = $eBayEntityAttribute->id;
+            }
 
+            Yii::app()->cache->set(sprintf("eBayAttributeSet_entity_%s_code_%s", $this->entity_type_id, $dataPoint), $eBayEntityAttribute, 60 * 60 * 24 * 7);
         }
-        $codes = explode($separator, $dataPoint);
-        //get target entity attribute object recursively
-        $parentEntityAttributeId = 0;
-        foreach($codes as $code)
-        {
-            $criteria = new CDbCriteria();
-            $criteria->join = 'left join {{ebay_attribute}} ea on ea.id = t.attribute_id';
-            $criteria->condition = 't.attribute_set_id=:attribute_set_id and ea.code=:code and t.parent_id=:parent_id and t.entity_type_id=:entity_type_id';
-            $criteria->params = array(
-                ':attribute_set_id'=>$this->id,
-                ':entity_type_id'=>$this->entity_type_id,
-                ':parent_id'=>$parentEntityAttributeId,
-                ':code'=>$code,
-            );
-            $eBayEntityAttribute = eBayEntityAttribute::model()->find($criteria);
-            if(empty($eBayEntityAttribute)) return NULL;
-            $parentEntityAttributeId = $eBayEntityAttribute->id;
-        }
-
-        Yii::app()->cache->set(sprintf("eBayAttributeSet_entity_%s_code_%s", $this->entity_type_id, $dataPoint), $eBayEntityAttribute, 60 * 60 * 24 * 7);
 
         return $eBayEntityAttribute;
     }

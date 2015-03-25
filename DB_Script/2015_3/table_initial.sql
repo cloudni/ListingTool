@@ -154,3 +154,9 @@ CREATE TABLE `lt_ebay_target_and_track` (
   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade
 );
 /*end 2015/03/22*/
+
+/*start 2015/03/25*/
+ALTER TABLE `lt_ticket` ADD COLUMN `company_id` INT NOT NULL AFTER `id`;
+ALTER TABLE `lt_ticket` ADD INDEX `company_id_idx` (`company_id` ASC);
+ALTER TABLE `lt_ticket` ADD CONSTRAINT `company_id` FOREIGN KEY (`company_id`) REFERENCES `lt_company` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+/*end 2015/03/25*/

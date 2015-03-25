@@ -213,7 +213,7 @@ class TicketController extends Controller
         $dataProvider=new CActiveDataProvider('Ticket'
             ,array(
             'criteria' => array(
-                'condition'=>'is_viewable = 1 and parent_id=0',
+                'condition'=>'is_viewable = 1 and parent_id=0 and company_id='.Yii::app()->session['user']->company_id,
                 'order'=>'id desc',
             ),));
 		$this->render('index',array(

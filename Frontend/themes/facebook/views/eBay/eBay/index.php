@@ -23,5 +23,6 @@ $this->menu=array(
 				'dataProvider'=>$dataProvider,
 				'itemView'=>'_viewDashboard',
 			)); ?>
+        </div>
 	</div>
 </div>

@@ -348,3 +348,30 @@ LOCK TABLES `lt_schedule_job` WRITE;
 INSERT INTO `lt_schedule_job` (`platform`,`action`,`params`,`is_active`,`create_time_utc`,`last_execute_status`,`last_execute_result`,`last_execute_time_utc`,`last_finish_time_utc`,`next_execute_time_utc`,`crontab`,`type`) VALUES (1,7,'',1,NULL,4,NULL,NULL,NULL,0,'1 */4 * * *',1);
 UNLOCK TABLES;
 /*end 2015/03/24*/
+
+/*start 2015/03/24*/
+LOCK TABLES `lt_resource_string` WRITE;
+INSERT INTO `lt_resource_string` VALUES ('453', 'last_login_time', '1', '0', '最后登录时间', '1427186878', '1', '1427186878', '1');
+INSERT INTO `lt_resource_string` VALUES ('454', 'last_login_time', '2', '0', 'Last Login Time', '1427186909', '1', '1427186909', '1');
+INSERT INTO `lt_resource_string` VALUES ('455', 'last_login_ip', '1', '0', '最后登录IP', '1427187170', '1', '1427187170', '1');
+INSERT INTO `lt_resource_string` VALUES ('456', 'last_login_ip', '2', '0', 'Last Login IP', '1427187195', '1', '1427187195', '1');
+INSERT INTO `lt_resource_string` VALUES ('457', 'email', '1', '0', '邮箱', '1427187880', '1', '1427187880', '1');
+INSERT INTO `lt_resource_string` VALUES ('458', 'email', '2', '0', 'Email', '1427187895', '1', '1427187895', '1');
+INSERT INTO `lt_resource_string` VALUES ('459', 'input_password_repeat', '1', '0', '再一次输入密码', '1427188010', '1', '1427188010', '1');
+INSERT INTO `lt_resource_string` VALUES ('460', 'input_password_repeat', '2', '0', 'Input Password Repeat', '1427188027', '1', '1427188027', '1');
+INSERT INTO `lt_resource_string` VALUES ('461', 'under_department', '1', '0', '所属部门', '1427188306', '1', '1427188306', '1');
+INSERT INTO `lt_resource_string` VALUES ('462', 'under_department', '2', '0', 'Under Department', '1427188490', '1', '1427188490', '1');
+INSERT INTO `lt_resource_string` VALUES ('463', 'no_setting', '1', '0', '未设置', '1427189996', '1', '1427189996', '1');
+INSERT INTO `lt_resource_string` VALUES ('464', 'no_setting', '2', '0', 'No Setting', '1427190029', '1', '1427190029', '1');
+INSERT INTO `lt_resource_string` VALUES ('465', 'country', '1', '0', '国家', '1427190204', '1', '1427190204', '1');
+INSERT INTO `lt_resource_string` VALUES ('466', 'country', '2', '0', 'Country', '1427190226', '1', '1427190226', '1');
+INSERT INTO `lt_resource_string` VALUES ('467', 'phone_number', '1', '0', '手机号码', '1427190332', '1', '1427190332', '1');
+INSERT INTO `lt_resource_string` VALUES ('468', 'phone_number', '2', '0', 'Phone Number', '1427190349', '1', '1427190349', '1');
+INSERT INTO `lt_resource_string` VALUES ('469', 'higher_department', '1', '0', '上级部门', '1427190529', '1', '1427190529', '1');
+INSERT INTO `lt_resource_string` VALUES ('470', 'higher_department', '2', '0', 'Higher Department', '1427190542', '1', '1427190542', '1');
+INSERT INTO `lt_resource_string` VALUES ('471', 'selected', '1', '0', '已选', '1427190610', '1', '1427190610', '1');
+INSERT INTO `lt_resource_string` VALUES ('472', 'selected', '2', '0', 'Selected', '1427190622', '1', '1427190622', '1');
+INSERT INTO `lt_resource_string` VALUES ('473', 'every', '1', '0', '所有', '1427190856', '1', '1427190856', '1');
+INSERT INTO `lt_resource_string` VALUES ('474', 'every', '2', '0', 'All', '1427190874', '1', '1427190874', '1');
+UNLOCK TABLES;
+/*end 2015/03/24*/

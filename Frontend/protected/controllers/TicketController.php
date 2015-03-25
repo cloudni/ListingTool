@@ -210,12 +210,15 @@ class TicketController extends Controller
 	 */
 	public function actionIndex()
 	{
-        $dataProvider=new CActiveDataProvider('Ticket'
+        $dataProvider=new CActiveDataProvider(
+            'Ticket'
             ,array(
-            'criteria' => array(
-                'condition'=>'is_viewable = 1 and parent_id=0',
-                'order'=>'id desc',
-            ),));
+                'criteria' => array(
+                    'condition'=>'is_viewable = 1 and parent_id=0 and company_id='.Yii::app()->session['user']->company_id,
+                    'order'=>'id desc',
+                ),
+            )
+        );
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));

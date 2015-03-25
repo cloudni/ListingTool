@@ -38,7 +38,7 @@ class EBayController extends Controller
 
     public function actionIndex()
     {
-        $rawData = Yii::app()->cache->get(sprintf("%S_ebay_dashboard", Yii::app()->session['user']->company_id));
+        $rawData = false;//Yii::app()->cache->get(sprintf("%S_ebay_dashboard", Yii::app()->session['user']->company_id));
         if($rawData === false) {
             $criteria = new CDbCriteria();
             $criteria->join = "left join {{ebay_entity_type}} et on et.id = t.entity_type_id";
@@ -112,7 +112,7 @@ class EBayController extends Controller
                 where t.platform = " . Store::PLATFORM_EBAY . " and t.is_active = " . Store::ACTIVE_YES . " and company_id = " . Yii::app()->session['user']->company_id . " ";
 
             $rawData = Yii::app()->db->createCommand($sql)->queryAll();
-            Yii::app()->cache->set(sprintf("%S_ebay_dashboard", Yii::app()->session['user']->company_id),$rawData, 60 * 60 * 2);
+            //Yii::app()->cache->set(sprintf("%S_ebay_dashboard", Yii::app()->session['user']->company_id),$rawData, 60 * 60 * 2);
         }
 
         $dataProvider=new CArrayDataProvider($rawData, array(

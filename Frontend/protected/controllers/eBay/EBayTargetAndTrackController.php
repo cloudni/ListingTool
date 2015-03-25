@@ -329,7 +329,15 @@ class EBayTargetAndTrackController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('eBayTargetAndTrack');
+		$dataProvider=new CActiveDataProvider('eBayTargetAndTrack', array(
+            'criteria'=>array(
+                /*'sort'=>array(
+                    'defaultOrder'=>'create_time_utc DESC',
+                ),*/
+                'condition'=>'company_id='.Yii::app()->session['user']->company_id,
+                'order'=>'id desc',
+            )
+        ));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));

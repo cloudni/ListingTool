@@ -384,9 +384,9 @@ INSERT INTO `lt_resource_string` VALUES ('478', 'paypal', '2', '0', 'PayPal', '1
 INSERT INTO `lt_resource_string` VALUES ('479', 'alipay', '1', '0', '支付宝', '1427336595', '1', '1427336595', '1');
 INSERT INTO `lt_resource_string` VALUES ('480', 'alipay', '2', '0', 'AliPay', '1427336612', '1', '1427336612', '1');
 INSERT INTO `lt_resource_string` VALUES ('481', 'paypal_account', '1', '0', '贝宝账户', '1427336864', '1', '1427336864', '1');
-INSERT INTO `lt_resource_string` VALUES ('482', 'paypal_account', '2', '0', 'Withdraw to PayPal Account', '1427336872', '1', '1427336872', '1');
+INSERT INTO `lt_resource_string` VALUES ('482', 'paypal_account', '2', '0', 'To PayPal Account', '1427336872', '1', '1427336872', '1');
 INSERT INTO `lt_resource_string` VALUES ('483', 'alipay_account', '1', '0', '支付宝账户', '1427336897', '1', '1427336897', '1');
-INSERT INTO `lt_resource_string` VALUES ('484', 'alipay_account', '2', '0', 'Withdraw to AliPay Account', '1427336914', '1', '1427336914', '1');
+INSERT INTO `lt_resource_string` VALUES ('484', 'alipay_account', '2', '0', 'To AliPay Account', '1427336914', '1', '1427336914', '1');
 INSERT INTO `lt_resource_string` VALUES ('485', 'transaction_detail', '1', '0', '交易明细', '1427337083', '1', '1427337083', '1');
 INSERT INTO `lt_resource_string` VALUES ('486', 'transaction_detail', '2', '0', 'Transaction Detail', '1427337094', '1', '1427337094', '1');
 INSERT INTO `lt_resource_string` VALUES ('487', 'deposit', '1', '0', '存款', '1427337195', '1', '1427337195', '1');

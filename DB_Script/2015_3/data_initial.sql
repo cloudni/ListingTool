@@ -375,3 +375,22 @@ INSERT INTO `lt_resource_string` VALUES ('473', 'every', '1', '0', '所有', '14
 INSERT INTO `lt_resource_string` VALUES ('474', 'every', '2', '0', 'All', '1427190874', '1', '1427190874', '1');
 UNLOCK TABLES;
 /*end 2015/03/24*/
+
+/*start 2015/03/26*/
+INSERT INTO `lt_resource_string` VALUES ('475', 'no_data', '1', '0', '无数据', '1427336379', '1', '1427336379', '1');
+INSERT INTO `lt_resource_string` VALUES ('476', 'no_data', '2', '0', 'No Data', '1427336395', '1', '1427336395', '1');
+INSERT INTO `lt_resource_string` VALUES ('477', 'paypal', '1', '0', '贝宝', '1427336555', '1', '1427336555', '1');
+INSERT INTO `lt_resource_string` VALUES ('478', 'paypal', '2', '0', 'PayPal', '1427336577', '1', '1427336577', '1');
+INSERT INTO `lt_resource_string` VALUES ('479', 'alipay', '1', '0', '支付宝', '1427336595', '1', '1427336595', '1');
+INSERT INTO `lt_resource_string` VALUES ('480', 'alipay', '2', '0', 'AliPay', '1427336612', '1', '1427336612', '1');
+INSERT INTO `lt_resource_string` VALUES ('481', 'paypal_account', '1', '0', '贝宝账户', '1427336864', '1', '1427336864', '1');
+INSERT INTO `lt_resource_string` VALUES ('482', 'paypal_account', '2', '0', 'Withdraw to PayPal Account', '1427336872', '1', '1427336872', '1');
+INSERT INTO `lt_resource_string` VALUES ('483', 'alipay_account', '1', '0', '支付宝账户', '1427336897', '1', '1427336897', '1');
+INSERT INTO `lt_resource_string` VALUES ('484', 'alipay_account', '2', '0', 'Withdraw to AliPay Account', '1427336914', '1', '1427336914', '1');
+INSERT INTO `lt_resource_string` VALUES ('485', 'transaction_detail', '1', '0', '交易明细', '1427337083', '1', '1427337083', '1');
+INSERT INTO `lt_resource_string` VALUES ('486', 'transaction_detail', '2', '0', 'Transaction Detail', '1427337094', '1', '1427337094', '1');
+INSERT INTO `lt_resource_string` VALUES ('487', 'deposit', '1', '0', '存款', '1427337195', '1', '1427337195', '1');
+INSERT INTO `lt_resource_string` VALUES ('488', 'deposit', '2', '0', 'Deposit', '1427337207', '1', '1427337207', '1');
+INSERT INTO `lt_resource_string` VALUES ('489', 'withdraw', '1', '0', '取款', '1427337222', '1', '1427337222', '1');
+INSERT INTO `lt_resource_string` VALUES ('490', 'withdraw', '2', '0', 'Withdraw', '1427337229', '1', '1427337229', '1');
+/*end 2015/03/26*/

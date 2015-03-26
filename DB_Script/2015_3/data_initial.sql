@@ -395,4 +395,6 @@ INSERT INTO `lt_resource_string` VALUES ('489', 'withdraw', '1', '0', '取款', 
 INSERT INTO `lt_resource_string` VALUES ('490', 'withdraw', '2', '0', 'Withdraw', '1427337229', '1', '1427337229', '1');
 INSERT INTO `lt_resource_string` VALUES ('491', 'operations', '1', '0', '操作', '1427340595', '1', '1427340595', '1');
 INSERT INTO `lt_resource_string` VALUES ('492', 'operations', '2', '0', 'Operations', '1427340604', '1', '1427340604', '1');
+INSERT INTO `lt_resource_string` VALUES ('493', 'select_condition', '1', '0', '请选择查询条件', '1427349391', '1', '1427349391', '1');
+INSERT INTO `lt_resource_string` VALUES ('494', 'select_condition', '2', '0', 'Select Condition', '1427349434', '1', '1427349434', '1');
 /*end 2015/03/26*/

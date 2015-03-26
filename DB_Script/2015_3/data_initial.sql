@@ -397,4 +397,6 @@ INSERT INTO `lt_resource_string` VALUES ('491', 'operations', '1', '0', '操作'
 INSERT INTO `lt_resource_string` VALUES ('492', 'operations', '2', '0', 'Operations', '1427340604', '1', '1427340604', '1');
 INSERT INTO `lt_resource_string` VALUES ('493', 'select_condition', '1', '0', '请选择查询条件', '1427349391', '1', '1427349391', '1');
 INSERT INTO `lt_resource_string` VALUES ('494', 'select_condition', '2', '0', 'Select Condition', '1427349434', '1', '1427349434', '1');
+INSERT INTO `lt_resource_string` VALUES ('495', 'payment_way', '1', '0', '请选择支付方式', '1427351954', '1', '1427351954', '1');
+INSERT INTO `lt_resource_string` VALUES ('496', 'payment_way', '2', '0', 'Select payment way', '1427351966', '1', '1427351966', '1');
 /*end 2015/03/26*/

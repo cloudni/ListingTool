@@ -126,9 +126,6 @@ class NotificationController extends Controller
 	{
         $dataProvider=new CActiveDataProvider('Notification', array(
             'criteria'=>array(
-                /*'sort'=>array(
-                    'defaultOrder'=>'create_time_utc DESC',
-                ),*/
                 'condition'=>'company_id='.Yii::app()->session['user']->company_id,
                 'order'=>'id desc',
             )
@@ -137,11 +134,6 @@ class NotificationController extends Controller
         $this->render('index',array(
             'dataProvider'=>$dataProvider,
         ));
-		/*$dataProvider=new CActiveDataProvider('Notification');
-        var_dump($dataProvider);die();
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));*/
 	}
 
     public function actionClose($id)

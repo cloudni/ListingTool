@@ -8,6 +8,7 @@
 
 Yii::import('application.vendor.*');
 require_once 'eBay/eBayTradingAPI.php';
+require_once 'eBay/eBayShoppingAPI.php';
 require_once 'LogFile.php';
 
 class schedulejobCommand extends CConsoleCommand

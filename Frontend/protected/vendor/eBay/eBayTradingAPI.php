@@ -56,7 +56,7 @@ class eBayTradingAPI
             'StartTimeFrom'=>'',
             'StartTimeTo'=>'',
             'UserID'=>'',
-            'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll,
+            //'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll,
             'ErrorLanguage'=>eBayErrorLanguageType::en_US,
             'Version'=>'',
             'WarningLevel'=>eBayWarningLevelCodeType::Low,
@@ -2202,6 +2202,283 @@ class eBayTradingAPI
             $xml .= eBayService::createXMLElement('DetailLevel',$param['DetailLevel']);
         else
             $xml .= eBayService::createXMLElement('DetailLevel',eBayDetailLevelCodeType::ReturnAll);
+        return $xml;
+    }
+
+    public static function GetMyeBaySelling($storeId=null, $param=array(
+        'ActiveList'=>array(
+            'Include'=>true,
+            'IncludeNotes'=>false,
+            'Pagination'=>array('EntriesPerPage'=>50, 'PageNumber'=>1),
+        ),
+        'BidList'=>array(
+            'Include'=>true,
+            'Pagination'=>array('EntriesPerPage'=>50, 'PageNumber'=>1),
+        ),
+        'SellingSummary'=>array('Include'=>true),
+    ))
+    {
+        if(!isset($storeId) || $storeId < 1)
+        {
+            return false;
+        }
+
+        $store = Store::model()->findByPk($storeId);
+        if(empty($store) || $store->is_active != Store::ACTIVE_YES || empty($store->ebay_token))
+        {
+            echo "store does not found or disactive!\n";
+            return false;
+        }
+
+        $skuList = array();
+
+        $eBayService = new eBayService();
+        $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").self::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
+        $eBayService->api_url = $store->eBayApiKey->api_url;
+        $eBayService->createHTTPHead($store->ebay_site_code, 893, $store->eBayApiKey->dev_id, $store->eBayApiKey->app_id, $store->eBayApiKey->cert_id, "GetMyeBaySelling");
+
+        try
+        {
+            $result = $eBayService->request();
+
+            if(empty($result) || !$result)
+            {
+                echo "eBay service call failed!\n";
+                return false;
+            }
+
+            if((string)$result->Ack===eBayAckCodeType::Success)
+            {
+
+                if(isset($result->ActiveList->ItemArray))
+                {
+                    foreach($result->ActiveList->ItemArray->Item as $item)
+                    {
+                        $skuList[] = (string)$item->SKU;
+                    }
+                    if(isset($result->ActiveList) && (int)$result->ActiveList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
+                    {
+                        $param['ActiveList']['Pagination']['PageNumber']++;
+                    }
+                    else
+                    {
+                        $param['ActiveList']['Include'] = false;
+                    }
+                }
+
+                if(isset($result->BidList->ItemArray))
+                {
+                    foreach($result->BidList->ItemArray->Item as $item)
+                    {
+                        $skuList[] = (string)$item->SKU;
+                    }
+                    if(isset($result->BidList) && (int)$result->BidList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
+                    {
+                        $param['BidList']['Pagination']['PageNumber']++;
+                    }
+                    else
+                    {
+                        $param['BidList']['Include'] = false;
+                    }
+                }
+
+                while($param['ActiveList']['Include'] || $param['BidList']['Include'])
+                {break;
+                    $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").eBayTradingAPI::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
+                    $result = $eBayService->request();
+
+                    if((string)$result->Ack===eBayAckCodeType::Success)
+                    {
+
+                        if(isset($result->ActiveList->ItemArray))
+                        {
+                            foreach($result->ActiveList->ItemArray->Item as $item)
+                            {
+                                $skuList[] = (string)$item->SKU;
+                            }
+                            if(isset($result->ActiveList) && (int)$result->ActiveList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
+                            {
+                                $param['ActiveList']['Pagination']['PageNumber']++;
+                            }
+                            else
+                            {
+                                $param['ActiveList']['Include'] = false;
+                            }
+                        }
+                        else
+                        {
+                            $param['ActiveList']['Include'] = false;
+                        }
+
+                        if(isset($result->BidList->ItemArray))
+                        {
+                            foreach($result->BidList->ItemArray->Item as $item)
+                            {
+                                $skuList[] = (string)$item->SKU;
+                            }
+                            if(isset($result->BidList) && (int)$result->BidList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
+                            {
+                                $param['BidList']['Pagination']['PageNumber']++;
+                            }
+                            else
+                            {
+                                $param['BidList']['Include'] = false;
+                            }
+                        }
+                        else
+                        {
+                            $param['BidList']['Include'] = false;
+                        }
+
+                        if(!$param['ActiveList']['Include'] && !$param['BidList']['Include']) break;
+
+                        continue;
+                    }
+                    else
+                    {
+                        var_dump($result);
+                        break;
+                    }
+                }
+
+                if(empty($skuList)) return;
+                $skuList = array_unique($skuList);
+                $skuInput = count($skuList) > 1 ? "('".implode("','", $skuList)."')" : "({$skuList[0]})";
+
+                $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
+                if(empty($eBayEntityType))
+                {
+                    echo "eBay entity type for eBay User does not found!\n";
+                    return false;
+                }
+                $eBayAttributeSet = eBayAttributeSet::model()->find(
+                    'entity_type_id=:entity_type_id',
+                    array(
+                        ':entity_type_id'=>$eBayEntityType->id,
+                    )
+                );
+                if(empty($eBayAttributeSet))
+                {
+                    echo "eBay Attribute Set for eBay detail does not found!\n";
+                    return false;
+                }
+                $mainSKUAttribute = $eBayAttributeSet->getEntityAttribute("SKU");
+                if(empty($mainSKUAttribute))
+                {
+                    echo "eBay Attribute for main SKU not found!\n";
+                    return false;
+                }
+
+                $skuInput = count($skuList) > 1 ? "('".implode("','", $skuList)."')" : "({$skuList[0]})";
+                $sql = "SELECT mainsku.value as msku
+                        FROM `lt_ebay_listing` `t`
+                        left join lt_ebay_entity_varchar as mainsku on mainsku.ebay_entity_id = t.id and mainsku.ebay_entity_attribute_id = {$mainSKUAttribute->id}
+                        left join lt_store as s on s.id = t.store_id and s.id = {$store->id}
+                        where t.company_id= {$store->company_id}
+                        and mainsku.value in $skuInput
+                        group by msku;; ";
+                $command = Yii::app()->db->createCommand($sql);
+                $mainSKUs = $command->queryAll();
+                if(empty($mainSKUs)) return true;
+                $validSKUs = array();
+                $lookUpSkus = array();
+                foreach($mainSKUs as $sku)
+                {
+                    $vaildSKUs[] = $sku['msku'];
+                }
+                foreach($skuList as $test)
+                {
+                    if(!in_array($test, $vaildSKUs)) $lookUpSkus[] = $test;
+                }
+
+                return self::GetSellerList($store->id, array(
+                    'AdminEndedItemsOnly'=>false,
+                    'CategoryID'=>0,
+                    'EndTimeFrom'=>'',
+                    'EndTimeTo'=>'',
+                    'GranularityLevel'=>eBayGranularityLevelCodeType::Fine,
+                    'IncludeVariations'=>true,
+                    'IncludeWatchCount'=>true,
+                    'MotorsDealerUsers'=>array(),
+                    'Pagination'=>array('EntriesPerPage'=>50, 'PageNumber'=>1),
+                    'SKUArray'=>$lookUpSkus,
+                    'Sort'=>0,
+                    'StartTimeFrom'=>'',
+                    'StartTimeTo'=>'',
+                    'UserID'=>'',
+                    //'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll,
+                    'ErrorLanguage'=>eBayErrorLanguageType::en_US,
+                    'Version'=>'',
+                    'WarningLevel'=>eBayWarningLevelCodeType::Low,
+                ));
+            }
+            else
+            {
+                var_dump($result);
+                return false;
+            }
+        }
+        catch(Exception $ex)
+        {
+            echo "Exception detected, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
+            return false;
+        }
+    }
+
+    protected static function GetMyeBaySellingXML($param)
+    {
+        $xml = "";
+        if(isset($param['ActiveList']) && !empty($param['ActiveList']))
+        {
+            $activeList = "";
+            if(isset($param['ActiveList']['Include']))
+                $activeList .= eBayService::createXMLElement('Include',$param['ActiveList']['Include'] ? 'true' : 'false');
+            else
+                $activeList .= eBayService::createXMLElement('Include','false');
+            if(isset($param['ActiveList']['IncludeNotes']))
+                $activeList .= eBayService::createXMLElement('IncludeNotes',$param['ActiveList']['IncludeNotes'] ? 'true' : 'false');
+            else
+                $activeList .= eBayService::createXMLElement('IncludeNotes','false');
+            if(isset($param['ActiveList']['Pagination']) && !empty($param['ActiveList']['Pagination']))
+            {
+                $Pagination = "";
+                if(isset($param['ActiveList']['Pagination']['EntriesPerPage']))
+                    $Pagination .= eBayService::createXMLElement('EntriesPerPage', $param['ActiveList']['Pagination']['EntriesPerPage']);
+                if(isset($param['ActiveList']['Pagination']['PageNumber']))
+                    $Pagination .= eBayService::createXMLElement('PageNumber', $param['ActiveList']['Pagination']['PageNumber']);
+                $activeList .= eBayService::createXMLElement('Pagination',$Pagination);
+            }
+            $xml .= eBayService::createXMLElement('ActiveList',$activeList);
+        }
+        if(isset($param['BidList']) && !empty($param['BidList']))
+        {
+            $bidList = "";
+            if(isset($param['BidList']['Include']))
+                $bidList .= eBayService::createXMLElement('Include',$param['BidList']['Include'] ? 'true' : 'false');
+            else
+                $bidList .= eBayService::createXMLElement('Include','false');
+            if(isset($param['BidList']['Pagination']) && !empty($param['BidList']['Pagination']))
+            {
+                $Pagination = "";
+                if(isset($param['BidList']['Pagination']['EntriesPerPage']))
+                    $Pagination .= eBayService::createXMLElement('EntriesPerPage', $param['BidList']['Pagination']['EntriesPerPage']);
+                if(isset($param['BidList']['Pagination']['PageNumber']))
+                    $Pagination .= eBayService::createXMLElement('PageNumber', $param['BidList']['Pagination']['PageNumber']);
+                $bidList .= eBayService::createXMLElement('Pagination',$Pagination);
+            }
+            $xml .= eBayService::createXMLElement('BidList',$bidList);
+        }
+        if(isset($param['SellingSummary']) && !empty($param['SellingSummary']))
+        {
+            $sellingSummary = "";
+            if(isset($param['SellingSummary']['Include']))
+                $sellingSummary .= eBayService::createXMLElement('Include',$param['SellingSummary']['Include'] ? 'true' : 'false');
+            else
+                $sellingSummary .= eBayService::createXMLElement('Include','false');
+            $xml .= eBayService::createXMLElement('SellingSummary',$sellingSummary);
+        }
+        $xml .= eBayService::createXMLElement('HideVariations','false');
+
         return $xml;
     }
 } 

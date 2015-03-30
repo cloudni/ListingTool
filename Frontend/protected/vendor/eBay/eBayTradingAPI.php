@@ -2209,11 +2209,11 @@ class eBayTradingAPI
         'ActiveList'=>array(
             'Include'=>true,
             'IncludeNotes'=>false,
-            'Pagination'=>array('EntriesPerPage'=>50, 'PageNumber'=>1),
+            'Pagination'=>array('EntriesPerPage'=>100, 'PageNumber'=>1),
         ),
         'BidList'=>array(
             'Include'=>true,
-            'Pagination'=>array('EntriesPerPage'=>50, 'PageNumber'=>1),
+            'Pagination'=>array('EntriesPerPage'=>100, 'PageNumber'=>1),
         ),
         'SellingSummary'=>array('Include'=>true),
     ))
@@ -2283,7 +2283,7 @@ class eBayTradingAPI
                 }
 
                 while($param['ActiveList']['Include'] || $param['BidList']['Include'])
-                {break;
+                {
                     $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").eBayTradingAPI::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
                     $result = $eBayService->request();
 

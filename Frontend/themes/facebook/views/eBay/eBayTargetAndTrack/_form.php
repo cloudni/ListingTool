@@ -310,7 +310,8 @@
                     searchCategory: searchCategory,
                     searchStore: searchStore,
                     searchMode: searchMode,
-                    searchEngine: searchEngine
+                    searchEngine: searchEngine,
+                    excludeShipLocation: false
                 },
                 dataType: "JSON",
                 success: function(data, status, xhr) {
@@ -324,13 +325,16 @@
                         $("#searched_listing_table tr:gt(0)").remove();
                         for(var i=0;i<data['data'].length;i++)
                         {
+                            var temp = data['data'][i];
+                            temp = data['data'][i]['title'];
+                            data['data'][i]['title'] = "";
                             $("#searched_listing_table tr:last").after(
                                 "<tr>" +
                                 "<td><input type='checkbox' id='searched_listing_id[]' name='searched_listing_id[]' value='"+data['data'][i]['ebay_listing_id']+"' onclick=' ' /></td>" +
                                 "<td>"+(data['data'][i]['msku'])+"</td>" +
                                 "<td>"+(data['data'][i]['storename'])+"</td>" +
                                 "<td><a href='"+(data['data'][i]['viewurl'])+"' target='_blank'>"+(data['data'][i]['ebay_listing_id'])+"</a></td>" +
-                                "<td><span title='"+(data['data'][i]['title'])+"'>"+((data['data'][i]['title'].length > 10 ? data['data'][i]['title'].substring(0,10) : data['data'][i]['title'])+'...')+"</span></td>" +
+                                "<td><span title='"+(temp)+"'>"+((temp.length > 10 ? temp.substring(0,10) : temp)+'...')+"</span></td>" +
                                 "<td>"+geteBaySiteCode(data['data'][i]['site_id'])+"</td>" +
                                 "<td>"+(data['data'][i]['listtype'])+"</td>" +
                                 "<td>"+(data['data'][i]['listduration'])+"</td>" +

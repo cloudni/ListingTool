@@ -136,6 +136,7 @@ class schedulejobCommand extends CConsoleCommand
         $store = Store::model()->findByPk((int)$scheduleJob->params);
 
         eBayTradingAPI::GetSellerList($store->id);
+        eBayTradingAPI::GetMyeBaySelling($store->id);
 
         echo "end schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n\n";
         return true;

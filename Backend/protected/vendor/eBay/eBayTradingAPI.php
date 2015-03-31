@@ -1206,7 +1206,7 @@ class eBayTradingAPI
         $xml .= eBayService::createXMLElement('Variations',$VariationXML);
         if(isset($params['Description']) && isset($params['DescriptionReviseMode']))
         {
-            $xml .= eBayService::createXMLElement('Description', $params['Description']);
+            $xml .= eBayService::createXMLElement('Description', CHtml::encode($params['Description']));
             $xml .= eBayService::createXMLElement('DescriptionReviseMode', $params['DescriptionReviseMode']);
         }
         if(isset($params['ExcludeShipToLocation']))

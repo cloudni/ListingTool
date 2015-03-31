@@ -213,6 +213,7 @@ class EBayListingController extends Controller
                             where t.company_id=:company_id
                             and sstatus.value = '".eBayListingStatusCodeType::Active."'
                             $whereSQL
+                            group by t.ebay_listing_id
                             order by msku asc; ";
                 $command = Yii::app()->db->createCommand($select);
                 $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);

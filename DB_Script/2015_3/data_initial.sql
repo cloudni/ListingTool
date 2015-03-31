@@ -418,4 +418,6 @@ INSERT INTO `lt_resource_string` VALUES ('509', 'net', '1', '0', '充值金额',
 INSERT INTO `lt_resource_string` VALUES ('510', 'net', '2', '0', 'Net', '1427769867', '1', '1427769867', '1');
 INSERT INTO `lt_resource_string` VALUES ('511', 'account_alance', '1', '0', '账户余额', '1427769867', '1', '1427769867', '1');
 INSERT INTO `lt_resource_string` VALUES ('512', 'account_alance', '2', '0', 'Account Balance', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('513', 'id', '1', '0', '编号', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('514', 'id', '2', '0', 'ID', '1427769867', '1', '1427769867', '1');
 /*end 2015/03/31*/

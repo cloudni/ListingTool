@@ -83,6 +83,12 @@ class eBayTradingAPI
         {
             $result = $eBayService->request();
 
+            if(empty($result))
+            {
+                echo "service call failed with no return.\n";
+                return false;
+            }
+
             if((string)$result->Ack===eBayAckCodeType::Success)
             {
                 /*process seller information */
@@ -145,44 +151,47 @@ class eBayTradingAPI
                     echo "current process page: {$params['Pagination']['PageNumber']}\n\n";
                     $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetSellerList").eBayTradingAPI::GetSellerListXML($params).$eBayService->getRequestAuthFoot("GetSellerList");
                     $result = $eBayService->request();
-                    if(!empty($result))
+                    if(empty($result))
                     {
-                        if(!empty($result->Ack) && (string)$result->Ack===eBayAckCodeType::Success)
+                        echo "service call failed with no return.\n";
+                        return false;
+                    }
+
+                    if(!empty($result->Ack) && (string)$result->Ack===eBayAckCodeType::Success)
+                    {
+                        $HasMoreItems = (bool)$result->HasMoreItems;
+                        if(!empty($result->ItemArray->Item))
                         {
-                            $HasMoreItems = (bool)$result->HasMoreItems;
-                            if(!empty($result->ItemArray->Item))
+                            $itemList = (array)$result->ItemArray;
+                            if(!empty($itemList))
                             {
-                                $itemList = (array)$result->ItemArray;
-                                if(!empty($itemList))
+                                if(is_array($itemList['Item']))
                                 {
-                                    if(is_array($itemList['Item']))
+                                    foreach($itemList['Item'] as $key=>$item)
                                     {
-                                        foreach($itemList['Item'] as $key=>$item)
-                                        {
-                                            eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
-                                        }
+                                        eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
                                     }
-                                    else
-                                    {
-                                        eBayTradingAPI::processeBayListingV2($store, $itemList['Item'], $eBayEntityType);
-                                    }
+                                }
+                                else
+                                {
+                                    eBayTradingAPI::processeBayListingV2($store, $itemList['Item'], $eBayEntityType);
                                 }
                             }
                         }
-                        else
-                        {
-                            $Version = (string)$result->Version;
-                            $Timestamp = (string)$result->Timestamp;
-                            $Errors = array(
-                                'ErrorClassification'=>(string)$result->Errors->ErrorClassification,
-                                'ErrorCode'=>(string)$result->Errors->ErrorCode,
-                                'ShortMessage'=>(string)$result->Errors->ShortMessage,
-                                'LongMessage'=>(string)$result->Errors->LongMessage,
-                                'SeverityCode'=>(string)$result->Errors->SeverityCode,
-                            );
-                            var_dump($Version, $Timestamp, $Errors, $result);
-                            return $Errors;
-                        }
+                    }
+                    else
+                    {
+                        $Version = (string)$result->Version;
+                        $Timestamp = (string)$result->Timestamp;
+                        $Errors = array(
+                            'ErrorClassification'=>(string)$result->Errors->ErrorClassification,
+                            'ErrorCode'=>(string)$result->Errors->ErrorCode,
+                            'ShortMessage'=>(string)$result->Errors->ShortMessage,
+                            'LongMessage'=>(string)$result->Errors->LongMessage,
+                            'SeverityCode'=>(string)$result->Errors->SeverityCode,
+                        );
+                        var_dump($Version, $Timestamp, $Errors, $result);
+                        return $Errors;
                     }
                 }
             }
@@ -1197,7 +1206,7 @@ class eBayTradingAPI
         $xml .= eBayService::createXMLElement('Variations',$VariationXML);
         if(isset($params['Description']) && isset($params['DescriptionReviseMode']))
         {
-            $xml .= eBayService::createXMLElement('Description', $params['Description']);
+            $xml .= eBayService::createXMLElement('Description', "<![CDATA[".$params['Description']."]]>");
             $xml .= eBayService::createXMLElement('DescriptionReviseMode', $params['DescriptionReviseMode']);
         }
         if(isset($params['ExcludeShipToLocation']))
@@ -1210,7 +1219,7 @@ class eBayTradingAPI
 
         $xml = eBayService::createXMLElement('Item',$xml);
         //standard input
-        $xml .= eBayService::createXMLElement('VerifyOnly','true');//$params['VerifyOnly'] ? 'true' : 'false');
+        $xml .= eBayService::createXMLElement('VerifyOnly',$params['VerifyOnly'] ? 'true' : 'false');
         $xml .= eBayService::createXMLElement('ErrorLanguage',eBayErrorLanguageType::en_US);
         $xml .= eBayService::createXMLElement('WarningLevel',eBayWarningLevelCodeType::High);
         return $xml;
@@ -1309,7 +1318,7 @@ class eBayTradingAPI
         if(isset($params['Quantity'])) $xml .= eBayService::createXMLElement('Quantity',$params['Quantity']);
         if(isset($params['Description']) && isset($params['DescriptionReviseMode']))
         {
-            $xml .= eBayService::createXMLElement('Description', $params['Description']);
+            $xml .= eBayService::createXMLElement('Description', "<![CDATA[".$params['Description']."]]>");
             $xml .= eBayService::createXMLElement('DescriptionReviseMode', $params['DescriptionReviseMode']);
         }
         if(isset($params['ExcludeShipToLocation']))
@@ -1321,7 +1330,7 @@ class eBayTradingAPI
         }
         $xml = eBayService::createXMLElement('Item',$xml);
 
-        $xml .= eBayService::createXMLElement('VerifyOnly','true');//$params['VerifyOnly'] ? 'true' : 'false');
+        $xml .= eBayService::createXMLElement('VerifyOnly',$params['VerifyOnly'] ? 'true' : 'false');
         $xml .= eBayService::createXMLElement('ErrorLanguage',eBayErrorLanguageType::en_US);
         $xml .= eBayService::createXMLElement('WarningLevel',eBayWarningLevelCodeType::High);
 
@@ -1369,6 +1378,23 @@ class eBayTradingAPI
                 try
                 {
                     $item = $result->Item;
+
+                    $transaction= Yii::app()->db->beginTransaction();
+                    $eBayListing->site_id = eBaySiteName::geteBaySiteNameCode((string)$item->Site);
+                    if($eBayListing->isNewRecord)
+                    {
+                        $eBayListing->create_time_utc = time();
+                        $eBayListing->update_time_utc = time();
+                        $eBayListing->create_user_id = 0;
+                        $eBayListing->update_user_id = 0;
+                    }
+                    else
+                    {
+                        $eBayListing->update_time_utc = time();
+                        $eBayListing->update_user_id = 0;
+                    }
+                    $eBayListing->save();
+                    $transaction->commit();
 
                     $transaction= Yii::app()->db->beginTransaction();
                     //clear all item's attribute value record
@@ -2230,7 +2256,7 @@ class eBayTradingAPI
             return false;
         }
 
-        $skuList = array();
+        $eBayIDList = array();
 
         $eBayService = new eBayService();
         $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").self::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
@@ -2254,7 +2280,7 @@ class eBayTradingAPI
                 {
                     foreach($result->ActiveList->ItemArray->Item as $item)
                     {
-                        $skuList[] = (string)$item->SKU;
+                        $eBayIDList[] = (string)$item->ItemID;
                     }
                     if(isset($result->ActiveList) && (int)$result->ActiveList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
                     {
@@ -2270,7 +2296,7 @@ class eBayTradingAPI
                 {
                     foreach($result->BidList->ItemArray->Item as $item)
                     {
-                        $skuList[] = (string)$item->SKU;
+                        $eBayIDList[] = (string)$item->ItemID;
                     }
                     if(isset($result->BidList) && (int)$result->BidList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
                     {
@@ -2287,6 +2313,12 @@ class eBayTradingAPI
                     $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").eBayTradingAPI::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
                     $result = $eBayService->request();
 
+                    if(empty($result))
+                    {
+                        echo "service call failed with no return.\n";
+                        return false;
+                    }
+
                     if((string)$result->Ack===eBayAckCodeType::Success)
                     {
 
@@ -2294,7 +2326,7 @@ class eBayTradingAPI
                         {
                             foreach($result->ActiveList->ItemArray->Item as $item)
                             {
-                                $skuList[] = (string)$item->SKU;
+                                $eBayIDList[] = (string)$item->ItemID;
                             }
                             if(isset($result->ActiveList) && (int)$result->ActiveList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
                             {
@@ -2314,7 +2346,7 @@ class eBayTradingAPI
                         {
                             foreach($result->BidList->ItemArray->Item as $item)
                             {
-                                $skuList[] = (string)$item->SKU;
+                                $eBayIDList[] = (string)$item->ItemID;
                             }
                             if(isset($result->BidList) && (int)$result->BidList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
                             {
@@ -2341,76 +2373,73 @@ class eBayTradingAPI
                     }
                 }
 
-                if(empty($skuList)) return;
-                $skuList = array_unique($skuList);
-                $skuInput = count($skuList) > 1 ? "('".implode("','", $skuList)."')" : "({$skuList[0]})";
+                if(empty($eBayIDList)) return true;
+                $eBayIDList = array_unique($eBayIDList);
+                $idInput = count($eBayIDList) > 1 ? "('".implode("','", $eBayIDList)."')" : "({$eBayIDList[0]})";
+
+                $sql = "SELECT ebay_listing_id FROM lt_ebay_listing t
+                        where t.company_id= {$store->company_id} and t.store_id = {$store->id}
+                        and t.ebay_listing_id in $idInput
+                        group by t.ebay_listing_id;";
+                $command = Yii::app()->db->createCommand($sql);
+                $ids = $command->queryAll();
+                if(empty($ids)) return true;
+                $validIDs = array();
+                $lookUpIDs = array();
+                foreach($ids as $id)
+                {
+                    $validIDs[] = $id['ebay_listing_id'];
+                }
+                foreach($eBayIDList as $test)
+                {
+                    if(!in_array($test, $validIDs)) $lookUpIDs[] = $test;
+                }
 
                 $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
-                if(empty($eBayEntityType))
-                {
-                    echo "eBay entity type for eBay User does not found!\n";
-                    return false;
-                }
+                if(empty($eBayEntityType)) return false;
+
                 $eBayAttributeSet = eBayAttributeSet::model()->find(
-                    'entity_type_id=:entity_type_id',
+                    'entity_type_id=:entity_type_id and is_active=:is_active',
                     array(
                         ':entity_type_id'=>$eBayEntityType->id,
+                        ':is_active'=>eBayAttributeSet::ACTIVE_YES,
                     )
                 );
-                if(empty($eBayAttributeSet))
+                if(empty($eBayAttributeSet)) return false;
+
+                /*update active status*/
+                $statusAttribute = $eBayAttributeSet->getEntityAttribute('SellingStatus->ListingStatus');
+                $clearSQL = "update lt_ebay_entity_varchar t
+                                set `value` = :value
+                                where t.id in (select * from (
+                                    SELECT t.id FROM lt_ebay_entity_varchar t
+                                    left join lt_ebay_listing el on el.id = t.ebay_entity_id
+                                    left join lt_store s on s.id = el.store_id
+                                    where ebay_entity_attribute_id = :ebay_entity_attribute_id and s.id = :store_id and el.ebay_listing_id in $idInput ) as inside )";
+                $command = Yii::app()->db->createCommand($clearSQL);
+                $command->bindValue(":value", eBayListingStatusCodeType::Active, PDO::PARAM_STR);
+                $command->bindValue(":ebay_entity_attribute_id", $statusAttribute->id, PDO::PARAM_INT);
+                $command->bindValue(":store_id", $store->id, PDO::PARAM_INT);
+                $command->execute();
+                /*end*/
+
+                if(empty($lookUpIDs)) return true;
+
+                foreach($lookUpIDs as $id)
                 {
-                    echo "eBay Attribute Set for eBay detail does not found!\n";
-                    return false;
-                }
-                $mainSKUAttribute = $eBayAttributeSet->getEntityAttribute("SKU");
-                if(empty($mainSKUAttribute))
-                {
-                    echo "eBay Attribute for main SKU not found!\n";
-                    return false;
+                    $eBayListing = new eBayListing();
+                    $eBayListing->ebay_listing_id = $id;
+                    $eBayListing->store_id = $store->id;
+                    $eBayListing->company_id = $store->company_id;
+                    $eBayListing->site_id = $store->ebay_site_code;
+                    $eBayListing->is_active = 1;
+                    $eBayListing->ebay_entity_type_id = $eBayEntityType->id;
+                    $eBayListing->ebay_attribute_set_id = $eBayAttributeSet->id;
+                    self::GetItem($eBayListing);
+                    echo "$id has been synched.\n";
                 }
 
-                $skuInput = count($skuList) > 1 ? "('".implode("','", $skuList)."')" : "({$skuList[0]})";
-                $sql = "SELECT mainsku.value as msku
-                        FROM `lt_ebay_listing` `t`
-                        left join lt_ebay_entity_varchar as mainsku on mainsku.ebay_entity_id = t.id and mainsku.ebay_entity_attribute_id = {$mainSKUAttribute->id}
-                        left join lt_store as s on s.id = t.store_id and s.id = {$store->id}
-                        where t.company_id= {$store->company_id}
-                        and mainsku.value in $skuInput
-                        group by msku;; ";
-                $command = Yii::app()->db->createCommand($sql);
-                $mainSKUs = $command->queryAll();
-                if(empty($mainSKUs)) return true;
-                $validSKUs = array();
-                $lookUpSkus = array();
-                foreach($mainSKUs as $sku)
-                {
-                    $vaildSKUs[] = $sku['msku'];
-                }
-                foreach($skuList as $test)
-                {
-                    if(!in_array($test, $vaildSKUs)) $lookUpSkus[] = $test;
-                }
-
-                return self::GetSellerList($store->id, array(
-                    'AdminEndedItemsOnly'=>false,
-                    'CategoryID'=>0,
-                    'EndTimeFrom'=>'',
-                    'EndTimeTo'=>'',
-                    'GranularityLevel'=>eBayGranularityLevelCodeType::Fine,
-                    'IncludeVariations'=>true,
-                    'IncludeWatchCount'=>true,
-                    'MotorsDealerUsers'=>array(),
-                    'Pagination'=>array('EntriesPerPage'=>50, 'PageNumber'=>1),
-                    'SKUArray'=>$lookUpSkus,
-                    'Sort'=>0,
-                    'StartTimeFrom'=>'',
-                    'StartTimeTo'=>'',
-                    'UserID'=>'',
-                    //'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll,
-                    'ErrorLanguage'=>eBayErrorLanguageType::en_US,
-                    'Version'=>'',
-                    'WarningLevel'=>eBayWarningLevelCodeType::Low,
-                ));
+                return true;
             }
             else
             {

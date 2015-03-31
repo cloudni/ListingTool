@@ -73,7 +73,7 @@ class schedulejobCommand extends CConsoleCommand
                 if($scheduleJob->type == ScheduleJob::TYPE_ONCE)
                     $scheduleJob->is_active = ScheduleJob::ACTIVE_NO;
                 else
-                    $scheduleJob->next_execute_time_utc = $scheduleJob->getNextExecuteTime();
+                    if($result) $scheduleJob->next_execute_time_utc = $scheduleJob->getNextExecuteTime();
                 $scheduleJob->update();
 
                 $transaction->commit();

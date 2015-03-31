@@ -83,6 +83,12 @@ class eBayTradingAPI
         {
             $result = $eBayService->request();
 
+            if(empty($result))
+            {
+                echo "service call failed with no return.\n";
+                return false;
+            }
+
             if((string)$result->Ack===eBayAckCodeType::Success)
             {
                 /*process seller information */
@@ -145,44 +151,47 @@ class eBayTradingAPI
                     echo "current process page: {$params['Pagination']['PageNumber']}\n\n";
                     $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetSellerList").eBayTradingAPI::GetSellerListXML($params).$eBayService->getRequestAuthFoot("GetSellerList");
                     $result = $eBayService->request();
-                    if(!empty($result))
+                    if(empty($result))
                     {
-                        if(!empty($result->Ack) && (string)$result->Ack===eBayAckCodeType::Success)
+                        echo "service call failed with no return.\n";
+                        return false;
+                    }
+
+                    if(!empty($result->Ack) && (string)$result->Ack===eBayAckCodeType::Success)
+                    {
+                        $HasMoreItems = (bool)$result->HasMoreItems;
+                        if(!empty($result->ItemArray->Item))
                         {
-                            $HasMoreItems = (bool)$result->HasMoreItems;
-                            if(!empty($result->ItemArray->Item))
+                            $itemList = (array)$result->ItemArray;
+                            if(!empty($itemList))
                             {
-                                $itemList = (array)$result->ItemArray;
-                                if(!empty($itemList))
+                                if(is_array($itemList['Item']))
                                 {
-                                    if(is_array($itemList['Item']))
+                                    foreach($itemList['Item'] as $key=>$item)
                                     {
-                                        foreach($itemList['Item'] as $key=>$item)
-                                        {
-                                            eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
-                                        }
+                                        eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
                                     }
-                                    else
-                                    {
-                                        eBayTradingAPI::processeBayListingV2($store, $itemList['Item'], $eBayEntityType);
-                                    }
+                                }
+                                else
+                                {
+                                    eBayTradingAPI::processeBayListingV2($store, $itemList['Item'], $eBayEntityType);
                                 }
                             }
                         }
-                        else
-                        {
-                            $Version = (string)$result->Version;
-                            $Timestamp = (string)$result->Timestamp;
-                            $Errors = array(
-                                'ErrorClassification'=>(string)$result->Errors->ErrorClassification,
-                                'ErrorCode'=>(string)$result->Errors->ErrorCode,
-                                'ShortMessage'=>(string)$result->Errors->ShortMessage,
-                                'LongMessage'=>(string)$result->Errors->LongMessage,
-                                'SeverityCode'=>(string)$result->Errors->SeverityCode,
-                            );
-                            var_dump($Version, $Timestamp, $Errors, $result);
-                            return $Errors;
-                        }
+                    }
+                    else
+                    {
+                        $Version = (string)$result->Version;
+                        $Timestamp = (string)$result->Timestamp;
+                        $Errors = array(
+                            'ErrorClassification'=>(string)$result->Errors->ErrorClassification,
+                            'ErrorCode'=>(string)$result->Errors->ErrorCode,
+                            'ShortMessage'=>(string)$result->Errors->ShortMessage,
+                            'LongMessage'=>(string)$result->Errors->LongMessage,
+                            'SeverityCode'=>(string)$result->Errors->SeverityCode,
+                        );
+                        var_dump($Version, $Timestamp, $Errors, $result);
+                        return $Errors;
                     }
                 }
             }
@@ -2306,6 +2315,12 @@ class eBayTradingAPI
                 {
                     $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").eBayTradingAPI::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
                     $result = $eBayService->request();
+
+                    if(empty($result))
+                    {
+                        echo "service call failed with no return.\n";
+                        return false;
+                    }
 
                     if((string)$result->Ack===eBayAckCodeType::Success)
                     {

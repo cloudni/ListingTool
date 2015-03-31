@@ -1219,7 +1219,7 @@ class eBayTradingAPI
 
         $xml = eBayService::createXMLElement('Item',$xml);
         //standard input
-        $xml .= eBayService::createXMLElement('VerifyOnly','true');//$params['VerifyOnly'] ? 'true' : 'false');
+        $xml .= eBayService::createXMLElement('VerifyOnly',$params['VerifyOnly'] ? 'true' : 'false');
         $xml .= eBayService::createXMLElement('ErrorLanguage',eBayErrorLanguageType::en_US);
         $xml .= eBayService::createXMLElement('WarningLevel',eBayWarningLevelCodeType::High);
         return $xml;
@@ -1330,7 +1330,7 @@ class eBayTradingAPI
         }
         $xml = eBayService::createXMLElement('Item',$xml);
 
-        $xml .= eBayService::createXMLElement('VerifyOnly','true');//$params['VerifyOnly'] ? 'true' : 'false');
+        $xml .= eBayService::createXMLElement('VerifyOnly',$params['VerifyOnly'] ? 'true' : 'false');
         $xml .= eBayService::createXMLElement('ErrorLanguage',eBayErrorLanguageType::en_US);
         $xml .= eBayService::createXMLElement('WarningLevel',eBayWarningLevelCodeType::High);
 

@@ -1318,7 +1318,7 @@ class eBayTradingAPI
         if(isset($params['Quantity'])) $xml .= eBayService::createXMLElement('Quantity',$params['Quantity']);
         if(isset($params['Description']) && isset($params['DescriptionReviseMode']))
         {
-            $xml .= eBayService::createXMLElement('Description', $params['Description']);
+            $xml .= eBayService::createXMLElement('Description', htmlspecialchars($params['Description'], ENT_NOQUOTES));
             $xml .= eBayService::createXMLElement('DescriptionReviseMode', $params['DescriptionReviseMode']);
         }
         if(isset($params['ExcludeShipToLocation']))

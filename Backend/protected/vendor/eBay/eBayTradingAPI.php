@@ -1206,7 +1206,7 @@ class eBayTradingAPI
         $xml .= eBayService::createXMLElement('Variations',$VariationXML);
         if(isset($params['Description']) && isset($params['DescriptionReviseMode']))
         {
-            $xml .= eBayService::createXMLElement('Description', htmlspecialchars($params['Description'], ENT_NOQUOTES));
+            $xml .= eBayService::createXMLElement('Description', "&nbsp;".htmlspecialchars($params['Description'], ENT_NOQUOTES)."&nbsp;");
             $xml .= eBayService::createXMLElement('DescriptionReviseMode', $params['DescriptionReviseMode']);
         }
         if(isset($params['ExcludeShipToLocation']))
@@ -1318,7 +1318,7 @@ class eBayTradingAPI
         if(isset($params['Quantity'])) $xml .= eBayService::createXMLElement('Quantity',$params['Quantity']);
         if(isset($params['Description']) && isset($params['DescriptionReviseMode']))
         {
-            $xml .= eBayService::createXMLElement('Description', htmlspecialchars($params['Description'], ENT_NOQUOTES));
+            $xml .= eBayService::createXMLElement('Description', "&nbsp;".htmlspecialchars($params['Description'], ENT_NOQUOTES)."&nbsp;");
             $xml .= eBayService::createXMLElement('DescriptionReviseMode', $params['DescriptionReviseMode']);
         }
         if(isset($params['ExcludeShipToLocation']))

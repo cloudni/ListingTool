@@ -400,3 +400,22 @@ INSERT INTO `lt_resource_string` VALUES ('494', 'select_condition', '2', '0', 'S
 INSERT INTO `lt_resource_string` VALUES ('495', 'payment_way', '1', '0', '请选择支付方式', '1427351954', '1', '1427351954', '1');
 INSERT INTO `lt_resource_string` VALUES ('496', 'payment_way', '2', '0', 'Select payment way', '1427351966', '1', '1427351966', '1');
 /*end 2015/03/26*/
+
+/*start 2015/03/31*/
+INSERT INTO `lt_resource_string` VALUES ('497', 'transactionId', '1', '0', '交易号', '1427769789', '1', '1427769789', '1');
+INSERT INTO `lt_resource_string` VALUES ('498', 'transactionId', '2', '0', 'Transaction ID', '1427769807', '1', '1427769807', '1');
+INSERT INTO `lt_resource_string` VALUES ('499', 'total', '1', '0', '交易金额', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('500', 'total', '2', '0', 'Total', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('501', 'date', '1', '0', '交易时间', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('502', 'date', '2', '0', 'Date', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('503', 'type', '1', '0', '交易类型', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('504', 'type', '2', '0', 'Type', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('505', 'status', '1', '0', '交易状态', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('506', 'status', '2', '0', 'Status', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('507', 'fee', '1', '0', '交易扣款', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('508', 'fee', '2', '0', 'Fee', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('509', 'net', '1', '0', '充值金额', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('510', 'net', '2', '0', 'Net', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('511', 'account_alance', '1', '0', '账户余额', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('512', 'account_alance', '2', '0', 'Account Balance', '1427769867', '1', '1427769867', '1');
+/*end 2015/03/316*/

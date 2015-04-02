@@ -39,7 +39,8 @@ class eBayShoppingAPI
         try
         {
             $result = $eBayService->request();
-            if((string)$result->Ack===eBayAckCodeType::Success)
+            if(empty($result)) return false;
+            if(isset($result->Ack) && (string)$result->Ack===eBayAckCodeType::Success)
             {
                 $eBayAttributeSet = eBayAttributeSet::model()->find(
                     'entity_type_id=:entity_type_id and is_active=:is_active',

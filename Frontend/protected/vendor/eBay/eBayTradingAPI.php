@@ -803,7 +803,7 @@ class eBayTradingAPI
         try
         {
             $result = $eBayService->request();
-            if(!$result)
+            if(empty($result) || !$result)
             {
                 echo "fail to call eBay API, result is false.\n";
                 return false;
@@ -1117,6 +1117,11 @@ class eBayTradingAPI
         $eBayService->createHTTPHead($eBayListing->site_id, $eBayListing->Store->eBayApiKey->compatibility_level, $eBayListing->Store->eBayApiKey->dev_id, $eBayListing->Store->eBayApiKey->app_id, $eBayListing->Store->eBayApiKey->cert_id, "ReviseFixedPriceItem");
 
         $result = $eBayService->request();
+        if(empty($result)) return array(
+            'listingId'=>$eBayListing->ebay_listing_id,
+            'Status'=>eBayAckCodeType::Failure,
+            'Msg'=>array('Fail to call eBay API.'),
+        );
 
         if((string)$result->Ack===eBayAckCodeType::Success)
         {
@@ -1236,6 +1241,11 @@ class eBayTradingAPI
         $eBayService->createHTTPHead($eBayListing->site_id, $eBayListing->Store->eBayApiKey->compatibility_level, $eBayListing->Store->eBayApiKey->dev_id, $eBayListing->Store->eBayApiKey->app_id, $eBayListing->Store->eBayApiKey->cert_id, "ReviseItem");
 
         $result = $eBayService->request();
+        if(empty($result)) return array(
+            'listingId'=>$eBayListing->ebay_listing_id,
+            'Status'=>eBayAckCodeType::Failure,
+            'Msg'=>array('Fail to call eBay API.'),
+        );
 
         if((string)$result->Ack===eBayAckCodeType::Success)
         {
@@ -1454,6 +1464,7 @@ class eBayTradingAPI
         try
         {
             $result = $eBayService->request();
+            if(empty($result)) return false;
             if((string)$result->Ack===eBayAckCodeType::Success)
             {
                 return (string)$result->SessionID;
@@ -1492,6 +1503,7 @@ class eBayTradingAPI
         try
         {
             $result = $eBayService->request();
+            if(empty($result)) return false;
             if((string)$result->Ack===eBayAckCodeType::Success)
             {
                 return array('eBayAuthToken'=>(string)$result->eBayAuthToken, 'HardExpirationTime'=>(string)$result->HardExpirationTime);

@@ -386,7 +386,7 @@ class EBayListingController extends Controller
 
         $params["company_id"] = Yii::app()->session['user']->company_id;
 
-        if(count($params['applied_listings'])>1)
+        if(count($params['applied_listings'])>0)
         {
             $instantJob = new InstantJob();
             $instantJob->action = InstantJob::ACTION_BULKUPDATEITEMS;
@@ -396,7 +396,7 @@ class EBayListingController extends Controller
             $instantJob->create_time_utc = time();
             if($instantJob->save(false))
             {
-                Yii::app()->user->setFlash('Success', 'Request has been added into schedule successfully. You will receive notification after done!<br />If you want to execute immediately, please select less than or equal to 1 items.');
+                Yii::app()->user->setFlash('Success', 'Request has been added into schedule successfully. You will receive notification after done!<br />');//If you want to execute immediately, please select less than or equal to 1 items.');
                 $this->redirect($this->createAbsoluteUrl("eBay/eBayListing/bulkUpdate", array()));
             }
             else

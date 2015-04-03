@@ -979,6 +979,7 @@ class eBayTradingAPI
                     $input['Variations'] = array();
                     foreach($Variations['Variation'] as $Variation)
                     {
+                        if(!isset($Variation["SKU"]) || !isset($Variation['StartPrice']) || !isset($Variation['StartPrice']["Value"])) continue;
                         $temp = array();
                         $temp['SKU'] = $Variation["SKU"];
                         if(isset($params['update_rules']['quantity']) && !empty($params['update_rules']['quantity']))

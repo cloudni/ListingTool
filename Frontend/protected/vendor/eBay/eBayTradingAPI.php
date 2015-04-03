@@ -2389,7 +2389,7 @@ class eBayTradingAPI
                 $eBayIDList = array_unique($eBayIDList);
                 $idInput = count($eBayIDList) > 1 ? "('".implode("','", $eBayIDList)."')" : "({$eBayIDList[0]})";
 
-                $sql = "SELECT ebay_listing_id FROM lt_ebay_listing t
+                $sql = "SELECT t.ebay_listing_id, t.update_time_utc FROM lt_ebay_listing t
                         where t.company_id= {$store->company_id} and t.store_id = {$store->id}
                         and t.ebay_listing_id in $idInput
                         group by t.ebay_listing_id;";
@@ -2401,10 +2401,14 @@ class eBayTradingAPI
                 foreach($ids as $id)
                 {
                     $validIDs[] = $id['ebay_listing_id'];
+                    $listings[$id['ebay_listing_id']] = array('id'=>$id['ebay_listing_id'], 'update'=>$id['update_time_utc']);
                 }
                 foreach($eBayIDList as $test)
                 {
-                    if(!in_array($test, $validIDs)) $lookUpIDs[] = $test;
+                    if(!in_array($test, $validIDs))
+                        $lookUpIDs[] = $test;
+                    else if(in_array($test, $validIDs) && $listings[$test]['update'] < time() - 60 * 60 *12)
+                        $lookUpIDs[] = $test;
                 }
 
                 $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
@@ -2439,14 +2443,18 @@ class eBayTradingAPI
 
                 foreach($lookUpIDs as $id)
                 {
-                    $eBayListing = new eBayListing();
-                    $eBayListing->ebay_listing_id = $id;
-                    $eBayListing->store_id = $store->id;
-                    $eBayListing->company_id = $store->company_id;
-                    $eBayListing->site_id = $store->ebay_site_code;
-                    $eBayListing->is_active = 1;
-                    $eBayListing->ebay_entity_type_id = $eBayEntityType->id;
-                    $eBayListing->ebay_attribute_set_id = $eBayAttributeSet->id;
+                    $eBayListing = eBayListing::model()->find('ebay_listing_id=:ebay_listing_id', array(':ebay_listing_id'=>$id));
+                    if(empty($eBayListing))
+                    {
+                        $eBayListing = new eBayListing();
+                        $eBayListing->ebay_listing_id = $id;
+                        $eBayListing->store_id = $store->id;
+                        $eBayListing->company_id = $store->company_id;
+                        $eBayListing->site_id = $store->ebay_site_code;
+                        $eBayListing->is_active = 1;
+                        $eBayListing->ebay_entity_type_id = $eBayEntityType->id;
+                        $eBayListing->ebay_attribute_set_id = $eBayAttributeSet->id;
+                    }
                     self::GetItem($eBayListing);
                     echo "$id has been synched.\n";
                 }

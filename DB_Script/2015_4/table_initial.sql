@@ -1,4 +1,5 @@
 /*start 2015-04-07*/
+drop table if exists `lt_ad_campaign`;
 CREATE TABLE `lt_ad_campaign` (
   `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
@@ -20,6 +21,7 @@ CREATE TABLE `lt_ad_campaign` (
   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade
 );
 
+drop table if exists `lt_ad_campaign_schedule`;
 CREATE TABLE `lt_ad_campaign_schedule` (
   `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `campaign_id` INT NULL,
@@ -32,6 +34,7 @@ CREATE TABLE `lt_ad_campaign_schedule` (
   foreign key (`campaign_id`) references lt_ad_campaign (`id`) on delete cascade on update cascade
 );
 
+drop table if exists `lt_ad_group`;
 CREATE TABLE `lt_ad_group` (
   `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
@@ -51,6 +54,7 @@ CREATE TABLE `lt_ad_group` (
   foreign key (`campaign_id`) references lt_ad_campaign (`id`) on delete cascade on update cascade
 );
 
+drop table if exists `lt_ad_group_placement`;
 CREATE TABLE `lt_ad_group_placement` (
   `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `group_id` INT NOT NULL,

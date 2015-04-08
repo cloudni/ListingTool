@@ -152,7 +152,7 @@ CREATE TABLE `lt_ebay_target_and_track` (
   `update_time_utc` INT NULL DEFAULT 0,
   `update_user_id` INT NULL DEFAULT 0,
   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*end 2015/03/22*/
 
 /*start 2015/03/25*/

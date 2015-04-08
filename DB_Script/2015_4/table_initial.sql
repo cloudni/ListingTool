@@ -19,7 +19,7 @@ CREATE TABLE `lt_ad_campaign` (
   `update_time_utc` INT NULL DEFAULT 0,
   `update_user_id` INT NULL DEFAULT 0,
   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 drop table if exists `lt_ad_campaign_schedule`;
 CREATE TABLE `lt_ad_campaign_schedule` (
@@ -32,7 +32,7 @@ CREATE TABLE `lt_ad_campaign_schedule` (
   `to_minute` CHAR(2) NULL DEFAULT '00',
   `timezone` VARCHAR(255) NULL DEFAULT 'Asia/Shanghai',
   foreign key (`campaign_id`) references lt_ad_campaign (`id`) on delete cascade on update cascade
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 drop table if exists `lt_ad_group`;
 CREATE TABLE `lt_ad_group` (
@@ -52,7 +52,7 @@ CREATE TABLE `lt_ad_group` (
   `update_user_id` INT NULL DEFAULT 0,
   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade,
   foreign key (`campaign_id`) references lt_ad_campaign (`id`) on delete cascade on update cascade
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 drop table if exists `lt_ad_group_placement`;
 CREATE TABLE `lt_ad_group_placement` (
@@ -60,7 +60,7 @@ CREATE TABLE `lt_ad_group_placement` (
   `group_id` INT NOT NULL,
   `URL` VARCHAR(500) NOT NULL,
   foreign key (`group_id`) references lt_ad_group (`id`) on delete cascade on update cascade
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /**********************Create by Tik Begin***********************/
 drop table if exists lt_ad_feed;
@@ -68,6 +68,7 @@ create table lt_ad_feed
 (
    id                   int not null PRIMARY KEY AUTO_INCREMENT,
    feed_name            varchar(255),
+   ad_id				int not null,
    remarketing_url      varchar(100) not null,
    item_id              int not null,
    item_keywords        text,
@@ -83,20 +84,20 @@ create table lt_ad_feed
    create_user_id       INT NULL DEFAULT 0,
    update_time_utc      INT NULL DEFAULT 0,
    update_user_id       INT NULL DEFAULT 0,
-   primary key (id)
-);
+   foreign key (`ad_id`) references lt_ad_ad (`id`) on delete cascade on update cascade
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 drop table if exists lt_ad_ad;
 create table lt_ad_ad
 (
    id                   int not null PRIMARY KEY AUTO_INCREMENT,
    ad_group_id          int not null,
-   feed_id              int not null,
-   primary key (id)
-);
-
-alter table lt_ad_ad add constraint FK_feed foreign key (feed_id)
-      references lt_ad_feed (id) on delete restrict on update restrict;
+   `name`				varchar(255) not null,
+   `note`				varchar(255) null,
+   `company_id` INT NOT NULL,
+   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade,
+   foreign key (`ad_group_id`) references lt_ad_group (`id`) on delete cascade on update cascade
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 drop table if exists lt_ad_ad_variation;
 create table lt_ad_ad_variation
@@ -104,6 +105,7 @@ create table lt_ad_ad_variation
    id                   int not null PRIMARY KEY AUTO_INCREMENT,
    ad_group_id          int not null comment '所属广告组ID',
    ad_id                int not null,
+   `company_id` INT NOT NULL,
    ad_type              int not null comment '广告类型（1：文字 2：图片 3：创意广告）',
    status               tinyint(1) not null comment '状态',
    headline             varchar(100) not null comment '标题',
@@ -120,10 +122,8 @@ create table lt_ad_ad_variation
    create_user_id       INT NULL DEFAULT 0,
    update_time_utc      INT NULL DEFAULT 0,
    update_user_id       INT NULL DEFAULT 0,
-   primary key (id)
-);
-
-alter table lt_ad_ad_variation add constraint FK_ad foreign key (ad_id)
-      references lt_ad_ad (id) on delete restrict on update restrict;
+   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade,
+   foreign key (`ad_id`) references lt_ad_ad (`id`) on delete cascade on update cascade
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /**********************Create by Tik End*************************/
 /*end 2015-04-07*/

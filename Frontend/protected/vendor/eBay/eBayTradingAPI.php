@@ -859,9 +859,10 @@ class eBayTradingAPI
         {
             $transaction= Yii::app()->db->beginTransaction();
             $eBayCategory = eBayCategory::model()->find(
-                'CategoryID=:CategoryID',
+                'CategoryID=:CategoryID and CategorySiteID=:CategorySiteID',
                 array(
                     ':CategoryID'=>(string)$category['CategoryID'],
+                    ':CategorySiteID'=>(string)$category['CategorySiteID'],
                 )
             );
 
@@ -876,7 +877,7 @@ class eBayTradingAPI
             if(isset($category['B2BVATEnabled'])) $eBayCategory->B2BVATEnabled = (string)$category['B2BVATEnabled'] == 'true' ? 1 : 0;
             if(isset($category['BestOfferEnabled'])) $eBayCategory->BestOfferEnabled = (string)$category['BestOfferEnabled'] == 'true' ? 1 : 0;
             if(isset($category['CategoryID'])) $eBayCategory->CategoryID = (string)$category['CategoryID'];
-
+            if(isset($category['CategorySiteID'])) $eBayCategory->CategoryID = (string)$category['CategorySiteID'];
             if(isset($category['CategoryLevel'])) $eBayCategory->CategoryLevel = (int)$category['CategoryLevel'];
             if(isset($category['CategoryName'])) $eBayCategory->CategoryName = (string)$category['CategoryName'];
             if(isset($category['CategoryParentID'])) $eBayCategory->CategoryParentID = (string)$category['CategoryParentID'];

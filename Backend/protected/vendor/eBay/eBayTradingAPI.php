@@ -859,15 +859,17 @@ class eBayTradingAPI
         {
             $transaction= Yii::app()->db->beginTransaction();
             $eBayCategory = eBayCategory::model()->find(
-                'CategoryID=:CategoryID and CategorySiteID=:CategorySiteID and CategoryLevel=:CategoryLevel',
+                'CategoryID=:CategoryID',
                 array(
                     ':CategoryID'=>(string)$category['CategoryID'],
-                    ':CategorySiteID'=>$site_id,
-                    ':CategoryLevel'=>(int)$category['CategoryLevel']
                 )
             );
 
-            if(empty($eBayCategory)) $eBayCategory = new eBayCategory();
+            if(empty($eBayCategory))
+            {
+                $eBayCategory = new eBayCategory();
+                $eBayCategory->create_time_utc = time();
+            }
             $category = (array)$category;
             echo "category id: {$category['CategoryID']}, name: {$category['CategoryName']}. ";
             if(isset($category['AutoPayEnabled'])) $eBayCategory->AutoPayEnabled = (string)$category['AutoPayEnabled'] == 'true' ? 1 : 0;
@@ -887,8 +889,17 @@ class eBayTradingAPI
             $eBayCategory->ebay_entity_type_id=$eBayEntityType->id;
             $eBayCategory->ebay_attribute_set_id=$eBayAttributeSet->id;
             $eBayCategory->CategorySiteID = $site_id;
-            if($eBayCategory->save(false)) echo "done!\n"; else echo "failed.\n";
-            $transaction->commit();
+            $eBayCategory->update_time_utc = time();
+            if($eBayCategory->save())
+            {
+                echo "done!\n";
+                $transaction->commit();
+            }
+            else
+            {
+                echo "failed.\n";
+                $transaction->rollback();
+            }
         }
         catch(Exception $ex)
         {

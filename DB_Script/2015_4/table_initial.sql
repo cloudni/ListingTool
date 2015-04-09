@@ -127,3 +127,7 @@ create table lt_ad_ad_variation
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /**********************Create by Tik End*************************/
 /*end 2015-04-07*/
+
+/*start 2015-04-09*/
+ALTER TABLE `lt_ebay_category` CHANGE COLUMN `CategoryID` `CategoryID` VARCHAR(10) NOT NULL , ADD UNIQUE INDEX `CategoryID_UNIQUE` (`CategoryID` ASC);
+/*end 2015-04-09*/

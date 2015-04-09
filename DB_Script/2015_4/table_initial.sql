@@ -5,6 +5,7 @@ CREATE TABLE `lt_ad_campaign` (
   `name` VARCHAR(255) NOT NULL,
   `company_id` INT NOT NULL,
   `status` tinyint(1) not null default 0,
+  `qualify` tinyint(4) not null default 0,
   `is_delete` tinyint(1) not null default 0,
   `type` TINYINT(4) NOT NULL DEFAULT 1,
   `bid_strategy` TINYINT(1) NOT NULL DEFAULT 1,
@@ -129,5 +130,6 @@ create table lt_ad_ad_variation
 /*end 2015-04-07*/
 
 /*start 2015-04-09*/
-ALTER TABLE `lt_ebay_category` CHANGE COLUMN `CategoryID` `CategoryID` VARCHAR(10) NOT NULL , ADD UNIQUE INDEX `CategoryID_UNIQUE` (`CategoryID` ASC);
+ALTER TABLE `lt_ebay_category` CHANGE COLUMN `CategoryID` `CategoryID` VARCHAR(10) NOT NULL;
+ALTER TABLE `lt_ebay_category` add constraint category_id_and_site_id UNIQUE(CategoryID,CategorySiteID);
 /*end 2015-04-09*/

@@ -857,12 +857,13 @@ class eBayTradingAPI
         $transaction = NULL;
         try
         {
+            $category = (array)$category;
             $transaction= Yii::app()->db->beginTransaction();
             $eBayCategory = eBayCategory::model()->find(
                 'CategoryID=:CategoryID and CategorySiteID=:CategorySiteID',
                 array(
                     ':CategoryID'=>(string)$category['CategoryID'],
-                    ':CategorySiteID'=>(string)$category['CategorySiteID'],
+                    ':CategorySiteID'=>$site_id,
                 )
             );
 
@@ -871,13 +872,13 @@ class eBayTradingAPI
                 $eBayCategory = new eBayCategory();
                 $eBayCategory->create_time_utc = time();
             }
-            $category = (array)$category;
+
             echo "category id: {$category['CategoryID']}, name: {$category['CategoryName']}. ";
             if(isset($category['AutoPayEnabled'])) $eBayCategory->AutoPayEnabled = (string)$category['AutoPayEnabled'] == 'true' ? 1 : 0;
             if(isset($category['B2BVATEnabled'])) $eBayCategory->B2BVATEnabled = (string)$category['B2BVATEnabled'] == 'true' ? 1 : 0;
             if(isset($category['BestOfferEnabled'])) $eBayCategory->BestOfferEnabled = (string)$category['BestOfferEnabled'] == 'true' ? 1 : 0;
             if(isset($category['CategoryID'])) $eBayCategory->CategoryID = (string)$category['CategoryID'];
-            if(isset($category['CategorySiteID'])) $eBayCategory->CategoryID = (string)$category['CategorySiteID'];
+
             if(isset($category['CategoryLevel'])) $eBayCategory->CategoryLevel = (int)$category['CategoryLevel'];
             if(isset($category['CategoryName'])) $eBayCategory->CategoryName = (string)$category['CategoryName'];
             if(isset($category['CategoryParentID'])) $eBayCategory->CategoryParentID = (string)$category['CategoryParentID'];

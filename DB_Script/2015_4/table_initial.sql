@@ -5,7 +5,6 @@ CREATE TABLE `lt_ad_campaign` (
   `name` VARCHAR(255) NOT NULL,
   `company_id` INT NOT NULL,
   `status` tinyint(1) not null default 0,
-  `qualify` tinyint(4) not null default 0,
   `is_delete` tinyint(1) not null default 0,
   `type` TINYINT(4) NOT NULL DEFAULT 1,
   `bid_strategy` TINYINT(1) NOT NULL DEFAULT 1,

@@ -63,6 +63,18 @@ CREATE TABLE `lt_ad_group_placement` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /**********************Create by Tik Begin***********************/
+drop table if exists lt_ad_ad;
+create table lt_ad_ad
+(
+   id                   int not null PRIMARY KEY AUTO_INCREMENT,
+   ad_group_id          int not null,
+   `name`				varchar(255) not null,
+   `note`				varchar(255) null,
+   `company_id` INT NOT NULL,
+   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade,
+   foreign key (`ad_group_id`) references lt_ad_group (`id`) on delete cascade on update cascade
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 drop table if exists lt_ad_feed;
 create table lt_ad_feed
 (
@@ -85,18 +97,6 @@ create table lt_ad_feed
    update_time_utc      INT NULL DEFAULT 0,
    update_user_id       INT NULL DEFAULT 0,
    foreign key (`ad_id`) references lt_ad_ad (`id`) on delete cascade on update cascade
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-drop table if exists lt_ad_ad;
-create table lt_ad_ad
-(
-   id                   int not null PRIMARY KEY AUTO_INCREMENT,
-   ad_group_id          int not null,
-   `name`				varchar(255) not null,
-   `note`				varchar(255) null,
-   `company_id` INT NOT NULL,
-   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade,
-   foreign key (`ad_group_id`) references lt_ad_group (`id`) on delete cascade on update cascade
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 drop table if exists lt_ad_ad_variation;

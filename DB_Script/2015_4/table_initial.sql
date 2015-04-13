@@ -6,32 +6,16 @@ CREATE TABLE `lt_ad_campaign` (
   `company_id` INT NOT NULL,
   `status` tinyint(1) not null default 0,
   `is_delete` tinyint(1) not null default 0,
-  `type` TINYINT(4) NOT NULL DEFAULT 1,
-  `bid_strategy` TINYINT(1) NOT NULL DEFAULT 1,
+  `criteria` text null comment 'other criterias in JSON format', 
   `budget` DECIMAL(20,4) NULL DEFAULT 0,
-  `target_language` TEXT NULL,
-  `target_area` TEXT NULL,
   `start_datetime` INT NOT NULL DEFAULT 0,
   `end_datetime` INT NULL DEFAULT NULL,
-  `timezone` VARCHAR(255) NULL DEFAULT 'UTC+8',
   `note` VARCHAR(255) NULL,
   `create_time_utc` INT NULL DEFAULT 0,
   `create_user_id` INT NULL DEFAULT 0,
   `update_time_utc` INT NULL DEFAULT 0,
   `update_user_id` INT NULL DEFAULT 0,
   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-drop table if exists `lt_ad_campaign_schedule`;
-CREATE TABLE `lt_ad_campaign_schedule` (
-  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `campaign_id` INT NULL,
-  `days` INT NULL,
-  `from_hour` CHAR(2) NULL DEFAULT '00',
-  `from_minute` CHAR(2) NULL DEFAULT '00',
-  `to_hour` CHAR(2) NULL DEFAULT '00',
-  `to_minute` CHAR(2) NULL DEFAULT '00',
-  foreign key (`campaign_id`) references lt_ad_campaign (`id`) on delete cascade on update cascade
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 drop table if exists `lt_ad_group`;

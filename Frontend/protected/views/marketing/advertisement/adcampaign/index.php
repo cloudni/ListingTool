@@ -1,8 +1,8 @@
 <?php
-/* @var $this ADGroupController */
+/* @var $this ADCampaignController */
 
 $this->breadcrumbs=array(
-	'Adgroup',
+	'Campaign',
 );
 ?>
 <h1><?php echo $this->id . '/' . $this->action->id; ?></h1>

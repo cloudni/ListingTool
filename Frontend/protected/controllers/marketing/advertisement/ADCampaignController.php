@@ -1,6 +1,6 @@
 <?php
 
-class CampaignController extends Controller
+class ADCampaignController extends Controller
 {
     public $layout='';
 
@@ -73,7 +73,7 @@ class CampaignController extends Controller
             }
             $model->criteria = json_encode($criteria);
             if($model->save())
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/campaign/view", array('id'=>$model->id)));
+                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>$model->id)));
         }
 
         $this->render('create', array(
@@ -126,7 +126,7 @@ class CampaignController extends Controller
             }
             $model->criteria = json_encode($criteria);
             if($model->save())
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/campaign/view", array('id'=>$model->id)));
+                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>$model->id)));
         }
 
         $this->render('update',array(

@@ -1,6 +1,6 @@
 <?php
 
-class AdgroupController extends Controller
+class ADGroupController extends Controller
 {
     public $layout='';
 

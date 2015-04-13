@@ -2,8 +2,11 @@
 
 class AdgroupController extends Controller
 {
-	public function actionIndex()
+    public $layout='';
+
+	public function actionIndex($campaignId=null)
 	{
+        $this->layout='//layouts/column2';
 		$this->render('index');
 	}
 

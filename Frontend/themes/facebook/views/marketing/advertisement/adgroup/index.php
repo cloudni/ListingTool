@@ -1,5 +1,5 @@
 <?php
-/* @var $this AdgroupController */
+/* @var $this ADGroupController */
 
 $this->breadcrumbs=array(
     'Marketing',

@@ -1,5 +1,5 @@
 <?php
-/* @var $this CampaignController */
+/* @var $this ADCampaignController */
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
@@ -9,8 +9,8 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-    array('label'=>'Test Campaign #1', 'url'=>array('/marketing/advertisement/campaign/view/id/1')),
-    array('label'=>'Test Campaign #2', 'url'=>array('/marketing/advertisement/campaign/view/id/2')),
+    array('label'=>'Test Campaign #1', 'url'=>array('/marketing/advertisement/adcampaign/view/id/1')),
+    array('label'=>'Test Campaign #2', 'url'=>array('/marketing/advertisement/adcampaign/view/id/2')),
 );
 ?>
 
@@ -40,7 +40,7 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/campaign/create"); ?>'; " />
+                    <input type="button" class="boldFont greenButton redButton" value="+ Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/create"); ?>'; " />
                     <input id="menu_campaign_filter_button" type="button" value="All ▼" class="menuButton" onclick="showMenu('menu_campaign_filter');" />
                     <ul id="menu_campaign_filter" class="ui-menu" style="width: 180px;" >
                         <li value="All_Campaigns">All Campaigns</li>

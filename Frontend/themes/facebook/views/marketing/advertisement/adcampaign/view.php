@@ -6,7 +6,7 @@
  * Time: 13:45
  */
 
-/* @var $this CampaignController */
+/* @var $this ADCampaignController */
 /* @var $model AdCampaign */
 
 $this->breadcrumbs=array(

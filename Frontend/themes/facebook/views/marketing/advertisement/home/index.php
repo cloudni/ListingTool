@@ -52,7 +52,7 @@ $this->breadcrumbs=array(
     <div class="borderBlock">
         <div>
             <div style="position: relative; float: right; top: 5px;">
-                <a style="color: #3b5998; font-size: 14px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/campaign");?>">See All</a>
+                <a style="color: #3b5998; font-size: 14px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign");?>">See All</a>
             </div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; padding: 12px 12px 0px 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">

@@ -30,3 +30,7 @@
 .uiContextualLayerPositioner{
     right: 890px;
 }
+
+.adCampaignBudgetCurrency {
+    position: relative; left: -88px;
+}

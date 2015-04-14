@@ -207,7 +207,7 @@ drop table if exists `lt_ad_change_log`;
 CREATE TABLE `lt_ad_change_log` (
   `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `company_id` INT NOT NULL,
-  `object_type` TINYINT(4) NOT NULL comment '记录这条log对应对象的类名，比如ADCampaign',
+  `object_type` varchar(255) NOT NULL comment '记录这条log对应对象的类名，比如ADCampaign',
   `object_id` INT NOT NULL comment '记录这条log对应对象的主键',
   `action` INT NOT NULL DEFAULT 0 comment '记录的动作，包括新增，更新，删除',
   `content` TEXT NOT NULL,

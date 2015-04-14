@@ -238,8 +238,8 @@ CREATE TABLE `lt_google_adwords_category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 alter table lt_ebay_category add column google_adwords_category_id int(11);
-ALTER TABLE `table_name` ADD INDEX ebay_google_adwords_id ( `google_adwords_category_id` );
-ALTER TABLE `table_name` ADD INDEX ebay_category_parentId ( `CategoryParentID` );
+ALTER TABLE `lt_ebay_category` ADD INDEX `ebay_google_adwords_id` ( `google_adwords_category_id` ) USING BTREE;
+ALTER TABLE `lt_ebay_category` ADD INDEX `ebay_category_parentId` ( `CategoryParentID` ) USING BTREE;
 
 DROP TABLE IF EXISTS `lt_transaction_authorize`;
 CREATE TABLE `lt_transaction_authorize` (

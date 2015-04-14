@@ -219,4 +219,37 @@ CREATE TABLE `lt_ad_change_log` (
   `update_user_id` INT NULL DEFAULT 0 comment '记录这条log最后更新的管理员ID',
   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade
 );
+
+DROP TABLE IF EXISTS `lt_google_adwords_category`;
+CREATE TABLE `lt_google_adwords_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `CategoryId` int(11) NOT NULL,
+  `CategoryName` varchar(100) DEFAULT NULL,
+  `CategoryNameCn` varchar(100) DEFAULT NULL,
+  `CategoryLevel` tinyint(4) DEFAULT NULL,
+  `CategoryParentID` int(11) DEFAULT NULL,
+  `CategoryValue` varchar(255) DEFAULT NULL,
+  `CategoryDesc` varchar(255) DEFAULT NULL,
+  `is_deleted` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `google_adwords_category_id` (`id`) USING BTREE,
+  KEY `google_adwords_category_id_2` (`CategoryId`) USING BTREE,
+  KEY `google_adwords_category_parentId` (`CategoryParentID`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+alter table lt_ebay_category add column google_adwords_category_id int(11);
+ALTER TABLE `table_name` ADD INDEX ebay_google_adwords_id ( `google_adwords_category_id` );
+ALTER TABLE `table_name` ADD INDEX ebay_category_parentId ( `CategoryParentID` );
+
+DROP TABLE IF EXISTS `lt_transaction_authorize`;
+CREATE TABLE `lt_transaction_authorize` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `company_id` int(11) DEFAULT NULL COMMENT '关联lt_company.id',
+  `amount` decimal(10,4) DEFAULT NULL COMMENT '冻结金额',
+  `ref_id` int(11) DEFAULT NULL COMMENT '外键，关联表的id',
+  `ref_object` varchar(30) DEFAULT NULL COMMENT '关联表的类型：google为“AdCampaign”',
+  PRIMARY KEY (`id`),
+  KEY `transaction_authorize_company_id` (`company_id`),
+  CONSTRAINT `transaction_authorize_company_id` FOREIGN KEY (`company_id`) REFERENCES `lt_company` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*end 2015-04-14*/

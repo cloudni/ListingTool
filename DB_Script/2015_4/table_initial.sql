@@ -201,3 +201,22 @@ create table lt_ad_ad_variation
 ALTER TABLE `lt_ebay_category` CHANGE COLUMN `CategoryID` `CategoryID` VARCHAR(10) NOT NULL;
 ALTER TABLE `lt_ebay_category` add constraint category_id_and_site_id UNIQUE(CategoryID,CategorySiteID);
 /*end 2015-04-09*/
+
+/*start 2015-04-14*/
+drop table if exists `lt_ad_change_log`;
+CREATE TABLE `lt_ad_change_log` (
+  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `company_id` INT NOT NULL,
+  `object_type` TINYINT(4) NOT NULL comment '记录这条log对应对象的类名，比如ADCampaign',
+  `object_id` INT NOT NULL comment '记录这条log对应对象的主键',
+  `action` INT NOT NULL DEFAULT 0 comment '记录的动作，包括新增，更新，删除',
+  `content` TEXT NOT NULL,
+  `status` TINYINT(4) NOT NULL DEFAULT 0 comment '记录这条log是否已经被同步过，包括等待处理，已处理，处理出错',
+  `priority` TINYINT(4) NOT NULL DEFAULT 0 comment 'log的优先级，一般，高优先级，最高优先级，紧急',
+  `create_time_utc` INT NULL DEFAULT 0,
+  `create_user_id` INT NULL DEFAULT 0 comment '记录产生动作触发这条log的用户ID',
+  `update_time_utc` INT NULL DEFAULT 0,
+  `update_user_id` INT NULL DEFAULT 0 comment '记录这条log最后更新的管理员ID',
+  foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade
+);
+/*end 2015-04-14*/

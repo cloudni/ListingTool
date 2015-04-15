@@ -1,5 +1,5 @@
 /*start 2015/04/03*/
-ALTER TABLE `lt_company` ADD COLUMN `balance` decimal(10,2) NULL;
+ALTER TABLE `lt_company` ADD COLUMN `balance` decimal(10,4) NULL;
 
 DROP TABLE IF EXISTS `lt_transaction`;
 CREATE TABLE `lt_transaction` (

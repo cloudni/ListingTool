@@ -8,7 +8,7 @@ class ADCampaignController extends Controller
 	{
         $this->layout='//layouts/column2';
 
-        $campaigns = AdCampaign::model()->findAll("company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
+        $campaigns = ADCampaign::model()->findAll("company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
         $rawData = array();
         foreach($campaigns as $campaign)
         {
@@ -37,15 +37,15 @@ class ADCampaignController extends Controller
 
     public function actionCreate()
     {
-        $model = new AdCampaign();
+        $model = new ADCampaign();
 
         if(isset($_POST['campaign']))
         {
             $model->name = (string)$_POST['campaign']['name'];
             $model->budget = (float)$_POST['campaign']['budget'];
             $model->company_id = Yii::app()->session['user']->company_id;
-            $model->status = AdCampaign::Status_Eligible;
-            $model->is_delete = AdCampaign::Delete_No;
+            $model->status = ADCampaign::Status_Eligible;
+            $model->is_delete = ADCampaign::Delete_No;
             $criteria['language'] = !isset($_POST['language_option_all_value']) && isset($_POST['language_option_value']) && !empty($_POST['language_option_value']) ? implode(',', $_POST['language_option_value']) : '';
             $locations = array();
             foreach($_POST as $key => $value)
@@ -73,7 +73,37 @@ class ADCampaignController extends Controller
             }
             $model->criteria = json_encode($criteria);
             if($model->save())
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>$model->id)));
+            {
+                $aDLog = new ADChangeLog();
+                $aDLog->company_id = Yii::app()->session['user']->company_id;
+                $aDLog->object_type = "ADCampaign";
+                $aDLog->object_id = $model->id;
+                $aDLog->title = "Add New AD Campaign for Company: ".Yii::app()->session['user']->company->name;
+                $aDLog->action = ADChangeLog::Action_AddNew;
+                $aDLog->status = ADChangeLog::Status_Pending;
+                $aDLog->priority = ADChangeLog::Priority_Normal;
+                $aDLog->create_time_utc = time();
+                $aDLog->create_user_id = Yii::app()->session['user']->id;
+                $content = "";
+                $content .= "Add New AD Campaign for Company id: ".Yii::app()->session['user']->company->id.", name: ".Yii::app()->session['user']->company->name."<br />";
+                $content .= "Campaign Name: {$model->name}.<br />";
+                $content .= "Campaign Budget: ".sprintf("$%1\$.2f", $model->budget)."<br />";
+                $content .= "Campaign Start Date: ".date('Y-m-d', $model->start_datetime)."<br />";
+                if(isset($model->end_datetime)) $content .= "Campaign End Date: ".date('Y-m-d', $model->end_datetime)."<br />";
+                $content .= "Campaign Language: ".($criteria['language'] ? $criteria['language'] : "All Languages")."<br />";
+                $content .= "Campaign Location: ".($criteria['location'] ? $criteria['location'] : "All Countries and Regions")."<br />";
+                if(isset($criteria['schedule']) && !empty($criteria['schedule']))
+                {
+                    $content .= "Campaign Time-zone: {$criteria['timezone']}<br />";
+                    $content .= "Campaign Schedule:<br/>";
+                    foreach($criteria['schedule'] as $schedule)
+                        $content .= "Day: {$schedule['day']}, From: {$schedule['from_hour']}:{$schedule['from_minute']}, To: {$schedule['to_hour']}:{$schedule['to_minute']}<br />";
+                }
+                $aDLog->content = $content;
+                $aDLog->save();
+
+                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/adgroup/create", array('adcampaignid'=>$model->id, 'lead' => true,)));
+            }
         }
 
         $this->render('create', array(
@@ -95,10 +125,11 @@ class ADCampaignController extends Controller
 
         if(isset($_POST['campaign']))
         {
+            $oldModel = $this->loadModel($id);
             $model->budget = (float)$_POST['campaign']['budget'];
             $model->company_id = Yii::app()->session['user']->company_id;
-            $model->status = AdCampaign::Status_Eligible;
-            $model->is_delete = AdCampaign::Delete_No;
+            $model->status = ADCampaign::Status_Eligible;
+            $model->is_delete = ADCampaign::Delete_No;
             $criteria['language'] = !isset($_POST['language_option_all_value']) && isset($_POST['language_option_value']) && !empty($_POST['language_option_value']) ? implode(',', $_POST['language_option_value']) : '';
             $locations = array();
             foreach($_POST as $key => $value)
@@ -126,7 +157,43 @@ class ADCampaignController extends Controller
             }
             $model->criteria = json_encode($criteria);
             if($model->save())
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>$model->id)));
+            {
+                $aDLog = new ADChangeLog();
+                $aDLog->company_id = Yii::app()->session['user']->company_id;
+                $aDLog->object_type = "ADCampaign";
+                $aDLog->object_id = $model->id;
+                $aDLog->title = "UpDate AD Campaign for Company: ".Yii::app()->session['user']->company->name.", Campaign Name: ".$model->name;
+                $aDLog->action = ADChangeLog::Action_Update;
+                $aDLog->status = ADChangeLog::Status_Pending;
+                $aDLog->priority = ADChangeLog::Priority_Normal;
+                $aDLog->create_time_utc = time();
+                $aDLog->create_user_id = Yii::app()->session['user']->id;
+                $content = "";
+                $content .= "UpDate AD Campaign for Company id: ".Yii::app()->session['user']->company->id.", name: ".Yii::app()->session['user']->company->name."<br />";
+                $content .= "Campaign Name: {$model->name}.<br />";
+                if($oldModel->budget != $model->budget)
+                    $content .= "Campaign Budget Changed From: ".sprintf("$%1\$.2f", $oldModel->budget).", To: ".sprintf("$%1\$.2f", $model->budget)."<br />";
+                if($oldModel->start_datetime != $model->start_datetime)
+                    $content .= "Campaign Start Date Changed From: ".date('Y-m-d', $oldModel->start_datetime).", To: ".date('Y-m-d', $model->start_datetime)."<br />";
+                if($oldModel->end_datetime != $model->end_datetime)
+                    $content .= "Campaign End Date Changed From: ".(isset($oldModel->end_datetime) ? date('Y-m-d', $oldModel->end_datetime) : "NULL").", TO: ".(isset($model->end_datetime) ? date('Y-m-d', $model->end_datetime) : "NULL")."<br />";
+                $oldCriteria = json_decode($oldModel->criteria);
+                if((string)$oldCriteria->language != $criteria['language'])
+                    $content .= "Campaign Language Changed From: ".((string)$oldCriteria->language ? (string)$oldCriteria->language : "All Languages").", To: ".($criteria['language'] ? $criteria['language'] : "All Languages")."<br />";
+                if((string)$oldCriteria->location != $criteria['location'])
+                    $content .= "Campaign Location Changed From: ".((string)$oldCriteria->location ? (string)$oldCriteria->location : "All Countries and Regions").", To: ".($criteria['location'] ? $criteria['location'] : "All Countries and Regions")."<br />";
+                if(isset($criteria['schedule']) && !empty($criteria['schedule']))
+                {
+                    $content .= "Campaign Time-zone Changed To: {$criteria['timezone']}<br />";
+                    $content .= "Campaign Schedule Changed To:<br />";
+                    foreach($criteria['schedule'] as $schedule)
+                        $content .= "Day: {$schedule['day']}, From: {$schedule['from_hour']}:{$schedule['from_minute']}, To: {$schedule['to_hour']}:{$schedule['to_minute']}<br />";
+                }
+                $aDLog->content = $content;
+                $aDLog->save();
+
+                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id' => $model->id)));
+            }
         }
 
         $this->render('update',array(
@@ -143,7 +210,7 @@ class ADCampaignController extends Controller
      */
     public function loadModel($id)
     {
-        $model=AdCampaign::model()->findByPk($id, "company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
+        $model=ADCampaign::model()->findByPk($id, "company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
         if($model===null)
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;

@@ -388,7 +388,7 @@ drop table if exists lt_google_adwords_customer;
 create table lt_google_adwords_customer
 (
    id                	integer not null,
-   customer_id          intger,
+   customer_id          integer,
    currency_code        varchar(20),
    date_time_zone       varchar(8),
    descriptive_name     varchar(8),
@@ -616,7 +616,7 @@ CREATE TABLE `lt_google_adwords_report_ad_group` (
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
   `download_date` datetime not null,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`ad_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

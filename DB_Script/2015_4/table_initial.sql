@@ -284,8 +284,8 @@ create table lt_google_adwords_campaign
 /*==============================================================*/
 /* Table: lt_google_adwords_adgroup                             */
 /*==============================================================*/
-drop table if exists lt_google_adwords_adgroup;
-create table lt_google_adwords_adgroup
+drop table if exists lt_google_adwords_ad_group;
+create table lt_google_adwords_ad_group
 (
    id                   integer not null,
    campaign_id          integer,
@@ -364,12 +364,12 @@ create table lt_google_adwords_campaign_criterion
    campaign_criterion_type varchar(255),
    primary key (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-drop table if exists lt_google_adwords_adgroup_criterion;
+drop table if exists lt_google_adwords_ad_group_criterion;
 
 /*==============================================================*/
 /* Table: lt_google_adwords_adgroup_criterion                   */
 /*==============================================================*/
-create table lt_google_adwords_adgroup_criterion
+create table lt_google_adwords_ad_group_criterion
 (
    id              		integer not null,
    ad_group_id          integer,
@@ -405,7 +405,7 @@ create table lt_google_adwords_customer
 -- ----------------------------
 -- Table structure for `lt_google_adwords_ad`
 -- ----------------------------
-DROP TABLE IF EXISTS `lt_google_adwords_ad`;
+DROP TABLE IF EXISTS `lt_google_adwords_report_ad`;
 CREATE TABLE `lt_google_adwords_report_ad` (
   `id` integer NOT NULL,
   `account_currency_code` varchar(255) DEFAULT NULL,
@@ -509,7 +509,7 @@ CREATE TABLE `lt_google_adwords_report_ad` (
 -- Table structure for `lt_google_adwords_ad_group`
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_ad_group`;
-CREATE TABLE `lt_google_adwords_ad_group` (
+CREATE TABLE `lt_google_adwords_report_ad_group` (
   `ad_group_id` integer NOT NULL,
   `account_currency_code` varchar(36) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,

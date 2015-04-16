@@ -122,25 +122,24 @@ CREATE TABLE `lt_ad_group` (
   foreign key (`campaign_id`) references lt_ad_campaign (`id`) on delete cascade on update cascade
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-drop table if exists `lt_ad_group_placement`;
-CREATE TABLE `lt_ad_group_placement` (
-  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `group_id` INT NOT NULL,
-  `URL` VARCHAR(500) NOT NULL,
-  foreign key (`group_id`) references lt_ad_group (`id`) on delete cascade on update cascade
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 /**********************Create by Tik Begin***********************/
-drop table if exists lt_ad_ad;
-create table lt_ad_ad
+drop table if exists lt_ad_advertise;
+create table lt_ad_advertise
 (
    id                   int not null PRIMARY KEY AUTO_INCREMENT,
    ad_group_id          int not null,
+   ad_campaign_id		int not null,
    `name`				varchar(255) not null,
    `note`				varchar(255) null,
    `company_id` INT NOT NULL,
+   `note` VARCHAR(255) NULL,
+  `create_time_utc` INT NULL DEFAULT 0,
+  `create_user_id` INT NULL DEFAULT 0,						
+  `update_time_utc` INT NULL DEFAULT 0,
+  `update_user_id` INT NULL DEFAULT 0,
    foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade,
-   foreign key (`ad_group_id`) references lt_ad_group (`id`) on delete cascade on update cascade
+   foreign key (`ad_group_id`) references lt_ad_group (`id`) on delete cascade on update cascade,
+   foreign key (`ad_campaign_id`) references lt_ad_campaign (`id`) on delete cascade on update cascade
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 drop table if exists lt_ad_feed;

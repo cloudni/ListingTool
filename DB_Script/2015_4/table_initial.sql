@@ -995,3 +995,11 @@ CREATE TABLE `lt_google_adwords_report_placement` (
 -- Records of lt_google_adwords_report_placement
 -- ----------------------------
 /*start 2015-04-14*/
+
+/*start 2015/04/16*/
+alter table lt_transaction_payment_account rename to lt_transaction_paypal_account;
+alter table lt_transaction add ref_id int(11);
+alter table lt_transaction add ref_object varchar(30);
+alter table lt_transaction change `type` payment_transaction_type varchar(20);
+alter table lt_transaction change transaction_type `type` varchar(20);
+/*end 2015-04-16*/

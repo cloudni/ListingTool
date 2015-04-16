@@ -6,7 +6,7 @@
  * Time: 21:05
  */
 /* @var $this ADCampaignController */
-/* @var $model AdCampaign */
+/* @var $model ADCampaign */
 /* @var $form CActiveForm */
 ?>
 
@@ -57,7 +57,7 @@ $setting = (array)json_decode($model->criteria);
             </div>
             <div style="padding: 12px;">
                 <div style="clear: both; width: 100%;">
-                    <div style="float: left; width: 20%; text-align: right;">Campaign Name: </div>
+                    <div style="float: left; width: 20%; text-align: right;">AD Campaign Name: </div>
                     <div style="float: left; width: auto; text-align: left; padding-left: 12px;">
                         <input type="text" id="campaign_name" name="campaign[name]" size="60" maxlength="50" <?php if(!$model->isNewRecord) echo 'disabled';?> value="<?php echo $model->name;?>" />
                     </div>

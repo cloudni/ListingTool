@@ -7,12 +7,12 @@
  */
 
 /* @var $this ADCampaignController */
-/* @var $model AdCampaign */
+/* @var $model ADCampaign */
 
 $this->breadcrumbs=array(
     'Marketing'=>array("/marketing/home"),
     'Advertisement'=>array("/marketing/advertisement/home"),
-    'Campaign'=>array('index'),
+    'AD Campaign'=>array('index'),
     $model->name,
 );
 
@@ -20,7 +20,7 @@ $this->menu=array(
     array('label'=>'Campaign Index', 'url'=>array('index')),
     array('label'=>'Campaign Create', 'url'=>array('create')),
     array('label'=>'Campaign Update', 'url'=>array('update', 'id'=>$model->id)),
-    array('label'=>'Campaign Delete', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>Yii::t('models/AdCampaign','Are you sure you want to delete this Campaign?'))),
+    array('label'=>'Campaign Delete', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>Yii::t('models/ADCampaign','Are you sure you want to delete this Campaign?'))),
 );
 ?>
 
@@ -71,7 +71,7 @@ $this->menu=array(
                     foreach($setting['schedule'] as $period)
                     {
                         $period = (array)$period;
-                        $schedule .= $period['day'].' '.$period['from_hour'].':'.$period['from_minute'].' to '.$period['to_hour'].':'.$period['to_minute']."<br />";
+                        $schedule .= $period['day'].' From: '.$period['from_hour'].':'.$period['from_minute'].' To: '.$period['to_hour'].':'.$period['to_minute']."<br />";
                     }
                 }
                 ?>
@@ -81,7 +81,7 @@ $this->menu=array(
                         'name',
                         array(
                             'name'=>'status',
-                            'value'=>AdCampaign::getStatusText($model->status),
+                            'value'=>ADCampaign::getStatusText($model->status),
                         ),
                         array(
                             'label'=>'Budget',

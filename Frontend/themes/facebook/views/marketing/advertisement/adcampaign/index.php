@@ -5,13 +5,17 @@
 $this->breadcrumbs=array(
     'Marketing'=>array("/marketing/home"),
     'Advertisement'=>array("/marketing/advertisement/home"),
-	'Campaign',
+	'AD Campaign',
 );
 
-$this->menu=array(
+$menu = array();
+foreach($dataProvider->rawData as $data)
+    $menu[] = array('label'=>'Campaign '.$data['name'], 'url'=>array('/marketing/advertisement/adcampaign/view/id/'.$data['id']));
+
+$this->menu=$menu;/*array(
     array('label'=>'Test Campaign #1', 'url'=>array('/marketing/advertisement/adcampaign/view/id/1')),
     array('label'=>'Test Campaign #2', 'url'=>array('/marketing/advertisement/adcampaign/view/id/2')),
-);
+);*/
 ?>
 
 <style>

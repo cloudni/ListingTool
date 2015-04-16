@@ -2,17 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: cloud
- * Date: 2015/4/8
- * Time: 23:02
+ * Date: 2015/4/13
+ * Time: 23:38
  */
 
-/* @var $this ADCampaignController */
-/* @var $model ADCampaign */
+/* @var $this ADGroupController */
+/* @var $model ADGroup */
+/* @var $lead bool*/
 
 $this->breadcrumbs=array(
     'Marketing'=>array("/marketing/home"),
     'Advertisement'=>array("/marketing/advertisement/home"),
-    'AD Campaign'=>array('index'),
+    'AD Campaign'=>array('/marketing/advertisement/adcampaign/index'),
+    'AD Group'=>array('index'),
     'Create'
 );
 ?>
@@ -85,17 +87,18 @@ $this->breadcrumbs=array(
                     <div style="color: #4e5665; font-weight: 700; padding-left: 12px; line-height: 38px; position: relative;">
                         <div>
                             <div class="DTMORHD-ob-c">
+                                <?php if($lead):?>
                                 <div class="DTMORHD-ob-f">
                                     <div class="aw3ProgressBarV2StepCell">
                                         <div class="DTMORHD-pb-h">
-                                            <div class="DTMORHD-pb-f aw3ProgressBarV2StepSelected">1</div>
+                                            <div class="DTMORHD-pb-f">1</div>
                                             <div class="aw3ProgressBarV2StepText">Select campaign settings</div>
                                         </div>
                                         <div class="DTMORHD-pb-g"></div>
                                     </div>
                                     <div class="aw3ProgressBarV2StepCell">
                                         <div class="DTMORHD-pb-h">
-                                            <div class="DTMORHD-pb-f">2</div>
+                                            <div class="DTMORHD-pb-f aw3ProgressBarV2StepSelected">2</div>
                                             <div class="aw3ProgressBarV2StepText">Create an ad group</div>
                                         </div>
                                         <div class="DTMORHD-pb-g"></div>
@@ -108,6 +111,24 @@ $this->breadcrumbs=array(
                                         <div class="DTMORHD-pb-g"></div>
                                     </div>
                                 </div>
+                                <?php else:?>
+                                <div class="DTMORHD-ob-f">
+                                    <div class="aw3ProgressBarV2StepCell">
+                                        <div class="DTMORHD-pb-h">
+                                            <div class="DTMORHD-pb-f aw3ProgressBarV2StepSelected">1</div>
+                                            <div class="aw3ProgressBarV2StepText">Create an ad group</div>
+                                        </div>
+                                        <div class="DTMORHD-pb-g"></div>
+                                    </div>
+                                    <div class="aw3ProgressBarV2StepCell DTMORHD-pb-e">
+                                        <div class="DTMORHD-pb-h">
+                                            <div class="DTMORHD-pb-f">2</div>
+                                            <div class="aw3ProgressBarV2StepText">Create ads</div>
+                                        </div>
+                                        <div class="DTMORHD-pb-g"></div>
+                                    </div>
+                                </div>
+                                <?php endif;?>
                             </div>
                         </div>
                     </div>
@@ -120,4 +141,3 @@ $this->breadcrumbs=array(
 </div>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>
-

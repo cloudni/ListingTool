@@ -2,10 +2,10 @@
 /* @var $this ADGroupController */
 
 $this->breadcrumbs=array(
-    'Marketing',
-    'Advertisement',
-    'Campaign',
-	'Adgroup',
+    'Marketing'=>array("/marketing/home"),
+    'Advertisement'=>array("/marketing/advertisement/home"),
+    'AD Campaign'=>array('/marketing/advertisement/adcampaign/index'),
+    'AD Group',
 );
 
 $this->menu=array(
@@ -40,7 +40,7 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ Ad Group" />
+                    <input type="button" class="boldFont greenButton redButton" value="+ Ad Group" onclick=" window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/create"); ?>';" />
                     <input id="menu_campaign_filter_button" type="button" value="All ▼" class="menuButton" onclick="showMenu('menu_campaign_filter');" />
                     <ul id="menu_campaign_filter" class="ui-menu" style="width: 180px;" >
                         <li value="All_Campaigns">All Campaigns</li>

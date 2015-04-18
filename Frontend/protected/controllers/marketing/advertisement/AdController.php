@@ -1,9 +1,14 @@
 <?php
 
+Yii::import('application.vendor.eBay.*');
+require_once 'reference.php';
+
 class ADController extends Controller
 {
 	public function actionIndex()
 	{
+        $this->layout='//layouts/column2';
+
 		$this->render('index');
 	}
 
@@ -30,9 +35,156 @@ class ADController extends Controller
     {
         $model = new ADAdvertise();
 
-        if(isset($_POST['adgroup']))
+        if(isset($_POST['advertise']))
         {
-            exit();
+            $transaction = null;
+            try
+            {
+                $transaction= Yii::app()->db->beginTransaction();
+
+                //create advertise first
+                $model->name = $_POST['advertise']['name'];
+                $model->ad_campaign_id = $adcampaignid;
+                $model->ad_group_id = $adgroupid;
+                $model->company_id = Yii::app()->session['user']->company_id;
+                if(!$model->save())
+                    throw new Exception("create advertise error");
+
+                //create ad_feed second
+                $error = "";
+                $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
+                $eBayAttributeSet = eBayAttributeSet::model()->find('entity_type_id=:entity_type_id',array(':entity_type_id'=>$eBayEntityType->id,));
+                $titleAttribute = $eBayAttributeSet->getEntityAttribute("Title");
+                $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
+                $viewUrlAttribute = $eBayAttributeSet->getEntityAttribute("ListingDetails->ViewItemURL");
+                $locationAttribute = $eBayAttributeSet->getEntityAttribute("Location");
+                $pictureURLAttribute = $eBayAttributeSet->getEntityAttribute("PictureDetails->PictureURL");
+                $subTitleAttribute = $eBayAttributeSet->getEntityAttribute("SubTitle");
+                $startPriceAttribute = $eBayAttributeSet->getEntityAttribute("StartPrice->Value");
+                foreach($_POST['applied_listings_value'] as $id)
+                {
+                    $select = "SELECT t.*,
+                            title.value as title,
+                            vurl.value as viewurl,
+                            location.value as location,
+                            subtitle.value as subtitle,
+                            startprice.value as startprice,
+                            picture.value as picture
+                            FROM `lt_ebay_listing` `t`
+                            left join lt_ebay_entity_varchar as title on title.ebay_entity_id = t.id and title.ebay_entity_attribute_id = {$titleAttribute->id}
+                            left join lt_ebay_entity_varchar as sstatus on sstatus.ebay_entity_id = t.id and sstatus.ebay_entity_attribute_id = {$listingStatusAttribute->id}
+                            left join lt_ebay_entity_varchar as vurl on vurl.ebay_entity_id = t.id and vurl.ebay_entity_attribute_id = {$viewUrlAttribute->id}
+                            left join lt_ebay_entity_varchar as location on location.ebay_entity_id = t.id and location.ebay_entity_attribute_id = {$locationAttribute->id}
+                            left join lt_ebay_entity_varchar as subtitle on subtitle.ebay_entity_id = t.id and subtitle.ebay_entity_attribute_id = {$subTitleAttribute->id}
+                            left join lt_ebay_entity_varchar as startprice on startprice.ebay_entity_id = t.id and startprice.ebay_entity_attribute_id = {$startPriceAttribute->id}
+                            left join lt_ebay_entity_varchar as picture on picture.ebay_entity_id = t.id and picture.ebay_entity_attribute_id = {$pictureURLAttribute->id}
+                            where t.company_id=:company_id
+                            and sstatus.value = '".eBayListingStatusCodeType::Active."'
+                            and t.id = :id";
+                    $command = Yii::app()->db->createCommand($select);
+                    $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+                    $command->bindValue(":id", $id, PDO::PARAM_INT);
+                    $listing = $command->queryRow();
+
+                    $feed = new ADAdvertiseFeed();
+                    $feed->ad_advertise_id = $model->id;
+                    $feed->ad_group_id = $adgroupid;
+                    $feed->ad_campaign_id = $adcampaignid;
+                    $feed->company_id = Yii::app()->session['user']->company_id;
+                    $feed->item_id = $listing['ebay_listing_id'];var_dump($listing['ebay_listing_id']);
+                    $feed->item_type = 'eBayListing';
+                    $feed->item_keywords = '';
+                    $feed->item_headline = $listing['title'];
+                    $feed->item_sub_headline = isset($listing['subtitle']) ? $listing['subtitle'] : '';
+                    $feed->item_description = $listing['title'];
+                    $feed->item_address = $listing['location'];
+                    $feed->price = isset($listing['startprice']) ? $listing['startprice'] : 0;
+                    $feed->image_url = isset($listing['picture']) ? $listing['picture'] : '';
+                    $feed->sale_price = isset($listing['startprice']) ? $listing['startprice'] : 0;
+                    $feed->remarketing_url = isset($listing['viewurl']) ? $listing['viewurl'] : '';
+                    $feed->destination_url = isset($listing['viewurl']) ? $listing['viewurl'] : '';
+                    $feed->final_url = isset($listing['viewurl']) ? $listing['viewurl'] : '';
+
+                    if(!$feed->save()) $error .= "Item Feed processed error for eBay Listing, ID: ".$id."<br />";
+                }
+
+                //create variations third
+                $params = array(
+                    'logo' => isset($_POST["logo_value"]) ? $_POST["logo_value"] : "",
+                    'headline' => array(
+                        'text' => isset($_POST["headline_value"]) ? $_POST["headline_value"] : "",
+                        'color' => isset($_POST["headlineColor_value"]) ? $_POST["headlineColor_value"] : "#000",
+                        'background-color' => isset($_POST["headlineBackgroundColor_value"]) ? $_POST["headlineBackgroundColor_value"] : "#fff",
+                        'size' => isset($_POST["headlineTextSize_value"]) ? $_POST["headlineTextSize_value"] : "18",
+                        'shadow' => (isset($_POST["headlineShadow_value"]) ? ($_POST["headlineShadow_value"] == 'true' ? true : false) : false),
+                    ),
+                    'pricePrefix' => array(
+                        'text' => isset($_POST["pricePrefix_value"]) ? $_POST["pricePrefix_value"] : "",
+                        'color' => isset($_POST["pricePrefixColor_value"]) ? $_POST["pricePrefixColor_value"] : "#0073ED",
+                        'size' => isset($_POST["pricePrefixTextSize_value"]) ? $_POST["pricePrefixTextSize_value"] : "11",
+                    ),
+                    'priceSuffix' => array(
+                        'text' => isset($_POST["priceSuffix_value"]) ? $_POST["priceSuffix_value"] : "",
+                        'color' => isset($_POST["priceSuffixColor_value"]) ? $_POST["priceSuffixColor_value"] : "#B00000",
+                        'size' => isset($_POST["priceSuffixTextSize_value"]) ? $_POST["priceSuffixTextSize_value"] : "18",
+                    ),
+                    'button' => array(
+                        'text' => isset($_POST["button_value"]) ? $_POST["button_value"] : "Shop now!",
+                        'color' => isset($_POST["buttonTextColor_value"]) ? $_POST["buttonTextColor_value"] : "#fff",
+                        'background-color' => isset($_POST["buttonColor_value"]) ? $_POST["buttonColor_value"] : "#0073ED",
+                        'rolloverColor' => isset($_POST["rolloverColor_value"]) ? $_POST["rolloverColor_value"] : "#004479",
+                        'shadow' => (isset($_POST["buttonShadow_value"]) ? ($_POST["buttonShadow_value"] == 'true' ? true : false) : false),
+                        'buttonCorner' => (isset($_POST["buttonCorner_value"]) ? $_POST["buttonCorner_value"] : 'square'),
+                        'buttonBevel' => (isset($_POST["buttonBevel_value"]) ? ($_POST["buttonBevel_value"] == 'true' ? true : false) : false),
+                    ),
+                    'clickBehavior' => isset($_POST["clickBehavior_value"]) ? $_POST["clickBehavior_value"] : "product_url",
+                );
+                foreach(ADAdvertiseVariation::$FlashResolutionList as $flash)
+                {
+                    $variation = new ADAdvertiseVariation();
+                    $variation->ad_advertise_id = $model->id;
+                    $variation->ad_group_id = $adgroupid;
+                    $variation->ad_campaign_id = $adcampaignid;
+                    $variation->company_id = Yii::app()->session['user']->company_id;
+                    $variation->type = ADAdvertiseVariation::Type_AdGallery;
+                    $variation->code = ADAdvertiseVariation::Code_Flash;
+                    $variation->status = ADAdvertiseVariation::Status_Paused;
+                    $variation->criteria = json_encode($params);
+                    $variation->display_url = $_POST['displayURL_value'];
+                    $variation->landing_page = isset($_POST['landingPage_value']) ? $_POST['landingPage_value'] : '';
+                    $variation->width = $flash['width'];
+                    $variation->height = $flash['height'];
+                    $variation->is_delete = ADAdvertiseVariation::Delete_No;
+                    if(!$variation->save()) $error .= "Flash variation creation failed. Width: {$flash['width']}, Height: {$flash['height']}.<br />";
+                }
+                foreach(ADAdvertiseVariation::$Html5ResolutionList as $html5)
+                {
+                    $variation = new ADAdvertiseVariation();
+                    $variation->ad_advertise_id = $model->id;
+                    $variation->ad_group_id = $adgroupid;
+                    $variation->ad_campaign_id = $adcampaignid;
+                    $variation->company_id = Yii::app()->session['user']->company_id;
+                    $variation->type = ADAdvertiseVariation::Type_AdGallery;
+                    $variation->code = ADAdvertiseVariation::Code_Flash;
+                    $variation->status = ADAdvertiseVariation::Status_Paused;
+                    $variation->criteria = json_encode($params);
+                    $variation->display_url = $_POST['displayURL_value'];
+                    $variation->landing_page = isset($_POST['landingPage_value']) ? $_POST['landingPage_value'] : '';
+                    $variation->width = $html5['width'];
+                    $variation->height = $html5['height'];
+                    $variation->is_delete = ADAdvertiseVariation::Delete_No;
+                    if(!$variation->save()) $error .= "HTML5 variation creation failed. Width: {$html5['width']}, Height: {$html5['height']}.<br />";
+                }
+
+                $transaction->commit();
+                if($error) Yii::app()->user->setFlash('Error', $error);
+                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ad/view", array('id'=>$model->id)));
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
+                Yii::app()->user->setFlash('Error', 'Fail to create advertisement for you, please try it again!');
+            }
         }
 
         if(!isset($adcampaignid) || !isset($adgroupid))
@@ -46,6 +198,128 @@ class ADController extends Controller
             'adGroupId'=>$adgroupid,
             'model'=>$model,
             'lead'=>$lead,
+        ));
+    }
+
+    public function actionGetListingParams()
+    {
+        $params = array(
+            'itemType'=>'eBayListing',
+            'id'=>null,
+        );
+        if(isset($_POST['itemType'])) $params['itemType'] = (string)$_POST['itemType'];
+        if(isset($_POST['id'])) $params['id'] = (int)$_POST['id'];
+
+        if(!isset($params['itemType']) || !isset($params['id']))
+        {
+            $result = array('status'=>'fail', 'data'=>"Missing input params");
+            echo json_encode($result);
+        }
+
+        switch($params['itemType'])
+        {
+            case "eBayListing":
+                $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
+                $eBayAttributeSet = eBayAttributeSet::model()->find('entity_type_id=:entity_type_id',array(':entity_type_id'=>$eBayEntityType->id,));
+                $titleAttribute = $eBayAttributeSet->getEntityAttribute("Title");
+                $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
+                $viewUrlAttribute = $eBayAttributeSet->getEntityAttribute("ListingDetails->ViewItemURL");
+                $locationAttribute = $eBayAttributeSet->getEntityAttribute("Location");
+                $pictureURLAttribute = $eBayAttributeSet->getEntityAttribute("PictureDetails->PictureURL");
+                $subTitleAttribute = $eBayAttributeSet->getEntityAttribute("SubTitle");
+                $startPriceAttribute = $eBayAttributeSet->getEntityAttribute("StartPrice->Value");
+
+                $select = "SELECT t.*,
+                            title.value as title,
+                            vurl.value as viewurl,
+                            location.value as location,
+                            subtitle.value as subtitle,
+                            startprice.value as startprice,
+                            picture.value as picture
+                            FROM `lt_ebay_listing` `t`
+                            left join lt_ebay_entity_varchar as title on title.ebay_entity_id = t.id and title.ebay_entity_attribute_id = {$titleAttribute->id}
+                            left join lt_ebay_entity_varchar as sstatus on sstatus.ebay_entity_id = t.id and sstatus.ebay_entity_attribute_id = {$listingStatusAttribute->id}
+                            left join lt_ebay_entity_varchar as vurl on vurl.ebay_entity_id = t.id and vurl.ebay_entity_attribute_id = {$viewUrlAttribute->id}
+                            left join lt_ebay_entity_varchar as location on location.ebay_entity_id = t.id and location.ebay_entity_attribute_id = {$locationAttribute->id}
+                            left join lt_ebay_entity_varchar as subtitle on subtitle.ebay_entity_id = t.id and subtitle.ebay_entity_attribute_id = {$subTitleAttribute->id}
+                            left join lt_ebay_entity_varchar as startprice on startprice.ebay_entity_id = t.id and startprice.ebay_entity_attribute_id = {$startPriceAttribute->id}
+                            left join lt_ebay_entity_varchar as picture on picture.ebay_entity_id = t.id and picture.ebay_entity_attribute_id = {$pictureURLAttribute->id}
+                            where t.company_id=:company_id
+                            and sstatus.value = '".eBayListingStatusCodeType::Active."'
+                            and t.id = :id";
+                $command = Yii::app()->db->createCommand($select);
+                $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+                $command->bindValue(":id", $params['id'], PDO::PARAM_INT);
+                $listings = $command->queryRow();
+                if(!isset($listings['startprice'])) $listings['startprice'] = sprintf("$%1\$.2f", $listings['startprice']); else $listings['startprice'] = sprintf("$%1\$.2f", 0);
+                $result = array('status'=>'success', 'data'=>$listings);
+                echo json_encode($result);
+                break;
+            default:
+                $result = array('status'=>'fail', 'data'=>"Invalid item type");
+                echo json_encode($result);
+                break;
+        }
+        exit();
+    }
+
+    public function actionUploadLogo()
+    {
+        if(!isset($_FILES['logo_upload_file']))
+        {
+            $result = array('status'=>'fail', 'data'=>"No file uploaded.");
+            echo json_encode($result);
+        }
+        if($_FILES['logo_upload_file']['size'] <= 0)
+        {
+            $result = array('status'=>'fail', 'data'=>"No file uploaded.");
+            echo json_encode($result);
+        }
+        switch($_FILES['logo_upload_file']['error'])
+        {
+            case 1:
+            case 2:
+                $result = array('status'=>'fail', 'data'=>"File size is too big.");
+                echo json_encode($result);
+                exit();
+                break;
+            case 3:
+                $result = array('status'=>'fail', 'data'=>"Upload failed, please try again.");
+                echo json_encode($result);
+                exit();
+                break;
+            case 4:
+                $result = array('status'=>'fail', 'data'=>"No file uploaded.");
+                echo json_encode($result);
+                exit();
+                break;
+        }
+
+        $uploadFolder = dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR.'upload';
+        if (!file_exists($uploadFolder))  @mkdir($uploadFolder);
+        $uploadFolder .= DIRECTORY_SEPARATOR.date("Y");
+        if (!file_exists($uploadFolder))  @mkdir($uploadFolder);
+        $uploadFolder .= DIRECTORY_SEPARATOR.date("m");
+        if (!file_exists($uploadFolder))  @mkdir($uploadFolder);
+
+        $fileName = explode('.', $_FILES['logo_upload_file']['name']);
+        $fileName = time().'.'.$fileName[count($fileName)-1];
+        if(!move_uploaded_file( $_FILES['logo_upload_file']['tmp_name'], $uploadFolder.DIRECTORY_SEPARATOR.$fileName))
+        {
+            $result = array('status'=>'fail', 'data'=>"Upload failed, please try again.");
+            echo json_encode($result);
+        }
+        $result = array('status'=>'success', 'data'=>$_SERVER['HTTP_ORIGIN'].'/'."upload".'/'.date("Y").'/'.date("m").'/'.$fileName);
+        echo json_encode($result);
+    }
+
+    public function actionView($id)
+    {
+        $this->layout='//layouts/column2';
+        $model = $this->loadModel($id);
+
+        $this->render('view', array(
+            'model' => $model,
         ));
     }
 
@@ -71,7 +345,7 @@ class ADController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + delete, getDynamicGroupList', // we only allow deletion via POST request
+            'postOnly + delete, getDynamicGroupList, getListingParams, uploadLogo', // we only allow deletion via POST request
         );
     }
 
@@ -84,7 +358,7 @@ class ADController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index', 'create', 'view', 'update', 'getDynamicGroupList'),
+                'actions'=>array('index', 'create', 'view', 'update', 'getDynamicGroupList', 'getListingParams', 'uploadLogo', 'view'),
                 'users'=>array('@'),
             ),
             array('deny',  // deny all users

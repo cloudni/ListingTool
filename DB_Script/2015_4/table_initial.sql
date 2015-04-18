@@ -126,13 +126,12 @@ CREATE TABLE `lt_ad_group` (
 drop table if exists lt_ad_advertise;
 create table lt_ad_advertise
 (
-   id                   int not null PRIMARY KEY AUTO_INCREMENT,
-   ad_group_id          int not null,
-   ad_campaign_id		int not null,
+   `id`                  int not null PRIMARY KEY AUTO_INCREMENT,
+   `ad_group_id`          int not null,
+   `ad_campaign_id`		int not null,
    `name`				varchar(255) not null,
    `note`				varchar(255) null,
    `company_id` INT NOT NULL,
-   `note` VARCHAR(255) NULL,
   `create_time_utc` INT NULL DEFAULT 0,
   `create_user_id` INT NULL DEFAULT 0,						
   `update_time_utc` INT NULL DEFAULT 0,
@@ -142,55 +141,63 @@ create table lt_ad_advertise
    foreign key (`ad_campaign_id`) references lt_ad_campaign (`id`) on delete cascade on update cascade
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-drop table if exists lt_ad_feed;
-create table lt_ad_feed
+drop table if exists lt_ad_advertise_feed;
+create table lt_ad_advertise_feed
 (
-   id                   int not null PRIMARY KEY AUTO_INCREMENT,
-   feed_name            varchar(255),
-   ad_id				int not null,
-   remarketing_url      varchar(100) not null,
-   item_id              int not null,
-   item_keywords        text,
-   item_headline        varchar(100),
-   item_sub_headline    varchar(100),
-   item_description     varchar(255),
-   item_address         varchar(255),
-   price                DECIMAL(20,4) not null,
-   image_url            varchar(200) not null,
-   item_category        int,
-   sale_price           DECIMAL(20,4) not null,
-   create_time_utc      INT NULL DEFAULT 0,
-   create_user_id       INT NULL DEFAULT 0,
-   update_time_utc      INT NULL DEFAULT 0,
-   update_user_id       INT NULL DEFAULT 0,
-   foreign key (`ad_id`) references lt_ad_ad (`id`) on delete cascade on update cascade
+   `id`                   int not null PRIMARY KEY AUTO_INCREMENT,
+   `ad_advertise_id`			int not null,
+   `ad_group_id`          int not null,
+   `ad_campaign_id`		int not null,
+   `company_id` INT NOT NULL,
+   `item_id`              varchar(50) not null,
+   `item_type`			varchar(255) not null default 'eBayListing',
+   `item_keywords`        text null,
+   `item_headline`        varchar(100)  not null,
+   `item_sub_headline`    varchar(100) null,
+   `item_description`     varchar(255) null,
+   `item_address`         varchar(255) null,
+   `price`                DECIMAL(20,4) not null default 0,
+   `image_url`            varchar(500) not null,
+   `item_category`        int null,
+   `sale_price`           DECIMAL(20,4) null default 0,
+   `remarketing_url`      varchar(500) not null,
+   `destination_url`      varchar(500) not null,
+   `final_url`      varchar(500) not null,
+   `create_time_utc`      INT NULL DEFAULT 0,
+   `create_user_id`       INT NULL DEFAULT 0,
+   `update_time_utc`      INT NULL DEFAULT 0,
+   `update_user_id`       INT NULL DEFAULT 0,
+   foreign key (`ad_advertise_id`) references lt_ad_advertise (`id`) on delete cascade on update cascade,
+   foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade,
+   foreign key (`ad_group_id`) references lt_ad_group (`id`) on delete cascade on update cascade,
+   foreign key (`ad_campaign_id`) references lt_ad_campaign (`id`) on delete cascade on update cascade
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-drop table if exists lt_ad_ad_variation;
-create table lt_ad_ad_variation
+drop table if exists lt_ad_advertise_variation;
+create table lt_ad_advertise_variation
 (
-   id                   int not null PRIMARY KEY AUTO_INCREMENT,
-   ad_group_id          int not null comment '所属广告组ID',
-   ad_id                int not null,
+   `id`                   int not null PRIMARY KEY AUTO_INCREMENT,
+   `ad_group_id`          int not null,
+   `ad_campaign_id`		int not null,
+   `ad_advertise_id`              int not null,
    `company_id` INT NOT NULL,
-   ad_type              int not null comment '广告类型（1：文字 2：图片 3：创意广告）',
-   status               tinyint(1) not null comment '状态',
-   headline             varchar(100) not null comment '标题',
-   headline_style       text comment '标题样式',
-   price_prefix         varchar(50) comment '价格前缀',
-   price_prefix_style   text comment '价格前缀样式',
-   button_caption       varchar(20) comment '按钮名称',
-   button_style         text comment '按钮样式',
-   display_url          varchar(100) comment '显示网址',
-   ad_style             text comment '广告style',
-   ad_name              varchar(255) not null comment '广告名',
-   is_delete            tinyint(1) not null comment '逻辑删除标记（0：未删除 1：删除）',
-   create_time_utc      INT NULL DEFAULT 0,
-   create_user_id       INT NULL DEFAULT 0,
-   update_time_utc      INT NULL DEFAULT 0,
-   update_user_id       INT NULL DEFAULT 0,
+   `type`             tinyint(4) not null default 3 comment '广告类型（1：文字 2：图片 3：创意广告）',
+   `code`				int not null default 1 comment '1, flash;2,html5;',
+   `status`               tinyint(4) not null default 0 comment '状态',
+   `criteria`				text not null,
+   `display_url`          varchar(500) not null comment '显示网址',
+   `landing_page`			varchar(500) null default null,
+   `width`				int not null default 0,
+   `height`				int not null default 0,
+   `is_delete`            tinyint(4) not null comment '逻辑删除标记（0：未删除 1：删除）',
+   `create_time_utc`      INT NULL DEFAULT 0,
+   `create_user_id`      INT NULL DEFAULT 0,
+   `update_time_utc`      INT NULL DEFAULT 0,
+   `update_user_id`       INT NULL DEFAULT 0,
    foreign key (`company_id`) references lt_company (`id`) on delete cascade on update cascade,
-   foreign key (`ad_id`) references lt_ad_ad (`id`) on delete cascade on update cascade
+   foreign key (`ad_advertise_id`) references lt_ad_advertise (`id`) on delete cascade on update cascade,
+   foreign key (`ad_group_id`) references lt_ad_group (`id`) on delete cascade on update cascade,
+   foreign key (`ad_campaign_id`) references lt_ad_campaign (`id`) on delete cascade on update cascade
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /**********************Create by Tik End*************************/
 /*end 2015-04-07*/

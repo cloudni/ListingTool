@@ -17,6 +17,7 @@ $this->breadcrumbs=array(
     'Advertisement'=>array("/marketing/advertisement/home"),
     'AD Campaign'=>array('/marketing/advertisement/adcampaign/index'),
     'AD Group'=>array('/marketing/advertisement/adgroup/index'),
+    'AD' => array('index'),
     'Create'
 );
 ?>

@@ -19,7 +19,7 @@ CREATE TABLE `lt_transaction` (
   `update_time_utc` int(11) DEFAULT NULL,
   `update_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `lt_transaction_access_token`;
 CREATE TABLE `lt_transaction_access_token` (
@@ -30,7 +30,7 @@ CREATE TABLE `lt_transaction_access_token` (
   `create_time_utc` int(11) NOT NULL,
   `create_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `lt_transaction_credit_card`;
 CREATE TABLE `lt_transaction_credit_card` (
@@ -55,7 +55,7 @@ CREATE TABLE `lt_transaction_payment_account` (
   `last_name` varchar(20) DEFAULT NULL,
   `payer_id` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `lt_transaction_paypal`;
 CREATE TABLE `lt_transaction_paypal` (
@@ -488,7 +488,7 @@ CREATE TABLE `lt_google_adwords_report_ad` (
   `week` varchar(10) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
   PRIMARY KEY (`pk_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=275 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `lt_google_adwords_report_ad_group`
@@ -843,7 +843,7 @@ CREATE TABLE `lt_google_adwords_report_destination_url` (
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
   PRIMARY KEY (`pk_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=215 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `lt_google_adwords_report_geo`
@@ -902,7 +902,7 @@ CREATE TABLE `lt_google_adwords_report_geo` (
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
   PRIMARY KEY (`pk_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15502 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `lt_google_adwords_report_placement`
@@ -972,7 +972,7 @@ CREATE TABLE `lt_google_adwords_report_placement` (
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
   PRIMARY KEY (`pk_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=178 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `lt_google_adwords_userlist`

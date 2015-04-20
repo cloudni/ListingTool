@@ -264,7 +264,7 @@ CREATE TABLE `lt_transaction_authorize` (
 DROP TABLE IF EXISTS `lt_google_adwords_ad`;
 CREATE TABLE `lt_google_adwords_ad` (
   `id` bigint(20) NOT NULL,
-  `lt_ad_advertise_id` int null,
+  `lt_ad_advertise_variation_id` int null,
   `url` varchar(255) DEFAULT NULL,
   `display_url` varchar(255) DEFAULT NULL,
   `final_urls` varchar(255) DEFAULT NULL,

@@ -284,6 +284,7 @@ CREATE TABLE `lt_google_adwords_ad` (
 DROP TABLE IF EXISTS `lt_google_adwords_ad_group`;
 CREATE TABLE `lt_google_adwords_ad_group` (
   `id` bigint(20) NOT NULL,
+  `lt_ad_group_id` int null,
   `campaign_id` bigint(20) DEFAULT NULL,
   `campaign_name` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -296,6 +297,10 @@ CREATE TABLE `lt_google_adwords_ad_group` (
   `content_bid_criterionType_group` text,
   `tracking_url_template` varchar(255) DEFAULT NULL,
   `url_custom_parameters` text,
+  `create_time_utc` INT NULL DEFAULT 0,
+  `create_admin_id` INT NULL DEFAULT 0,
+  `update_time_utc` INT NULL DEFAULT 0,
+  `update_admin_id` INT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='adwords广告组';
 
@@ -320,7 +325,7 @@ CREATE TABLE `lt_google_adwords_ad_group_criterion` (
 DROP TABLE IF EXISTS `lt_google_adwords_campaign`;
 CREATE TABLE `lt_google_adwords_campaign` (
   `id` bigint(20) NOT NULL,
-  `lt_campaign_id` bigint(20) DEFAULT NULL,
+  `lt_ad_campaign_id` bigint(20) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `status` varchar(36) DEFAULT NULL,
   `serving_status` varchar(36) DEFAULT NULL,
@@ -339,6 +344,10 @@ CREATE TABLE `lt_google_adwords_campaign` (
   `forward_compatibility_map` text,
   `tracking_url_template` text,
   `url_custom_parameters` text,
+  `create_time_utc` INT NULL DEFAULT 0,
+  `create_admin_id` INT NULL DEFAULT 0,
+  `update_time_utc` INT NULL DEFAULT 0,
+  `update_admin_id` INT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -487,7 +496,7 @@ CREATE TABLE `lt_google_adwords_report_ad` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_ad_group`;
 CREATE TABLE `lt_google_adwords_report_ad_group` (
-  `pk_id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ad_group_id` bigint(20) NOT NULL,
   `account_currency_code` varchar(36) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
@@ -594,8 +603,8 @@ CREATE TABLE `lt_google_adwords_report_ad_group` (
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
   `generate_date` int(11) DEFAULT NULL,
-  PRIMARY KEY (`pk_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `lt_google_adwords_report_automatic_placements`
@@ -662,7 +671,7 @@ CREATE TABLE `lt_google_adwords_report_automatic_placements` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_campaign`;
 CREATE TABLE `lt_google_adwords_report_campaign` (
-  `pk_id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_currency_code` varchar(20) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
   `account_time_zone_id` varchar(36) DEFAULT NULL,
@@ -776,8 +785,8 @@ CREATE TABLE `lt_google_adwords_report_campaign` (
   `week` varchar(10) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
   `generate_date` int(11) DEFAULT NULL,
-  PRIMARY KEY (`pk_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `lt_google_adwords_report_destination_url`

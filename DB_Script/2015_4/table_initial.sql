@@ -264,6 +264,7 @@ CREATE TABLE `lt_transaction_authorize` (
 DROP TABLE IF EXISTS `lt_google_adwords_ad`;
 CREATE TABLE `lt_google_adwords_ad` (
   `id` bigint(20) NOT NULL,
+  `lt_ad_advertise_id` int null,
   `url` varchar(255) DEFAULT NULL,
   `display_url` varchar(255) DEFAULT NULL,
   `final_urls` varchar(255) DEFAULT NULL,
@@ -391,8 +392,8 @@ CREATE TABLE `lt_google_adwords_customer` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_ad`;
 CREATE TABLE `lt_google_adwords_report_ad` (
-  `pk_id` int(11) NOT NULL AUTO_INCREMENT,
-  `id` bigint(20) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ad_id` bigint(20) NOT NULL,
   `account_currency_code` varchar(255) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
   `account_time_zone_id` varchar(255) DEFAULT NULL,
@@ -487,7 +488,7 @@ CREATE TABLE `lt_google_adwords_report_ad` (
   `view_through_conversions_significance` text,
   `week` varchar(10) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`pk_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

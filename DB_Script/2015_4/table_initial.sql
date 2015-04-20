@@ -487,7 +487,6 @@ CREATE TABLE `lt_google_adwords_report_ad` (
   `view_through_conversions_significance` text,
   `week` varchar(10) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  `generate_date` int(11) DEFAULT NULL,
   PRIMARY KEY (`pk_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=275 DEFAULT CHARSET=utf8;
 
@@ -602,7 +601,6 @@ CREATE TABLE `lt_google_adwords_report_ad_group` (
   `view_through_conversions_significance` text,
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  `generate_date` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -662,7 +660,6 @@ CREATE TABLE `lt_google_adwords_report_automatic_placements` (
   `view_through_conversions` int(11) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  `generate_date` int(11) DEFAULT NULL,
   PRIMARY KEY (`pk_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -784,7 +781,6 @@ CREATE TABLE `lt_google_adwords_report_campaign` (
   `view_through_conversions_significance` text,
   `week` varchar(10) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  `generate_date` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -846,7 +842,6 @@ CREATE TABLE `lt_google_adwords_report_destination_url` (
   `view_through_conversions` int(11) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  `generate_date` int(11) DEFAULT NULL,
   PRIMARY KEY (`pk_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=215 DEFAULT CHARSET=utf8;
 
@@ -906,7 +901,6 @@ CREATE TABLE `lt_google_adwords_report_geo` (
   `view_through_conversions` bigint(20) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  `generate_date` int(11) DEFAULT NULL,
   PRIMARY KEY (`pk_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15502 DEFAULT CHARSET=utf8;
 
@@ -977,7 +971,6 @@ CREATE TABLE `lt_google_adwords_report_placement` (
   `view_through_conversions` bigint(20) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  `generate_date` int(11) DEFAULT NULL,
   PRIMARY KEY (`pk_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=178 DEFAULT CHARSET=utf8;
 

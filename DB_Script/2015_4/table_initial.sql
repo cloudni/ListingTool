@@ -1011,7 +1011,8 @@ alter table lt_transaction change transaction_type `type` varchar(20);
 alter table lt_transaction modify column type tinyint(4) COMMENT '支付平台类型：1 paypal';
 alter table lt_transaction MODIFY column `status` TINYINT(4) COMMENT '交易状态：1 创建；2 成功；3 取消；4 失败';
 alter table lt_transaction modify column payment_transaction_type TINYINT(4) COMMENT '交易类型：1 存款；2 取款；3 冻结；4 解冻；5 扣款';
-alter table lt_transaction modify column total decimal(20,4) COMMENT '交易总额';
-alter table lt_transaction modify column fee decimal(20,4) COMMENT '交易手续费';
-alter table lt_transaction MODIFY COLUMN net DECIMAL(20, 4) COMMENT '实际金额';
+alter table lt_transaction modify column `total` decimal(20,4)  not null default '0' COMMENT '交易总额';
+alter table lt_transaction modify column `fee` decimal(20,4) not null default '0' COMMENT '交易手续费';
+alter table lt_transaction MODIFY COLUMN `net` DECIMAL(20,4) not null default '0' COMMENT '实际金额';
+alter table lt_transaction MODIFY COLUMN `enabled` TINYINT(1) not null default '1' COMMENT '是否可用：1 可用; 0 不可用';
 /*end 2015-04-19*/

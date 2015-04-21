@@ -1,11 +1,18 @@
 <?php
 /* @var $this HomeController */
+/* @var $performance array */
+/* @var $campaignPerformance array */
+/* @var $adGroupPerformance array */
 
 $this->breadcrumbs=array(
     'Marketing',
     'Advertisement'
 );
 ?>
+
+<script type="text/javascript" src="/js/highcharts/highcharts.js"></script>
+<script type="text/javascript" src="/js/highcharts/themes/grid-light.js"></script>
+<script type="text/javascript" src="/js/highcharts/modules/exporting.js"></script>
 
 <style>
     .sumDiv{
@@ -18,6 +25,19 @@ $this->breadcrumbs=array(
 
     .sumDivFontBold{
         font-size: 14px; font-weight: bold;
+    }
+
+    .redButton {
+        -webkit-border-radius: 2px;
+        font-size: 14px;
+        height: 26px;
+        background-color: #DD4B3B;
+        color: #FFF;
+        font-weight: bold;
+        background: -webkit-linear-gradient(#DD4B3B, #DD4B3B);
+        -webkit-box-shadow: inset 0 1px 1px #DD4B3B;
+        position: relative;
+        top: 1px;
     }
 </style>
 
@@ -34,11 +54,11 @@ $this->breadcrumbs=array(
                         <div class="sumDiv sumDivBorderLeft">Cost</div>
                     </div>
                     <div class="clearfix">
-                        <div class="sumDiv sumDivFontBold">20</div>
-                        <div class="sumDiv sumDivBorderLeft sumDivFontBold">13,456</div>
-                        <div class="sumDiv sumDivBorderLeft sumDivFontBold">1.02%</div>
-                        <div class="sumDiv sumDivBorderLeft sumDivFontBold">$0.45</div>
-                        <div class="sumDiv sumDivBorderLeft sumDivFontBold">$99.00</div>
+                        <div class="sumDiv sumDivFontBold"><?php echo isset($performance['clicks']) ? $performance['clicks'] : "&nbsp;";?></div>
+                        <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo isset($performance['impr']) ? $performance['impr'] : "&nbsp";?></div>
+                        <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo isset($performance['impr']) && $performance['impr'] ? sprintf("%1\$.2f%%", $performance['clicks'] / $performance['impr'] * 100) : "&nbsp";?></div>
+                        <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo isset($performance['clicks']) && $performance['clicks'] ? sprintf("$%1\$.2f", $performance['cost'] / $performance['clicks']) : "&nbsp;";?></div>
+                        <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo isset($performance['cost']) ? sprintf("$%1\$.2f", $performance['cost']) : "&nbsp;";?></div>
                     </div>
                 </div>
             </div>
@@ -51,148 +71,75 @@ $this->breadcrumbs=array(
 <div style="clear: both; width: 100%; position: relative; top: -5px;">
     <div class="borderBlock">
         <div>
-            <div style="position: relative; float: right; top: 5px;">
-                <a style="color: #3b5998; font-size: 14px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign");?>">See All</a>
-            </div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; padding: 12px 12px 0px 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <select>
-                        <option value="all">All Campaigns</option>
-                        <option>Woman Cloth Campaign</option>
-                        <option>Pet Supplies Campaign</option>
-                        <option>Housing Campaign</option>
+                    <?php echo CHtml::dropDownList('adCampaignId', '', CHtml::listData(ADCampaign::model()->findAll("company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id)), 'id', 'name'), array('empty'=>'All AD Campaigns', 'style'=>''));?>
+                    <select id="dataPoint" name="dataPoint" style="width: 100px;">
+                        <option value="clicks">Clicks</option>
+                        <option value="impr">Impr.</option>
+                        <option value="ctr">CTR</option>
+                        <option value="cpc">Avg. CPC</option>
+                        <option value="cost">Cost</option>
                     </select>
-                    <div style="display: inline-block; width: 10px; height: 10px; background-color: #058dc7; position: relative; left: 80px; z-index: 1;"></div>
-                    <select style="width: 100px;">
-                        <option>Clicks</option>
-                        <option>Impr.</option>
-                        <option>CTR</option>
-                        <option>Avg. CPC</option>
-                        <option>Avg. CPM</option>
-                        <option>Cost</option>
-                        <option>Avg. Pos</option>
-                    </select>
-                    <span>VS.</span>
-                    <select style="width: 100px;">
-                        <option>Clicks</option>
-                        <option>Impr.</option>
-                        <option selected>CTR</option>
-                        <option>Avg. CPC</option>
-                        <option>Avg. CPM</option>
-                        <option>Cost</option>
-                        <option>Avg. Pos</option>
-                    </select>
-                    <div style="display: inline-block; width: 10px; height: 10px; background-color: #ed7e17; position: relative; left: -37px; z-index: 1;"></div>
-                    <select>
-                        <option>Daily</option>
-                        <option>Weekly</option>
-                        <option>Monthly</option>
-                        <option>Quarterly</option>
-                    </select>
+                    <?php echo CHtml::dropDownList("groupBy", '', ADCampaign::getGroupByOptions(), array());?>
                 </div>
             </div>
             <div>
-                <?php
-                Yii::import('application.vendor.pChart.*');
-                require_once("pChart/pData.class");
-                require_once("pChart/pChart.class");
-                $mainFolder = dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR;
-                $fontFolder = $mainFolder . "protected" . DIRECTORY_SEPARATOR . "vendor" .DIRECTORY_SEPARATOR . "pChart" .DIRECTORY_SEPARATOR . "Fonts";
-
-                // Dataset definition
-                $DataSet = new pData;
-                //图表数据
-                $DataSet->AddPoint(array(1,4,-3,2,-3,3,2,1,0,7,4),"Serie1");
-                $DataSet->AddPoint(array(3,3,-4,1,-2,2,1,0,-1,6,3),"Serie2");
-                $DataSet->AddPoint(array(4,1,2,-1,-4,-2,3,2,1,2,2),"Serie3");
-                $DataSet->AddAllSeries();
-                $DataSet->SetAbsciseLabelSerie();
-                //数据图例
-                $DataSet->SetSerieName("Microsoft","Serie1");
-                $DataSet->SetSerieName("IBM","Serie2");
-                $DataSet->SetSerieName("Google","Serie3");
-
-                // Initialise the graph
-                $Test = new pChart(988,230);
-                //设置图表尺寸、样式
-                $Test->setFontProperties($fontFolder . DIRECTORY_SEPARATOR . "tahoma.ttf",8);
-                $Test->setGraphArea(30,30,958,200);
-                $Test->drawFilledRoundedRectangle(7,7,983,225,5,240,240,240);
-                $Test->drawRoundedRectangle(5,5,983,225,5,230,230,230);
-                $Test->drawGraphArea(255,255,255,TRUE);
-                $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),SCALE_NORMAL,150,150,150,TRUE,0,2,TRUE);
-                $Test->drawGrid(4,TRUE,230,230,230,50);
-
-                // Draw the 0 line
-                $Test->setFontProperties($fontFolder . DIRECTORY_SEPARATOR . "MankSans.ttf",6);
-                $Test->drawTreshold(0,143,55,72,TRUE,TRUE);
-
-                // Draw the bar graph
-                //柱状图要使用drawBarGraph()
-                $Test->drawBarGraph($DataSet->GetData(),$DataSet->GetDataDescription(),TRUE,80);
-
-
-                // Finish the graph
-                //制作图例、标题、字体等属性
-                $Test->setFontProperties($fontFolder . DIRECTORY_SEPARATOR . "MankSans.ttf",10);
-                $Test->drawLegend(596,150,$DataSet->GetDataDescription(),255,255,255);
-                $Test->setFontProperties($fontFolder . DIRECTORY_SEPARATOR . "MankSans.ttf",10);
-                $Test->drawTitle(50,22,"Performance Graph",50,50,50,585);
-
-                //生成图表
-                $imageFile = '1428505639.png';//time().".png";
-                $path = $mainFolder . "tmp" . DIRECTORY_SEPARATOR;
-                //$Test->Render($path . $imageFile);
-                echo '<img src="/tmp/'.$imageFile.'">';
-                ?>
+                <div id="chartContainer" style="min-width:700px;height:400px; width: 100%;"></div>
             </div>
         </div>
     </div>
 </div>
 
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
+<div style="clear: both; width: 100%; position: relative; top: -12px;">
     <div class="borderBlock">
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">All Enabled AD Campaigns</h1>
+                <div style="position: relative; float: right;">
+                    <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/index");?>">See All</a>
+                </div>
+                <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
+                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative; display: inline-block;">All Enabled AD Campaigns</h1>
+                    <input type="button" class="boldFont greenButton redButton" value="+ AD Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/create"); ?>'; " />
                 </div>
             </div>
             <div>
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <thead>
-                    <th align="left">Campaign</th>
-                    <th align="left">Status</th>
-                    <th align="right">Clicks</th>
-                    <th align="right">Impr.</th>
-                    <th align="right">CTR</th>
-                    <th align="right">Avg. CPC</th>
-                    <th align="right">Avg. CPM</th>
-                    <th align="right">Cost</th>
+                    <th align="right">Campaign</th>
                     <th align="right">Budget</th>
+                    <th align="right">Status</th>
+                    <th align="right">Clicks</th>
+                    <th align="right">Impr.</th>
+                    <th align="right">CTR</th>
+                    <th align="right">Avg. CPC</th>
+                    <th align="right">Cost</th>
+                    <th align="right">Avg. POS</th>
                     </thead>
                     <tbody>
+                    <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($campaignPerformance as $campaign): ?>
+                        <tr>
+                            <td align="right"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>$campaign['id']));?>"><?php echo $campaign['name'];?></a></td>
+                            <td align="right"><?php echo sprintf("$%1\$.2f", $campaign['budget']);?></td>
+                            <td align="right"><?php echo ADCampaign::getStatusText($campaign['status']);?></td>
+                            <td align="right"><?php echo $campaign['clicks'];?></td>
+                            <td align="right"><?php echo $campaign['impr'];?></td>
+                            <td align="right"><?php echo isset($campaign['impr']) ? sprintf("%1\$.2f%%", $campaign['clicks'] / $campaign['impr'] * 100) : "&nbsp;";?></td>
+                            <td align="right"><?php echo isset($campaign['clicks']) ? sprintf("$%1\$.2f", $campaign['cost'] / $campaign['clicks']) : "&nbsp;";?></td>
+                            <td align="right"><?php echo isset($campaign['cost']) ? sprintf("$%1\$.2f", $campaign['cost']) : "&nbsp;";?></td>
+                            <td align="right">&nbsp;</td>
+                        </tr>
+                        <?php $clickTotal += $campaign['clicks']; $imprTotal += $campaign['impr']; $costTotal += $campaign['cost']; endforeach; ?>
                     <tr>
-                        <td><a href="#">Campaign #1</a></td>
-                        <td>Eligible</td>
-                        <td>100</td>
-                        <td>13,491</td>
-                        <td>1.23%</td>
-                        <td>$0.42</td>
-                        <td>$0.23</td>
-                        <td>$50.00</td>
-                        <td>$100.00</td>
-                    </tr>
-                    <tr>
-                        <td><a href="#">Campaign #2</a></td>
-                        <td>Paused</td>
-                        <td>66</td>
-                        <td>8,914</td>
-                        <td>2.45%</td>
-                        <td>$0.71</td>
-                        <td>$0.34</td>
-                        <td>$60.00</td>
-                        <td>$60.00</td>
+                        <td align="right" class="boldFont">&nbsp;</td>
+                        <td align="right" class="boldFont">Total</td>
+                        <td align="right" class="boldFont">&nbsp;</td>
+                        <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
+                        <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
+                        <td align="right" class="boldFont"><?php echo sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100);?></td>
+                        <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal / $clickTotal);?></td>
+                        <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
+                        <td align="right" class="boldFont">&nbsp;</td>
                     </tr>
                     </tbody>
                 </table>
@@ -201,64 +148,58 @@ $this->breadcrumbs=array(
     </div>
 </div>
 
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
+<div style="clear: both; width: 100%; position: relative; top: -20px;">
     <div class="borderBlock">
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">All Enabled AD Groups</h1>
+                <div style="position: relative; float: right;">
+                    <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/index");?>">See All</a>
+                </div>
+                <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%">
+                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative; display: inline-block;">All Enabled AD Groups</h1>
+                    <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location='<?php $campaignid = (isset($adCampaign) ? array('campaignid'=>$adCampaign->id) : array()); echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/create", $campaignid); ?>';" />
                 </div>
             </div>
             <div>
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <thead>
-                    <th align="left">Ad Group</th>
+                    <th align="left">AD Group</th>
                     <th align="left">Status</th>
+                    <th align="right">Default Max. CPC</th>
                     <th align="right">Clicks</th>
                     <th align="right">Impr.</th>
                     <th align="right">CTR</th>
                     <th align="right">Avg. CPC</th>
-                    <th align="right">Avg. CPM</th>
                     <th align="right">Cost</th>
-                    <th align="right">Avg. Pos</th>
-                    <th align="right">Max. CPC</th>
+                    <th align="right">Avg. POS</th>
                     </thead>
                     <tbody>
+                    <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0;?>
+                    <?php if(isset($adGroupPerformance) && !empty($adGroupPerformance)):?>
+                        <?php foreach($adGroupPerformance as $adGroup):?>
+                            <tr>
+                                <td align="left"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/view", array('id'=>$adGroup['id']));?>"><?php echo $adGroup['name'];?></a></td>
+                                <td align="right"><?php echo ADGroup::getStatusText($adGroup['status']);?></td>
+                                <td align="left"><?php echo sprintf("$%1\$.2f", $adGroup['default_bid']);?></td>
+                                <td align="right"><?php echo $adGroup['clicks'];?></td>
+                                <td align="right"><?php echo $adGroup['impr'];?></td>
+                                <td align="right"><?php echo $adGroup['impr'] ? sprintf("%1\$.2f%%", $adGroup['clicks'] / $adGroup['impr'] * 100) : "&nbsp;";?></td>
+                                <td align="right"><?php echo $adGroup['clicks'] ? sprintf("$%1\$.2f", $adGroup['cost'] / $adGroup['clicks']) : "&nbsp;";?></td>
+                                <td align="right"><?php echo sprintf("$%1\$.2f", $adGroup['cost']);?></td>
+                                <td align="right">&nbsp;</td>
+                            </tr>
+                            <?php $clickTotal += $adGroup['clicks']; $imprTotal += $adGroup['impr']; $costTotal += $adGroup['cost']; endforeach; ?>
+                    <?php endif;?>
                     <tr>
-                        <td><a href="#">AD Group #1</a></td>
-                        <td>Eligible</td>
-                        <td>166</td>
-                        <td>3,459</td>
-                        <td>3.2%</td>
-                        <td>$1.02</td>
-                        <td>$0.56</td>
-                        <td>$20.00</td>
-                        <td>1.0</td>
-                        <td>$1.0</td>
-                    </tr>
-                    <tr>
-                        <td><a href="#">AD Group #2</a></td>
-                        <td>Paused</td>
-                        <td>48</td>
-                        <td>9,845</td>
-                        <td>0.25%</td>
-                        <td>$0.26</td>
-                        <td>$2.5</td>
-                        <td>$20.00</td>
-                        <td>1.0</td>
-                        <td>$1.0</td>
-                    </tr>
-                    <tr>
-                        <td><a href="#">AD Group #3</a></td>
-                        <td>Eligible</td>
-                        <td>49</td>
-                        <td>6,128</td>
-                        <td>2.89%</td>
-                        <td>$2.5</td>
-                        <td>$2.5</td>
-                        <td>$20.00</td>
-                        <td>1.0</td>
-                        <td>$1.0</td>
+                        <td align="left">&nbsp;</td>
+                        <td align="left">&nbsp;</td>
+                        <td align="right" class="boldFont">Total</td>
+                        <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
+                        <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
+                        <td align="right" class="boldFont"><?php echo $imprTotal ? sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100) : "&nbsp;";?></td>
+                        <td align="right" class="boldFont"><?php echo $clickTotal ? sprintf("$%1\$.2f", $costTotal / $clickTotal) : "&nbsp;";?></td>
+                        <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
+                        <td align="right" class="boldFont">&nbsp;</td>
                     </tr>
                     </tbody>
                 </table>
@@ -267,134 +208,126 @@ $this->breadcrumbs=array(
     </div>
 </div>
 
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
-    <div class="borderBlock">
-        <div>
-            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">All Enabled Keywords</h1>
-                </div>
-            </div>
-            <div>
-                <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <thead>
-                    <th align="left">Ad Group</th>
-                    <th align="left">Status</th>
-                    <th align="right">Clicks</th>
-                    <th align="right">Impr.</th>
-                    <th align="right">CTR</th>
-                    <th align="right">Avg. CPC</th>
-                    <th align="right">Avg. CPM</th>
-                    <th align="right">Cost</th>
-                    <th align="right">Avg. Pos</th>
-                    <th align="right">Max. CPC</th>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><a href="#">AD Group #1</a></td>
-                        <td>Eligible</td>
-                        <td>166</td>
-                        <td>3,459</td>
-                        <td>3.2%</td>
-                        <td>$1.02</td>
-                        <td>$0.56</td>
-                        <td>$20.00</td>
-                        <td>1.0</td>
-                        <td>$1.0</td>
-                    </tr>
-                    <tr>
-                        <td><a href="#">AD Group #2</a></td>
-                        <td>Paused</td>
-                        <td>48</td>
-                        <td>9,845</td>
-                        <td>0.25%</td>
-                        <td>$0.26</td>
-                        <td>$2.5</td>
-                        <td>$20.00</td>
-                        <td>1.0</td>
-                        <td>$1.0</td>
-                    </tr>
-                    <tr>
-                        <td><a href="#">AD Group #3</a></td>
-                        <td>Eligible</td>
-                        <td>49</td>
-                        <td>6,128</td>
-                        <td>2.89%</td>
-                        <td>$2.5</td>
-                        <td>$2.5</td>
-                        <td>$20.00</td>
-                        <td>1.0</td>
-                        <td>$1.0</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+<script>
 
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
-    <div class="borderBlock">
-        <div>
-            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">Good Quality But Law Traffic Keywords</h1>
-                </div>
-            </div>
-            <div>
-                <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <thead>
-                    <th align="left">Ad Group</th>
-                    <th align="left">Status</th>
-                    <th align="right">Clicks</th>
-                    <th align="right">Impr.</th>
-                    <th align="right">CTR</th>
-                    <th align="right">Avg. CPC</th>
-                    <th align="right">Avg. CPM</th>
-                    <th align="right">Cost</th>
-                    <th align="right">Avg. Pos</th>
-                    <th align="right">Max. CPC</th>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><a href="#">AD Group #1</a></td>
-                        <td>Eligible</td>
-                        <td>166</td>
-                        <td>3,459</td>
-                        <td>3.2%</td>
-                        <td>$1.02</td>
-                        <td>$0.56</td>
-                        <td>$20.00</td>
-                        <td>1.0</td>
-                        <td>$1.0</td>
-                    </tr>
-                    <tr>
-                        <td><a href="#">AD Group #2</a></td>
-                        <td>Paused</td>
-                        <td>48</td>
-                        <td>9,845</td>
-                        <td>0.25%</td>
-                        <td>$0.26</td>
-                        <td>$2.5</td>
-                        <td>$20.00</td>
-                        <td>1.0</td>
-                        <td>$1.0</td>
-                    </tr>
-                    <tr>
-                        <td><a href="#">AD Group #3</a></td>
-                        <td>Eligible</td>
-                        <td>49</td>
-                        <td>6,128</td>
-                        <td>2.89%</td>
-                        <td>$2.5</td>
-                        <td>$2.5</td>
-                        <td>$20.00</td>
-                        <td>1.0</td>
-                        <td>$1.0</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+    var chartCategories = [];
+    var series = [];
+    var dataName = $("#dataPoint").val();
+    var prefix = '';
+    var suffix = '';
+
+    $(function () {
+        $("#dataPoint").change(updatePerformanceChart);
+        $("#groupBy").change(updatePerformanceChart);
+        $("#adCampaignId").change(updatePerformanceChart);
+
+        updatePerformanceChart();
+    });
+
+    function updatePerformanceChart()
+    {
+        var adCampaignId = $("#adCampaignId").val();
+        var dataPoint = $("#dataPoint").val();
+        var groupBy = $("#groupBy").val();
+
+        $.ajax({
+            type: "POST",
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/home/getPerformanceData");?>',
+            data: {
+                groupBy: groupBy,
+                dataPoint: dataPoint,
+                adcampaignid: adCampaignId
+            },
+            dataType: "JSON",
+            success: function (data, status, xhr) {
+                var chartCategories = [];
+                var series = [];
+                var dataName = $("#dataPoint").val();
+                var prefix = '';
+                var suffix = '';
+
+                switch(dataName)
+                {
+                    case 'clicks':
+                        break;
+                    case 'impr':
+                        break;
+                    case 'ctr':
+                        suffix = '%';
+                        break;
+                    case 'cpc':
+                        prefix = '$';
+                        break;
+                    case 'cost':
+                        prefix = '$';
+                        break;
+                }
+
+                for(var key in data)
+                {
+                    chartCategories.push(key);
+
+                    switch(dataName)
+                    {
+                        case 'clicks':
+                            series.push(parseInt(data[key][dataName]));
+                            break;
+                        case 'impr':
+                            series.push(parseInt(data[key][dataName]));
+                            break;
+                        case 'ctr':
+                            suffix = '%';
+                            series.push(parseFloat(data[key][dataName]));
+                            break;
+                        case 'cpc':
+                            prefix = '$';
+                            series.push(parseFloat(data[key][dataName]));
+                            break;
+                        case 'cost':
+                            prefix = '$';
+                            series.push(parseFloat(data[key][dataName]));
+                            break;
+                    }
+                }
+
+                $('#chartContainer').highcharts({
+                    title: {
+                        text: 'Advertisement Overall Performance for ' + dataName,
+                        x: -20 //center
+                    },
+                    subtitle: {
+                        text: '',
+                        x: -20
+                    },
+                    xAxis: {
+                        categories: chartCategories
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                        plotLines: [{
+                            value: 1,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                    },
+                    tooltip: {
+                        valuePrefix: prefix,
+                        valueSuffix: suffix
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    },
+                    series: [ {name: dataName, data: series} ]
+                });
+            },
+            error: function (data, status, xhr) {
+                alert("Faile to load performance data.\nPlease try again later.")
+            }
+        });
+    }
+</script>

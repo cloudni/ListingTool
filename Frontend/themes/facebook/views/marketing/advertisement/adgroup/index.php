@@ -1,5 +1,8 @@
 <?php
 /* @var $this ADGroupController */
+/* @var $adCampaign ADCampaign */
+/* @var $adGroupPerformance array */
+/* @var $campaignList array */
 
 $this->breadcrumbs=array(
     'Marketing'=>array("/marketing/home"),
@@ -9,8 +12,8 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-    array('label'=>'Test group #1', 'url'=>array('/marketing/advertisement/adgroup/view/id/1')),
-    array('label'=>'Test group #2', 'url'=>array('/marketing/advertisement/adgroup/view/id/2')),
+    array('label'=>'AD Group Index', 'url'=>array('index')),
+    array('label'=>'AD Group Create', 'url'=>array('create')),
 );
 ?>
 
@@ -26,6 +29,8 @@ $this->menu=array(
         font-weight: bold;
         background: -webkit-linear-gradient(#DD4B3B, #DD4B3B);
         -webkit-box-shadow: inset 0 1px 1px #DD4B3B;
+        position: relative;
+        top: 1px;
     }
 
     .menuButton{
@@ -40,12 +45,13 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ Ad Group" onclick=" window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/create"); ?>';" />
+                    <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location='<?php $campaignid = (isset($adCampaign) ? array('campaignid'=>$adCampaign->id) : array()); echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/create", $campaignid); ?>';" />
+                    <?php echo CHtml::dropDownList('campaignList', (isset($adCampaign) ? $adCampaign->id : null), CHtml::listData($campaignList, 'id', 'name'), array('empty'=>'Please select AD campaign to filter', 'style'=>'height: 26px; position: relative; top: 1px; width: 150px;'));?>
                     <input id="menu_campaign_filter_button" type="button" value="All ▼" class="menuButton" onclick="showMenu('menu_campaign_filter');" />
                     <ul id="menu_campaign_filter" class="ui-menu" style="width: 180px;" >
-                        <li value="All_Campaigns">All Campaigns</li>
-                        <li value="All_enabled_Campaigns">All enabled Campaigns</li>
-                        <li value="All_but_removed_Campaigns">All but removed Campaigns</li>
+                        <li value="All_Campaigns">All AD Groups</li>
+                        <li value="All_enabled_Campaigns">All enabled AD Groups</li>
+                        <li value="All_but_removed_Campaigns">All but removed AD Groups</li>
                     </ul>
                     <input id="menu_edit_action_button" type="button" value="Edit ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
                     <ul id="menu_edit_action" class="ui-menu" >
@@ -72,7 +78,6 @@ $this->menu=array(
                         <li value="All_but_removed_Campaigns">Click Type</li>
                         <li value="All_but_removed_Campaigns">Device</li>
                     </ul>
-                    <input type="button" value="Settings" />
                 </div>
             </div>
             <div>
@@ -87,141 +92,52 @@ $this->menu=array(
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">All AD Groups in Campaign #1</h1>
+                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">All AD Groups<?php echo isset($adCampaign) ? " in AD Campaign: ".$adCampaign->name : "";?></h1>
                 </div>
             </div>
             <div>
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <thead>
                     <th align="left"><input type="checkbox" /></th>
-                    <th align="left"><img src="/themes/facebook/images/disabled.png" /></th>
-                    <th align="right">AD Group</th>
+                    <th align="left">AD Group</th>
+                    <th align="left">&nbsp;</th>
                     <th align="right">Default Max. CPC</th>
-                    <th align="right">Status</th>
                     <th align="right">Clicks</th>
                     <th align="right">Impr.</th>
                     <th align="right">CTR</th>
                     <th align="right">Avg. CPC</th>
                     <th align="right">Cost</th>
-                    <th align="right">Avg. CPM</th>
+                    <th align="right">Avg. POS</th>
                     </thead>
                     <tbody>
+                    <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0;?>
+                    <?php if(isset($adGroupPerformance) && !empty($adGroupPerformance)):?>
+                    <?php foreach($adGroupPerformance as $adGroup):?>
+                        <tr>
+                            <td align="left"><input type="checkbox" value="<?php echo $adGroup['id'];?>" /></th>
+                            <td align="left"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/view", array('id'=>$adGroup['id']));?>"><?php echo $adGroup['name'];?></a></td>
+                            <td align="right"><img src="<?php echo ADGroup::getStatusImg($adGroup['status']);?>" border="0" /></td>
+                            <td align="left"><?php echo sprintf("$%1\$.2f", $adGroup['default_bid']);?></td>
+                            <td align="right"><?php echo $adGroup['clicks'];?></td>
+                            <td align="right"><?php echo $adGroup['impr'];?></td>
+                            <td align="right"><?php echo $adGroup['impr'] ? sprintf("%1\$.2f%%", $adGroup['clicks'] / $adGroup['impr'] * 100) : "&nbsp;";?></td>
+                            <td align="right"><?php echo $adGroup['clicks'] ? sprintf("$%1\$.2f", $adGroup['cost'] / $adGroup['clicks']) : "&nbsp;";?></td>
+                            <td align="right"><?php echo sprintf("$%1\$.2f", $adGroup['cost']);?></td>
+                            <td align="right">&nbsp;</td>
+                        </tr>
+                        <?php $clickTotal += $adGroup['clicks']; $imprTotal += $adGroup['impr']; $costTotal += $adGroup['cost']; endforeach; ?>
+                    <?php endif;?>
                     <tr>
-                        <td><input type="checkbox" /></td>
-                        <td><img src="/themes/facebook/images/enabled.png" /></td>
-                        <td><a href="#">Group #1</a></td>
-                        <td>$2.00</td>
-                        <td>Eligible</td>
-                        <td>100</td>
-                        <td>13,491</td>
-                        <td>1.23%</td>
-                        <td>$0.42</td>
-                        <td>$0.23</td>
-                        <td>$50.00</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Computers</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>66</td>
-                        <td>8,914</td>
-                        <td>2.45%</td>
-                        <td>$0.71</td>
-                        <td>$0.34</td>
-                        <td>$60.00</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Mobile Devices</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>66</td>
-                        <td>8,914</td>
-                        <td>2.45%</td>
-                        <td>$0.71</td>
-                        <td>$0.34</td>
-                        <td>$60.00</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Tablets</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>66</td>
-                        <td>8,914</td>
-                        <td>2.45%</td>
-                        <td>$0.71</td>
-                        <td>$0.34</td>
-                        <td>$60.00</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" /></td>
-                        <td><img src="/themes/facebook/images/enabled.png" /></td>
-                        <td><a href="#">Group #2</a></td>
-                        <td>$0.50</td>
-                        <td>Ineligible</td>
-                        <td>66</td>
-                        <td>8,914</td>
-                        <td>2.45%</td>
-                        <td>$0.71</td>
-                        <td>$0.34</td>
-                        <td>$60.00</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Computers</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>66</td>
-                        <td>8,914</td>
-                        <td>2.45%</td>
-                        <td>$0.71</td>
-                        <td>$0.34</td>
-                        <td>$60.00</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Mobile Devices</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>66</td>
-                        <td>8,914</td>
-                        <td>2.45%</td>
-                        <td>$0.71</td>
-                        <td>$0.34</td>
-                        <td>$60.00</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Tablets</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>66</td>
-                        <td>8,914</td>
-                        <td>2.45%</td>
-                        <td>$0.71</td>
-                        <td>$0.34</td>
-                        <td>$60.00</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td class="boldFont">Total</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td class="boldFont">66</td>
-                        <td class="boldFont">8,914</td>
-                        <td class="boldFont">2.45%</td>
-                        <td class="boldFont">$0.71</td>
-                        <td class="boldFont">$0.34</td>
-                        <td class="boldFont">$60.00</td>
+                        <td align="left">&nbsp;</th>
+                        <td align="left">&nbsp;</td>
+                        <td align="left">&nbsp;</td>
+                        <td align="right" class="boldFont">Total</td>
+                        <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
+                        <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
+                        <td align="right" class="boldFont"><?php echo $imprTotal ? sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100) : "&nbsp;";?></td>
+                        <td align="right" class="boldFont"><?php echo $clickTotal ? sprintf("$%1\$.2f", $costTotal / $clickTotal) : "&nbsp;";?></td>
+                        <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
+                        <td align="right" class="boldFont">&nbsp;</td>
                     </tr>
                     </tbody>
                 </table>
@@ -234,6 +150,12 @@ $this->menu=array(
     $(function() {
         $( "ul[id^='menu_']" ).menu();
         $( "ul[id^='menu_']" ).hide();
+
+        $("#campaignList").change(function(){
+            var href = "<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/index/adcampaignid");?>";
+            if($("#campaignList").val())
+                window.location = href.substring(0, href.length - 5) + "/" + $("#campaignList").val() + href.substring(href.length - 5, href.length);
+        });
     });
 
     $("#page").click(function(){

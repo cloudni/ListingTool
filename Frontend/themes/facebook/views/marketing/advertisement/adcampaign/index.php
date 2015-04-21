@@ -1,6 +1,6 @@
 <?php
 /* @var $this ADCampaignController */
-/* @var $dataProvider CActiveDataProvider */
+/* @var $campaignPerformance array */
 
 $this->breadcrumbs=array(
     'Marketing'=>array("/marketing/home"),
@@ -8,14 +8,10 @@ $this->breadcrumbs=array(
 	'AD Campaign',
 );
 
-$menu = array();
-foreach($dataProvider->rawData as $data)
-    $menu[] = array('label'=>'Campaign '.$data['name'], 'url'=>array('/marketing/advertisement/adcampaign/view/id/'.$data['id']));
-
-$this->menu=$menu;/*array(
-    array('label'=>'Test Campaign #1', 'url'=>array('/marketing/advertisement/adcampaign/view/id/1')),
-    array('label'=>'Test Campaign #2', 'url'=>array('/marketing/advertisement/adcampaign/view/id/2')),
-);*/
+$this->menu=array(
+    array('label'=>'Campaign Index', 'url'=>array('index')),
+    array('label'=>'Campaign Create', 'url'=>array('create')),
+);
 ?>
 
 <style>
@@ -30,6 +26,8 @@ $this->menu=$menu;/*array(
         font-weight: bold;
         background: -webkit-linear-gradient(#DD4B3B, #DD4B3B);
         -webkit-box-shadow: inset 0 1px 1px #DD4B3B;
+        position: relative;
+        top: 1px;
     }
 
     .menuButton{
@@ -57,7 +55,6 @@ $this->menu=$menu;/*array(
                         <li value="All_enabled_Campaigns">Pause</li>
                         <li value="All_but_removed_Campaigns">Remove</li>
                         <li class="ui-state-disabled"><hr /></li>
-                        <li value="All_but_removed_Campaigns">Change Budget</li>
                         <li value="All_but_removed_Campaigns">Download Report</li>
                     </ul>
                     <input id="menu_segment_action_button" type="button" value="Segment ▼" class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
@@ -97,7 +94,7 @@ $this->menu=$menu;/*array(
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <thead>
                         <th align="left"><input type="checkbox" /></th>
-                        <th align="left"><img src="/themes/facebook/images/disabled.png" /></th>
+                        <th align="center"><img src="/themes/facebook/images/disabled.png" /></th>
                         <th align="right">Campaign</th>
                         <th align="right">Budget</th>
                         <th align="right">Status</th>
@@ -109,22 +106,33 @@ $this->menu=$menu;/*array(
                         <th align="right">Avg. POS</th>
                     </thead>
                     <tbody>
-                    <?php $this->widget('zii.widgets.CListView', array(
-                        'dataProvider'=>$dataProvider,
-                        'itemView'=>'_view',
-                    )); ?>
+                    <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($campaignPerformance as $campaign): ?>
+                        <tr>
+                            <td align="left"><input type="checkbox" value="<?php echo $campaign['id'];?>" /></td>
+                            <td align="center"><img src="<?php echo ADGroup::getStatusImg($campaign['status']);?>" border="0" /></td>
+                            <td align="right"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>$campaign['id']));?>"><?php echo $campaign['name'];?></a></td>
+                            <td align="right"><?php echo sprintf("$%1\$.2f", $campaign['budget']);?></td>
+                            <td align="right"><?php echo ADCampaign::getStatusText($campaign['status']);?></td>
+                            <td align="right"><?php echo $campaign['clicks'];?></td>
+                            <td align="right"><?php echo $campaign['impr'];?></td>
+                            <td align="right"><?php echo isset($campaign['impr']) ? sprintf("%1\$.2f%%", $campaign['clicks'] / $campaign['impr'] * 100) : "&nbsp;";?></td>
+                            <td align="right"><?php echo isset($campaign['clicks']) ? sprintf("$%1\$.2f", $campaign['cost'] / $campaign['clicks']) : "&nbsp;";?></td>
+                            <td align="right"><?php echo isset($campaign['cost']) ? sprintf("$%1\$.2f", $campaign['cost']) : "&nbsp;";?></td>
+                            <td align="right">&nbsp;</td>
+                        </tr>
+                    <?php $clickTotal += $campaign['clicks']; $imprTotal += $campaign['impr']; $costTotal += $campaign['cost']; endforeach; ?>
                     <tr>
                         <td align="left">&nbsp;</td>
-                        <td align="left">&nbsp;</td>
+                        <td align="center">&nbsp;</td>
                         <td align="right" class="boldFont">Total</td>
                         <td align="right">&nbsp;</td>
                         <td align="right">&nbsp;</td>
-                        <td align="right" class="boldFont">0</td>
-                        <td align="right" class="boldFont">0</td>
-                        <td align="right" class="boldFont">0%</td>
-                        <td align="right" class="boldFont">$0.00</td>
-                        <td align="right" class="boldFont">$0.00</td>
-                        <td align="right" class="boldFont">0</td>
+                        <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
+                        <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
+                        <td align="right" class="boldFont"><?php echo sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100);?></td>
+                        <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal / $clickTotal);?></td>
+                        <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
+                        <td align="right" class="boldFont">&nbsp;</td>
                     </tr>
                     </tbody>
                 </table>

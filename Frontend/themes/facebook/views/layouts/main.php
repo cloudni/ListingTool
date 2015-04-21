@@ -160,7 +160,6 @@
                     'label'=>'Marketing',
                     'itemOptions'=>array('class'=>'dir'),
                     'visible'=>!Yii::app()->user->isGuest,
-                    'url'=>array('/marketing/home'),
                     'items'=>array(
                         array('label'=>'Advertisement', 'url'=>array('/marketing/advertisement/home')),
                     ),

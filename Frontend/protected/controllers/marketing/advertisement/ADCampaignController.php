@@ -116,7 +116,7 @@ class ADCampaignController extends Controller
         $performance = array('clicks'=>null, 'impr'=>null, 'cost'=>null);
         if(!empty($result)) $performance = array('clicks'=>$result['clicks'], 'impr'=>$result['impr'], 'cost'=>$result['cost']);
 
-        $adGroupPerformanceSQL = "SELECT t.id, t.name, t.default_bid, t.status, sum(garc.clicks) as clicks, sum(garc.impressions) as impr, sum(garc.cost / 10000) as cost
+        $adGroupPerformanceSQL = "SELECT t.id, t.name, t.default_bid, t.status, sum(garc.clicks) as clicks, sum(garc.impressions) as impr, sum(garc.cost / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit'].") as cost
                                     FROM lt_ad_group t
                                     left join lt_google_adwords_ad_group gac on gac.lt_ad_group_id = t.id
                                     left join lt_google_adwords_report_ad_group garc on garc.ad_group_id = gac.id

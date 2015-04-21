@@ -134,4 +134,9 @@ if (!empty($bulletin)) {
     $config['params']['bulletin'] = $bulletin;
 }
 
+$google =  require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'google.php');
+if (!empty($google)) {
+    $config['params']['google'] = $google;
+}
+
 return $config;

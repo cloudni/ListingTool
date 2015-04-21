@@ -47,6 +47,45 @@ class ADGroup extends NIActiveRecord
         return isset($statusOptions[$status]) ? $statusOptions[$status] : "unknown status Code ({$status})";
     }
 
+    public static function getStatusImg($status)
+    {
+        switch($status)
+        {
+            case self::Status_Enabled:
+                return "/themes/facebook/images/enabled.png";
+                break;
+            case self::Status_Paused:
+                return "/themes/facebook/images/pause.gif";
+                break;
+            case self::Status_Removed:
+                return "/themes/facebook/images/disabled.png";
+                break;
+            default:
+                return "/themes/facebook/images/disabled.png";
+                break;
+        }
+    }
+
+    CONST GroupBy_Day=1;
+    CONST GroupBy_Week=2;
+    CONST GroupBy_Month=3;
+    CONST GroupBy_Year=4;
+
+    public static function getGroupByOptions()
+    {
+        return array(
+            self::GroupBy_Day=>'Daily',
+            self::GroupBy_Week=>'Weekly',
+            self::GroupBy_Month=>'Monthly',
+        );
+    }
+
+    public static function getGroupByText($groupBy)
+    {
+        $groupByOptions = self::getGroupByOptions();
+        return isset($groupByOptions[$groupBy]) ? $groupByOptions[$groupBy] : "unknown Group By Code ({$groupBy})";
+    }
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -83,7 +122,7 @@ class ADGroup extends NIActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
-			'campaign' => array(self::BELONGS_TO, 'ADCampaign', 'campaign_id'),
+			'adCampaign' => array(self::BELONGS_TO, 'ADCampaign', 'campaign_id'),
 		);
 	}
 

@@ -73,6 +73,20 @@ class ADAdvertiseVariation extends NIActiveRecord
     CONST Status_Paused=1;
     CONST Status_Removed=2;
 
+    public static function getCodeOptions()
+    {
+        return array(
+            self::Code_Flash=>'Flash',
+            self::Code_Html5=>'HTML5',
+        );
+    }
+
+    public static function getCodeText($code)
+    {
+        $codeOptions = self::getCodeOptions();
+        return isset($codeOptions[$code]) ? $codeOptions[$code] : "unknown Code ({$code})";
+    }
+
     public static function getStatusOptions()
     {
         return array(
@@ -86,6 +100,45 @@ class ADAdvertiseVariation extends NIActiveRecord
     {
         $statusOptions = self::getStatusOptions();
         return isset($statusOptions[$status]) ? $statusOptions[$status] : "unknown status Code ({$status})";
+    }
+
+    public static function getStatusImg($status)
+    {
+        switch($status)
+        {
+            case self::Status_Enabled:
+                return "/themes/facebook/images/enabled.png";
+                break;
+            case self::Status_Paused:
+                return "/themes/facebook/images/pause.gif";
+                break;
+            case self::Status_Removed:
+                return "/themes/facebook/images/disabled.png";
+                break;
+            default:
+                return "/themes/facebook/images/disabled.png";
+                break;
+        }
+    }
+
+    CONST GroupBy_Day=1;
+    CONST GroupBy_Week=2;
+    CONST GroupBy_Month=3;
+    CONST GroupBy_Year=4;
+
+    public static function getGroupByOptions()
+    {
+        return array(
+            self::GroupBy_Day=>'Daily',
+            self::GroupBy_Week=>'Weekly',
+            self::GroupBy_Month=>'Monthly',
+        );
+    }
+
+    public static function getGroupByText($groupBy)
+    {
+        $groupByOptions = self::getGroupByOptions();
+        return isset($groupByOptions[$groupBy]) ? $groupByOptions[$groupBy] : "unknown Group By Code ({$groupBy})";
     }
 
 	/**

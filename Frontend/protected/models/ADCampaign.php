@@ -37,6 +37,26 @@ class ADCampaign extends NIActiveRecord
     CONST Status_Suspended=5;
     CONST Status_LimitedByBudget=6;
 
+    CONST GroupBy_Day=1;
+    CONST GroupBy_Week=2;
+    CONST GroupBy_Month=3;
+    CONST GroupBy_Year=4;
+
+    public static function getGroupByOptions()
+    {
+        return array(
+            self::GroupBy_Day=>'Daily',
+            self::GroupBy_Week=>'Weekly',
+            self::GroupBy_Month=>'Monthly',
+        );
+    }
+
+    public static function getGroupByText($groupBy)
+    {
+        $groupByOptions = self::getGroupByOptions();
+        return isset($groupByOptions[$groupBy]) ? $groupByOptions[$groupBy] : "unknown Group By Code ({$groupBy})";
+    }
+
     public static function getStatusOptions()
     {
         return array(
@@ -48,6 +68,37 @@ class ADCampaign extends NIActiveRecord
             self::Status_Suspended=>'Suspended',
             self::Status_LimitedByBudget=>'Limited By Budget',
         );
+    }
+
+    public static function getStatusImg($status)
+    {
+        switch($status)
+        {
+            case self::Status_Enabled:
+                return "/themes/facebook/images/enabled.gif";
+                break;
+            case self::Status_Eligible:
+                return "/themes/facebook/images/enabled.png";
+                break;
+            case self::Status_Paused:
+                return "/themes/facebook/images/pause.gif";
+                break;
+            case self::Status_Pending:
+                return "/themes/facebook/images/pause.gif";
+                break;
+            case self::Status_Suspended:
+                return "/themes/facebook/images/pause.gif";
+                break;
+            case self::Status_LimitedByBudget:
+                return "/themes/facebook/images/pause.gif";
+                break;
+            case self::Status_Removed:
+                return "/themes/facebook/images/removed.png";
+                break;
+            case self::Stauts_Ended:
+                return "/themes/facebook/images/disabled.png";
+                break;
+        }
     }
 
     public static function getStatusText($status)

@@ -216,15 +216,15 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 26px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ AD Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/create"); ?>'; " />
-                    <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/create", array('campaignid'=>$model->id)); ?>'; " />
+                    <input type="button" class="boldFont greenButton redButton" value="+ AD Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/create"); ?>'; " />
+                    <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/create", array('campaignid'=>$model->id)); ?>'; " />
                     <input id="menu_edit_action_button" type="button" value="Edit ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
                     <ul id="menu_edit_action" class="ui-menu" >
                         <li onclick="if(confirm('Are you sure to Enable selected AD Group(s)?\nAll advertisement(s) in this AD Group will be enanled?')) updateADGroupStatus(<?php echo ADGroup::Status_Enabled;?>);">Enable</li>
                         <li onclick="if(confirm('Are you sure to Pause selected AD Group(s)?\nAll advertisement(s) in this AD Group will be paused?')) updateADGroupStatus(<?php echo ADGroup::Status_Paused;?>);">Pause</li>
                         <li onclick="if(confirm('Are you sure to Remove selected AD Group(s)?\nAll advertisement(s) in this AD Group will be removed?')) updateADGroupStatus(<?php echo ADGroup::Status_Removed;?>);">Remove</li>
                         <li class="ui-state-disabled"><hr /></li>
-                        <li value="All_but_removed_Campaigns" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/update", array('id'=>$model->id)); ?>'; " >Update Campaign</li>
+                        <li value="All_but_removed_Campaigns" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/update", array('id'=>$model->id)); ?>'; " >Update Campaign</li>
                         <li value="All_but_removed_Campaigns">Download Report</li>
                     </ul>
                     <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
@@ -258,7 +258,7 @@ $this->menu=array(
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="position: relative; float: right;">
-                    <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/index", array('adcampaignid'=>$model->id));?>">See All</a>
+                    <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/index", array('adcampaignid'=>$model->id));?>">See All</a>
                 </div>
                 <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
                     <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">AD Group(s)</h1>
@@ -282,7 +282,7 @@ $this->menu=array(
                     <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($adGroupPerformance as $adGroup):?>
                         <tr>
                             <td align="left"><input id="adGroupID[]" name="adGroupID[]" type="checkbox" value="<?php echo $adGroup['id'];?>" /><input id="group_<?php echo $adGroup['id'];?>_status" type="hidden" value="<?php echo $adGroup['status'];?>" /></th>
-                            <td align="left"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/view", array('id'=>$adGroup['id']));?>"><?php echo $adGroup['name'];?></a></td>
+                            <td align="left"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/view", array('id'=>$adGroup['id']));?>"><?php echo $adGroup['name'];?></a></td>
                             <td align="right"><img id="group_<?php echo $adGroup['id'];?>_img" src="<?php echo ADGroup::getStatusImg($adGroup['status']);?>" border="0" /></td>
                             <td align="left"><?php echo sprintf("$%1\$.2f", $adGroup['default_bid']);?></td>
                             <td align="right"><?php echo isset($adGroup['clicks']) ? $adGroup['clicks'] : "&nbsp;";?></td>
@@ -358,7 +358,7 @@ $this->menu=array(
 
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/getPerformanceData");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/getPerformanceData");?>',
             data: {
                 groupBy: groupBy,
                 dataPoint: dataPoint,
@@ -472,7 +472,7 @@ $this->menu=array(
 
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/updateGroupStatus");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/updateGroupStatus");?>',
             data: {
                 status:statusCode,
                 idList: updateIDList

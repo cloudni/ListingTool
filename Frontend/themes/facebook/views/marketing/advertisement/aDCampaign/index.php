@@ -42,7 +42,7 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/create"); ?>'; " />
+                    <input type="button" class="boldFont greenButton redButton" value="+ Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/create"); ?>'; " />
                     <input id="menu_campaign_filter_button" type="button" value="All ▼" class="menuButton" disabled onclick="showMenu('menu_campaign_filter');" />
                     <ul id="menu_campaign_filter" class="ui-menu" style="width: 180px;" >
                         <li value="All_Campaigns">All Campaigns</li>
@@ -109,7 +109,7 @@ $this->menu=array(
                         <tr>
                             <td align="left"><input id="campaignID[]" name="campaignID[]" type="checkbox" value="<?php echo $campaign['id'];?>" /><input id="campaign_<?php echo $campaign['id'];?>_status" type="hidden" value="<?php echo $campaign['status'];?>" /></td>
                             <td align="center"><img id="campaign_<?php echo $campaign['id'];?>_img" src="<?php echo ADGroup::getStatusImg($campaign['status']);?>" border="0" /></td>
-                            <td align="right"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>$campaign['id']));?>"><?php echo $campaign['name'];?></a></td>
+                            <td align="right"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/view", array('id'=>$campaign['id']));?>"><?php echo $campaign['name'];?></a></td>
                             <td align="right"><?php echo sprintf("$%1\$.2f", $campaign['budget']);?></td>
                             <td align="right"><?php echo $campaign['clicks'];?></td>
                             <td align="right"><?php echo $campaign['impr'];?></td>
@@ -181,7 +181,7 @@ $this->menu=array(
 
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/updateCampaignStatus");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/updateCampaignStatus");?>',
             data: {
                 status:statusCode,
                 idList: updateIDList

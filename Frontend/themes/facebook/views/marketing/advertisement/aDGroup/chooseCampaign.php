@@ -12,7 +12,7 @@
 $this->breadcrumbs=array(
     'Marketing'=>array("/marketing/home"),
     'Advertisement'=>array("/marketing/advertisement/home"),
-    'AD Campaign'=>array('/marketing/advertisement/adcampaign/index'),
+    'AD Campaign'=>array('/marketing/advertisement/ADCampaign/index'),
     'AD Group'=>array('index'),
     'Create'
 );
@@ -45,7 +45,7 @@ $this->breadcrumbs=array(
             <div style="height: 36px; color: #9197a3; font-weight: normal;">
                 <h1 style="color: #4e5665; font-weight: 700; padding: 0px 0px 0px 12px; line-height: 38px; position: relative;">
                     <input type="button" id="submit" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'submit');?>" class="greenButton" style="font-size: 12px; line-height: 176%;" />
-                    <input type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cancel');?>" class="greenButton" style="font-size: 12px; line-height: 166%;background: -webkit-linear-gradient(gray, gray); background-color: gray; -webkit-box-shadow: inset 0 1px 1px gray; border-color: gray;" onclick=" if(confirm('Are you sure to cancel and back to AD Group list?')) window.location='<?php echo Yii::app()->createAbsoluteUrl("/marketing/advertisement/adgroup");?>' " />
+                    <input type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cancel');?>" class="greenButton" style="font-size: 12px; line-height: 166%;background: -webkit-linear-gradient(gray, gray); background-color: gray; -webkit-box-shadow: inset 0 1px 1px gray; border-color: gray;" onclick=" if(confirm('Are you sure to cancel and back to AD Group list?')) window.location='<?php echo Yii::app()->createAbsoluteUrl("/marketing/advertisement/ADGroup");?>' " />
                 </h1>
             </div>
         </div>
@@ -61,9 +61,9 @@ $this->breadcrumbs=array(
                 return false;
             }
 
-            var location = "<?php echo Yii::app()->createAbsoluteUrl("/marketing/advertisement/adgroup/create/campaignid");?>";
+            var location = "<?php echo Yii::app()->createAbsoluteUrl("/marketing/advertisement/ADGroup/create/campaignid");?>";
 
-            window.location = location.replace("/adgroup/create/campaignid", "/adgroup/create/campaignid/"+$("#campaign").val())
+            window.location = location.replace("/ADGroup/create/campaignid", "/ADGroup/create/campaignid/"+$("#campaign").val())
         });
     });
 </script>

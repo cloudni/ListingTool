@@ -7,7 +7,7 @@
 $this->breadcrumbs=array(
     'Marketing'=>array("/marketing/home"),
     'Advertisement'=>array("/marketing/advertisement/home"),
-    'AD Campaign'=>array('/marketing/advertisement/adcampaign/index'),
+    'AD Campaign'=>array('/marketing/advertisement/ADCampaign/index'),
     'AD Group',
 );
 
@@ -45,7 +45,7 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location='<?php $campaignid = (isset($adCampaign) ? array('campaignid'=>$adCampaign->id) : array()); echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/create", $campaignid); ?>';" />
+                    <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location='<?php $campaignid = (isset($adCampaign) ? array('campaignid'=>$adCampaign->id) : array()); echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/create", $campaignid); ?>';" />
                     <?php echo CHtml::dropDownList('campaignList', (isset($adCampaign) ? $adCampaign->id : null), CHtml::listData($campaignList, 'id', 'name'), array('empty'=>'Please select AD campaign to filter', 'style'=>'height: 26px; position: relative; top: 1px; width: 150px;'));?>
                     <input id="menu_campaign_filter_button" type="button" value="All ▼" disabled class="menuButton" onclick="showMenu('menu_campaign_filter');" />
                     <ul id="menu_campaign_filter" class="ui-menu" style="width: 180px;" >
@@ -115,7 +115,7 @@ $this->menu=array(
                     <?php foreach($adGroupPerformance as $adGroup):?>
                         <tr>
                             <td align="left"><input id="adGroupID[]" name="adGroupID[]" type="checkbox" value="<?php echo $adGroup['id'];?>" /><input id="group_<?php echo $adGroup['id'];?>_status" type="hidden" value="<?php echo $adGroup['status'];?>" /></th>
-                            <td align="left"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/view", array('id'=>$adGroup['id']));?>"><?php echo $adGroup['name'];?></a></td>
+                            <td align="left"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/view", array('id'=>$adGroup['id']));?>"><?php echo $adGroup['name'];?></a></td>
                             <td align="right"><img id="group_<?php echo $adGroup['id'];?>_img" src="<?php echo ADGroup::getStatusImg($adGroup['status']);?>" border="0" /></td>
                             <td align="left"><?php echo sprintf("$%1\$.2f", $adGroup['default_bid']);?></td>
                             <td align="right"><?php echo $adGroup['clicks'];?></td>
@@ -152,7 +152,7 @@ $this->menu=array(
         $( "ul[id^='menu_']" ).hide();
 
         $("#campaignList").change(function(){
-            var href = "<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/index/adcampaignid");?>";
+            var href = "<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/index/adcampaignid");?>";
             if($("#campaignList").val())
                 window.location = href.substring(0, href.length - 5) + "/" + $("#campaignList").val() + href.substring(href.length - 5, href.length);
         });
@@ -193,7 +193,7 @@ $this->menu=array(
 
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/updateGroupStatus");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/updateGroupStatus");?>',
             data: {
                 status:statusCode,
                 idList: updateIDList

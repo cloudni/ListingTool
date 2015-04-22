@@ -97,7 +97,6 @@ $this->menu=array(
                         <th align="center"><img src="/themes/facebook/images/disabled.png" /></th>
                         <th align="right">Campaign</th>
                         <th align="right">Budget</th>
-                        <th align="right">Status</th>
                         <th align="right">Clicks</th>
                         <th align="right">Impr.</th>
                         <th align="right">CTR</th>
@@ -112,7 +111,6 @@ $this->menu=array(
                             <td align="center"><img id="campaign_<?php echo $campaign['id'];?>_img" src="<?php echo ADGroup::getStatusImg($campaign['status']);?>" border="0" /></td>
                             <td align="right"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>$campaign['id']));?>"><?php echo $campaign['name'];?></a></td>
                             <td align="right"><?php echo sprintf("$%1\$.2f", $campaign['budget']);?></td>
-                            <td align="right"><?php echo ADCampaign::getStatusText($campaign['status']);?></td>
                             <td align="right"><?php echo $campaign['clicks'];?></td>
                             <td align="right"><?php echo $campaign['impr'];?></td>
                             <td align="right"><?php echo isset($campaign['impr']) ? sprintf("%1\$.2f%%", $campaign['clicks'] / $campaign['impr'] * 100) : "&nbsp;";?></td>
@@ -125,7 +123,6 @@ $this->menu=array(
                         <td align="left">&nbsp;</td>
                         <td align="center">&nbsp;</td>
                         <td align="right" class="boldFont">Total</td>
-                        <td align="right">&nbsp;</td>
                         <td align="right">&nbsp;</td>
                         <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
                         <td align="right" class="boldFont"><?php echo $imprTotal;?></td>

@@ -227,7 +227,7 @@ $this->menu=array(
                         <li value="All_but_removed_Campaigns" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/update", array('id'=>$model->id)); ?>'; " >Update Campaign</li>
                         <li value="All_but_removed_Campaigns">Download Report</li>
                     </ul>
-                    <input id="menu_segment_action_button" type="button" value="Segment ▼" class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
+                    <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
                     <ul id="menu_segment_action" class="ui-menu" >
                         <li value="All_Campaigns">None</li>
                         <li value="All_enabled_Campaigns">
@@ -467,6 +467,8 @@ $this->menu=array(
             }
         }
         if (updateIDList.length <= 0) return false;
+
+        $("#ajaxloading").css("display", "block");
 
         $.ajax({
             type: "POST",

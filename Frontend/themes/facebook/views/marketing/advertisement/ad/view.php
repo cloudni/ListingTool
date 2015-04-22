@@ -160,14 +160,14 @@ $this->menu=array(
                     <input id="menu_edit_action_button" type="button" value="Edit ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
                     <?php if(!empty($adVariationPerformance)):?>
                     <ul id="menu_edit_action" class="ui-menu" >
-                        <li value="All_Campaigns">Enable</li>
-                        <li value="All_enabled_Campaigns">Pause</li>
-                        <li value="All_but_removed_Campaigns">Remove</li>
+                        <li onclick="if(confirm('Are you sure to Enable selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Enabled;?>);">Enable</li>
+                        <li onclick="if(confirm('Are you sure to Pause selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Paused;?>);">Pause</li>
+                        <li onclick="if(confirm('Are you sure to Remove selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Removed;?>);">Remove</li>
                         <li class="ui-state-disabled"><hr /></li>
                         <li value="All_but_removed_Campaigns" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/update", array('id'=>$model->id)); ?>'; " >Update Advertisement</li>
                         <li value="All_but_removed_Campaigns">Download Report</li>
                     </ul>
-                    <input id="menu_segment_action_button" type="button" value="Segment ▼" class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
+                    <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
                     <ul id="menu_segment_action" class="ui-menu" >
                         <li value="All_Campaigns">None</li>
                         <li value="All_enabled_Campaigns">
@@ -205,7 +205,7 @@ $this->menu=array(
                 <div style="display: block;">
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                         <thead>
-                        <th align="left"><input type="checkbox" /></th>
+                        <th align="left"><input id="adVariationAll" type="checkbox" /></th>
                         <th align="left"><img src="/themes/facebook/images/disabled.png" border="0" /></th>
                         <th align="left">AD Variation</th>
                         <th align="right">Clicks</th>
@@ -218,8 +218,8 @@ $this->menu=array(
                         <tbody>
                         <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($adVariationPerformance as $ad):?>
                             <tr>
-                                <td align="left"><input type="checkbox" id="ad_variation_id[]" name="ad_variation_id[]" value="<?php echo $ad['id'];?>" /></th>
-                                <td align="left"><img src="<?php echo ADAdvertiseVariation::getStatusImg($ad['status']);?>" border="0" /></td>
+                                <td align="left"><input type="checkbox" id="ad_variation_id[]" name="ad_variation_id[]" value="<?php echo $ad['id'];?>" /><input id="variation_<?php echo $ad['id'];?>_status" type="hidden" value="<?php echo $ad['status'];?>" /></th>
+                                <td align="left"><img id="variation_<?php echo $ad['id'];?>_img" src="<?php echo ADAdvertiseVariation::getStatusImg($ad['status']);?>" border="0" /></td>
                                 <td align="left"><?php echo $ad['width'];?> x <?php echo $ad['height'];?>(<?php echo ADAdvertiseVariation::getCodeText($ad['code']);?>)</td>
                                 <td align="right"><?php echo isset($ad['clicks']) && $ad['clicks'] ? $ad['clicks'] : "0";?></td>
                                 <td align="right"><?php echo isset($ad['impr']) && $ad['impr'] ? $ad['impr'] : "&nbsp;";?></td>
@@ -264,6 +264,13 @@ $this->menu=array(
         $("#advariationId").change(updatePerformanceChart);
 
         updatePerformanceChart();
+
+        $("#adVariationAll").click(function(){
+            if($("#adVariationAll").prop('checked'))
+                $("input[id^='ad_variation_id']").prop('checked', true);
+            else
+                $("input[id^='ad_variation_id']").removeAttr('checked');
+        });
     });
 
     $("#page").click(function(){
@@ -381,6 +388,56 @@ $this->menu=array(
             },
             error: function (data, status, xhr) {
                 alert("Faile to load performance data.\nPlease try again later.")
+            }
+        });
+    }
+
+    function updateADVariationStatus(statusCode) {
+        if ($("input[id^='ad_variation_id']:checked").length <= 0) return false;
+
+        var updateIDList = [];
+        for (var i = 0; i < $("input[id^='ad_variation_id']:checked").length; i++) {
+            if ($("#group_" + $($("input[id^='ad_variation_id']:checked")[i]).val() + "_status").val() != statusCode) {
+                updateIDList.push($($("input[id^='ad_variation_id']:checked")[i]).val());
+            }
+        }
+        if (updateIDList.length <= 0) return false;
+
+        $("#ajaxloading").css("display", "block");
+
+        $.ajax({
+            type: "POST",
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/updateVariationStatus");?>',
+            data: {
+                status: statusCode,
+                idList: updateIDList
+            },
+            dataType: "JSON",
+            success: function (data, status, xhr) {
+                $("#ajaxloading").css("display", "none");
+                if (data['status'] == 'success') {
+                    for (var i = 0; i < data['data'].length; i++) {
+                        $("#variation_" + data['data'][i] + "_status").val(statusCode);
+                        switch (statusCode) {
+                            case <?php echo ADCampaign::Status_Eligible;?>:
+                                $("#variation_" + data['data'][i] + "_img").prop('src', '/themes/facebook/images/enabled.png');
+                                break;
+                            case <?php echo ADCampaign::Status_Paused;?>:
+                                $("#variation_" + data['data'][i] + "_img").prop('src', '/themes/facebook/images/pause.gif');
+                                break;
+                            case <?php echo ADCampaign::Status_Removed;?>:
+                                $("#variation_" + data['data'][i] + "_img").prop('src', '/themes/facebook/images/removed.png');
+                                break;
+                        }
+                    }
+                }
+                else {
+                    alert("Update Status Failed!\n" + data['msg'] + "\nPlease try again.");
+                }
+            },
+            error: function (data, status, xhr) {
+                $("#ajaxloading").css("display", "none");
+                alert("Search Listing Failed!\nPlease try again.");
             }
         });
     }

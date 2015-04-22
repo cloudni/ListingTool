@@ -177,16 +177,7 @@ $this->menu=array(
                     <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/create", array('campaignid'=>$model->adCampaign->id)); ?>'; " />
                     <input type="button" class="boldFont greenButton redButton" value="+ Advertisement" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/create", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id)); ?>'; " />
                     <?php if(!empty($adPerformance)):?>
-                    <input id="menu_edit_action_button" type="button" value="Edit ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
-                    <ul id="menu_edit_action" class="ui-menu" >
-                        <li value="All_Campaigns">Enable</li>
-                        <li value="All_enabled_Campaigns">Pause</li>
-                        <li value="All_but_removed_Campaigns">Remove</li>
-                        <li class="ui-state-disabled"><hr /></li>
-                        <li value="All_but_removed_Campaigns" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/update", array('id'=>$model->id)); ?>'; " >Update AD Group</li>
-                        <li value="All_but_removed_Campaigns">Download Report</li>
-                    </ul>
-                    <input id="menu_segment_action_button" type="button" value="Segment ▼" class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
+                    <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
                     <ul id="menu_segment_action" class="ui-menu" >
                         <li value="All_Campaigns">None</li>
                         <li value="All_enabled_Campaigns">
@@ -221,14 +212,13 @@ $this->menu=array(
                         <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/index", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id));?>">See All</a>
                     </div>
                     <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
-                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">Advertisement(s)</h1>
+                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 12px; line-height: 38px; position: relative;">Advertisement(s)</h1>
                     </div>
                 </div>
                 <div style="display: block;">
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                         <thead>
-                        <th align="left"><input type="checkbox" /></th>
-                        <th align="left">Advertisement</th>
+                        <th align="left" style="padding-left: 12px;">Advertisement</th>
                         <th align="right">Clicks</th>
                         <th align="right">Impr.</th>
                         <th align="right">CTR</th>
@@ -239,8 +229,7 @@ $this->menu=array(
                         <tbody>
                         <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($adPerformance as $ad):?>
                             <tr>
-                                <td align="left"><input type="checkbox" value="<?php echo $ad['id'];?>" /></th>
-                                <td align="left"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/view", array('id'=>$ad['id']));?>"><?php echo $ad['name'];?></a></td>
+                                <td align="left" style="padding-left: 12px;"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/view", array('id'=>$ad['id']));?>"><?php echo $ad['name'];?></a></td>
                                 <td align="right"><?php echo isset($ad['clicks']) ? $ad['clicks'] : "&nbsp;";?></td>
                                 <td align="right"><?php echo isset($ad['impr']) ? $ad['impr'] : "&nbsp;";?></td>
                                 <td align="right"><?php echo isset($ad['impr']) ? sprintf("%1\$.2f%%", $ad['clicks'] / $ad['impr'] * 100) : "&nbsp;";?></td>
@@ -250,8 +239,7 @@ $this->menu=array(
                             </tr>
                             <?php $clickTotal += $ad['clicks']; $imprTotal += $ad['impr']; $costTotal += $ad['cost']; endforeach; ?>
                         <tr>
-                            <td align="left">&nbsp;</th>
-                            <td align="right" class="boldFont">Total</td>
+                            <td align="right" class="boldFont" style="padding-left: 12px; ">Total</td>
                             <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
                             <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
                             <td align="right" class="boldFont"><?php echo sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100);?></td>

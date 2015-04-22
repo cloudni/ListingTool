@@ -47,7 +47,7 @@ $this->menu=array(
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
                     <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location='<?php $campaignid = (isset($adCampaign) ? array('campaignid'=>$adCampaign->id) : array()); echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/create", $campaignid); ?>';" />
                     <?php echo CHtml::dropDownList('campaignList', (isset($adCampaign) ? $adCampaign->id : null), CHtml::listData($campaignList, 'id', 'name'), array('empty'=>'Please select AD campaign to filter', 'style'=>'height: 26px; position: relative; top: 1px; width: 150px;'));?>
-                    <input id="menu_campaign_filter_button" type="button" value="All ▼" class="menuButton" onclick="showMenu('menu_campaign_filter');" />
+                    <input id="menu_campaign_filter_button" type="button" value="All ▼" disabled class="menuButton" onclick="showMenu('menu_campaign_filter');" />
                     <ul id="menu_campaign_filter" class="ui-menu" style="width: 180px;" >
                         <li value="All_Campaigns">All AD Groups</li>
                         <li value="All_enabled_Campaigns">All enabled AD Groups</li>
@@ -55,14 +55,14 @@ $this->menu=array(
                     </ul>
                     <input id="menu_edit_action_button" type="button" value="Edit ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
                     <ul id="menu_edit_action" class="ui-menu" >
-                        <li value="All_Campaigns">Enable</li>
-                        <li value="All_enabled_Campaigns">Pause</li>
-                        <li value="All_but_removed_Campaigns">Remove</li>
+                        <li onclick="if(confirm('Are you sure to Enable selected AD Group(s)?\nAll advertisement(s) in this AD Group will be enanled?')) updateADGroupStatus(<?php echo ADGroup::Status_Enabled;?>);">Enable</li>
+                        <li onclick="if(confirm('Are you sure to Pause selected AD Group(s)?\nAll advertisement(s) in this AD Group will be paused?')) updateADGroupStatus(<?php echo ADGroup::Status_Paused;?>);">Pause</li>
+                        <li onclick="if(confirm('Are you sure to Remove selected AD Group(s)?\nAll advertisement(s) in this AD Group will be removed?')) updateADGroupStatus(<?php echo ADGroup::Status_Removed;?>);">Remove</li>
                         <li class="ui-state-disabled"><hr /></li>
                         <li value="All_but_removed_Campaigns">Change Bid</li>
                         <li value="All_but_removed_Campaigns">Download Report</li>
                     </ul>
-                    <input id="menu_segment_action_button" type="button" value="Segment ▼" class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
+                    <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
                     <ul id="menu_segment_action" class="ui-menu" >
                         <li value="All_Campaigns">None</li>
                         <li value="All_enabled_Campaigns">
@@ -98,7 +98,7 @@ $this->menu=array(
             <div>
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <thead>
-                    <th align="left"><input type="checkbox" /></th>
+                    <th align="left"><input id="groupAll" type="checkbox" /></th>
                     <th align="left">AD Group</th>
                     <th align="left">&nbsp;</th>
                     <th align="right">Default Max. CPC</th>
@@ -114,9 +114,9 @@ $this->menu=array(
                     <?php if(isset($adGroupPerformance) && !empty($adGroupPerformance)):?>
                     <?php foreach($adGroupPerformance as $adGroup):?>
                         <tr>
-                            <td align="left"><input type="checkbox" value="<?php echo $adGroup['id'];?>" /></th>
+                            <td align="left"><input id="adGroupID[]" name="adGroupID[]" type="checkbox" value="<?php echo $adGroup['id'];?>" /><input id="group_<?php echo $adGroup['id'];?>_status" type="hidden" value="<?php echo $adGroup['status'];?>" /></th>
                             <td align="left"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/view", array('id'=>$adGroup['id']));?>"><?php echo $adGroup['name'];?></a></td>
-                            <td align="right"><img src="<?php echo ADGroup::getStatusImg($adGroup['status']);?>" border="0" /></td>
+                            <td align="right"><img id="group_<?php echo $adGroup['id'];?>_img" src="<?php echo ADGroup::getStatusImg($adGroup['status']);?>" border="0" /></td>
                             <td align="left"><?php echo sprintf("$%1\$.2f", $adGroup['default_bid']);?></td>
                             <td align="right"><?php echo $adGroup['clicks'];?></td>
                             <td align="right"><?php echo $adGroup['impr'];?></td>
@@ -156,6 +156,13 @@ $this->menu=array(
             if($("#campaignList").val())
                 window.location = href.substring(0, href.length - 5) + "/" + $("#campaignList").val() + href.substring(href.length - 5, href.length);
         });
+
+        $("#groupAll").click(function(){
+            if($("#groupAll").prop('checked'))
+                $("input[id^='adGroupID']").prop('checked', true);
+            else
+                $("input[id^='adGroupID']").removeAttr('checked');
+        });
     });
 
     $("#page").click(function(){
@@ -169,5 +176,59 @@ $this->menu=array(
         $( "#"+id).css("left", position.left);
         $( "#"+id ).show();
         event.stopPropagation();
+    }
+
+    function updateADGroupStatus(statusCode) {
+        if ($("input[id^='adGroupID']:checked").length <= 0) return false;
+
+        var updateIDList = [];
+        for (var i = 0; i < $("input[id^='adGroupID']:checked").length; i++) {
+            if ($("#group_" + $($("input[id^='adGroupID']:checked")[i]).val() + "_status").val() != statusCode) {
+                updateIDList.push($($("input[id^='adGroupID']:checked")[i]).val());
+            }
+        }
+        if (updateIDList.length <= 0) return false;
+
+        $("#ajaxloading").css("display", "block");
+
+        $.ajax({
+            type: "POST",
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/updateGroupStatus");?>',
+            data: {
+                status:statusCode,
+                idList: updateIDList
+            },
+            dataType: "JSON",
+            success: function(data, status, xhr) {
+                $("#ajaxloading").css("display", "none");
+                if(data['status']=='success')
+                {
+                    for(var i=0;i<data['data'].length;i++)
+                    {
+                        $("#group_"+data['data'][i]+"_status").val(statusCode);
+                        switch (statusCode)
+                        {
+                            case <?php echo ADCampaign::Status_Eligible;?>:
+                                $("#group_"+data['data'][i]+"_img").prop('src', '/themes/facebook/images/enabled.png');
+                                break;
+                            case <?php echo ADCampaign::Status_Paused;?>:
+                                $("#group_"+data['data'][i]+"_img").prop('src', '/themes/facebook/images/pause.gif');
+                                break;
+                            case <?php echo ADCampaign::Status_Removed;?>:
+                                $("#group_"+data['data'][i]+"_img").prop('src', '/themes/facebook/images/removed.png');
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    alert("Update Status Failed!\n"+data['msg']+"\nPlease try again.");
+                }
+            },
+            error: function(data, status, xhr) {
+                $("#ajaxloading").css("display", "none");
+                alert("Search Listing Failed!\nPlease try again.");
+            }
+        });
     }
 </script>

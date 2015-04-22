@@ -733,7 +733,7 @@ $setting = (array)json_decode($model->criteria);
             $("#enddate").removeAttr('disabled');
         });
 
-        <?php if($model->isNewRecord || empty($setting['timezone'])): ?>
+        <?php if($model->isNewRecord || !isset($setting['timezone']) || empty($setting['timezone'])): ?>
         $("#schedule_timezone").val('UTC+8');
         <?php else:?>
         $("#schedule_timezone").val('<?php echo $setting['timezone'];?>');

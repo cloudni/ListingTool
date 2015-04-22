@@ -93,8 +93,8 @@ $this->menu=array(
                         <div class="clearfix">
                             <div class="sumDiv sumDivFontBold"><?php echo $performance['clicks'];?></div>
                             <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo $performance['impr'];?></div>
-                            <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo sprintf("%1\$.2f%%", $performance['clicks'] / $performance['impr'] * 100);?></div>
-                            <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo sprintf("$%1\$.2f", $performance['cost'] / $performance['clicks']);?></div>
+                            <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo $performance['impr'] ? sprintf("%1\$.2f%%", $performance['clicks'] / $performance['impr'] * 100) : "&nbsp;";?></div>
+                            <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo $performance['clicks'] ? sprintf("$%1\$.2f", $performance['cost'] / $performance['clicks']) : "&nbsp;";?></div>
                             <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo sprintf("$%1\$.2f", $performance['cost']);?></div>
                         </div>
                     </div>

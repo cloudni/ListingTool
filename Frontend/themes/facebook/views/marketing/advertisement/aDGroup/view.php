@@ -92,8 +92,8 @@ $this->menu=array(
                         <div class="clearfix">
                             <div class="sumDiv sumDivFontBold"><?php echo $performance['clicks'];?></div>
                             <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo $performance['impr'];?></div>
-                            <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo sprintf("%1\$.2f%%", $performance['clicks'] / $performance['impr'] * 100);?></div>
-                            <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo sprintf("$%1\$.2f", $performance['cost'] / $performance['clicks']);?></div>
+                            <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo $performance['impr'] ? sprintf("%1\$.2f%%", $performance['clicks'] / $performance['impr'] * 100) : "&nbsp;";?></div>
+                            <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo $performance['clicks'] ? sprintf("$%1\$.2f", $performance['cost'] / $performance['clicks']) : "&nbsp;";?></div>
                             <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo sprintf("$%1\$.2f", $performance['cost']);?></div>
                         </div>
                     </div>
@@ -242,8 +242,8 @@ $this->menu=array(
                             <td align="right" class="boldFont" style="padding-left: 12px; ">Total</td>
                             <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
                             <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
-                            <td align="right" class="boldFont"><?php echo sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100);?></td>
-                            <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal / $clickTotal);?></td>
+                            <td align="right" class="boldFont"><?php echo $imprTotal ? sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100) : "&nbsp;";?></td>
+                            <td align="right" class="boldFont"><?php echo $clickTotal ? sprintf("$%1\$.2f", $costTotal / $clickTotal) : "&nbsp;";?></td>
                             <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
                             <td align="right" class="boldFont">&nbsp;</td>
                         </tr>

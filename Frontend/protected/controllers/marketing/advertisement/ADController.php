@@ -231,7 +231,7 @@ class ADController extends Controller
 
                 $transaction->commit();
                 if($error) Yii::app()->user->setFlash('Error', $error);
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ad/view", array('id'=>$model->id)));
+                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/AD/view", array('id'=>$model->id)));
             }
             catch(Exception $ex)
             {

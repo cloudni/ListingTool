@@ -61,6 +61,7 @@ class EBayListingController extends Controller
             'searchStore'=>'all',
             'searchMode'=>'normal',
             'searchEngine'=>'normal',
+            'searchListType'=>'all',
         );
         if(isset($_POST['searchKeyword'])) $params['searchKeyword'] = (string)$_POST['searchKeyword'];
         if(isset($_POST['searchSite'])) $params['searchSite'] = (string)$_POST['searchSite'];
@@ -68,6 +69,7 @@ class EBayListingController extends Controller
         if(isset($_POST['searchStore'])) $params['searchStore'] = (string)$_POST['searchStore'];
         if(isset($_POST['searchMode'])) $params['searchMode'] = (string)$_POST['searchMode'];
         if(isset($_POST['searchEngine'])) $params['searchEngine'] = (string)$_POST['searchEngine'];
+        if(isset($_POST['searchListType'])) $params['searchListType'] = (string)$_POST['searchListType'];
 
         $excludeShipLocation = true;
         if(isset($_POST['excludeShipLocation'])) $excludeShipLocation = $_POST['excludeShipLocation'] == 'false' ? false : true;
@@ -129,6 +131,10 @@ class EBayListingController extends Controller
                 if(strtolower($params['searchCategory']) != 'all' && $primaryCategoryAttribute && $secondaryCategoryAttribute)
                 {
                     $whereSQL .= " and (pc.value=:primarycate OR sc.value=:secondarycate) ";
+                }
+                if(strtolower($params['searchListType']) != 'all')
+                {
+                    $whereSQL .= " and ltype.value = '{$params['searchListType']}' ";
                 }
 
                 $select = "SELECT t.*, s.name as storename,

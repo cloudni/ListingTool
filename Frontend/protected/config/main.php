@@ -39,7 +39,8 @@ $config = array(
 		// uncomment the following to enable URLs in path-format
 		'urlManager'=>array(
             'urlFormat'=>'path',
-            'showScriptName'=>'false',
+            'showScriptName'=>true,
+            'urlSuffix'=>'.html',
 			'rules'=>array(
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
@@ -131,6 +132,11 @@ if (!empty($ebay)) {
 $bulletin =  require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bulletin.php');
 if (!empty($bulletin)) {
     $config['params']['bulletin'] = $bulletin;
+}
+
+$google =  require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'google.php');
+if (!empty($google)) {
+    $config['params']['google'] = $google;
 }
 
 return $config;

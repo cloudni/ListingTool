@@ -28,6 +28,7 @@
     <?php Yii::app()->getClientScript()->registerCoreScript('jquery');?>
     <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/common.js"></script>
 
+
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/main.css" />
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
@@ -35,6 +36,11 @@
     <script type="text/javascript">
         window.onload = function () {setstyle('facebook');}
     </script>
+
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui-1.11.4/jquery-ui.min.css">
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.multiselect.js"></script>
+    <link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/jquery.multiselect.css">
 </head>
 
 <body>
@@ -148,6 +154,14 @@
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_listing'), 'url'=>array('/eBay/eBayListing')),
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'bulk_update_ebay_listing'), 'url'=>array('/eBay/eBayListing/bulkUpdate')),
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'target_and_track'), 'url'=>array('/eBay/eBayTargetAndTrack')),
+                    ),
+                ),
+                array(
+                    'label'=>'Marketing',
+                    'itemOptions'=>array('class'=>'dir'),
+                    'visible'=>!Yii::app()->user->isGuest,
+                    'items'=>array(
+                        array('label'=>'Display Advertisement', 'url'=>array('/marketing/advertisement/home')),
                     ),
                 ),
                 array(

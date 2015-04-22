@@ -348,3 +348,78 @@ LOCK TABLES `lt_schedule_job` WRITE;
 INSERT INTO `lt_schedule_job` (`platform`,`action`,`params`,`is_active`,`create_time_utc`,`last_execute_status`,`last_execute_result`,`last_execute_time_utc`,`last_finish_time_utc`,`next_execute_time_utc`,`crontab`,`type`) VALUES (1,7,'',1,NULL,4,NULL,NULL,NULL,0,'1 */4 * * *',1);
 UNLOCK TABLES;
 /*end 2015/03/24*/
+
+/*start 2015/03/24*/
+LOCK TABLES `lt_resource_string` WRITE;
+INSERT INTO `lt_resource_string` VALUES ('453', 'id', '1', '0', '编号', '1427186878', '1', '1427186878', '1');
+INSERT INTO `lt_resource_string` VALUES ('454', 'id', '2', '0', 'ID', '1427186909', '1', '1427186909', '1');
+INSERT INTO `lt_resource_string` VALUES ('455', 'last_login_ip', '1', '0', '最后登录IP', '1427187170', '1', '1427187170', '1');
+INSERT INTO `lt_resource_string` VALUES ('456', 'last_login_ip', '2', '0', 'Last Login IP', '1427187195', '1', '1427187195', '1');
+INSERT INTO `lt_resource_string` VALUES ('457', 'email', '1', '0', '邮箱', '1427187880', '1', '1427187880', '1');
+INSERT INTO `lt_resource_string` VALUES ('458', 'email', '2', '0', 'Email', '1427187895', '1', '1427187895', '1');
+INSERT INTO `lt_resource_string` VALUES ('459', 'input_password_repeat', '1', '0', '再一次输入密码', '1427188010', '1', '1427188010', '1');
+INSERT INTO `lt_resource_string` VALUES ('460', 'input_password_repeat', '2', '0', 'Input Password Repeat', '1427188027', '1', '1427188027', '1');
+INSERT INTO `lt_resource_string` VALUES ('461', 'under_department', '1', '0', '所属部门', '1427188306', '1', '1427188306', '1');
+INSERT INTO `lt_resource_string` VALUES ('462', 'under_department', '2', '0', 'Under Department', '1427188490', '1', '1427188490', '1');
+INSERT INTO `lt_resource_string` VALUES ('463', 'no_setting', '1', '0', '未设置', '1427189996', '1', '1427189996', '1');
+INSERT INTO `lt_resource_string` VALUES ('464', 'no_setting', '2', '0', 'No Setting', '1427190029', '1', '1427190029', '1');
+INSERT INTO `lt_resource_string` VALUES ('465', 'country', '1', '0', '国家', '1427190204', '1', '1427190204', '1');
+INSERT INTO `lt_resource_string` VALUES ('466', 'country', '2', '0', 'Country', '1427190226', '1', '1427190226', '1');
+INSERT INTO `lt_resource_string` VALUES ('467', 'phone_number', '1', '0', '手机号码', '1427190332', '1', '1427190332', '1');
+INSERT INTO `lt_resource_string` VALUES ('468', 'phone_number', '2', '0', 'Phone Number', '1427190349', '1', '1427190349', '1');
+INSERT INTO `lt_resource_string` VALUES ('469', 'higher_department', '1', '0', '上级部门', '1427190529', '1', '1427190529', '1');
+INSERT INTO `lt_resource_string` VALUES ('470', 'higher_department', '2', '0', 'Higher Department', '1427190542', '1', '1427190542', '1');
+INSERT INTO `lt_resource_string` VALUES ('471', 'selected', '1', '0', '已选', '1427190610', '1', '1427190610', '1');
+INSERT INTO `lt_resource_string` VALUES ('472', 'selected', '2', '0', 'Selected', '1427190622', '1', '1427190622', '1');
+INSERT INTO `lt_resource_string` VALUES ('473', 'every', '1', '0', '所有', '1427190856', '1', '1427190856', '1');
+INSERT INTO `lt_resource_string` VALUES ('474', 'every', '2', '0', 'All', '1427190874', '1', '1427190874', '1');
+UNLOCK TABLES;
+/*end 2015/03/24*/
+
+/*start 2015/03/26*/
+LOCK TABLES `lt_resource_string` WRITE;
+INSERT INTO `lt_resource_string` VALUES ('475', 'no_data', '1', '0', '无数据', '1427336379', '1', '1427336379', '1');
+INSERT INTO `lt_resource_string` VALUES ('476', 'no_data', '2', '0', 'No Data', '1427336395', '1', '1427336395', '1');
+INSERT INTO `lt_resource_string` VALUES ('477', 'paypal', '1', '0', '贝宝', '1427336555', '1', '1427336555', '1');
+INSERT INTO `lt_resource_string` VALUES ('478', 'paypal', '2', '0', 'PayPal', '1427336577', '1', '1427336577', '1');
+INSERT INTO `lt_resource_string` VALUES ('479', 'alipay', '1', '0', '支付宝', '1427336595', '1', '1427336595', '1');
+INSERT INTO `lt_resource_string` VALUES ('480', 'alipay', '2', '0', 'AliPay', '1427336612', '1', '1427336612', '1');
+INSERT INTO `lt_resource_string` VALUES ('481', 'paypal_account', '1', '0', '贝宝账户', '1427336864', '1', '1427336864', '1');
+INSERT INTO `lt_resource_string` VALUES ('482', 'paypal_account', '2', '0', 'To PayPal Account', '1427336872', '1', '1427336872', '1');
+INSERT INTO `lt_resource_string` VALUES ('483', 'alipay_account', '1', '0', '支付宝账户', '1427336897', '1', '1427336897', '1');
+INSERT INTO `lt_resource_string` VALUES ('484', 'alipay_account', '2', '0', 'To AliPay Account', '1427336914', '1', '1427336914', '1');
+INSERT INTO `lt_resource_string` VALUES ('485', 'transaction_detail', '1', '0', '交易明细', '1427337083', '1', '1427337083', '1');
+INSERT INTO `lt_resource_string` VALUES ('486', 'transaction_detail', '2', '0', 'Transaction Detail', '1427337094', '1', '1427337094', '1');
+INSERT INTO `lt_resource_string` VALUES ('487', 'deposit', '1', '0', '存款', '1427337195', '1', '1427337195', '1');
+INSERT INTO `lt_resource_string` VALUES ('488', 'deposit', '2', '0', 'Deposit', '1427337207', '1', '1427337207', '1');
+INSERT INTO `lt_resource_string` VALUES ('489', 'withdraw', '1', '0', '取款', '1427337222', '1', '1427337222', '1');
+INSERT INTO `lt_resource_string` VALUES ('490', 'withdraw', '2', '0', 'Withdraw', '1427337229', '1', '1427337229', '1');
+INSERT INTO `lt_resource_string` VALUES ('491', 'operations', '1', '0', '操作', '1427340595', '1', '1427340595', '1');
+INSERT INTO `lt_resource_string` VALUES ('492', 'operations', '2', '0', 'Operations', '1427340604', '1', '1427340604', '1');
+INSERT INTO `lt_resource_string` VALUES ('493', 'select_condition', '1', '0', '请选择查询条件', '1427349391', '1', '1427349391', '1');
+INSERT INTO `lt_resource_string` VALUES ('494', 'select_condition', '2', '0', 'Select Condition', '1427349434', '1', '1427349434', '1');
+INSERT INTO `lt_resource_string` VALUES ('495', 'payment_way', '1', '0', '请选择支付方式', '1427351954', '1', '1427351954', '1');
+INSERT INTO `lt_resource_string` VALUES ('496', 'payment_way', '2', '0', 'Select payment way', '1427351966', '1', '1427351966', '1');
+UNLOCK TABLES;
+/*end 2015/03/26*/
+
+/*start 2015/03/31*/
+LOCK TABLES `lt_resource_string` WRITE;
+INSERT INTO `lt_resource_string` VALUES ('497', 'transactionId', '1', '0', '交易号', '1427769789', '1', '1427769789', '1');
+INSERT INTO `lt_resource_string` VALUES ('498', 'transactionId', '2', '0', 'Transaction ID', '1427769807', '1', '1427769807', '1');
+INSERT INTO `lt_resource_string` VALUES ('499', 'total', '1', '0', '交易金额', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('500', 'total', '2', '0', 'Total', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('501', 'date', '1', '0', '交易时间', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('502', 'date', '2', '0', 'Date', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('503', 'type', '1', '0', '交易类型', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('504', 'type', '2', '0', 'Type', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('505', 'status', '1', '0', '交易状态', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('506', 'status', '2', '0', 'Status', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('507', 'fee', '1', '0', '交易扣款', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('508', 'fee', '2', '0', 'Fee', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('509', 'net', '1', '0', '充值金额', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('510', 'net', '2', '0', 'Net', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('511', 'account_alance', '1', '0', '账户余额', '1427769867', '1', '1427769867', '1');
+INSERT INTO `lt_resource_string` VALUES ('512', 'account_alance', '2', '0', 'Account Balance', '1427769867', '1', '1427769867', '1');
+UNLOCK TABLES;
+/*end 2015/03/31*/

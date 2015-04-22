@@ -31,7 +31,7 @@
  * @property EbayEntityType $ebayEntityType
  * @property EbayAttributeSet $ebayAttributeSet
  */
-class eBayCategory extends NIActiveRecord
+class eBayCategory extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name

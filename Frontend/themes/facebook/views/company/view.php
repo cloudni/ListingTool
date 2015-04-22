@@ -14,6 +14,7 @@ $this->menu=array(
 	array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'company_update_menu'), 'url'=>array('update'/*, 'id'=>$model->id*/)),
 	/*array('label'=>'Delete Company', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
 	array('label'=>'Manage Company', 'url'=>array('admin')),*/
+    array('label'=>"Finance", 'url'=>'http://transaction.itemtool.com/portal-lt-frontend/company/transaction/list.shtml'),
 );
 ?>
 

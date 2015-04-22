@@ -521,6 +521,32 @@ class ADController extends Controller
         exit();
     }
 
+    public function actionUpdateVariationStatus()
+    {
+        $status = isset($_POST['status']) ? $_POST['status'] : null;
+        $appliedList = isset($_POST['idList']) ? $_POST['idList'] : null;;
+        $successList = array();
+        if(!array_key_exists($status, ADAdvertiseVariation::getStatusOptions()))
+        {
+            $result = array('status'=>'fail', 'msg'=>"Invalid Advertisement Status!");
+            echo json_encode($result);
+            exit();
+        }
+        foreach($appliedList as $id)
+        {
+            $variation = ADAdvertiseVariation::model()->findByPk($id, "company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
+            if($variation!=null)
+            {
+                $variation->status = $status;
+                if($variation->save()) $successList[] = $variation->id;
+            }
+        }
+
+        $result = array('status'=>'success', 'data'=>$successList);
+        echo json_encode($result);
+        exit();
+    }
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
@@ -543,7 +569,7 @@ class ADController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + delete, getDynamicGroupList, getListingParams, uploadLogo, getPerformanceData', // we only allow deletion via POST request
+            'postOnly + delete, getDynamicGroupList, getListingParams, uploadLogo, getPerformanceData, updateVariationStatus', // we only allow deletion via POST request
         );
     }
 
@@ -556,7 +582,7 @@ class ADController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index', 'create', 'view', 'update', 'getDynamicGroupList', 'getListingParams', 'uploadLogo', 'view', 'getPerformanceData'),
+                'actions'=>array('index', 'create', 'view', 'update', 'getDynamicGroupList', 'getListingParams', 'uploadLogo', 'view', 'getPerformanceData', 'updateVariationStatus'),
                 'users'=>array('@'),
             ),
             array('deny',  // deny all users

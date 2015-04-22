@@ -557,7 +557,7 @@ CREATE TABLE `lt_google_adwords_report_ad_group` (
   `ctr` double DEFAULT NULL,
   `ctr_significance` text,
   `customer_descriptive_name` varchar(255) DEFAULT NULL,
-  `date` varchar(10) DEFAULT NULL,
+  `date` date DEFAULT NULL,
   `day_of_week` varchar(10) DEFAULT NULL,
   `device` varchar(36) DEFAULT NULL,
   `enhanced_cpc_enabled` varchar(36) DEFAULT NULL,
@@ -610,8 +610,7 @@ CREATE TABLE `lt_google_adwords_report_ad_group` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_automatic_placements`;
 CREATE TABLE `lt_google_adwords_report_automatic_placements` (
-  `pk_id` int(11) NOT NULL AUTO_INCREMENT,
-  `id` bigint(20) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_currency_code` varchar(255) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
   `account_time_zone_id` varchar(255) DEFAULT NULL,
@@ -661,7 +660,7 @@ CREATE TABLE `lt_google_adwords_report_automatic_placements` (
   `view_through_conversions` int(11) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`pk_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

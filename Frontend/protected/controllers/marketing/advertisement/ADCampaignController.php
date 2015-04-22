@@ -360,6 +360,62 @@ class ADCampaignController extends Controller
         exit();
     }
 
+    public function actionAutomaticPlacementReport($id)
+    {
+        $this->layout='//layouts/column2';
+        $model = $this->loadModel($id);
+
+        $placementSQL = "SELECT t.domain, t.clicks, t.impressions as impr, t.cost / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
+                            FROM lt_google_adwords_report_automatic_placements t
+                            left join lt_google_adwords_campaign gaag on gaag.id = t.campaign_id
+                            left join lt_ad_campaign ag on ag.id = gaag.lt_ad_campaign_id
+                            where ag.company_id = :company_id and ag.id = :campaign_id";
+        $command = Yii::app()->db->createCommand($placementSQL);
+        $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+        $command->bindValue(":campaign_id", $id, PDO::PARAM_INT);
+        $placements = $command->queryAll();
+
+        $this->render("automaticPlacement", array(
+            'model'=>$model,
+            'placements'=>$placements,
+        ));
+    }
+
+    public function actionGeoGraphicReport($id)
+    {
+        $this->layout='//layouts/column2';
+        $model = $this->loadModel($id);
+
+        $performances = array();
+
+        $this->render("geoGraphic", array(
+            'model'=>$model,
+            'performances'=>$performances,
+        ));
+    }
+
+    public function actionDestinationURLReport($id)
+    {
+        $this->layout='//layouts/column2';
+        $model = $this->loadModel($id);
+
+        $performanceSQL = "SELECT t.click_type, t.criteria_parameters, t.device, t.effective_destination_url,
+                            t.clicks, t.impressions as impr, t.cost / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
+                            FROM lt_google_adwords_report_destination_url t
+                            left join lt_google_adwords_campaign gaag on gaag.id = t.campaign_id
+                            left join lt_ad_campaign ag on ag.id = gaag.lt_ad_campaign_id
+                            where ag.company_id = :company_id and ag.id = :campaign_id";
+        $command = Yii::app()->db->createCommand($performanceSQL);
+        $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+        $command->bindValue(":campaign_id", $id, PDO::PARAM_INT);
+        $performances = $command->queryAll();
+
+        $this->render("destinationURLReport", array(
+            'model'=>$model,
+            'performances'=>$performances,
+        ));
+    }
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
@@ -395,7 +451,7 @@ class ADCampaignController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index', 'create', 'view', 'update', 'getPerformanceData', 'updateCampaignStatus'),
+                'actions'=>array('index', 'create', 'view', 'update', 'getPerformanceData', 'updateCampaignStatus', 'automaticPlacementReport', 'geoGraphicReport', 'destinationURLReport'),
                 'users'=>array('@'),
             ),
             array('deny',  // deny all users

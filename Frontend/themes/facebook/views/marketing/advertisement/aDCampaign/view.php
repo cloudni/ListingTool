@@ -91,8 +91,8 @@ $this->menu=array(
                     <div class="clearfix">
                         <div class="sumDiv sumDivFontBold"><?php echo $performance['clicks'];?></div>
                         <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo $performance['impr'];?></div>
-                        <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo sprintf("%1\$.2f%%", $performance['clicks'] / $performance['impr'] * 100);?></div>
-                        <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo sprintf("$%1\$.2f", $performance['cost'] / $performance['clicks']);?></div>
+                        <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo $performance['impr'] ? sprintf("%1\$.2f%%", $performance['clicks'] / $performance['impr'] * 100) : "&nbsp;";?></div>
+                        <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo $performance['clicks'] ? sprintf("$%1\$.2f", $performance['cost'] / $performance['clicks']) : "&nbsp;";?></div>
                         <div class="sumDiv sumDivBorderLeft sumDivFontBold"><?php echo sprintf("$%1\$.2f", $performance['cost']);?></div>
                     </div>
                 </div>
@@ -287,8 +287,8 @@ $this->menu=array(
                             <td align="left"><?php echo sprintf("$%1\$.2f", $adGroup['default_bid']);?></td>
                             <td align="right"><?php echo isset($adGroup['clicks']) ? $adGroup['clicks'] : "&nbsp;";?></td>
                             <td align="right"><?php echo isset($adGroup['impr']) ? $adGroup['impr'] : "&nbsp;";?></td>
-                            <td align="right"><?php echo isset($adGroup['impr']) ? sprintf("%1\$.2f%%", $adGroup['clicks'] / $adGroup['impr'] * 100) : "&nbsp;";?></td>
-                            <td align="right"><?php echo isset($adGroup['clicks']) ? sprintf("$%1\$.2f", $adGroup['cost'] / $adGroup['clicks']) : "&nbsp;";?></td>
+                            <td align="right"><?php echo isset($adGroup['impr']) && $adGroup['impr'] ? sprintf("%1\$.2f%%", $adGroup['clicks'] / $adGroup['impr'] * 100) : "&nbsp;";?></td>
+                            <td align="right"><?php echo isset($adGroup['clicks']) && $adGroup['clicks'] ? sprintf("$%1\$.2f", $adGroup['cost'] / $adGroup['clicks']) : "&nbsp;";?></td>
                             <td align="right"><?php echo isset($adGroup['cost']) ? sprintf("$%1\$.2f", $adGroup['cost']) : "&nbsp;";?></td>
                             <td align="right">&nbsp;</td>
                         </tr>
@@ -300,8 +300,8 @@ $this->menu=array(
                         <td align="right" class="boldFont">Total</td>
                         <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
                         <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
-                        <td align="right" class="boldFont"><?php echo sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100);?></td>
-                        <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal / $clickTotal);?></td>
+                        <td align="right" class="boldFont"><?php echo $imprTotal ? sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100) : "&nbsp;";?></td>
+                        <td align="right" class="boldFont"><?php echo $clickTotal ? sprintf("$%1\$.2f", $costTotal / $clickTotal) : "&nbsp;";?></td>
                         <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
                         <td align="right" class="boldFont">&nbsp;</td>
                     </tr>

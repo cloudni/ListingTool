@@ -1016,3 +1016,15 @@ alter table lt_transaction modify column `fee` decimal(20,4) not null default '0
 alter table lt_transaction MODIFY COLUMN `net` DECIMAL(20,4) not null default '0' COMMENT '实际金额';
 alter table lt_transaction MODIFY COLUMN `enabled` TINYINT(1) not null default '1' COMMENT '是否可用：1 可用; 0 不可用';
 /*end 2015-04-19*/
+
+/*start 2015/04/21*/
+ALTER TABLE lt_company ADD COLUMN freeze_amount DECIMAL(20,4) default '0' COMMENT '冻结金额';
+ALTER TABLE lt_company ADD COLUMN markup_type tinyint(4) COMMENT '标记类型';
+ALTER TABLE lt_company ADD COLUMN markup_amount DECIMAL(20,4) COMMENT '标记金额';
+ALTER TABLE lt_company ADD COLUMN authorize_day tinyint(4) COMMENT '冻结天数';
+
+ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN markup_type tinyint(4);
+ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN markup_amount DECIMAL(20,4);
+ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN is_charged tinyint(1) not null default '0';
+/*end 2015-04-21*/

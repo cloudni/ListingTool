@@ -91,7 +91,7 @@ class ADCampaignController extends Controller
                 $aDLog->content = $content;
                 $aDLog->save();
 
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/adgroup/create", array('adcampaignid'=>$model->id, 'lead' => true,)));
+                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ADGroup/create", array('adcampaignid'=>$model->id, 'lead' => true,)));
             }
         }
 
@@ -207,7 +207,7 @@ class ADCampaignController extends Controller
                 $aDLog->content = $content;
                 $aDLog->save();
 
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id' => $model->id)));
+                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ADCampaign/view", array('id' => $model->id)));
             }
         }
 

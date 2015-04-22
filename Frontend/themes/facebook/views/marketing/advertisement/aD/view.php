@@ -156,7 +156,7 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 26px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ Advertisement" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/create", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id)); ?>'; " />
+                    <input type="button" class="boldFont greenButton redButton" value="+ Advertisement" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id)); ?>'; " />
                     <input id="menu_edit_action_button" type="button" value="Edit ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
                     <?php if(!empty($adVariationPerformance)):?>
                     <ul id="menu_edit_action" class="ui-menu" >
@@ -164,7 +164,7 @@ $this->menu=array(
                         <li onclick="if(confirm('Are you sure to Pause selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Paused;?>);">Pause</li>
                         <li onclick="if(confirm('Are you sure to Remove selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Removed;?>);">Remove</li>
                         <li class="ui-state-disabled"><hr /></li>
-                        <li value="All_but_removed_Campaigns" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/update", array('id'=>$model->id)); ?>'; " >Update Advertisement</li>
+                        <li value="All_but_removed_Campaigns" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/update", array('id'=>$model->id)); ?>'; " >Update Advertisement</li>
                         <li value="All_but_removed_Campaigns">Download Report</li>
                     </ul>
                     <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
@@ -293,7 +293,7 @@ $this->menu=array(
 
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/getPerformanceData");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/getPerformanceData");?>',
             data: {
                 groupBy: groupBy,
                 dataPoint: dataPoint,
@@ -407,7 +407,7 @@ $this->menu=array(
 
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/updateVariationStatus");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/updateVariationStatus");?>',
             data: {
                 status: statusCode,
                 idList: updateIDList

@@ -47,7 +47,7 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ Advertisement" onclick=" window.location='<?php $campaignid = (isset($adCampaign) ? array('campaignid'=>$adCampaign->id) : array()); echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/create", $campaignid); ?>';" />
+                    <input type="button" class="boldFont greenButton redButton" value="+ Advertisement" onclick=" window.location='<?php $campaignid = (isset($adCampaign) ? array('campaignid'=>$adCampaign->id) : array()); echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/create", $campaignid); ?>';" />
                     <?php echo CHtml::dropDownList('campaignList', (isset($adCampaign) ? $adCampaign->id : null), CHtml::listData($campaignList, 'id', 'name'), array('empty'=>'Please select AD campaign to filter', 'style'=>'height: 26px; position: relative; top: 1px; width: 150px;'));?>
                     <input id="menu_campaign_filter_button" type="button" value="All ▼" class="menuButton" onclick="showMenu('menu_campaign_filter');" />
                     <ul id="menu_campaign_filter" class="ui-menu" style="width: 180px;" >
@@ -106,7 +106,7 @@ $this->menu=array(
                     <?php if(isset($adPerformance) && !empty($adPerformance)):?>
                         <?php foreach($adPerformance as $ad):?>
                             <tr>
-                                <td align="left" style="padding-left: 12px; "><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/view", array('id'=>$ad['id']));?>"><?php echo $ad['name'];?></a></td>
+                                <td align="left" style="padding-left: 12px; "><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/view", array('id'=>$ad['id']));?>"><?php echo $ad['name'];?></a></td>
                                 <td align="right"><?php echo $ad['clicks'];?></td>
                                 <td align="right"><?php echo $ad['impr'];?></td>
                                 <td align="right"><?php echo $ad['impr'] ? sprintf("%1\$.2f%%", $ad['clicks'] / $ad['impr'] * 100) : "&nbsp;";?></td>
@@ -138,7 +138,7 @@ $this->menu=array(
         $( "ul[id^='menu_']" ).hide();
 
         $("#campaignList").change(function(){
-            var href = "<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/index/adcampaignid");?>";
+            var href = "<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/index/adcampaignid");?>";
             if($("#campaignList").val())
                 window.location = href.substring(0, href.length - 5) + "/" + $("#campaignList").val() + href.substring(href.length - 5, href.length);
         });

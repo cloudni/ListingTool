@@ -52,7 +52,7 @@ $this->breadcrumbs=array(
             <div style="height: 36px; color: #9197a3; font-weight: normal;">
                 <h1 style="color: #4e5665; font-weight: 700; padding: 0px 0px 0px 12px; line-height: 38px; position: relative;">
                     <input type="button" id="submit" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'submit');?>" class="greenButton" style="font-size: 12px; line-height: 176%;" />
-                    <input type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cancel');?>" class="greenButton" style="font-size: 12px; line-height: 166%;background: -webkit-linear-gradient(gray, gray); background-color: gray; -webkit-box-shadow: inset 0 1px 1px gray; border-color: gray;" onclick=" if(confirm('Are you sure to cancel and back to Advertisement list?')) window.location='<?php echo Yii::app()->createAbsoluteUrl("/marketing/advertisement/adadvertise");?>' " />
+                    <input type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cancel');?>" class="greenButton" style="font-size: 12px; line-height: 166%;background: -webkit-linear-gradient(gray, gray); background-color: gray; -webkit-box-shadow: inset 0 1px 1px gray; border-color: gray;" onclick=" if(confirm('Are you sure to cancel and back to Advertisement list?')) window.location='<?php echo Yii::app()->createAbsoluteUrl("/marketing/advertisement/AD");?>' " />
                 </h1>
             </div>
         </div>
@@ -78,7 +78,7 @@ $this->breadcrumbs=array(
                 return false;
             }
 
-            var location = "<?php echo Yii::app()->createAbsoluteUrl("/marketing/advertisement/ad/create/adcampaignid/campaign_id/adgroupid/group_id");?>";
+            var location = "<?php echo Yii::app()->createAbsoluteUrl("/marketing/advertisement/AD/create/adcampaignid/campaign_id/adgroupid/group_id");?>";
 
             window.location = location.replace("campaign_id", $("#campaign").val()).replace("group_id", $("#group").val())
         });
@@ -86,7 +86,7 @@ $this->breadcrumbs=array(
         $("#campaign").change(function(){
             $.ajax({
                 type: "POST",
-                url: '<?php echo Yii::app()->createAbsoluteUrl('/marketing/advertisement/ad/getDynamicGroupList');?>',
+                url: '<?php echo Yii::app()->createAbsoluteUrl('/marketing/advertisement/AD/getDynamicGroupList');?>',
                 data: {
                     campaign_id:$("#campaign").val()
                 },

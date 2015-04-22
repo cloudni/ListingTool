@@ -829,7 +829,7 @@ require_once 'reference.php';
             <div style="height: 36px; color: #9197a3; font-weight: normal;">
                 <h1 style="color: #4e5665; font-weight: 700; padding: 0px 0px 0px 12px; line-height: 38px; position: relative;">
                     <?php echo CHtml::submitButton(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'submit'), array('id'=>'form_submit', 'class'=>'greenButton', 'style'=>'font-size: 12px; line-height: 176%;')); ?>
-                    <input type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cancel');?>" class="greenButton" style="font-size: 12px; line-height: 166%;background: -webkit-linear-gradient(gray, gray); background-color: gray; -webkit-box-shadow: inset 0 1px 1px gray; border-color: gray;" onclick=" if(confirm('Are you sure to cancel and back to Advertisement list?')) window.location='<?php echo Yii::app()->createAbsoluteUrl("/marketing/advertisement/ad");?>' " />
+                    <input type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cancel');?>" class="greenButton" style="font-size: 12px; line-height: 166%;background: -webkit-linear-gradient(gray, gray); background-color: gray; -webkit-box-shadow: inset 0 1px 1px gray; border-color: gray;" onclick=" if(confirm('Are you sure to cancel and back to Advertisement list?')) window.location='<?php echo Yii::app()->createAbsoluteUrl("/marketing/advertisement/AD");?>' " />
                 </h1>
             </div>
         </div>
@@ -862,7 +862,7 @@ require_once 'reference.php';
         }
 
         $.ajaxFileUpload({
-            url:'<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/uploadLogo");?>',
+            url:'<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/uploadLogo");?>',
             secureuri:false,
             fileElementId:'logo_upload_file',
             dataType:'Text',
@@ -1187,7 +1187,7 @@ require_once 'reference.php';
 
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/getListingParams");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/getListingParams");?>',
             data: {
                 itemType: type,
                 id: id

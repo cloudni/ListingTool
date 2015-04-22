@@ -43,7 +43,7 @@ $this->menu=array(
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
                     <input type="button" class="boldFont greenButton redButton" value="+ Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/create"); ?>'; " />
-                    <input id="menu_campaign_filter_button" type="button" value="All ▼" class="menuButton" onclick="showMenu('menu_campaign_filter');" />
+                    <input id="menu_campaign_filter_button" type="button" value="All ▼" class="menuButton" disabled onclick="showMenu('menu_campaign_filter');" />
                     <ul id="menu_campaign_filter" class="ui-menu" style="width: 180px;" >
                         <li value="All_Campaigns">All Campaigns</li>
                         <li value="All_enabled_Campaigns">All enabled Campaigns</li>
@@ -51,13 +51,13 @@ $this->menu=array(
                     </ul>
                     <input id="menu_edit_action_button" type="button" value="Edit ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
                     <ul id="menu_edit_action" class="ui-menu" >
-                        <li value="All_Campaigns">Enable</li>
-                        <li value="All_enabled_Campaigns">Pause</li>
-                        <li value="All_but_removed_Campaigns">Remove</li>
+                        <li onclick="if(confirm('Are you sure to Enable selected AD Campaign(s)?\nAll group(s) and advertisement(s) in these campaigns will be enanled?')) updateADCampaignStatus(<?php echo ADCampaign::Status_Eligible;?>);">Enable</li>
+                        <li onclick="if(confirm('Are you sure to Pause selected AD Campaign(s)?\nAll group(s) and advertisement(s) in these campaigns will be paused?')) updateADCampaignStatus(<?php echo ADCampaign::Status_Paused;?>);">Pause</li>
+                        <li onclick="if(confirm('Are you sure to Remove selected AD Campaign(s)?\nAll group(s) and advertisement(s) in these campaigns will be removed?')) updateADCampaignStatus(<?php echo ADCampaign::Status_Removed;?>);">Remove</li>
                         <li class="ui-state-disabled"><hr /></li>
-                        <li value="All_but_removed_Campaigns">Download Report</li>
+                        <li>Download Report</li>
                     </ul>
-                    <input id="menu_segment_action_button" type="button" value="Segment ▼" class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
+                    <input id="menu_segment_action_button" type="button" value="Segment ▼" class="menuButton" disabled onclick="showMenu('menu_segment_action');" style="width: 92px;" />
                     <ul id="menu_segment_action" class="ui-menu" >
                         <li value="All_Campaigns">None</li>
                         <li value="All_enabled_Campaigns">
@@ -93,7 +93,7 @@ $this->menu=array(
             <div>
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <thead>
-                        <th align="left"><input type="checkbox" /></th>
+                        <th align="left"><input id="campaignAll" type="checkbox" /></th>
                         <th align="center"><img src="/themes/facebook/images/disabled.png" /></th>
                         <th align="right">Campaign</th>
                         <th align="right">Budget</th>
@@ -108,8 +108,8 @@ $this->menu=array(
                     <tbody>
                     <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($campaignPerformance as $campaign): ?>
                         <tr>
-                            <td align="left"><input type="checkbox" value="<?php echo $campaign['id'];?>" /></td>
-                            <td align="center"><img src="<?php echo ADGroup::getStatusImg($campaign['status']);?>" border="0" /></td>
+                            <td align="left"><input id="campaignID[]" name="campaignID[]" type="checkbox" value="<?php echo $campaign['id'];?>" /><input id="campaign_<?php echo $campaign['id'];?>_status" type="hidden" value="<?php echo $campaign['status'];?>" /></td>
+                            <td align="center"><img id="campaign_<?php echo $campaign['id'];?>_img" src="<?php echo ADGroup::getStatusImg($campaign['status']);?>" border="0" /></td>
                             <td align="right"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>$campaign['id']));?>"><?php echo $campaign['name'];?></a></td>
                             <td align="right"><?php echo sprintf("$%1\$.2f", $campaign['budget']);?></td>
                             <td align="right"><?php echo ADCampaign::getStatusText($campaign['status']);?></td>
@@ -129,8 +129,8 @@ $this->menu=array(
                         <td align="right">&nbsp;</td>
                         <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
                         <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
-                        <td align="right" class="boldFont"><?php echo sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100);?></td>
-                        <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal / $clickTotal);?></td>
+                        <td align="right" class="boldFont"><?php echo $imprTotal ? sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100) : "&nbsp;";?></td>
+                        <td align="right" class="boldFont"><?php echo $clickTotal ? sprintf("$%1\$.2f", $costTotal / $clickTotal) : "&nbsp;";?></td>
                         <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
                         <td align="right" class="boldFont">&nbsp;</td>
                     </tr>
@@ -145,6 +145,13 @@ $this->menu=array(
     $(function() {
         $( "ul[id^='menu_']" ).menu();
         $( "ul[id^='menu_']" ).hide();
+
+        $("#campaignAll").click(function(){
+            if($("#campaignAll").prop('checked'))
+                $("input[id^='campaignID']").prop('checked', true);
+            else
+                $("input[id^='campaignID']").removeAttr('checked');
+        });
     });
 
     $("#page").click(function(){
@@ -158,5 +165,61 @@ $this->menu=array(
         $( "#"+id).css("left", position.left);
         $( "#"+id ).show();
         event.stopPropagation();
+    }
+
+    function updateADCampaignStatus(statusCode)
+    {
+        if($("input[id^='campaignID']:checked").length<=0) return false;
+
+        var updateIDList = [];
+        for(var i=0;i<$("input[id^='campaignID']:checked").length;i++)
+        {
+            if($("#campaign_"+$($("input[id^='campaignID']:checked")[i]).val()+"_status").val() != statusCode) {
+                updateIDList.push($($("input[id^='campaignID']:checked")[i]).val());
+            }
+        }
+        if(updateIDList.length<=0) return false;
+
+        $("#ajaxloading").css("display", "block");
+
+        $.ajax({
+            type: "POST",
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/updateCampaignStatus");?>',
+            data: {
+                status:statusCode,
+                idList: updateIDList
+            },
+            dataType: "JSON",
+            success: function(data, status, xhr) {
+                $("#ajaxloading").css("display", "none");
+                if(data['status']=='success')
+                {
+                    for(var i=0;i<data['data'].length;i++)
+                    {
+                        $("#campaign_"+data['data'][i]+"_status").val(statusCode);
+                        switch (statusCode)
+                        {
+                            case <?php echo ADCampaign::Status_Eligible;?>:
+                                $("#campaign_"+data['data'][i]+"_img").prop('src', '/themes/facebook/images/enabled.png');
+                                break;
+                            case <?php echo ADCampaign::Status_Paused;?>:
+                                $("#campaign_"+data['data'][i]+"_img").prop('src', '/themes/facebook/images/pause.gif');
+                                break;
+                            case <?php echo ADCampaign::Status_Removed;?>:
+                                $("#campaign_"+data['data'][i]+"_img").prop('src', '/themes/facebook/images/removed.png');
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    alert("Update Status Failed!\n"+data['msg']+"\nPlease try again.");
+                }
+            },
+            error: function(data, status, xhr) {
+                $("#ajaxloading").css("display", "none");
+                alert("Search Listing Failed!\nPlease try again.");
+            }
+        });
     }
 </script>

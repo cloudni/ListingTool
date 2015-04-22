@@ -136,8 +136,8 @@ $this->breadcrumbs=array(
                         <td align="right" class="boldFont">&nbsp;</td>
                         <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
                         <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
-                        <td align="right" class="boldFont"><?php echo sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100);?></td>
-                        <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal / $clickTotal);?></td>
+                        <td align="right" class="boldFont"><?php echo $imprTotal ? sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100) : "&nbsp;";?></td>
+                        <td align="right" class="boldFont"><?php echo $clickTotal ? sprintf("$%1\$.2f", $costTotal / $clickTotal) : "&nbsp;";?></td>
                         <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
                         <td align="right" class="boldFont">&nbsp;</td>
                     </tr>

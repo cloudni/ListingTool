@@ -100,7 +100,7 @@ $this->breadcrumbs=array(
                 </div>
                 <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
                     <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative; display: inline-block;">All Enabled AD Campaigns</h1>
-                    <input type="button" class="boldFont greenButton redButton" value="+ AD Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/create"); ?>'; " />
+                    <input type="button" class="boldFont greenButton redButton" value="+ AD Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/create"); ?>'; " />
                 </div>
             </div>
             <div>

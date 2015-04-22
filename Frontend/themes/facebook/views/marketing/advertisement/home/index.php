@@ -96,7 +96,7 @@ $this->breadcrumbs=array(
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="position: relative; float: right;">
-                    <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/index");?>">See All</a>
+                    <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/index");?>">See All</a>
                 </div>
                 <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
                     <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative; display: inline-block;">All Enabled AD Campaigns</h1>
@@ -119,7 +119,7 @@ $this->breadcrumbs=array(
                     <tbody>
                     <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($campaignPerformance as $campaign): ?>
                         <tr>
-                            <td align="right"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>$campaign['id']));?>"><?php echo $campaign['name'];?></a></td>
+                            <td align="right"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/view", array('id'=>$campaign['id']));?>"><?php echo $campaign['name'];?></a></td>
                             <td align="right"><?php echo sprintf("$%1\$.2f", $campaign['budget']);?></td>
                             <td align="right"><?php echo ADCampaign::getStatusText($campaign['status']);?></td>
                             <td align="right"><?php echo $campaign['clicks'];?></td>
@@ -153,7 +153,7 @@ $this->breadcrumbs=array(
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="position: relative; float: right;">
-                    <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/index");?>">See All</a>
+                    <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/index");?>">See All</a>
                 </div>
                 <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%">
                     <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative; display: inline-block;">All Enabled AD Groups</h1>
@@ -178,7 +178,7 @@ $this->breadcrumbs=array(
                     <?php if(isset($adGroupPerformance) && !empty($adGroupPerformance)):?>
                         <?php foreach($adGroupPerformance as $adGroup):?>
                             <tr>
-                                <td align="left"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/view", array('id'=>$adGroup['id']));?>"><?php echo $adGroup['name'];?></a></td>
+                                <td align="left"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/view", array('id'=>$adGroup['id']));?>"><?php echo $adGroup['name'];?></a></td>
                                 <td align="right"><?php echo ADGroup::getStatusText($adGroup['status']);?></td>
                                 <td align="left"><?php echo sprintf("$%1\$.2f", $adGroup['default_bid']);?></td>
                                 <td align="right"><?php echo $adGroup['clicks'];?></td>

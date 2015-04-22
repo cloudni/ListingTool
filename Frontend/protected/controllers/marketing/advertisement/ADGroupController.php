@@ -64,7 +64,7 @@ class ADGroupController extends Controller
             $model->criteria = json_encode($criteria);
             if($model->save())
             {
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ad/create", array('adcampaignid'=>$model->id, 'adgroupid'=>$model->id, 'lead' => $lead,)));
+                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid'=>$model->id, 'adgroupid'=>$model->id, 'lead' => $lead,)));
             }
         }
 

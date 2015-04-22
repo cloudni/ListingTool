@@ -35,11 +35,11 @@ class ADController extends Controller
         {
             $whereSQL .= " and t.ad_group_id = :group_id ";
         }
-        $adPerformanceSQL = "SELECT t.id, t.name, gara.ad_id, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
+        $adPerformanceSQL = "SELECT t.id, t.name, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
                                 FROM lt_ad_advertise t
                                 left join lt_ad_advertise_variation aav on t.id = aav.ad_advertise_id
                                 left join lt_google_adwords_ad gaa on gaa.lt_ad_advertise_variation_id = aav.id
-                                left join lt_google_adwords_report_ad gara on gara.ad_id = gaa.id
+                                left join lt_google_adwords_report_ad gara on gara.id = gaa.id
                                 where t.company_id = :company_id
                                 $whereSQL
                                 group by t.id
@@ -371,11 +371,11 @@ class ADController extends Controller
         $this->layout='//layouts/column2';
         $model = $this->loadModel($id);
 
-        $performanceSQL = "SELECT t.id, t.name, gara.ad_id, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
+        $performanceSQL = "SELECT t.id, t.name, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
                                 FROM lt_ad_advertise t
                                 left join lt_ad_advertise_variation aav on t.id = aav.ad_advertise_id
                                 left join lt_google_adwords_ad gaa on gaa.lt_ad_advertise_variation_id = aav.id
-                                left join lt_google_adwords_report_ad gara on gara.ad_id = gaa.id
+                                left join lt_google_adwords_report_ad gara on gara.id = gaa.id
                                 where t.company_id = :company_id and t.id = :id
                                 group by t.id
                                 order by t.id desc";
@@ -384,10 +384,10 @@ class ADController extends Controller
         $command->bindValue(":id", $id, PDO::PARAM_INT);
         $performance = $command->queryRow();
 
-        $adVariationPerformanceSQL = "SELECT t.*, gara.ad_id, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
+        $adVariationPerformanceSQL = "SELECT t.*, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
                                         FROM lt_ad_advertise_variation t
                                         left join lt_google_adwords_ad gaa on gaa.lt_ad_advertise_variation_id = t.id
-                                        left join lt_google_adwords_report_ad gara on gara.ad_id = gaa.id
+                                        left join lt_google_adwords_report_ad gara on gara.id = gaa.id
                                         where t.company_id = :company_id and t.ad_advertise_id = :id
                                         group by t.id
                                         order by t.id desc";
@@ -455,7 +455,7 @@ class ADController extends Controller
         }
         $performanceSQL = "select sum(garc.clicks) as clicks, sum(garc.impressions) as impr, sum(garc.cost) / 1000000 as cost, garc.date, garc.month, garc.year, garc.date, garc.week, garc.month_of_year, gac.id, gac.lt_ad_advertise_variation_id
                                 from lt_google_adwords_report_ad garc
-                                left join lt_google_adwords_ad gac on gac.id = garc.ad_id
+                                left join lt_google_adwords_ad gac on gac.id = garc.id
                                 left join lt_ad_advertise_variation aav on aav.id = gac.lt_ad_advertise_variation_id
                                 where aav.company_id = :company_id $whereSQL $groupBySQL";
         $command = Yii::app()->db->createCommand($performanceSQL);

@@ -14,7 +14,7 @@
 $this->breadcrumbs=array(
     'Marketing'=>array("/marketing/home"),
     'Advertisement'=>array("/marketing/advertisement/home"),
-    'AD Campaign'=>array('/marketing/advertisement/adcampaign'),
+    'AD Campaign'=>array('/marketing/advertisement/ADCampaign'),
     'AD Group'=>array('index'),
     $model->name,
 );
@@ -175,7 +175,7 @@ $this->menu=array(
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 26px; color: #9197a3; font-weight: normal;">
                     <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/create", array('campaignid'=>$model->adCampaign->id)); ?>'; " />
-                    <input type="button" class="boldFont greenButton redButton" value="+ Advertisement" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/create", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id)); ?>'; " />
+                    <input type="button" class="boldFont greenButton redButton" value="+ Advertisement" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id)); ?>'; " />
                     <?php if(!empty($adPerformance)):?>
                     <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
                     <ul id="menu_segment_action" class="ui-menu" >
@@ -209,7 +209,7 @@ $this->menu=array(
             <div>
                 <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; clear: both; width: 100%;">
                     <div style="position: relative; float: right;">
-                        <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/index", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id));?>">See All</a>
+                        <a style="color: #3b5998; font-size: 11px; line-height: 38px; position: relative; margin-right: 10px; padding-right: 5px;" href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/index", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id));?>">See All</a>
                     </div>
                     <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
                         <h1 style="color: #4e5665; font-weight: 700; padding-left: 12px; line-height: 38px; position: relative;">Advertisement(s)</h1>
@@ -229,7 +229,7 @@ $this->menu=array(
                         <tbody>
                         <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($adPerformance as $ad):?>
                             <tr>
-                                <td align="left" style="padding-left: 12px;"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/view", array('id'=>$ad['id']));?>"><?php echo $ad['name'];?></a></td>
+                                <td align="left" style="padding-left: 12px;"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/view", array('id'=>$ad['id']));?>"><?php echo $ad['name'];?></a></td>
                                 <td align="right"><?php echo isset($ad['clicks']) ? $ad['clicks'] : "&nbsp;";?></td>
                                 <td align="right"><?php echo isset($ad['impr']) ? $ad['impr'] : "&nbsp;";?></td>
                                 <td align="right"><?php echo isset($ad['impr']) ? sprintf("%1\$.2f%%", $ad['clicks'] / $ad['impr'] * 100) : "&nbsp;";?></td>

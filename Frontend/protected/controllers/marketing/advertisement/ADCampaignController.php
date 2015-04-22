@@ -334,6 +334,32 @@ class ADCampaignController extends Controller
         exit();
     }
 
+    public function actionUpdateCampaignStatus()
+    {
+        $status = isset($_POST['status']) ? $_POST['status'] : null;
+        $appliedList = isset($_POST['idList']) ? $_POST['idList'] : null;;
+        $successList = array();
+        if(!array_key_exists($status, ADCampaign::getStatusOptions()))
+        {
+            $result = array('status'=>'fail', 'msg'=>"Invalid Campaign Status!");
+            echo json_encode($result);
+            exit();
+        }
+        foreach($appliedList as $id)
+        {
+            $campaign = ADCampaign::model()->findByPk($id, "company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
+            if($campaign!=null)
+            {
+                $campaign->status = $status;
+                if($campaign->save()) $successList[] = $campaign->id;
+            }
+        }
+
+        $result = array('status'=>'success', 'data'=>$successList);
+        echo json_encode($result);
+        exit();
+    }
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
@@ -356,7 +382,7 @@ class ADCampaignController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + delete, getPerformanceData', // we only allow deletion via POST request
+            'postOnly + delete, getPerformanceData, updateCampaignStatus', // we only allow deletion via POST request
         );
     }
 
@@ -369,7 +395,7 @@ class ADCampaignController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index', 'create', 'view', 'update', 'getPerformanceData'),
+                'actions'=>array('index', 'create', 'view', 'update', 'getPerformanceData', 'updateCampaignStatus'),
                 'users'=>array('@'),
             ),
             array('deny',  // deny all users

@@ -1026,5 +1026,5 @@ ALTER TABLE lt_company ADD COLUMN authorize_day tinyint(4) COMMENT '冻结天数
 ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN markup_type tinyint(4);
 ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN markup_amount DECIMAL(20,4);
 ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN charge_amount DECIMAL(20,4);
-ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN is_charged tinyint(1) not null default '0';
+ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN is_charged tinyint(1) default '0';
 /*end 2015-04-21*/

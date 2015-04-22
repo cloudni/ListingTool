@@ -195,7 +195,7 @@ $this->menu=array(
                         </ul>
                         <input id="menu_dimensions_action_button" type="button" value="Dimensions ▼" class="menuButton" onclick="showMenu('menu_dimensions_action');" style="width: 92px;" />
                         <ul id="menu_dimensions_action" class="ui-menu" >
-                            <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/automaticPlacementReport", array('id'=>$model->id));?>';">Automatic Placement</li>
+                            <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/automaticPlacementReport", array('id'=>$model->id));?>';">Automatic Placements</li>
                             <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/geoGraphicReport", array('id'=>$model->id));?>';">Geographic</li>
                             <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/destinationURLReport", array('id'=>$model->id));?>';">Destination URL</li>
                         </ul>

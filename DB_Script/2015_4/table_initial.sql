@@ -789,7 +789,7 @@ CREATE TABLE `lt_google_adwords_report_campaign` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_destination_url`;
 CREATE TABLE `lt_google_adwords_report_destination_url` (
-  `pk_id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_currency_code` varchar(255) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
   `account_time_zone_id` varchar(255) DEFAULT NULL,
@@ -842,7 +842,7 @@ CREATE TABLE `lt_google_adwords_report_destination_url` (
   `view_through_conversions` int(11) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`pk_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -850,7 +850,7 @@ CREATE TABLE `lt_google_adwords_report_destination_url` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_geo`;
 CREATE TABLE `lt_google_adwords_report_geo` (
-  `pk_id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_currency_code` varchar(255) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
   `account_time_zone_id` varchar(255) DEFAULT NULL,
@@ -901,7 +901,7 @@ CREATE TABLE `lt_google_adwords_report_geo` (
   `view_through_conversions` bigint(20) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`pk_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -909,7 +909,7 @@ CREATE TABLE `lt_google_adwords_report_geo` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_placement`;
 CREATE TABLE `lt_google_adwords_report_placement` (
-  `pk_id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_currency_code` varchar(255) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
   `account_time_zone_id` varchar(255) DEFAULT NULL,
@@ -971,7 +971,7 @@ CREATE TABLE `lt_google_adwords_report_placement` (
   `view_through_conversions` bigint(20) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`pk_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

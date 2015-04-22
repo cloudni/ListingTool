@@ -22,9 +22,9 @@ class ADGroupController extends Controller
             $whereSQL .= " and ag.campaign_id = :campaign_id ";
         }
         $adGroupPerformanceSQL = "SELECT ag.id, ag.name, ag.default_bid, ag.status, sum(t.clicks) as clicks, sum(t.impressions) as impr, sum(t.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
-                                    FROM lt_google_adwords_report_ad_group t
-                                    left join lt_google_adwords_ad_group aag on aag.id = t.ad_group_id
-                                    left join lt_ad_group ag on aag.lt_ad_group_id = ag.id
+                                    FROM lt_ad_group ag
+                                    left join lt_google_adwords_ad_group aag on aag.lt_ad_group_id = ag.id
+                                    left join lt_google_adwords_report_ad_group t on t.ad_group_id = aag.id
                                     where ag.company_id = :company_id
                                     $whereSQL
                                     group by ag.id";

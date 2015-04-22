@@ -196,7 +196,7 @@ $this->menu=array(
                         ),
                         array(
                             'label'=>'TimeZone',
-                            'value'=>$setting['timezone'],
+                            'value'=>isset($setting['timezone']) ? $setting['timezone'] : "&nbsp;",
                         ),
                         array(
                             'label'=>'Schedule',

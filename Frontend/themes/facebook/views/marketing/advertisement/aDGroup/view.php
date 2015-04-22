@@ -174,7 +174,7 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 26px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/create", array('campaignid'=>$model->adCampaign->id)); ?>'; " />
+                    <input type="button" class="boldFont greenButton redButton" value="+ AD Group" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/create", array('campaignid'=>$model->adCampaign->id)); ?>'; " />
                     <input type="button" class="boldFont greenButton redButton" value="+ Advertisement" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/create", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id)); ?>'; " />
                     <?php if(!empty($adPerformance)):?>
                     <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
@@ -293,7 +293,7 @@ $this->menu=array(
 
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/getPerformanceData");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/getPerformanceData");?>',
             data: {
                 groupBy: groupBy,
                 dataPoint: dataPoint,

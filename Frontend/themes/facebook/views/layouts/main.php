@@ -161,7 +161,7 @@
                     'itemOptions'=>array('class'=>'dir'),
                     'visible'=>!Yii::app()->user->isGuest,
                     'items'=>array(
-                        array('label'=>'Advertisement', 'url'=>array('/marketing/advertisement/home')),
+                        array('label'=>'Display Advertisement', 'url'=>array('/marketing/advertisement/home')),
                     ),
                 ),
                 array(

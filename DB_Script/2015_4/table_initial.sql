@@ -214,6 +214,7 @@ CREATE TABLE `lt_ad_change_log` (
   `company_id` INT NOT NULL,
   `object_type` varchar(255) NOT NULL comment '记录这条log对应对象的类名，比如ADCampaign',
   `object_id` INT NOT NULL comment '记录这条log对应对象的主键',
+  `title`   varchar(255) null default '',
   `action` INT NOT NULL DEFAULT 0 comment '记录的动作，包括新增，更新，删除',
   `content` TEXT NOT NULL,
   `status` TINYINT(4) NOT NULL DEFAULT 0 comment '记录这条log是否已经被同步过，包括等待处理，已处理，处理出错',

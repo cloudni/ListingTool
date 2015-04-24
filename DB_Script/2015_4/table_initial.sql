@@ -1014,3 +1014,17 @@ ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN markup_amount DECIMAL(2
 ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN charge_amount DECIMAL(20,4);
 ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN is_charged tinyint(1) default '0';
 /*end 2015-04-21*/
+
+/*start 2015-04-24*/
+DROP TABLE IF EXISTS `lt_google_adwords_para_geographical_targeting`;
+CREATE TABLE `lt_google_adwords_para_geographical_targeting` (
+  `criteria_id` varchar(16) NOT NULL COMMENT '主键',
+  `name` varchar(255) DEFAULT NULL COMMENT '名称',
+  `canonical_name` varchar(255) DEFAULT NULL COMMENT '全称，父子组合',
+  `parent_id` varchar(16) DEFAULT NULL COMMENT '父ID',
+  `country_code` varchar(2) DEFAULT NULL COMMENT '国家代码',
+  `target_type` varchar(36) DEFAULT NULL COMMENT 'criteria类型（24种）：City，Country，Region，Province，Territory，University等',
+  `status` varchar(20) DEFAULT NULL COMMENT '状态：Active，Removal Planned',
+  PRIMARY KEY (`criteria_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-04-24*/

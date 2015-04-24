@@ -487,7 +487,7 @@ CREATE TABLE `lt_google_adwords_report_ad` (
   `view_through_conversions` int(11) DEFAULT NULL,
   `view_through_conversions_significance` text,
   `week` varchar(10) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -599,7 +599,7 @@ CREATE TABLE `lt_google_adwords_report_ad_group` (
   `view_through_conversions` int(11) DEFAULT NULL,
   `view_through_conversions_significance` text,
   `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -655,7 +655,7 @@ CREATE TABLE `lt_google_adwords_report_automatic_placements` (
   `value_per_converted_click` double DEFAULT NULL,
   `view_through_conversions` int(11) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -774,7 +774,7 @@ CREATE TABLE `lt_google_adwords_report_campaign` (
   `view_through_conversions` int(11) DEFAULT NULL,
   `view_through_conversions_significance` text,
   `week` varchar(10) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -833,7 +833,7 @@ CREATE TABLE `lt_google_adwords_report_destination_url` (
   `value_per_converted_click` double DEFAULT NULL,
   `view_through_conversions` int(11) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -890,7 +890,7 @@ CREATE TABLE `lt_google_adwords_report_geo` (
   `value_per_converted_click` double DEFAULT NULL,
   `view_through_conversions` bigint(20) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -958,7 +958,7 @@ CREATE TABLE `lt_google_adwords_report_placement` (
   `value_per_converted_click` double DEFAULT NULL,
   `view_through_conversions` bigint(20) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

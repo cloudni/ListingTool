@@ -1028,3 +1028,36 @@ CREATE TABLE `lt_google_adwords_para_geographical_targeting` (
   PRIMARY KEY (`criteria_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*end 2015-04-24*/
+
+/*start 2015-04-26*/
+CREATE TABLE lt_google_adwords_report_ad_count LIKE lt_google_adwords_report_ad;
+CREATE TABLE lt_google_adwords_report_ad_group_count LIKE lt_google_adwords_report_ad_group;
+CREATE TABLE lt_google_adwords_report_campaign_count LIKE lt_google_adwords_report_campaign;
+
+ALTER TABLE lt_google_adwords_report_ad_count ADD COLUMN markup_type tinyint(4);
+ALTER TABLE lt_google_adwords_report_ad_count ADD COLUMN markup_amount DECIMAL(20,4);
+ALTER TABLE lt_google_adwords_report_ad_count ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_google_adwords_report_ad_count ADD COLUMN is_charged tinyint(1) default '0';
+
+ALTER TABLE lt_google_adwords_report_ad_group_count ADD COLUMN markup_type tinyint(4);
+ALTER TABLE lt_google_adwords_report_ad_group_count ADD COLUMN markup_amount DECIMAL(20,4);
+ALTER TABLE lt_google_adwords_report_ad_group_count ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_google_adwords_report_ad_group_count ADD COLUMN is_charged tinyint(1) default '0';
+
+ALTER TABLE lt_google_adwords_report_campaign_count ADD COLUMN markup_type tinyint(4);
+ALTER TABLE lt_google_adwords_report_campaign_count ADD COLUMN markup_amount DECIMAL(20,4);
+ALTER TABLE lt_google_adwords_report_campaign_count ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_google_adwords_report_campaign_count ADD COLUMN is_charged tinyint(1) default '0';
+
+DROP TABLE IF EXISTS `lt_transaction_detail`;
+CREATE TABLE `lt_transaction_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `transaciton_id` int(11) NOT NULL COMMENT 'lt_transaction.id',
+  `ref_id` bigint(20) NOT NULL COMMENT '关联表主键',
+  `ref_object` varchar(30) NOT NULL COMMENT '关联表对象',
+  `amount` decimal(20,4) NOT NULL DEFAULT '0.0000',
+  PRIMARY KEY (`id`),
+  KEY `lt_transaction_detail_transaciton_id` (`transaciton_id`),
+  CONSTRAINT `lt_transaction_detail_transaciton_id` FOREIGN KEY (`transaciton_id`) REFERENCES `lt_transaction` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-04-26*/

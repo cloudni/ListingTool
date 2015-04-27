@@ -1042,12 +1042,14 @@ ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN pk_id int(11) NOT NULL AUT
 ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN markup_type tinyint(4);
 ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN markup_amount DECIMAL(20,4);
 ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN ad_ad_id int(11);
 ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN is_charged tinyint(1) default '0';
 
 ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN id int(11) NOT NULL AUTO_INCREMENT,add primary key (id);  
 ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN markup_type tinyint(4);
 ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN markup_amount DECIMAL(20,4);
 ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN ad_campaign_id int(11);
 ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN is_charged tinyint(1) default '0';
 
 DROP TABLE IF EXISTS `lt_transaction_detail`;
@@ -1057,6 +1059,11 @@ CREATE TABLE `lt_transaction_detail` (
   `ref_id` int(11) NOT NULL COMMENT '关联表主键',
   `ref_object` varchar(30) NOT NULL COMMENT '关联表对象',
   `amount` decimal(20,4) NOT NULL DEFAULT '0.0000',
+  `charge_date_utc` int(11) DEFAULT NULL,
+  `create_time_utc` int(11) DEFAULT NULL,
+  `create_user_id` int(11) DEFAULT NULL default '0',
+  `update_time_utc` int(11) DEFAULT NULL default '0',
+  `update_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `lt_transaction_detail_transaciton_id` (`transaciton_id`),
   CONSTRAINT `lt_transaction_detail_transaciton_id` FOREIGN KEY (`transaciton_id`) REFERENCES `lt_transaction` (`id`) ON DELETE CASCADE ON UPDATE CASCADE

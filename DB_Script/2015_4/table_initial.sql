@@ -1030,25 +1030,25 @@ CREATE TABLE `lt_google_adwords_para_geographical_targeting` (
 /*end 2015-04-24*/
 
 /*start 2015-04-26*/
-ALTER TABLE lt_google_adwords_report_campaign REMOVE COLUMN markup_type;
-ALTER TABLE lt_google_adwords_report_campaign REMOVE COLUMN markup_amount;
-ALTER TABLE lt_google_adwords_report_campaign REMOVE COLUMN charge_amount;
-ALTER TABLE lt_google_adwords_report_campaign REMOVE COLUMN is_charged;
+ALTER TABLE lt_google_adwords_report_campaign drop COLUMN markup_type;
+ALTER TABLE lt_google_adwords_report_campaign drop COLUMN markup_amount;
+ALTER TABLE lt_google_adwords_report_campaign drop COLUMN charge_amount;
+ALTER TABLE lt_google_adwords_report_campaign drop COLUMN is_charged;
 
-CREATE TABLE lt_google_adwords_report_ad_count LIKE lt_google_adwords_report_ad;
-CREATE TABLE lt_google_adwords_report_campaign_count LIKE lt_google_adwords_report_campaign;
+CREATE TABLE lt_ad_google_adwords_report_ad LIKE lt_google_adwords_report_ad;
+CREATE TABLE lt_ad_google_adwords_report_campaign LIKE lt_google_adwords_report_campaign;
 
-ALTER TABLE lt_google_adwords_report_ad_count ADD COLUMN pk_id int(11) NOT NULL AUTO_INCREMENT,add primary key (pk_id);  
-ALTER TABLE lt_google_adwords_report_ad_count ADD COLUMN markup_type tinyint(4);
-ALTER TABLE lt_google_adwords_report_ad_count ADD COLUMN markup_amount DECIMAL(20,4);
-ALTER TABLE lt_google_adwords_report_ad_count ADD COLUMN charge_amount DECIMAL(20,4);
-ALTER TABLE lt_google_adwords_report_ad_count ADD COLUMN is_charged tinyint(1) default '0';
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN pk_id int(11) NOT NULL AUTO_INCREMENT,add primary key (pk_id);  
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN markup_type tinyint(4);
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN markup_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN is_charged tinyint(1) default '0';
 
-ALTER TABLE lt_google_adwords_report_campaign_count ADD COLUMN id int(11) NOT NULL AUTO_INCREMENT,add primary key (id);  
-ALTER TABLE lt_google_adwords_report_campaign_count ADD COLUMN markup_type tinyint(4);
-ALTER TABLE lt_google_adwords_report_campaign_count ADD COLUMN markup_amount DECIMAL(20,4);
-ALTER TABLE lt_google_adwords_report_campaign_count ADD COLUMN charge_amount DECIMAL(20,4);
-ALTER TABLE lt_google_adwords_report_campaign_count ADD COLUMN is_charged tinyint(1) default '0';
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN id int(11) NOT NULL AUTO_INCREMENT,add primary key (id);  
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN markup_type tinyint(4);
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN markup_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN is_charged tinyint(1) default '0';
 
 DROP TABLE IF EXISTS `lt_transaction_detail`;
 CREATE TABLE `lt_transaction_detail` (

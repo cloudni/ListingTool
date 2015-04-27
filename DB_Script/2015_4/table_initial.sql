@@ -1071,3 +1071,18 @@ CREATE TABLE `lt_transaction_detail` (
 
 alter TABLE lt_google_adwords_ad ADD COLUMN ad_id INT not null;
 /*end 2015-04-26*/
+
+/*end 2015-04-27*/
+DROP TABLE IF EXISTS `lt_google_adwords_budget`;
+CREATE TABLE `lt_google_adwords_budget` (
+  `budget_id` bigint(20) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `period` varchar(36) DEFAULT NULL,
+  `amount` bigint(20) DEFAULT NULL,
+  `delivery_method` varchar(255) DEFAULT NULL,
+  `reference_count` int(11) DEFAULT NULL,
+  `is_explicitly_shared` bit(1) DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`budget_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-04-27*/

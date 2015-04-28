@@ -157,11 +157,11 @@
                     ),
                 ),
                 array(
-                    'label'=>'Marketing',
+                    'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_marketing'),
                     'itemOptions'=>array('class'=>'dir'),
                     'visible'=>!Yii::app()->user->isGuest,
                     'items'=>array(
-                        array('label'=>'Display Advertisement', 'url'=>array('/marketing/advertisement/home')),
+                        array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'display_advertisement'), 'url'=>array('/marketing/advertisement/home')),
                     ),
                 ),
                 array(

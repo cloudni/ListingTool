@@ -10,10 +10,10 @@
 /* @var $model Store */
 
 $this->breadcrumbs=array(
-    'Marketing'=>array("/marketing/home"),
-    'Advertisement'=>array("/marketing/advertisement/home"),
-    'AD Campaign'=>array('index'),
-    'Update',
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_marketing')=>array("/marketing/home"),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'display_advertisement')=>array("/marketing/advertisement/home"),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign')=>array('index'),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'update'),
     $model->name
 );
 ?>

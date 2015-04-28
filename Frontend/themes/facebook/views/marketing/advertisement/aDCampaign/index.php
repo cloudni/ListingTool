@@ -3,14 +3,14 @@
 /* @var $campaignPerformance array */
 
 $this->breadcrumbs=array(
-    'Marketing'=>array("/marketing/home"),
-    'Advertisement'=>array("/marketing/advertisement/home"),
-	'AD Campaign',
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_marketing')=>array("/marketing/home"),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'display_advertisement')=>array("/marketing/advertisement/home"),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign'),
 );
 
 $this->menu=array(
-    array('label'=>'Campaign Index', 'url'=>array('index')),
-    array('label'=>'Campaign Create', 'url'=>array('create')),
+    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_index'), 'url'=>array('index')),
+    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_create'), 'url'=>array('create')),
 );
 ?>
 
@@ -42,20 +42,20 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ Campaign" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/create"); ?>'; " />
+                    <input type="button" class="boldFont greenButton redButton" value="+ <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign');?>" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/create"); ?>'; " />
                     <input id="menu_campaign_filter_button" type="button" value="All ▼" class="menuButton" disabled onclick="showMenu('menu_campaign_filter');" />
                     <ul id="menu_campaign_filter" class="ui-menu" style="width: 180px;" >
                         <li value="All_Campaigns">All Campaigns</li>
                         <li value="All_enabled_Campaigns">All enabled Campaigns</li>
                         <li value="All_but_removed_Campaigns">All but removed Campaigns</li>
                     </ul>
-                    <input id="menu_edit_action_button" type="button" value="Edit ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
+                    <input id="menu_edit_action_button" type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'edit');?> ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
                     <ul id="menu_edit_action" class="ui-menu" >
-                        <li onclick="if(confirm('Are you sure to Enable selected AD Campaign(s)?\nAll group(s) and advertisement(s) in these campaigns will be enanled?')) updateADCampaignStatus(<?php echo ADCampaign::Status_Eligible;?>);">Enable</li>
-                        <li onclick="if(confirm('Are you sure to Pause selected AD Campaign(s)?\nAll group(s) and advertisement(s) in these campaigns will be paused?')) updateADCampaignStatus(<?php echo ADCampaign::Status_Paused;?>);">Pause</li>
-                        <li onclick="if(confirm('Are you sure to Remove selected AD Campaign(s)?\nAll group(s) and advertisement(s) in these campaigns will be removed?')) updateADCampaignStatus(<?php echo ADCampaign::Status_Removed;?>);">Remove</li>
+                        <li onclick="if(confirm('<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'enable_selected_ad_campaigns');?>')) updateADCampaignStatus(<?php echo ADCampaign::Status_Eligible;?>);"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'enable');?></li>
+                        <li onclick="if(confirm('<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'pause_selected_ad_campaigns');?>')) updateADCampaignStatus(<?php echo ADCampaign::Status_Paused;?>);"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'pause');?></li>
+                        <li onclick="if(confirm('<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'remove_selected_ad_campaigns');?>')) updateADCampaignStatus(<?php echo ADCampaign::Status_Removed;?>);"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'remove');?></li>
                         <li class="ui-state-disabled"><hr /></li>
-                        <li>Download Report</li>
+                        <li><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'download_report');?></li>
                     </ul>
                     <input id="menu_segment_action_button" type="button" value="Segment ▼" class="menuButton" disabled onclick="showMenu('menu_segment_action');" style="width: 92px;" />
                     <ul id="menu_segment_action" class="ui-menu" >
@@ -87,7 +87,7 @@ $this->menu=array(
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">All Campaigns</h1>
+                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign');?></h1>
                 </div>
             </div>
             <div>
@@ -95,15 +95,14 @@ $this->menu=array(
                     <thead>
                         <th align="left"><input id="campaignAll" type="checkbox" /></th>
                         <th align="center"><img src="/themes/facebook/images/disabled.png" /></th>
-                        <th align="right">Campaign</th>
-                        <th align="right">Budget</th>
-                        <th align="right">Clicks</th>
-                        <th align="right">Impr.</th>
-                        <th align="right">CTR</th>
-                        <th align="right">Avg. CPC</th>
-                        <th align="right">Cost</th>
-                        <th align="right">Avg. POS</th>
-                    </thead>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'budget');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></th>
+                        </thead>
                     <tbody>
                     <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($campaignPerformance as $campaign): ?>
                         <tr>
@@ -116,20 +115,18 @@ $this->menu=array(
                             <td align="right"><?php echo isset($campaign['impr']) ? sprintf("%1\$.2f%%", $campaign['clicks'] / $campaign['impr'] * 100) : "&nbsp;";?></td>
                             <td align="right"><?php echo isset($campaign['clicks']) ? sprintf("$%1\$.2f", $campaign['cost'] / $campaign['clicks']) : "&nbsp;";?></td>
                             <td align="right"><?php echo isset($campaign['cost']) ? sprintf("$%1\$.2f", $campaign['cost']) : "&nbsp;";?></td>
-                            <td align="right">&nbsp;</td>
-                        </tr>
+                            </tr>
                     <?php $clickTotal += $campaign['clicks']; $imprTotal += $campaign['impr']; $costTotal += $campaign['cost']; endforeach; ?>
                     <tr>
                         <td align="left">&nbsp;</td>
                         <td align="center">&nbsp;</td>
-                        <td align="right" class="boldFont">Total</td>
+                        <td align="right" class="boldFont"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'total');?></td>
                         <td align="right">&nbsp;</td>
                         <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
                         <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
                         <td align="right" class="boldFont"><?php echo $imprTotal ? sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100) : "&nbsp;";?></td>
                         <td align="right" class="boldFont"><?php echo $clickTotal ? sprintf("$%1\$.2f", $costTotal / $clickTotal) : "&nbsp;";?></td>
                         <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
-                        <td align="right" class="boldFont">&nbsp;</td>
                     </tr>
                     </tbody>
                 </table>

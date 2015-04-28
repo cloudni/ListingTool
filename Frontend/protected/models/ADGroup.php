@@ -74,9 +74,9 @@ class ADGroup extends NIActiveRecord
     public static function getGroupByOptions()
     {
         return array(
-            self::GroupBy_Day=>'Daily',
-            self::GroupBy_Week=>'Weekly',
-            self::GroupBy_Month=>'Monthly',
+            self::GroupBy_Day=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'daily'),
+            self::GroupBy_Week=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'weekly'),
+            self::GroupBy_Month=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'monthly'),
         );
     }
 

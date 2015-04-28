@@ -71,7 +71,7 @@ class ADController extends Controller
         {
             $adCampaignId = $_POST['campaign_id'];
             $adGroups = ADGroup::model()->findALL("campaign_id=:campaign_id and company_id=:company_id", array(":campaign_id"=>$adCampaignId, ":company_id"=>Yii::app()->session['user']->company_id));
-            $adGroupList = "<option value=''>Choose a group...</option>";
+            $adGroupList = "<option value=''>".ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'select_an_ad_group_dropdown')."</option>";
             foreach($adGroups as $adGroup)
                 $adGroupList .= "<option value='{$adGroup->id}'>{$adGroup->name}</option>";
             echo json_encode($adGroupList);

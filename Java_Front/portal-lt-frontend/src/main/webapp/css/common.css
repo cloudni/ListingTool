@@ -1,0 +1,13 @@
+<!---翻页样式new--->
+.page{ overflow:hidden}
+.page span{ float:left; margin-left:10px; line-height:26px; height:26px;}
+.page span a{ color:#5fab3c}
+.black_text{ width:20px; border:1px solid #ccc; line-height:16px; height:16px; padding:2px}
+.black_text:hover{ border:1px solid #2ec885}
+.page_go a{ border:1px solid #ccc; text-align:center; width:20px; line-height:20px; display:inline-block;}
+.page_go a:hover{ background:#5fab3c; color:#fff; border:1px solid #5fab3c; text-decoration:none;}
+
+
+.fr{float:right;display:inline}
+.m_auto{ margin:0 auto; width:1280px; overflow: hidden}
+.m_auto_x{ margin:0 auto; width:1280px; }

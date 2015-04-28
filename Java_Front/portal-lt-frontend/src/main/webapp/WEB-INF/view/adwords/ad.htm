@@ -1,0 +1,248 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%> <%@
+include file="/common/taglibs.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<%@ include file="/common/meta.jsp"%>
+<title>Item Tool - ${session.company_update_menu }</title>
+</head>
+
+<body>
+	<div id="ajaxloading">
+		<div>
+			<img src="/images/load.gif" align="absmiddle" /><span>Data is
+				loading</span>
+		</div>
+	</div>
+
+	<%@ include file="/common/top.jsp"%>
+
+	<div class="container" id="page">
+		<%@ include file="/common/header.jsp"%>
+		<!-- mainmenu -->
+		<div class="breadcrumbs">
+			<a href="${ctxPath}/index.shtml">${session.menu_home }</a> &raquo; <a
+				href="${ctxPath}/company/listCompany.shtml">${session.company_title
+				}</a> &raquo; <a
+				href="${ctxPath}/company/getCompany.shtml?id=${company.id }">${company.name}</a>
+			&raquo; <span>${session.btn_update }</span>
+		</div>
+		<!-- breadcrumbs -->
+
+		<div class="span-19" style="margin-right: 0px; width: 800px;">
+			<div id="content">
+				<table>
+					<tr>
+						<td style="width: 60%; float: left">
+							<div class="Dabx-L DabA-j"
+								gwtdebugid="TransparentFieldGroupDisplayPanel">
+								<div class="aw-template-group-content">
+									<div>
+										<div class="DabA-f">
+											<div class="DabA-c Dabx-N">
+												<div class="DabA-g">
+													<span class="gwt-InlineLabel">Headline</span><span
+														class="gwt-InlineLabel">(optional)</span>
+												</div>
+											</div>
+											<div>
+												<div>
+													<div>
+														<div class="Dabx-q" gwtdebugid="template-ad-Headline_0_txt-container">
+															<div>
+																<div class="Dabx-D">
+																	<input type="text" class="aw-text Dabx-B aw-textbox-hint-text" gwtdebugid="template-ad-text-field-text" dir="ltr">
+																	<textarea class="aw-text Dabx-A" aria-hidden="true" style="display: none;"></textarea>
+																</div>
+																<div class="aw-text Dabx-s" aria-hidden="true" style="display: none;">
+																    Maximum length for text reached
+																</div>
+																<div class="aw-text Dabx-s" aria-hidden="true"
+																	style="display: none;">Text is not formatted
+																	correctly.</div>
+																<div style="display: none;">
+																	<div
+																		class="aw-inline aw-text-display-width-counter-progress-bar"
+																		gwtdebugid="display-width-counter-progress-bar"
+																		aria-hidden="true"
+																		style="position: relative; display: none;">
+																		<div class="gwt-ProgressBar-bar"
+																			style="height: 100%; width: 0%;"></div>
+																		<div
+																			class="gwt-ProgressBar-text gwt-ProgressBar-text-firstHalf"
+																			style="position: absolute; top: 0px; display: none;">0%</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="Dabx-r" aria-hidden="true"
+															gwtdebugid="template-ad-Headline_0_txt-field-description"
+															style="display: none;"></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div>
+										<div gwtdebugid="zippy-fieldgroup-panel">
+											<div gwtdebugid="fieldgroup" class="">
+												<div>
+													<div class="DabV-b" gwtdebugid="fieldgroup-zippy-header">
+														<div class="Dabib-a DabV-d"></div>
+														<div class="Dabib-a DabV-c">
+															<span class="gwt-InlineLabel">More options</span>
+														</div>
+													</div>
+													<div gwtdebugid="fieldgroup-zippy-body">
+														<div>
+															<div class=""
+																gwtdebugid="TransparentFieldGroupDisplayPanel">
+																<div class="">
+																	<div>
+																		<div class="DabA-f">
+																			<div>
+																				<div class="DabA-s">
+																					<div class="DabA-r">
+																						<div class="gwt-Label">Headline colour</div>
+																						<div class="aw-field-hint Dabx-w">(optional)</div>
+																						<div class="Dabx-E" aria-hidden="true"
+																							style="display: none;"></div>
+																					</div>
+																					<div class="DabA-t DabA-q">
+																						<div>
+																							<div>
+																								<div class="Dabx-q"
+																									gwtdebugid="template-ad-Design_0_txtColorTitle-container">
+																									<div gwtdebugid="aw-template-color-picker">
+																										<div tabindex="0" class="DabM-z"
+																											title="Text Colour"
+																											gwtdebugid="Design_0_txtColorTitle-text-color-picker">
+																											<input type="text" tabindex="-1"
+																												role="presentation"
+																												style="opacity: 0; height: 1px; width: 1px; z-index: -1; overflow: hidden; position: absolute;"><div
+																													class="DabM-A"
+																													style="background-color: rgb(77, 77, 77);"></div>
+																										</div>
+																									</div>
+																								</div>
+																								<div class="Dabx-r" aria-hidden="true"
+																									gwtdebugid="template-ad-Design_0_txtColorTitle-field-description"
+																									style="display: none;"></div>
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<div class="DabA-s">
+																					<div class="DabA-r">
+																						<div class="gwt-Label">Headline background
+																							colour</div>
+																						<div class="aw-field-hint Dabx-w">(optional)</div>
+																						<div class="Dabx-E" aria-hidden="true"
+																							style="display: none;"></div>
+																					</div>
+																					<div class="DabA-t DabA-q">
+																						<div>
+																							<div>
+																								<div class="Dabx-q"
+																									gwtdebugid="template-ad-Design_0_bgColorTitle-container">
+																									<div gwtdebugid="aw-template-color-picker">
+																										<div tabindex="0" class="DabM-h"
+																											title="Background Colour"
+																											gwtdebugid="Design_0_bgColorTitle-text-color-picker"
+																											style="background-color: rgb(255, 255, 255);">
+																											<input type="text" tabindex="-1"
+																												role="presentation"
+																												style="opacity: 0; height: 1px; width: 1px; z-index: -1; overflow: hidden; position: absolute;">
+																										</div>
+																									</div>
+																								</div>
+																								<div class="Dabx-r" aria-hidden="true"
+																									gwtdebugid="template-ad-Design_0_bgColorTitle-field-description"
+																									style="display: none;"></div>
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<div class="DabA-s">
+																					<div class="DabA-r">
+																						<div class="gwt-Label">Headline text size</div>
+																						<div class="aw-field-hint Dabx-w">(optional)</div>
+																						<div class="Dabx-E" aria-hidden="true"
+																							style="display: none;"></div>
+																					</div>
+																					<div class="DabA-t">
+																						<div>
+																							<div>
+																								<div class="Dabx-q"
+																									gwtdebugid="template-ad-Design_0_headlineSize-container">
+																									<input type="text" class="aw-text" dir="ltr">
+																								</div>
+																								<div class="Dabx-r" aria-hidden="true"
+																									gwtdebugid="template-ad-Design_0_headlineSize-field-description"
+																									style="display: none;"></div>
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<div class="DabA-s">
+																					<div class="DabA-r">
+																						<div class="gwt-Label">Headline shadow</div>
+																						<div class="aw-field-hint Dabx-w">(optional)</div>
+																						<div class="Dabx-E" aria-hidden="true"
+																							style="display: none;"></div>
+																					</div>
+																					<div class="DabA-t">
+																						<div>
+																							<div>
+																								<div class="Dabx-q"
+																									gwtdebugid="template-ad-Design_0_txtShadow-container">
+																									<div>
+																										<div aria-hidden="true" style="display: none;"></div>
+																										<div class="aw-native-select-box-wrapper">
+																											<select class="aw-native-select-box"
+																												gwtdebugid="template-ad-dropdown"><option
+																													value="TRUE">Include shadow</option>
+																												<option value="FALSE">No shadow</option></select>
+																											<div class="Dabx-r" aria-hidden="true"
+																												style="display: none;"></div>
+																										</div>
+																									</div>
+																								</div>
+																								<div class="Dabx-r" aria-hidden="true"
+																									gwtdebugid="template-ad-Design_0_txtShadow-field-description"
+																									style="display: none;"></div>
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<div></div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td style="width: 40%; float: right">
+							<div>bcd</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div class="clear" style="height: 20px;"></div>
+
+		<%@ include file="/common/footer.jsp"%>
+	</div>
+	<!-- page -->
+</body>
+</html>
+

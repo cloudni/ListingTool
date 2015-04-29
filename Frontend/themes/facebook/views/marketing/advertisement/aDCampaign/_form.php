@@ -57,16 +57,16 @@ $setting = (array)json_decode($model->criteria);
             </div>
             <div style="padding: 12px;">
                 <div style="clear: both; width: 100%;">
-                    <div style="float: left; width: 20%; text-align: right;">AD Campaign Name: </div>
+                    <div style="float: left; width: 20%; text-align: right;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'name');?>: </div>
                     <div style="float: left; width: auto; text-align: left; padding-left: 12px;">
                         <input type="text" id="campaign_name" name="campaign[name]" size="60" maxlength="50" <?php if(!$model->isNewRecord) echo 'disabled';?> value="<?php echo $model->name;?>" />
                     </div>
                 </div>
                 <div style="clear: both; width: 100%; padding-top: 12px;">
-                    <div style="float: left; width: 20%; text-align: right;">Budget: </div>
+                    <div style="float: left; width: 20%; text-align: right;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'budget');?>: </div>
                     <div style="float: left; width: auto; text-align: left; padding-left: 12px;">
                         <input type="text" id="campaign_budget" name="campaign[budget]" size="11" maxlength="10" style="text-align: right;" onkeyup="CheckInputInt(this);" value="<?php echo sprintf("%1\$.0f", $model->budget);?>" />
-                        <span class="adCampaignBudgetCurrency">$</span><span>Per Day</span>
+                        <span class="adCampaignBudgetCurrency">$</span><span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'per_day');?></span>
                     </div>
                 </div>
                 <div style="clear: both; width: 100%; padding-top: 12px; display: none;">
@@ -95,13 +95,13 @@ $setting = (array)json_decode($model->criteria);
                     </div>
                 </div>
                 <div style="clear: both; width: 100%; padding-top: 12px;">
-                    <div style="float: left; width: 20%; text-align: right;">Language: </div>
+                    <div style="float: left; width: 20%; text-align: right;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'language');?>: </div>
                     <div style="float: left; width: 75%; text-align: left; padding-left: 12px;">
-                        <div>What languages do your customers speak?</div>
-                        <div id="language_option_all" <?php if(isset($setting['language']) && !empty($setting['language'])) echo "style='display: none;'";?> ><div class="boldFont">All languages <a id="language_option_edit_button">Edit</a></div></div>
+                        <div><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'which_language_your_customer_speak');?></div>
+                        <div id="language_option_all" <?php if(isset($setting['language']) && !empty($setting['language'])) echo "style='display: none;'";?> ><div class="boldFont"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_languages');?>&nbsp;<a id="language_option_edit_button"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'edit');?></a></div></div>
                         <div id="language_option_panel" style="display: <?php if(isset($setting['language']) && !empty($setting['language'])) echo "block"; else echo "none";?>; padding-top: 3px;" >
-                            <div style="word-wrap: normal;">This setting determines whether your ad can show for a specific language setting on Google. Note that AdWords doesn't translate your ads.</div>
-                            <div><input type="checkbox" checked="checked" id="language_option_all_value" name="language_option_all_value" value="all_language" /><span>All languages</span></div>
+                            <div style="word-wrap: normal;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_language_help');?></div>
+                            <div><input type="checkbox" checked="checked" id="language_option_all_value" name="language_option_all_value" value="all_language" /><span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_languages');?></span></div>
                             <div style="clear: both; width: 100%;">
                                 <div style="float: left; width: 30%; text-align: left;"><input type="checkbox" id="language_option_value[]" name="language_option_value[]" disabled value="Indonesian" /><span>Indonesian</span></div>
                                 <div style="float: left; width: 30%; text-align: left;"><input type="checkbox" id="language_option_value[]" name="language_option_value[]" disabled value="Japanese" /><span>Japanese</span></div>
@@ -181,13 +181,13 @@ $setting = (array)json_decode($model->criteria);
                     </div>
                 </div>
                 <div style="clear: both; width: 100%; padding-top: 12px;">
-                    <div style="float: left; width: 20%; text-align: right;">Location: </div>
+                    <div style="float: left; width: 20%; text-align: right;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'location');?>: </div>
                     <div style="float: left; width: 75%; text-align: left; padding-left: 12px;">
-                        <div>Which locations do you want to target (or exclude) in your campaign?</div>
-                        <div id="location_option_all"><div class="boldFont">All countries and territories <a id="location_option_edit_button">Edit</a></div></div>
+                        <div><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'which_location_to_target_in_campaign');?></div>
+                        <div id="location_option_all"><div class="boldFont"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_countries_and_territories');?>&nbsp;<a id="location_option_edit_button"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'edit');?></a></div></div>
                         <div id="location_option_panel" style="clear: both;display: none; padding-bottom: 12px;">
-                            <div style="word-wrap: normal;">This setting determines whether your ad can show for a specific language setting on Google. Note that AdWords doesn't translate your ads.</div>
-                            <div><input type="checkbox" checked="checked" id="location_option_all_value" name="location_option_all_value" value="all_locations" /><span>All countries and territories</span></div>
+                            <div style="word-wrap: normal;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_location_help');?></div>
+                            <div><input type="checkbox" checked="checked" id="location_option_all_value" name="location_option_all_value" value="all_locations" /><span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_countries_and_territories');?></span></div>
                             <div id="location_option_values" style="position: relative; left: -8px; display: none; " >
                                 <ul class="excludeLocationUL">
                                     <li class="lfloat" style="padding-right: 15px; width: 40%;">
@@ -482,27 +482,27 @@ $setting = (array)json_decode($model->criteria);
                     </div>
                 </div>
                 <div style="clear: both; width: 100%; padding-top: 12px;">
-                    <div style="float: left; width: 20%; text-align: right;">Start Date: </div>
+                    <div style="float: left; width: 20%; text-align: right;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_start_datetime');?>: </div>
                     <div style="float: left; width: auto; text-align: left; padding-left: 12px;">
                         <input id="startdate" name="startdate" type="text" size="20" value='' maxlength="50" readonly  />
                     </div>
                 </div>
                 <div style="clear: both; width: 100%; padding-top: 12px;">
-                    <div style="float: left; width: 20%; text-align: right;">End Date: </div>
+                    <div style="float: left; width: 20%; text-align: right;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_end_datetime');?>: </div>
                     <div style="float: left; width: auto; text-align: left; padding-left: 12px;">
-                        <input type="radio" id="enddate_none" name="enddate_select" <?php if($model->isNewRecord || !isset($model->end_datetime)) echo "checked='checked'";?> value="none_end_date" /><span>None</span>&nbsp;&nbsp;
+                        <input type="radio" id="enddate_none" name="enddate_select" <?php if($model->isNewRecord || !isset($model->end_datetime)) echo "checked='checked'";?> value="none_end_date" /><span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'none');?></span>&nbsp;&nbsp;
                         <input type="radio" id="enddate_select" name="enddate_select" <?php if(!$model->isNewRecord && isset($model->end_datetime)) echo "checked='checked'";?> value="select_end_date" />
                         <input type="text" id="enddate" name="enddate" size="20" maxlength="50" <?php if($model->isNewRecord || !isset($model->end_datetime)) echo "disabled";?>  readonly />
                     </div>
                 </div>
                 <div style="clear: both; width: 100%; padding-top: 12px; ">
-                    <div style="float: left; width: 20%; text-align: right;">AD Scheduling: </div>
+                    <div style="float: left; width: 20%; text-align: right;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_schedule');?>: </div>
                     <div style="float: left; width: auto; text-align: left; padding-left: 12px;">
-                        <div>Which schedule do you want to run your campaign?</div>
-                        <div id="schedule_option_all" <?php if(isset($setting['schedule']) && !empty($setting['schedule'])) echo "style='display: none;'";?> ><div class="boldFont">All possible time <a id="schedule_option_edit_button">Edit</a></div></div>
+                        <div><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'which_schedule_run_campaign');?></div>
+                        <div id="schedule_option_all" <?php if(isset($setting['schedule']) && !empty($setting['schedule'])) echo "style='display: none;'";?> ><div class="boldFont"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_possible_time');?>&nbsp;<a id="schedule_option_edit_button"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'edit');?></a></div></div>
                         <div id="schedule_option_panel" style="padding-top: 8px; display: <?php if(isset($setting['schedule']) && !empty($setting['schedule'])) echo "block"; else echo "none";?>;">
                             <div style="padding-bottom: 8px;">
-                                <span>Time zone: </span>
+                                <span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_timezone');?>: </span>
                                 <select id="schedule_timezone" name="schedule_timezone">
                                     <option value="UTC-11">UTC-11（MIT - 中途岛标准时间)</option>
                                     <option value=">UTC-10">UTC-10（HST - 夏威夷－阿留申标准时间）</option>
@@ -529,7 +529,7 @@ $setting = (array)json_decode($model->criteria);
                                     <option value="UTC+11">UTC+11（VTT - 瓦努阿图标准时间 )</option>
                                     <option value="UTC+12">UTC+12（PSTB - 太平洋标准时间B）</option>
                                 </select>
-                                <div>For more information about TimeZone, please refer to <a href="http://en.wikipedia.org/wiki/List_of_UTC_time_offsets" target="_blank">here</a>.</div>
+                                <div style="padding-top: 5px;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'timezone_help');?></div>
                             </div>
                             <div id="schedule_option_value_list">
                                 <?php
@@ -540,15 +540,15 @@ $setting = (array)json_decode($model->criteria);
                                         $period = (array)$period;
                                         echo "<div style='padding-bottom: 5px;'>".
                                             "<select id='schedule_option_value_day[]' name='schedule_option_value_day[]'>".
-                                            "   <option value='all_days' ".($period['day']=='all_days' ? "selected" : "").">All Days</option>".
-                                            "   <option value='monday_to_friday' ".($period['day']=='monday_to_friday' ? "selected" : "").">Monday to Friday</option>".
-                                            "   <option value='monday' ".($period['day']=='monday' ? "selected" : "").">Monday</option>".
-                                            "   <option value='tuesday' ".($period['day']=='tuesday' ? "selected" : "").">Tuesday</option>".
-                                            "   <option value='wednesday' ".($period['day']=='wednesday' ? "selected" : "").">Wednesday</option>".
-                                            "   <option value='thursday' ".($period['day']=='thursday' ? "selected" : "").">Thursday</option>".
-                                            "   <option value='friday' ".($period['day']=='friday' ? "selected" : "").">Friday</option>".
-                                            "   <option value='saturday' ".($period['day']=='saturday' ? "selected" : "").">Saturday</option>".
-                                            "   <option value='sunday' ".($period['day']=='sunday' ? "selected" : "").">Sunday</option>".
+                                            "   <option value='all_days' ".($period['day']=='all_days' ? "selected" : "").">".ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_all_days')."</option>".
+                                            "   <option value='monday_to_friday' ".($period['day']=='monday_to_friday' ? "selected" : "").">".ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_monday_to_friday')."</option>".
+                                            "   <option value='monday' ".($period['day']=='monday' ? "selected" : "").">".ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_monday')."</option>".
+                                            "   <option value='tuesday' ".($period['day']=='tuesday' ? "selected" : "").">".ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_tuesday')."</option>".
+                                            "   <option value='wednesday' ".($period['day']=='wednesday' ? "selected" : "").">".ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_wednesday')."</option>".
+                                            "   <option value='thursday' ".($period['day']=='thursday' ? "selected" : "").">".ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_thursday')."</option>".
+                                            "   <option value='friday' ".($period['day']=='friday' ? "selected" : "").">".ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_friday')."</option>".
+                                            "   <option value='saturday' ".($period['day']=='saturday' ? "selected" : "").">".ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_saturday')."</option>".
+                                            "   <option value='sunday' ".($period['day']=='sunday' ? "selected" : "").">".ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_sunday')."</option>".
                                             "   </select>&nbsp;&nbsp;".
                                             "   <select id='schedule_option_value_from_hour[]' name='schedule_option_value_from_hour[]'>".
                                             "   <option value='00' ".($period['from_hour']=='00' ? "selected" : "").">00</option>".
@@ -620,7 +620,7 @@ $setting = (array)json_decode($model->criteria);
                                 }
                                 ?>
                             </div>
-                            <div><a id="schedule_option_add">+ Add</a></div>
+                            <div><a id="schedule_option_add">+ <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'add');?></a></div>
                         </div>
                     </div>
                 </div>
@@ -742,15 +742,15 @@ $setting = (array)json_decode($model->criteria);
         $("#schedule_option_add").click(function(){
             var schedule_value = "<div style='padding-bottom: 5px;'>"+
                     "<select id='schedule_option_value_day[]' name='schedule_option_value_day[]'>"+
-                    "   <option value='all_days'>All Days</option>"+
-                    "   <option value='monday_to_friday'>Monday to Friday</option>"+
-                    "   <option value='monday'>Monday</option>"+
-                    "   <option value='tuesday'>Tuesday</option>"+
-                    "   <option value='wednesday'>Wednesday</option>"+
-                    "   <option value='thursday'>Thursday</option>"+
-                    "   <option value='friday'>Friday</option>"+
-                    "   <option value='saturaday'>Saturday</option>"+
-                    "   <option value='sunday'>Sunday</option>"+
+                    "   <option value='all_days'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_all_days');?></option>"+
+                    "   <option value='monday_to_friday'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_monday_to_friday');?></option>"+
+                    "   <option value='monday'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_monday');?></option>"+
+                    "   <option value='tuesday'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_tuesday');?></option>"+
+                    "   <option value='wednesday'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_wednesday');?></option>"+
+                    "   <option value='thursday'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_thursday');?></option>"+
+                    "   <option value='friday'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_friday');?></option>"+
+                    "   <option value='saturaday'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_saturday');?></option>"+
+                    "   <option value='sunday'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'schedule_sunday');?></option>"+
                     "   </select>&nbsp;&nbsp;"+
                     "   <select id='schedule_option_value_from_hour[]' name='schedule_option_value_from_hour[]'>"+
                     "   <option value='00'>00</option>"+

@@ -10,11 +10,11 @@
 /* @var $model ADGroup */
 
 $this->breadcrumbs=array(
-    'Marketing'=>array("/marketing/home"),
-    'Advertisement'=>array("/marketing/advertisement/home"),
-    'AD Campaign'=>array('/marketing/advertisement/ADCampaign/index'),
-    'AD Group'=>array('index'),
-    'Create'
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_marketing')=>array("/marketing/home"),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'display_advertisement')=>array("/marketing/advertisement/home"),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign')=>array('/marketing/advertisement/ADCampaign/index'),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_group')=>array('index'),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'create')
 );
 ?>
 
@@ -23,14 +23,14 @@ $this->breadcrumbs=array(
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="color: #9197a3; font-weight: normal; padding: 12px;">
-                    <div style="color: #333; font-size: 15px; margin-bottom: 10px; padding: 0;">Select a campaign</div>
+                    <div style="color: #333; font-size: 15px; margin-bottom: 10px; padding: 0;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'select_an_ad_campaign');?></div>
                     <?php
                         $campaigns = ADCampaign::model()->findAll(array('select'=>"id, name", "condition"=>"company_id=:company_id", "params"=>array(':company_id' => Yii::app()->session['user']->company_id)));
                         $campaignList = array();
                         foreach($campaigns as $campaign) $campaignList[$campaign->id] = $campaign->name;
-                        echo CHtml::dropDownList('campaign', '', $campaignList, array('empty'=>"Choose...", "style"=>"height: 27px; margin-bottom: 10px;"));
+                        echo CHtml::dropDownList('campaign', '', $campaignList, array('empty'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'dropdown_choose'), "style"=>"height: 27px; margin-bottom: 10px;"));
                     ?>
-                    <div style="color: #333; font-size: 15px; padding: 0;">You'll start creating your new ad group on the next page.</div>
+                    <div style="color: #333; font-size: 15px; padding: 0;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'you_will_create_ad_group_on_next_page');?></div>
                 </div>
             </div>
             <div style="display: block;">

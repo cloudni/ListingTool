@@ -446,13 +446,13 @@ require_once 'reference.php';
             <div style="clear: both; width: 100%;">
                 <div style="padding: 12px; float: left; width: 60%;">
                     <div style="width: 80%;clear: both;" onmouseover=" $(this).css('background-color', '#efefef');" onmouseout="$(this).css('background-color', '#fff');">
-                        <h1>AD Name</h1>
+                        <h1><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'name');?></h1>
                         <div style="padding-top: 5px;"><input id="adName_value" name="advertise[name]" type="text" value="" size="40" style="height: 22px; padding-left: 5px;" maxlength="25" /></div>
                     </div>
                     <div style="height: 12px; clear: both;">&nbsp;</div>
                     <hr />
                     <div style="width: 80%;clear: both; width: 595px;" onmouseover=" $(this).css('background-color', '#efefef');" onmouseout="$(this).css('background-color', '#fff');">
-                        <h1>Feed</h1>
+                        <h1><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_feed');?></h1>
                         <div style="padding-top: 7px; clear: both; width: 100%;">
                             <?php echo CHtml::textField('search_string', NULL, array('size'=>24, 'style'=>'height: 17px;'));?>
                             <?php echo CHtml::dropDownList('store', NULL, Store::getStoreOptions(Store::PLATFORM_EBAY), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_stores')), 'style'=>'width: 120px;'));?>
@@ -463,14 +463,12 @@ require_once 'reference.php';
                             <table id="searched_listing_table" border="0" cellspacing="0" cellpadding="0" width="100%"></table>
                         </div>
                         <div id="applied_listing_result" style="padding-top: 12px; clear: both; width: 100%; display: none;"></div>
-                        <div id="applied_listing_result_empty" style="padding-top: 7px; clear: both; width: 100%;">
-                            No eBay listings applied.
-                        </div>
+                        <div id="applied_listing_result_empty" style="padding-top: 7px; clear: both; width: 100%;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_no_listing_selected');?></div>
                     </div>
                     <div style="height: 12px; clear: both; ">&nbsp;</div>
                     <hr />
                     <div style="width: 80%;clear: both;" onmouseover=" $(this).css('background-color', '#efefef');" onmouseout="$(this).css('background-color', '#fff');">
-                        <h1>Logo</h1>
+                        <h1><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_logo');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></h1>
                         <div style="padding-top: 7px; clear: both;">
                             <table cellspacing="0" cellpadding="0" border="0">
                                 <tr>
@@ -491,37 +489,37 @@ require_once 'reference.php';
                     </div>
                     <hr />
                     <div style="width: 80%;clear: both;" onmouseover=" $(this).css('background-color', '#efefef');" onmouseout="$(this).css('background-color', '#fff');">
-                        <h1>Headline (optional)</h1>
+                        <h1><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_headline');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></h1>
                         <div style="padding-top: 5px;"><input id="headline_value" name="headline_value" type="text" value="Headline text" size="40" style="height: 22px; padding-left: 5px;" maxlength="25" /></div>
                         <div style="display: block; padding-top: 5px;">
                             <img id="headlineOptions_img" src="/themes/facebook/images/rightArrow.png" />
-                            <span id="headlineOptions" onclick="updateMoreOptionsUI('headlineOptions')" style="position: relative; top: -6px; cursor: pointer;">More Options</span>
+                            <span id="headlineOptions" onclick="updateMoreOptionsUI('headlineOptions')" style="position: relative; top: -6px; cursor: pointer;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'more_options');?></span>
                         </div>
                         <div id="headlineOptions_panel" style="display: none; padding-top: 5px; padding-left: 7px;">
                             <div class="detailOption" style="padding-top: 0px;">
-                                <div style="float: left">Headline color (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_headline');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'font_color');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <span id="headlineColor" class="textColor">A</span>
                                     <input id="headlineColor_value" name="headlineColor_value" type="hidden" value="#000" />
                                 </div>
                             </div>
                             <div class="detailOption">
-                                <div style="float: left">Headline background color (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_headline');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'background_color');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <div id="headlineBackgroundColor" class="colorPicker" style="background-color: white;">&nbsp;</div>
                                     <input id="headlineBackgroundColor_value" name="headlineBackgroundColor_value" type="hidden" value="#fff" />
                                 </div>
                             </div>
                             <div class="detailOption">
-                                <div style="float: left">Headline text size (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_headline');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'text_size');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;"><input id="headlineTextSize_value" name="headlineTextSize_value" value="18" type="text" size="15" maxlength="5" style="padding-left: 5px;" /></div>
                             </div>
                             <div class="detailOption">
-                                <div style="float: left">Headline shadow (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_headline');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'shadow');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <select id="headlineShadow_value" name="headlineShadow_value">
-                                        <option value="true">Include shadow</option>
-                                        <option value="false" selected>No shadow</option>
+                                        <option value="true"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'include_shadow');?></option>
+                                        <option value="false" selected><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'no_shadow');?></option>
                                     </select>
                                 </div>
                             </div>
@@ -530,22 +528,22 @@ require_once 'reference.php';
                     <div style="height: 12px; clear: both;">&nbsp;</div>
                     <hr />
                     <div style="width: 80%;clear: both;" onmouseover=" $(this).css('background-color', '#efefef');" onmouseout="$(this).css('background-color', '#fff');">
-                        <h1>Price prefix (optional)</h1>
+                        <h1><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_price_prefix');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></h1>
                         <div style="padding-top: 5px;"><input id="pricePrefix_value" name="pricePrefix_value" type="text" value="as low as" size="40" style="height: 22px; padding-left: 5px;" maxlength="25" /></div>
                         <div style="display: block; padding-top: 5px;">
                             <img id="pricePrefixOptions_img" src="/themes/facebook/images/rightArrow.png" />
-                            <span id="pricePrefixOptions" onclick="updateMoreOptionsUI('pricePrefixOptions')" style="position: relative; top: -6px; cursor: pointer;">More Options</span>
+                            <span id="pricePrefixOptions" onclick="updateMoreOptionsUI('pricePrefixOptions')" style="position: relative; top: -6px; cursor: pointer;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'more_options');?></span>
                         </div>
                         <div id="pricePrefixOptions_panel" style="display: none; padding-top: 5px; padding-left: 7px;">
                             <div class="detailOption" style="padding-top: 0px;">
-                                <div style="float: left">Price prefix color (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_price_prefix');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'font_color');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <span id="pricePrefixColor" class="textColor" style="color: #0073ED; border-bottom-color: #0073ED;">A</span>
                                     <input id="pricePrefixColor_value" name="pricePrefixColor_value" type="hidden" value="#0073ED" />
                                 </div>
                             </div>
                             <div class="detailOption">
-                                <div style="float: left">Price prefix text size (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_price_prefix');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'text_size');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;"><input id="pricePrefixTextSize_value" name="pricePrefixTextSize_value" value="11" type="text" size="15" maxlength="5" style="padding-left: 5px;" /></div>
                             </div>
                         </div>
@@ -553,22 +551,22 @@ require_once 'reference.php';
                     <div style="height: 12px; clear: both; display: none;">&nbsp;</div>
                     <hr style="display: none;" />
                     <div style="width: 80%;clear: both; display: none;" onmouseover=" $(this).css('background-color', '#efefef');" onmouseout="$(this).css('background-color', '#fff');">
-                        <h1>Price suffix (optional)</h1>
+                        <h1><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_price_suffix');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></h1>
                         <div style="padding-top: 5px;"><input id="priceSuffix_value" name="priceSuffix_value" type="text" value="" size="40" style="height: 22px; padding-left: 5px;" maxlength="25" /></div>
                         <div style="display: block; padding-top: 5px;">
                             <img id="priceSuffixOptions_img" src="/themes/facebook/images/rightArrow.png" />
-                            <span id="priceSuffixOptions" onclick="updateMoreOptionsUI('priceSuffixOptions')" style="position: relative; top: -6px; cursor: pointer;">More Options</span>
+                            <span id="priceSuffixOptions" onclick="updateMoreOptionsUI('priceSuffixOptions')" style="position: relative; top: -6px; cursor: pointer;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'more_options');?></span>
                         </div>
                         <div id="priceSuffixOptions_panel" style="display: none; padding-top: 5px; padding-left: 7px;">
                             <div class="detailOption" style="padding-top: 0px;">
-                                <div style="float: left">Price suffix color (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_price_suffix');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'font_color');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <span id="priceSuffixColor" class="textColor" style="color: #B00000; border-bottom-color: #B00000;">A</span>
                                     <input id="priceSuffixColor_value" name="priceSuffixColor_value" type="hidden" value="#B00000" />
                                 </div>
                             </div>
                             <div class="detailOption">
-                                <div style="float: left">Price suffix text size (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_price_suffix');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'text_size');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;"><input id="priceSuffixTextSize_value" name="priceSuffixTextSize_value" value="18" type="text" size="15" maxlength="5" /></div>
                             </div>
                         </div>
@@ -576,36 +574,36 @@ require_once 'reference.php';
                     <div style="height: 12px; clear: both;">&nbsp;</div>
                     <hr />
                     <div style="width: 80%;clear: both;" onmouseover=" $(this).css('background-color', '#efefef');" onmouseout="$(this).css('background-color', '#fff');">
-                        <h1>Button (optional)</h1>
+                        <h1><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_button');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></h1>
                         <div style="padding-top: 5px;"><input id="button_value" name="button_value" type="text" value="Shop now!" size="40" style="height: 22px; padding-left: 5px;" maxlength="25" /></div>
                         <div style="display: block; padding-top: 5px;">
                             <img id="buttonOptions_img" src="/themes/facebook/images/rightArrow.png" />
-                            <span id="buttonOptions" onclick="updateMoreOptionsUI('buttonOptions')" style="position: relative; top: -6px; cursor: pointer;">More Options</span>
+                            <span id="buttonOptions" onclick="updateMoreOptionsUI('buttonOptions')" style="position: relative; top: -6px; cursor: pointer;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'more_options');?></span>
                         </div>
                         <div id="buttonOptions_panel"  style="display: none; padding-top: 5px; padding-left: 7px;">
                             <div class="detailOption" style="padding-top: 0px;">
-                                <div style="float: left">Button text color (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_button');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'font_color');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <span id="buttonTextColor" class="textColor" style="color: #000; border-bottom-color: #FFFFFF;">A</span>
                                     <input id="buttonTextColor_value" name="buttonTextColor_value" type="hidden" value="#FFFFFF" />
                                 </div>
                             </div>
                             <div class="detailOption">
-                                <div style="float: left">Button color (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_button');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'color');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <div id="buttonColor" class="colorPicker" style="background-color: #0073ED;">&nbsp;</div>
                                     <input id="buttonColor_value" name="buttonColor_value" type="hidden" value="#0073ED" />
                                 </div>
                             </div>
                             <div class="detailOption" style="display: none;">
-                                <div style="float: left">Rollover color (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_button');?>&nbsp;Rollover color&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <div id="rolloverColor" class="colorPicker" style="background-color: #004479;">&nbsp;</div>
                                     <input id="rolloverColor_value" name="rolloverColor_value" type="hidden" value="#004479" />
                                 </div>
                             </div>
                             <div class="detailOption" style="display: none;">
-                                <div style="float: left">Button corners (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_button');?>&nbsp;corners&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <select id="buttonCorner_value" name="buttonCorner_value">
                                         <option value="round">Round corner</option>
@@ -614,7 +612,7 @@ require_once 'reference.php';
                                 </div>
                             </div>
                             <div class="detailOption" style="display: none;">
-                                <div style="float: left">Button bevel (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_button');?>&nbsp;bevel&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <select id="buttonBevel_value" name="buttonBevel_value">
                                         <option value="true" >Include bevel</option>
@@ -623,11 +621,11 @@ require_once 'reference.php';
                                 </div>
                             </div>
                             <div class="detailOption">
-                                <div style="float: left">Button shadow (optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_button');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'shadow');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <select id="buttonShadow_value" name="buttonShadow_value">
-                                        <option value="true">Include shadow</option>
-                                        <option value="false" selected>No shadow</option>
+                                        <option value="true"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'include_shadow');?></option>
+                                        <option value="false" selected><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'no_shadow');?></option>
                                     </select>
                                 </div>
                             </div>
@@ -636,21 +634,21 @@ require_once 'reference.php';
                     <div style="height: 12px; clear: both;">&nbsp;</div>
                     <hr />
                     <div style="width: 80%;clear: both;" onmouseover=" $(this).css('background-color', '#efefef');" onmouseout="$(this).css('background-color', '#fff');">
-                        <h1>Display URL</h1>
+                        <h1><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_display_url');?></h1>
                         <div style="padding-top: 5px;"><input id="displayURL_value" name="displayURL_value" type="text" value="" size="60" style="height: 22px; padding-left: 5px;" maxlength="500" /></div>
-                        <h1 style="padding-top: 5px;">Landing Page (optional)</h1>
+                        <h1 style="padding-top: 5px;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_landing_page');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></h1>
                         <div style="padding-top: 5px;"><input id="landingPage_value" name="landingPage_value" type="text" value="" size="60" style="height: 22px; padding-left: 5px;" maxlength="500" /></div>
                         <div style="display: block; padding-top: 5px;">
                             <img id="landingPageOptions_img" src="/themes/facebook/images/rightArrow.png" />
-                            <span id="landingPageOptions" onclick="updateMoreOptionsUI('landingPageOptions')" style="position: relative; top: -6px; cursor: pointer;">More Options</span>
+                            <span id="landingPageOptions" onclick="updateMoreOptionsUI('landingPageOptions')" style="position: relative; top: -6px; cursor: pointer;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'more_options');?></span>
                         </div>
                         <div id="landingPageOptions_panel" style="display: none; padding-top: 5px; padding-left: 7px;">
                             <div class="detailOption">
-                                <div style="float: left">Click behavior(optional)</div>
+                                <div style="float: left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_click_behavior');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'optional');?></div>
                                 <div style="float: right;">
                                     <select id="clickBehavior_value" name="clickBehavior_value">
-                                        <option value="product_url">Navigate to a product URL</option>
-                                        <option value="ad_url">Navigate to an AD URL</option>
+                                        <option value="product_url"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_nav_to_prod_url');?></option>
+                                        <option value="ad_url"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_nav_to_ad_url');?></option>
                                     </select>
                                 </div>
                             </div>
@@ -857,7 +855,7 @@ require_once 'reference.php';
         var file = $("#logo_upload_file").val();
         var suffix = file.split('.');
         if(suffix.length<=1 || $.inArray(suffix[suffix.length-1].toLowerCase(), ['jpg', 'jpeg', 'png', 'gif'])) {
-            alert('Please select an image file(JPEG, PNG, GIF) to upload');
+            alert('<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'select_image_file_to_upload');?>');
             return;
         }
 
@@ -879,11 +877,11 @@ require_once 'reference.php';
                 }
                 else
                 {
-                    alert('Upload failed, please try again.');
+                    alert('<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'upload_failed_try_again');?>');
                 }
             },
             error:function(data, status, e){
-                alert('Upload failed, please try again.');
+                alert('<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'upload_failed_try_again');?>');
             }
         });
     }
@@ -1081,7 +1079,7 @@ require_once 'reference.php';
                                 "<td>"+(data['data'][i]['storename'])+"</td>" +
                                 "<td><a href='"+(data['data'][i]['viewurl'])+"' target='_blank'>"+(data['data'][i]['ebay_listing_id'])+"</a></td>" +
                                 "<td><span title='"+(temp)+"'>"+((temp.length > 10 ? temp.substring(0,10) : temp)+'...')+"</span></td>" +
-                                "<td><input type='button' value='Add' onclick='addSearchedListingToTrack("+data['data'][i]['ebay_listing_id']+");' /><input id='searched_listing_"+data['data'][i]['ebay_listing_id']+"' type='hidden' value='"+$.toJSON(data['data'][i])+"'></td>"+
+                                "<td><input type='button' value='<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'add');?>' onclick='addSearchedListingToTrack("+data['data'][i]['ebay_listing_id']+");' /><input id='searched_listing_"+data['data'][i]['ebay_listing_id']+"' type='hidden' value='"+$.toJSON(data['data'][i])+"'></td>"+
                                 "</tr>"
                             );
                         }
@@ -1202,12 +1200,12 @@ require_once 'reference.php';
                 }
                 else
                 {
-                    alert("Get Listing Data Failed!\n"+data['msg']+"\nPlease try again.");
+                    alert("<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_get_product_failed');?>");
                 }
             },
             error: function (data, status, xhr) {
                 $("#ajaxloading").css("display", "none");
-                alert("Get Listing Data Failed!\n"+data['msg']+"\nPlease try again.");
+                alert("<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_get_product_failed');?>");
             }
         });
     }
@@ -1396,11 +1394,11 @@ require_once 'reference.php';
     {
         var error = "";
         if($("#adName_value").val() == "")
-            error += "Please input AD's name!\n";
+            error += "<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_input_name_warning');?>\n";
         if($("#applied_listing_result input").length<=0)
-            error += "Please search and select any product to advertise!\n";
+            error += "<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_applied_listing_warning');?>\n";
         if($("#displayURL_value").val() == "")
-            error += "Please input display URL!\n";
+            error += "<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_display_url_warning');?>\n";
 
         if(error.length>0)
         {

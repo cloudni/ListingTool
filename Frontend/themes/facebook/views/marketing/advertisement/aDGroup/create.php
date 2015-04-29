@@ -11,11 +11,11 @@
 /* @var $lead bool*/
 
 $this->breadcrumbs=array(
-    'Marketing'=>array("/marketing/home"),
-    'Advertisement'=>array("/marketing/advertisement/home"),
-    'AD Campaign'=>array('/marketing/advertisement/ADCampaign/index'),
-    'AD Group'=>array('index'),
-    'Create'
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_marketing')=>array("/marketing/home"),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'display_advertisement')=>array("/marketing/advertisement/home"),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign')=>array('/marketing/advertisement/ADCampaign/index'),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_group')=>array('index'),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'create')
 );
 ?>
 
@@ -92,21 +92,21 @@ $this->breadcrumbs=array(
                                     <div class="aw3ProgressBarV2StepCell">
                                         <div class="DTMORHD-pb-h">
                                             <div class="DTMORHD-pb-f">1</div>
-                                            <div class="aw3ProgressBarV2StepText">Select campaign settings</div>
+                                            <div class="aw3ProgressBarV2StepText"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'select_ad_campaign_setting');?></div>
                                         </div>
                                         <div class="DTMORHD-pb-g"></div>
                                     </div>
                                     <div class="aw3ProgressBarV2StepCell">
                                         <div class="DTMORHD-pb-h">
                                             <div class="DTMORHD-pb-f aw3ProgressBarV2StepSelected">2</div>
-                                            <div class="aw3ProgressBarV2StepText">Create an ad group</div>
+                                            <div class="aw3ProgressBarV2StepText"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'create_an_ad_group');?></div>
                                         </div>
                                         <div class="DTMORHD-pb-g"></div>
                                     </div>
                                     <div class="aw3ProgressBarV2StepCell DTMORHD-pb-e">
                                         <div class="DTMORHD-pb-h">
                                             <div class="DTMORHD-pb-f">3</div>
-                                            <div class="aw3ProgressBarV2StepText">Create ads</div>
+                                            <div class="aw3ProgressBarV2StepText"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'create_ads');?></div>
                                         </div>
                                         <div class="DTMORHD-pb-g"></div>
                                     </div>
@@ -116,14 +116,14 @@ $this->breadcrumbs=array(
                                     <div class="aw3ProgressBarV2StepCell">
                                         <div class="DTMORHD-pb-h">
                                             <div class="DTMORHD-pb-f aw3ProgressBarV2StepSelected">1</div>
-                                            <div class="aw3ProgressBarV2StepText">Create an ad group</div>
+                                            <div class="aw3ProgressBarV2StepText"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'create_an_ad_group');?></div>
                                         </div>
                                         <div class="DTMORHD-pb-g"></div>
                                     </div>
                                     <div class="aw3ProgressBarV2StepCell DTMORHD-pb-e">
                                         <div class="DTMORHD-pb-h">
                                             <div class="DTMORHD-pb-f">2</div>
-                                            <div class="aw3ProgressBarV2StepText">Create ads</div>
+                                            <div class="aw3ProgressBarV2StepText"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'create_ads');?></div>
                                         </div>
                                         <div class="DTMORHD-pb-g"></div>
                                     </div>

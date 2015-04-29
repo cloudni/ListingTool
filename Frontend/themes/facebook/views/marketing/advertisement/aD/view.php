@@ -12,19 +12,19 @@
 /* @var $adVariationPerformance array */
 
 $this->breadcrumbs=array(
-    'Marketing'=>array("/marketing/home"),
-    'Advertisement'=>array("/marketing/advertisement/home"),
-    'AD Campaign'=>array('/marketing/advertisement/adcampaign'),
-    'AD Group'=>array('/marketing/advertisement/adgroup'),
-    'AD' => array('index'),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_marketing')=>array("/marketing/home"),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'display_advertisement')=>array("/marketing/advertisement/home"),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign')=>array('/marketing/advertisement/ADCampaign/index'),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_group')=>array('/marketing/advertisement/adgroup'),
+    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement')=> array('index'),
     $model->name,
 );
 
 $this->menu=array(
-    array('label'=>'AD Index', 'url'=>array('index')),
-    array('label'=>'AD Create', 'url'=>array('create')),
-    array('label'=>'AD Update', 'url'=>array('update', 'id'=>$model->id)),
-    array('label'=>'AD Delete', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>Yii::t('models/ADAdvertisement','Are you sure you want to delete this Advertisement?'))),
+    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_index'), 'url'=>array('index')),
+    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_create'), 'url'=>array('create')),
+    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_update'), 'url'=>array('update', 'id'=>$model->id)),
+    //array('label'=>'AD Delete', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>Yii::t('models/ADAdvertisement','Are you sure you want to delete this Advertisement?'))),
 );
 ?>
 
@@ -78,17 +78,17 @@ $this->menu=array(
             <div>
                 <div style="background: #fff; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                     <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">AD Group <?php echo $model->name;?> Performance</h1>
+                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo sprintf(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_recently_performance'), $model->name);?></h1>
                     </div>
                 </div>
                 <div>
                     <div style="height: 36px; color: #000; font-weight: normal;">
                         <div class="clearfix">
-                            <div class="sumDiv">Clicks</div>
-                            <div class="sumDiv sumDivBorderLeft">Impr.</div>
-                            <div class="sumDiv sumDivBorderLeft">CTR</div>
-                            <div class="sumDiv sumDivBorderLeft">Avg. CPC</div>
-                            <div class="sumDiv sumDivBorderLeft">Cost</div>
+                            <div class="sumDiv"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></div>
+                            <div class="sumDiv sumDivBorderLeft"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></div>
+                            <div class="sumDiv sumDivBorderLeft"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?></div>
+                            <div class="sumDiv sumDivBorderLeft"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?></div>
+                            <div class="sumDiv sumDivBorderLeft"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></div>
                         </div>
                         <div class="clearfix">
                             <div class="sumDiv sumDivFontBold"><?php echo $performance['clicks'];?></div>
@@ -111,13 +111,13 @@ $this->menu=array(
                         <?php $variations = ADAdvertiseVariation::model()->findAll("ad_advertise_id=:ad_id and company_id=:company_id" ,array(':ad_id'=>$model->id, ':company_id' => Yii::app()->session['user']->company_id));
                         $variationList = array();
                         foreach($variations as $variation) $variationList[] = array('id'=>$variation->id, 'name'=>$variation->width.' x '.$variation->height.' ('.ADAdvertiseVariation::getCodeText($variation['code']).')');
-                        echo CHtml::dropDownList('advariationId', '', CHtml::listData($variationList, 'id', 'name'), array('empty'=>'All Advertisements', 'style'=>''));?>
+                        echo CHtml::dropDownList('advariationId', '', CHtml::listData($variationList, 'id', 'name'), array('empty'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_all'), 'style'=>''));?>
                         <select id="dataPoint" name="dataPoint" style="width: 100px;">
-                            <option value="clicks">Clicks</option>
-                            <option value="impr">Impression</option>
-                            <option value="ctr">CTR</option>
-                            <option value="cpc">Avg. CPC</option>
-                            <option value="cost">Cost</option>
+                            <option value="clicks"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></option>
+                            <option value="impr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></option>
+                            <option value="ctr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?></option>
+                            <option value="cpc"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?></option>
+                            <option value="cost"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></option>
                         </select>
                         <?php echo CHtml::dropDownList("groupBy", '', ADCampaign::getGroupByOptions(), array());?>
                     </div>
@@ -135,15 +135,21 @@ $this->menu=array(
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">AD Group: <?php echo $model->name; ?></h1>
+                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement');?>: <?php echo $model->name; ?></h1>
                 </div>
             </div>
             <div style="display: block;">
                 <?php $this->widget('zii.widgets.CDetailView', array(
                     'data'=>$model,
                     'attributes'=>array(
-                        'name',
-                        'note',
+                        array(
+                            'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'name'),
+                            'value'=>$model->name,
+                        ),
+                        array(
+                            'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'note'),
+                            'value'=>$model->note,
+                        ),
                     ),
                 )); ?>
             </div>
@@ -156,16 +162,16 @@ $this->menu=array(
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 26px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ Advertisement" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id)); ?>'; " />
-                    <input id="menu_edit_action_button" type="button" value="Edit ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
+                    <input type="button" class="boldFont greenButton redButton" value="+ <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement');?>" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id)); ?>'; " />
+                    <input id="menu_edit_action_button" type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'edit');?> ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
                     <?php if(!empty($adVariationPerformance)):?>
                     <ul id="menu_edit_action" class="ui-menu" >
-                        <li onclick="if(confirm('Are you sure to Enable selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Enabled;?>);">Enable</li>
-                        <li onclick="if(confirm('Are you sure to Pause selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Paused;?>);">Pause</li>
-                        <li onclick="if(confirm('Are you sure to Remove selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Removed;?>);">Remove</li>
+                        <li onclick="if(confirm('Are you sure to Enable selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Enabled;?>);"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'enable');?></li>
+                        <li onclick="if(confirm('Are you sure to Pause selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Paused;?>);"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'pause');?></li>
+                        <li onclick="if(confirm('Are you sure to Remove selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Removed;?>);"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'remove');?></li>
                         <li class="ui-state-disabled"><hr /></li>
                         <li value="All_but_removed_Campaigns" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/update", array('id'=>$model->id)); ?>'; " >Update Advertisement</li>
-                        <li value="All_but_removed_Campaigns">Download Report</li>
+                        <li value="All_but_removed_Campaigns"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'download_report');?></li>
                     </ul>
                     <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
                     <ul id="menu_segment_action" class="ui-menu" >
@@ -199,7 +205,7 @@ $this->menu=array(
             <div>
                 <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; clear: both; width: 100%;">
                     <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
-                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;">Advertisement Variation(s)</h1>
+                        <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_variation');?></h1>
                     </div>
                 </div>
                 <div style="display: block;">
@@ -207,13 +213,12 @@ $this->menu=array(
                         <thead>
                         <th align="left"><input id="adVariationAll" type="checkbox" /></th>
                         <th align="left"><img src="/themes/facebook/images/disabled.png" border="0" /></th>
-                        <th align="left">AD Variation</th>
-                        <th align="right">Clicks</th>
-                        <th align="right">Impr.</th>
-                        <th align="right">CTR</th>
-                        <th align="right">Avg. CPC</th>
-                        <th align="right">Cost</th>
-                        <th align="right">Avg. POS</th>
+                        <th align="left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_variation');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?></th>
+                        <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></th>
                         </thead>
                         <tbody>
                         <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($adVariationPerformance as $ad):?>
@@ -226,19 +231,17 @@ $this->menu=array(
                                 <td align="right"><?php echo isset($ad['impr']) && $ad['impr'] ? sprintf("%1\$.2f%%", $ad['clicks'] / $ad['impr'] * 100) : "0";?></td>
                                 <td align="right"><?php echo isset($ad['clicks']) && $ad['clicks'] ? sprintf("$%1\$.2f", $ad['cost'] / $ad['clicks']) : "0";?></td>
                                 <td align="right"><?php echo isset($ad['cost']) && $ad['cost'] ? sprintf("$%1\$.2f", $ad['cost']) : "0";?></td>
-                                <td align="right">&nbsp;</td>
                             </tr>
                             <?php $clickTotal += $ad['clicks']; $imprTotal += $ad['impr']; $costTotal += $ad['cost']; endforeach; ?>
                         <tr>
                             <td align="left">&nbsp;</th>
-                            <td align="left" class="boldFont">Total</th>
+                            <td align="left" class="boldFont"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'total');?></th>
                             <td align="right" class="boldFont">&nbsp;</td>
                             <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
                             <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
                             <td align="right" class="boldFont"><?php echo $imprTotal > 0 ? sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100) : "0";?></td>
                             <td align="right" class="boldFont"><?php echo $clickTotal > 0 ? sprintf("$%1\$.2f", $costTotal / $clickTotal) : "0";?></td>
                             <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
-                            <td align="right" class="boldFont">&nbsp;</td>
                         </tr>
                         </tbody>
                     </table>

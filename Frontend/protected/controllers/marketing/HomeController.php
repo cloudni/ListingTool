@@ -4,7 +4,8 @@ class HomeController extends Controller
 {
 	public function actionIndex()
 	{
-		$this->render('index');
+        $this->redirect($this->createAbsoluteUrl("marketing/advertisement/home"));
+		//$this->render('index');
 	}
 
 	/**

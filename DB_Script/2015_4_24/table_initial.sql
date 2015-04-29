@@ -22,4 +22,6 @@ ALTER TABLE lt_company update COLUMN freeze_amount DECIMAL(20,4) default '0' COM
 ALTER TABLE lt_company update COLUMN markup_type tinyint(4) default '1'  COMMENT '标记类型:1 按cost的百分比;2 按固定收费;3 按clicks';
 ALTER TABLE lt_company update COLUMN markup_amount DECIMAL(20,4) default '0.3' COMMENT '标记金额';
 ALTER TABLE lt_company update COLUMN authorize_day tinyint(4) default '1' COMMENT '冻结天数';
+
+alter TABLE lt_google_adwords_ad ADD COLUMN ad_id INT DEFAULT null;
 /*end 2015-04-29*/

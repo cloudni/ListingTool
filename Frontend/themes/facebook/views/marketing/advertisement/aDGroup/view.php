@@ -108,6 +108,7 @@ $this->menu=array(
                 <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; padding: 12px 12px 0px 12px;">
                     <div style="height: 36px; color: #9197a3; font-weight: normal;">
                         <?php echo CHtml::dropDownList('advertisementId', '', CHtml::listData(ADAdvertise::model()->findAll("ad_group_id=:group_id and company_id=:company_id" ,array(':group_id'=>$model->id, ':company_id' => Yii::app()->session['user']->company_id)), 'id', 'name'), array('empty'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_all'), 'style'=>''));?>
+                        <div style="display: inline-block; width: 10px; height: 10px; background-color: #058dc7; position: relative; left: 100px; z-index: 1;"></div>
                         <select id="dataPoint1" name="dataPoint1" style="width: 120px;">
                             <option value="clicks"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></option>
                             <option value="impr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></option>

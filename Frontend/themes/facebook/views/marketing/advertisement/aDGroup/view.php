@@ -108,13 +108,24 @@ $this->menu=array(
                 <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; padding: 12px 12px 0px 12px;">
                     <div style="height: 36px; color: #9197a3; font-weight: normal;">
                         <?php echo CHtml::dropDownList('advertisementId', '', CHtml::listData(ADAdvertise::model()->findAll("ad_group_id=:group_id and company_id=:company_id" ,array(':group_id'=>$model->id, ':company_id' => Yii::app()->session['user']->company_id)), 'id', 'name'), array('empty'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_all'), 'style'=>''));?>
-                        <select id="dataPoint" name="dataPoint" style="width: 100px;">
+                        <div style="display: inline-block; width: 10px; height: 10px; background-color: #058dc7; position: relative; left: 100px; z-index: 1;"></div>
+                        <select id="dataPoint1" name="dataPoint1" style="width: 120px;">
                             <option value="clicks"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></option>
                             <option value="impr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></option>
                             <option value="ctr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?></option>
                             <option value="cpc"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?></option>
                             <option value="cost"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></option>
                         </select>
+                        <span>VS.</span>
+                        <select id="dataPoint2" name="dataPoint2" style="width: 120px;">
+                            <option value="none"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'none');?></option>
+                            <option value="clicks"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></option>
+                            <option value="impr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></option>
+                            <option value="ctr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?></option>
+                            <option value="cpc"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?></option>
+                            <option value="cost"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></option>
+                        </select>
+                        <div style="display: inline-block; width: 10px; height: 10px; background-color: #ed7e17; position: relative; left: -37px; z-index: 1;"></div>
                         <?php echo CHtml::dropDownList("groupBy", '', ADCampaign::getGroupByOptions(), array());?>
                     </div>
                 </div>
@@ -276,7 +287,8 @@ $this->menu=array(
         $( "ul[id^='menu_']" ).menu();
         $( "ul[id^='menu_']" ).hide();
 
-        $("#dataPoint").change(updatePerformanceChart);
+        $("#dataPoint1").change(updatePerformanceChart);
+        $("#dataPoint2").change(updatePerformanceChart);
         $("#groupBy").change(updatePerformanceChart);
         $("#advertisementId").change(updatePerformanceChart);
 
@@ -296,8 +308,9 @@ $this->menu=array(
         event.stopPropagation();
     }
 
-    function updatePerformanceChart() {
-        var advertisementId = $("#advertisementId").val();
+    function updatePerformanceChart()
+    {
+        var adCampaignId = $("#adCampaignId").val();
         var dataPoint = $("#dataPoint").val();
         var groupBy = $("#groupBy").val();
 
@@ -307,94 +320,222 @@ $this->menu=array(
             data: {
                 groupBy: groupBy,
                 dataPoint: dataPoint,
-                advertisementId: advertisementId
+                adcampaignid: adCampaignId
             },
             dataType: "JSON",
             success: function (data, status, xhr) {
                 var chartCategories = [];
-                var series = [];
-                var dataName = $("#dataPoint").val();
-                var prefix = '';
-                var suffix = '';
+                var series = new Array;
+                var dataPoint1Format = '';
+                var dataPoint1Text = '';
+                var dataPoint2Format = '';
+                var dataPoint2Text = '';
+                var dataPoint1Prefix = '';
+                var dataPoint1Suffix = '';
+                var dataPoint2Prefix = '';
+                var dataPoint2Suffix = '';
+                var dataPoint1Color = '#058dc7';
+                var dataPoint2Color = '#ed7e17';
 
-                switch(dataName)
-                {
-                    case 'clicks':
-                        break;
-                    case 'impr':
-                        break;
-                    case 'ctr':
-                        suffix = '%';
-                        break;
-                    case 'cpc':
-                        prefix = '$';
-                        break;
-                    case 'cost':
-                        prefix = '$';
-                        break;
-                }
-
+                series['clicks'] = new Array;
+                series['impr'] = new Array;
+                series['ctr'] = new Array;
+                series['cpc'] = new Array;
+                series['cost'] = new Array;
                 for(var key in data)
                 {
                     chartCategories.push(key);
-
-                    switch(dataName)
-                    {
-                        case 'clicks':
-                            series.push(parseInt(data[key][dataName]));
-                            break;
-                        case 'impr':
-                            series.push(parseInt(data[key][dataName]));
-                            break;
-                        case 'ctr':
-                            suffix = '%';
-                            series.push(parseFloat(data[key][dataName]));
-                            break;
-                        case 'cpc':
-                            prefix = '$';
-                            series.push(parseFloat(data[key][dataName]));
-                            break;
-                        case 'cost':
-                            prefix = '$';
-                            series.push(parseFloat(data[key][dataName]));
-                            break;
-                    }
+                    series['clicks'].push(parseInt(data[key]['clicks']));
+                    series['impr'].push(parseInt(data[key]['impr']));
+                    series['ctr'].push(parseFloat(data[key]['ctr']));
+                    series['cpc'].push(parseFloat(data[key]['cpc']));
+                    series['cost'].push(parseFloat(data[key]['cost']));
                 }
 
-                $('#chartContainer').highcharts({
-                    title: {
-                        text: 'Advertisement Overall Performance for ' + dataName,
-                        x: -20 //center
-                    },
-                    subtitle: {
-                        text: '',
-                        x: -20
-                    },
-                    xAxis: {
-                        categories: chartCategories
-                    },
-                    yAxis: {
+                switch($("#dataPoint1").val())
+                {
+                    case 'clicks':
+                        dataPoint1Format = '{value}';
+                        dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?>';
+                        dataPoint1Prefix = '';
+                        dataPoint1Suffix = '';
+                        break;
+                    case 'impr':
+                        dataPoint1Format = '{value}';
+                        dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?>';
+                        dataPoint1Prefix = '';
+                        dataPoint1Suffix = '';
+                        break;
+                    case 'ctr':
+                        dataPoint1Format = '{value}%';
+                        dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?>';
+                        dataPoint1Prefix = '';
+                        dataPoint1Suffix = '%';
+                        break;
+                    case 'cpc':
+                        dataPoint1Format = '${value}';
+                        dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?>';
+                        dataPoint1Prefix = '$';
+                        dataPoint1Suffix = '';
+                        break;
+                    case 'cost':
+                        dataPoint1Format = '${value}';
+                        dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?>';
+                        dataPoint1Prefix = '$';
+                        dataPoint1Suffix = '';
+                        break;
+                }
+
+                switch($("#dataPoint2").val())
+                {
+                    case 'clicks':
+                        dataPoint2Format = '{value}';
+                        dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?>';
+                        dataPoint2Prefix = '';
+                        dataPoint2Suffix = '';
+                        break;
+                    case 'impr':
+                        dataPoint2Format = '{value}';
+                        dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?>';
+                        dataPoint2Prefix = '';
+                        dataPoint2Suffix = '';
+                        break;
+                    case 'ctr':
+                        dataPoint2Format = '{value}%';
+                        dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?>';
+                        dataPoint2Prefix = '';
+                        dataPoint2Suffix = '%';
+                        break;
+                    case 'cpc':
+                        dataPoint2Format = '${value}';
+                        dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?>';
+                        dataPoint2Prefix = '$';
+                        dataPoint2Suffix = '';
+                        break;
+                    case 'cost':
+                        dataPoint2Format = '${value}';
+                        dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?>';
+                        dataPoint2Prefix = '$';
+                        dataPoint2Suffix = '';
+                        break;
+                }
+
+                if($("#dataPoint2").val() != 'none') {
+                    $('#chartContainer').highcharts({
                         title: {
-                            text: ''
+                            text: '',
+                            x: -20 //center
                         },
-                        plotLines: [{
-                            value: 1,
-                            width: 1,
-                            color: '#808080'
+                        subtitle: {
+                            text: '',
+                            x: -20
+                        },
+                        xAxis: {
+                            categories: chartCategories
+                        },
+                        yAxis: [{ // Primary yAxis
+                            labels: {
+                                format: dataPoint1Format,
+                                style: {
+                                    color: dataPoint1Color
+                                }
+                            },
+                            title: {
+                                text: dataPoint1Text,
+                                style: {
+                                    color: dataPoint1Color
+                                }
+                            }
+                        }, { // Secondary yAxis
+                            title: {
+                                text: dataPoint2Text,
+                                style: {
+                                    color: dataPoint2Color
+                                }
+                            },
+                            labels: {
+                                format: dataPoint2Format,
+                                style: {
+                                    color: dataPoint2Color
+                                }
+                            },
+                            opposite: true
+                        }],
+                        legend: {
+                            layout: 'vertical',
+                            align: 'left',
+                            x: 60,
+                            verticalAlign: 'top',
+                            y: 60,
+                            floating: true,
+                            backgroundColor: '#FFFFFF'
+                        },
+                        series: [{
+                            name: dataPoint1Text,
+                            color: dataPoint1Color,
+                            type: 'line',
+                            yAxis: 0,
+                            data: series[$("#dataPoint1").val()],
+                            tooltip: {
+                                valueSuffix: dataPoint1Suffix,
+                                valuePrefix: dataPoint1Prefix
+                            }
+
+                        }, {
+                            name: dataPoint2Text,
+                            color: dataPoint2Color,
+                            type: 'line',
+                            yAxis: 1,
+                            data: series[$("#dataPoint2").val()],
+                            tooltip: {
+                                valueSuffix: dataPoint2Suffix,
+                                valuePrefix: dataPoint2Prefix
+                            }
                         }]
-                    },
-                    tooltip: {
-                        valuePrefix: prefix,
-                        valueSuffix: suffix
-                    },
-                    legend: {
-                        layout: 'vertical',
-                        align: 'right',
-                        verticalAlign: 'middle',
-                        borderWidth: 0
-                    },
-                    series: [ {name: dataName, data: series} ]
-                });
+                    });
+                }
+                else {
+                    $('#chartContainer').highcharts({
+                        title: {
+                            text: '',
+                            x: -20 //center
+                        },
+                        subtitle: {
+                            text: '',
+                            x: -20
+                        },
+                        xAxis: {
+                            categories: chartCategories
+                        },
+                        yAxis: {
+                            title: {
+                                text: dataPoint1Text,
+                                style: {
+                                    color: dataPoint1Color
+                                }
+                            },
+                            plotLines: [{
+                                value: 1,
+                                width: 1,
+                                color: dataPoint1Color
+                            }]
+                        },
+                        tooltip: {
+                            valuePrefix: dataPoint1Prefix,
+                            valueSuffix: dataPoint1Suffix
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'left',
+                            x: 60,
+                            verticalAlign: 'top',
+                            y: 60,
+                            floating: true,
+                            backgroundColor: '#FFFFFF'
+                        },
+                        series: [ {name: dataPoint1Text, color: dataPoint1Color, data: series[$("#dataPoint1").val()]} ]
+                    });
+                }
             },
             error: function (data, status, xhr) {
                 alert("Faile to load performance data.\nPlease try again later.")

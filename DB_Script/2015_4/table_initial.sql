@@ -893,73 +893,6 @@ CREATE TABLE `lt_google_adwords_report_geo` (
   `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ----------------------------
--- Table structure for `lt_google_adwords_report_placement`
--- ----------------------------
-DROP TABLE IF EXISTS `lt_google_adwords_report_placement`;
-CREATE TABLE `lt_google_adwords_report_placement` (
-  `account_currency_code` varchar(255) DEFAULT NULL,
-  `account_descriptive_name` varchar(255) DEFAULT NULL,
-  `account_time_zone_id` varchar(255) DEFAULT NULL,
-  `active_view_cpm` decimal(20,4) DEFAULT NULL,
-  `active_view_impressions` int(11) DEFAULT NULL,
-  `ad_group_id` bigint(20) DEFAULT NULL,
-  `ad_group_name` varchar(255) DEFAULT NULL,
-  `ad_group_status` varchar(36) DEFAULT NULL,
-  `ad_network_type1` varchar(36) DEFAULT NULL,
-  `ad_network_type2` varchar(36) DEFAULT NULL,
-  `average_cpc` decimal(20,4) DEFAULT NULL,
-  `average_cpm` decimal(20,4) DEFAULT NULL,
-  `bid_modifier` double DEFAULT NULL,
-  `bid_type` varchar(36) DEFAULT NULL,
-  `campaign_id` bigint(20) DEFAULT NULL,
-  `campaign_name` varchar(255) DEFAULT NULL,
-  `campaign_status` varchar(36) DEFAULT NULL,
-  `click_conversion_rate` double DEFAULT NULL,
-  `click_type` varchar(36) DEFAULT NULL,
-  `clicks` bigint(20) DEFAULT NULL,
-  `conversion_category_name` varchar(255) DEFAULT NULL,
-  `conversion_rate_many_per_click` double DEFAULT NULL,
-  `conversion_tracker_id` bigint(20) DEFAULT NULL,
-  `conversion_type_name` varchar(255) DEFAULT NULL,
-  `conversion_value` double DEFAULT NULL,
-  `conversions_many_per_click` bigint(20) DEFAULT NULL,
-  `converted_clicks` bigint(20) DEFAULT NULL,
-  `cost` decimal(20,4) DEFAULT NULL,
-  `cost_per_conversion_many_per_click` decimal(20,4) DEFAULT NULL,
-  `cost_per_converted_click` decimal(20,4) DEFAULT NULL,
-  `cpc_bid` decimal(20,4) DEFAULT NULL,
-  `cpc_bid_source` text,
-  `cpm_bid` decimal(20,4) DEFAULT NULL,
-  `cpm_bid_source` text,
-  `criteria_destination_url` varchar(255) DEFAULT NULL,
-  `ctr` double DEFAULT NULL,
-  `customer_descriptive_name` varchar(255) DEFAULT NULL,
-  `date` varchar(10) DEFAULT NULL,
-  `day_of_week` varchar(10) DEFAULT NULL,
-  `device` varchar(36) DEFAULT NULL,
-  `display_name` varchar(255) DEFAULT NULL,
-  `external_customer_id` bigint(20) DEFAULT NULL,
-  `final_app_urls` text,
-  `final_mobile_urls` text,
-  `final_urls` text,
-  `impressions` bigint(20) DEFAULT NULL,
-  `is_negative` varchar(36) DEFAULT NULL,
-  `is_restrict` varchar(36) DEFAULT NULL,
-  `month` varchar(255) DEFAULT NULL,
-  `month_of_year` varchar(10) DEFAULT NULL,
-  `placement_url` varchar(255) DEFAULT NULL,
-  `primary_company_name` varchar(255) DEFAULT NULL,
-  `quarter` varchar(255) DEFAULT NULL,
-  `status` varchar(36) DEFAULT NULL,
-  `tracking_url_template` varchar(255) DEFAULT NULL,
-  `url_custom_parameters` text,
-  `value_per_conversion_many_per_click` double DEFAULT NULL,
-  `value_per_converted_click` double DEFAULT NULL,
-  `view_through_conversions` bigint(20) DEFAULT NULL,
-  `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `lt_google_adwords_userlist`
@@ -994,9 +927,9 @@ alter table lt_transaction change transaction_type `type` varchar(20);
 /*end 2015-04-16*/
 
 /*start 2015/04/19*/
-alter table lt_transaction modify column type tinyint(4) COMMENT '支付平台类型：1 paypal';
+alter table lt_transaction modify column `type` tinyint(4) COMMENT '支付平台类型：1 paypal';
 alter table lt_transaction MODIFY column `status` TINYINT(4) COMMENT '交易状态：1 创建；2 成功；3 取消；4 失败';
-alter table lt_transaction modify column payment_transaction_type TINYINT(4) COMMENT '交易类型：1 存款；2 取款；3 冻结；4 解冻；5 扣款';
+alter table lt_transaction modify column `payment_transaction_type` TINYINT(4) COMMENT '交易类型：1 存款；2 取款；3 冻结；4 解冻；5 扣款';
 alter table lt_transaction modify column `total` decimal(20,4)  not null default '0' COMMENT '交易总额';
 alter table lt_transaction modify column `fee` decimal(20,4) not null default '0' COMMENT '交易手续费';
 alter table lt_transaction MODIFY COLUMN `net` DECIMAL(20,4) not null default '0' COMMENT '实际金额';

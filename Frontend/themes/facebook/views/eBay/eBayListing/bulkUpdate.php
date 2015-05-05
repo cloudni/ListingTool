@@ -65,9 +65,14 @@ $this->breadcrumbs=array(
                 <div id="search_input_panel" style="width: 100%; padding: 5px; margin: 0px;">
                     <div class="container">
                         <?php echo CHtml::textField('search_string', NULL, array('size'=>48));?>
-                        <?php echo CHtml::dropDownList('store', NULL, Store::getStoreOptions(Store::PLATFORM_EBAY), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_stores'))));?>
-                        <?php echo CHtml::dropDownList('ebay_site', NULL, eBaySiteIdCodeType::getSiteIdCodeTypeOptions(), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_ebay_sites'))));?>
-                        <?php echo CHtml::dropDownList('ebay_category', NULL, array(), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_ebay_categories'))));?>
+                        <?php echo CHtml::dropDownList('store', NULL, Store::getStoreOptions(Store::PLATFORM_EBAY), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_stores')), 'style'=>'width: 140px;'));?>
+                        <?php echo CHtml::dropDownList('ebay_site', NULL, eBaySiteIdCodeType::getSiteIdCodeTypeOptions(), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_ebay_sites')), 'style'=>'width: 120px;'));?>
+                        <?php echo CHtml::dropDownList('ebay_category', NULL, array(), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_ebay_categories')), 'style'=>'width: 140px;'));?>
+                        <select id="ebay_listing_type" name="ebay_listing_type" style="width: 120px;">
+                            <option value="all"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_listing_type');?></option>
+                            <option value="FixedPriceItem"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_listing_type_fix_priced_item');?></option>
+                            <option value="Auction"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_listing_type_auction');?></option>
+                        </select>
                         <?php echo CHtml::button(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'search'), array('id'=>'search_button', 'name'=>'search_button'));?><br />
                         <a id="advanced_search_switch" style="display: none;">Show Advanced Search...</a>
                     </div>
@@ -153,6 +158,12 @@ $this->breadcrumbs=array(
                     <tbody>
                     </tbody>
                 </table>
+            </div>
+            <div id="applied_listing_div_result" class="clearfix" style="border-top: 1px solid transparent;">
+                <div class="clearfix">
+                    <div><h1 style="color: #4e5665; font-weight: 700; padding-left: 12px; line-height: 38px; position: relative;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_bulk_update_applied_item');?></h1></div>
+                    <div style="padding-left: 12px; word-wrap:break-word; word-break:break-all; display:block; width:870px;" id="applied_listing_div_result_list"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -349,6 +360,7 @@ $this->breadcrumbs=array(
             var searchSite = $("#ebay_site").val();
             var searchCategory = $("#ebay_category").val();
             var searchStore = $("#store").val();
+            var searchListingType = $("#ebay_listing_type").val();
 
             var searchMode = $("#advanced_search_panel").css('display') == 'none' ? 'normal' : 'advanced';
             var searchEngine = $("#search_engine").val();
@@ -363,6 +375,7 @@ $this->breadcrumbs=array(
                     searchSite: searchSite,
                     searchCategory: searchCategory,
                     searchStore: searchStore,
+                    searchListType: searchListingType,
                     searchMode: searchMode,
                     searchEngine: searchEngine
                 },
@@ -637,12 +650,22 @@ $this->breadcrumbs=array(
             $("#update_rule_panel").css('display', 'none');
             $("#submit_panel").css('display', 'none');
             $("#form_submit").attr('disabled',"true");
+            $("#applied_listing_div_result").css('display', 'none');
         }
         else
         {
             $("#update_rule_panel").css('display', 'block');
             $("#submit_panel").css('display', 'block');
             $("#form_submit").removeAttr('disabled');
+            $("#applied_listing_div_result").css('display', 'block');
+            $("#applied_listing_div_result_count").html($("#applied_listing_table tr:gt(0) input:checkbox:checked").length);
+            $("#applied_listing_div_result_list").html('');
+            var html = '';
+            for(var i=0;i<$("#applied_listing_table tr:gt(0) input:checkbox:checked").length;i++)
+            {
+                html +="<a style='padding-right: 12px;' href='http://www.ebay.com/itm/"+$($("#applied_listing_table tr:gt(0) input:checkbox:checked")[i]).val()+"' target='_blank'>"+$($("#applied_listing_table tr:gt(0) input:checkbox:checked")[i]).val()+"</a>";
+            }
+            $("#applied_listing_div_result_list").html(html);
         }
     }
 

@@ -194,7 +194,10 @@ class EBayListingController extends Controller
                 }
                 if(strtolower($params['searchListType']) != 'all')
                 {
-                    $whereSQL .= " and ltype.value = '{$params['searchListType']}' ";
+                    if(strtolower($params['searchListType']) == strtolower('FixedPriceItem'))
+                        $whereSQL .= " and ltype.value = '{$params['searchListType']}' ";
+                    else if(strtolower($params['searchListType']) == 'auction')
+                        $whereSQL .= " and (ltype.value = '".eBayListingTypeCodeType::Auction."' or ltype.value = '".eBayListingTypeCodeType::Chinese."') ";
                 }
 
                 $select = "SELECT t.*, s.name as storename,

@@ -74,9 +74,6 @@ class ADCampaign extends NIActiveRecord
     {
         switch($status)
         {
-            case self::Status_Enabled:
-                return "/themes/facebook/images/enabled.gif";
-                break;
             case self::Status_Eligible:
                 return "/themes/facebook/images/enabled.png";
                 break;

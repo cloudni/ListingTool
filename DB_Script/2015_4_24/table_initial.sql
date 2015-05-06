@@ -99,3 +99,9 @@ ALTER TABLE lt_ad_google_adwords_report_automatic_placements MODIFY COLUMN charg
 alter TABLE lt_google_adwords_ad drop COLUMN ad_id;
 
 /*end 2015-05-05*/
+
+/*start 2015-05-06*/
+ALTER TABLE lt_google_adwords_ad ADD COLUMN `height` int(11);
+ALTER TABLE lt_google_adwords_ad ADD COLUMN `width` int(11);
+ALTER TABLE lt_google_adwords_ad ADD COLUMN `template_elements` text;
+/*end 2015-05-06*/

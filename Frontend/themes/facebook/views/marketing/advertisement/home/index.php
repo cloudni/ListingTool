@@ -13,6 +13,7 @@ $this->breadcrumbs=array(
 <script type="text/javascript" src="/js/highcharts/highcharts.js"></script>
 <script type="text/javascript" src="/js/highcharts/themes/grid-light.js"></script>
 <script type="text/javascript" src="/js/highcharts/modules/exporting.js"></script>
+<script type="text/javascript" src="/js/moment/moment.min.js"></script>
 
 <style>
     .sumDiv{
@@ -72,7 +73,25 @@ $this->breadcrumbs=array(
     <div class="borderBlock">
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; padding: 12px 12px 0px 12px;">
-                <div style="height: 36px; color: #9197a3; font-weight: normal;">
+                <div style="position: relative; float: right; top: -7px;">
+                    <select id="performanceDateRange" name="performanceDateRange" style="position: relative; top: 7px; margin-right: 7px; display: block;">
+                        <option value="custom"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'custom');?></option>
+                        <option value="this_week"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'this_week');?></option>
+                        <option value="last_7_days"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_7_days');?></option>
+                        <option value="last_week"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_week');?></option>
+                        <option value="last_14_days" selected><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_14_days');?></option>
+                        <option value="this_month"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'this_month');?></option>
+                        <option value="last_30_days"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_30_days');?></option>
+                        <option value="last_month"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_month');?></option>
+                    </select>
+                    <div id="customPerformanceDateRange" style="position: relative; top: 7px; margin-right: 7px; display: none;">
+                        <span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'custom');?>&nbsp;</span>
+                        <input id="cusFromDate" name="cusFromDate" type="text" size="8" readonly >
+                        <span>&nbsp;-&nbsp;</span>
+                        <input id="cusEndDate" name="cusEndDate" type="text" size="8" readonly >
+                    </div>
+                </div>
+                <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
                     <?php echo CHtml::dropDownList('adCampaignId', '', CHtml::listData(ADCampaign::model()->findAll("company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id)), 'id', 'name'), array('empty'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_enabled_ad_campaign'), 'style'=>''));?>
                     <div style="display: inline-block; width: 10px; height: 10px; background-color: #058dc7; position: relative; left: 100px; z-index: 1;"></div>
                     <select id="dataPoint1" name="dataPoint1" style="width: 120px;">
@@ -92,7 +111,6 @@ $this->breadcrumbs=array(
                         <option value="cost"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></option>
                     </select>
                     <div style="display: inline-block; width: 10px; height: 10px; background-color: #ed7e17; position: relative; left: -37px; z-index: 1;"></div>
-                    <?php echo CHtml::dropDownList("groupBy", '', ADCampaign::getGroupByOptions(), array());?>
                 </div>
             </div>
             <div>
@@ -215,17 +233,65 @@ $this->breadcrumbs=array(
 
 <script>
 
-    var chartCategories = [];
-    var series = [];
-    var dataName = $("#dataPoint").val();
-    var prefix = '';
-    var suffix = '';
-
     $(function () {
         $("#dataPoint1").change(updatePerformanceChart);
         $("#dataPoint2").change(updatePerformanceChart);
         $("#groupBy").change(updatePerformanceChart);
         $("#adCampaignId").change(updatePerformanceChart);
+
+        $("#cusFromDate").datepicker({
+            dateFormat: "yy-mm-dd",
+            maxDate:"-1D",
+            onSelect:function(dateText){
+                if($("#cusFromDate").val().length> 0 && $("#cusEndDate").val().length> 0)
+                    updatePerformanceStatistic($("#cusFromDate").val(), $("#cusEndDate").val());
+            }
+        });
+
+        $("#cusEndDate").datepicker({
+            dateFormat: "yy-mm-dd",
+            maxDate:"today",
+            onSelect:function(dateText){
+                if($("#cusFromDate").val().length> 0 && $("#cusEndDate").val().length> 0)
+                    updatePerformanceStatistic($("#cusFromDate").val(), $("#cusEndDate").val());
+            }
+        });
+
+        $("#performanceDateRange").change(function(){
+            var today = moment();
+            switch ($("#performanceDateRange").val())
+            {
+                case 'custom':
+                    $("#performanceDateRange").css('display', 'none');
+                    $("#customPerformanceDateRange").css('display', 'block');
+                    return;
+                    break;
+                case 'this_week':
+                    updatePerformanceStatistic(moment().weekday(0).format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+                case 'last_7_days':
+                    updatePerformanceStatistic(moment().subtract(7, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+                case 'last_week':
+                    updatePerformanceStatistic(moment().weekday(0).subtract(7,'days').format("YYYY-MM-DD"), moment().weekday(6).subtract(7,'days').format("YYYY-MM-DD"));
+                    break;
+                case 'last_14_days':
+                    updatePerformanceStatistic(moment().subtract(14, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+                case 'this_month':
+                    updatePerformanceStatistic(moment().startOf("month").format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+                case 'last_30_days':
+                    updatePerformanceStatistic(moment().subtract(30, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+                case 'last_month':
+                    updatePerformanceStatistic(moment().month(moment().month()-1).startOf("month").format("YYYY-MM-DD"), moment().month(moment().month()-1).endOf("month").format("YYYY-MM-DD"));
+                    break;
+                default :
+                    updatePerformanceStatistic(moment().subtract(14, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+            }
+        });
 
         updatePerformanceChart();
     });

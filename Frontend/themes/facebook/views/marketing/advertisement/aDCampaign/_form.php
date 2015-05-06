@@ -716,12 +716,14 @@ $setting = (array)json_decode($model->criteria);
             }
         });
 
-        $( "#startdate" ).datepicker();
-        $( "#startdate" ).datepicker("option", "dateFormat", "yy-mm-dd");
-        $( "#startdate" ).datepicker("option", "minDate", "+1D");
-        $( "#enddate" ).datepicker();
-        $( "#enddate" ).datepicker("option", "dateFormat", "yy-mm-dd");
-        $( "#enddate" ).datepicker("option", "minDate", "+2D");
+        $( "#startdate" ).datepicker({
+            dateFormat: "yy-mm-dd",
+            minDate: "+1D"
+        });
+        $( "#enddate" ).datepicker({
+            dateFormat: "yy-mm-dd",
+            minDate: "+2D"
+        });
         $("#startdate").val('<?php echo $model->isNewRecord ? date("Y-m-d", time()+60*60*24) : date("Y-m-d", $model->start_datetime);?>');
         $("#enddate").val('<?php echo !$model->isNewRecord && isset($model->end_datetime) ? date("Y-m-d", $model->end_datetime) : '';?>');
 

@@ -1,6 +1,5 @@
 <?php
 /* @var $this ADCampaignController */
-/* @var $campaignPerformance array */
 
 $this->breadcrumbs=array(
     ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_marketing')=>array("/marketing/home"),
@@ -13,6 +12,8 @@ $this->menu=array(
     array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_create'), 'url'=>array('create')),
 );
 ?>
+
+<script type="text/javascript" src="/js/moment/moment.min.js"></script>
 
 <style>
     .ui-menu { position: absolute; z-index: 1; min-width: 122px; }
@@ -86,12 +87,30 @@ $this->menu=array(
     <div class="borderBlock">
         <div>
             <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="height: 36px; color: #9197a3; font-weight: normal;">
+                <div style="position: relative; float: right;">
+                    <select id="performanceDateRange" name="performanceDateRange" style="position: relative; top: 7px; margin-right: 7px; display: block;">
+                        <option value="custom"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'custom');?></option>
+                        <option value="this_week"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'this_week');?></option>
+                        <option value="last_7_days"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_7_days');?></option>
+                        <option value="last_week"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_week');?></option>
+                        <option value="last_14_days" selected><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_14_days');?></option>
+                        <option value="this_month"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'this_month');?></option>
+                        <option value="last_30_days"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_30_days');?></option>
+                        <option value="last_month"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_month');?></option>
+                    </select>
+                    <div id="customPerformanceDateRange" style="position: relative; top: 7px; margin-right: 7px; display: none;">
+                        <span>Custom&nbsp;</span>
+                        <input id="cusFromDate" name="cusFromDate" type="text" size="8" readonly >
+                        <span>&nbsp;-&nbsp;</span>
+                        <input id="cusEndDate" name="cusEndDate" type="text" size="8" readonly >
+                    </div>
+                </div>
+                <div style="height: 36px; color: #9197a3; font-weight: normal; width: 40%;">
                     <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all');?>&nbsp;<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign');?></h1>
                 </div>
             </div>
             <div>
-                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%" id="campaign_performance">
                     <thead>
                         <th align="left"><input id="campaignAll" type="checkbox" /></th>
                         <th align="center"><img src="/themes/facebook/images/disabled.png" /></th>
@@ -104,30 +123,7 @@ $this->menu=array(
                         <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></th>
                         </thead>
                     <tbody>
-                    <?php $clickTotal = 0; $imprTotal = 0; $costTotal = 0; foreach($campaignPerformance as $campaign): ?>
-                        <tr>
-                            <td align="left"><input id="campaignID[]" name="campaignID[]" type="checkbox" value="<?php echo $campaign['id'];?>" /><input id="campaign_<?php echo $campaign['id'];?>_status" type="hidden" value="<?php echo $campaign['status'];?>" /></td>
-                            <td align="center"><img id="campaign_<?php echo $campaign['id'];?>_img" src="<?php echo ADGroup::getStatusImg($campaign['status']);?>" border="0" /></td>
-                            <td align="right"><a href="<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/view", array('id'=>$campaign['id']));?>"><?php echo $campaign['name'];?></a></td>
-                            <td align="right"><?php echo sprintf("$%1\$.2f", $campaign['budget']);?></td>
-                            <td align="right"><?php echo $campaign['clicks'];?></td>
-                            <td align="right"><?php echo $campaign['impr'];?></td>
-                            <td align="right"><?php echo isset($campaign['impr']) ? sprintf("%1\$.2f%%", $campaign['clicks'] / $campaign['impr'] * 100) : "&nbsp;";?></td>
-                            <td align="right"><?php echo isset($campaign['clicks']) ? sprintf("$%1\$.2f", $campaign['cost'] / $campaign['clicks']) : "&nbsp;";?></td>
-                            <td align="right"><?php echo isset($campaign['cost']) ? sprintf("$%1\$.2f", $campaign['cost']) : "&nbsp;";?></td>
-                            </tr>
-                    <?php $clickTotal += $campaign['clicks']; $imprTotal += $campaign['impr']; $costTotal += $campaign['cost']; endforeach; ?>
-                    <tr>
-                        <td align="left">&nbsp;</td>
-                        <td align="center">&nbsp;</td>
-                        <td align="right" class="boldFont"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'total');?></td>
-                        <td align="right">&nbsp;</td>
-                        <td align="right" class="boldFont"><?php echo $clickTotal;?></td>
-                        <td align="right" class="boldFont"><?php echo $imprTotal;?></td>
-                        <td align="right" class="boldFont"><?php echo $imprTotal ? sprintf("%1\$.2f%%", $clickTotal / $imprTotal * 100) : "&nbsp;";?></td>
-                        <td align="right" class="boldFont"><?php echo $clickTotal ? sprintf("$%1\$.2f", $costTotal / $clickTotal) : "&nbsp;";?></td>
-                        <td align="right" class="boldFont"><?php echo sprintf("$%1\$.2f", $costTotal);?></td>
-                    </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -146,11 +142,150 @@ $this->menu=array(
             else
                 $("input[id^='campaignID']").removeAttr('checked');
         });
+
+        $("#cusFromDate").datepicker({
+            dateFormat: "yy-mm-dd",
+            maxDate:"-1D",
+            onSelect:function(dateText){
+                if($("#cusFromDate").val().length> 0 && $("#cusEndDate").val().length> 0)
+                    updatePerformanceStatistic($("#cusFromDate").val(), $("#cusEndDate").val());
+            }
+        });
+
+        $("#cusEndDate").datepicker({
+            dateFormat: "yy-mm-dd",
+            maxDate:"today",
+            onSelect:function(dateText){
+                if($("#cusFromDate").val().length> 0 && $("#cusEndDate").val().length> 0)
+                    updatePerformanceStatistic($("#cusFromDate").val(), $("#cusEndDate").val());
+            }
+        });
+
+        $("#performanceDateRange").change(function(){
+            var today = moment();
+            switch ($("#performanceDateRange").val())
+            {
+                case 'custom':
+                    $("#performanceDateRange").css('display', 'none');
+                    $("#customPerformanceDateRange").css('display', 'block');
+                    return;
+                    break;
+                case 'this_week':
+                    updatePerformanceStatistic(moment().weekday(0).format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+                case 'last_7_days':
+                    updatePerformanceStatistic(moment().subtract(7, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+                case 'last_week':
+                    updatePerformanceStatistic(moment().weekday(0).subtract(7,'days').format("YYYY-MM-DD"), moment().weekday(6).subtract(7,'days').format("YYYY-MM-DD"));
+                    break;
+                case 'last_14_days':
+                    updatePerformanceStatistic(moment().subtract(14, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+                case 'this_month':
+                    updatePerformanceStatistic(moment().startOf("month").format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+                case 'last_30_days':
+                    updatePerformanceStatistic(moment().subtract(30, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+                case 'last_month':
+                    updatePerformanceStatistic(moment().month(moment().month()-1).startOf("month").format("YYYY-MM-DD"), moment().month(moment().month()-1).endOf("month").format("YYYY-MM-DD"));
+                    break;
+                default :
+                    updatePerformanceStatistic(moment().subtract(14, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+                    break;
+            }
+        });
+
+        $("#page").click(function(){
+            $( "ul[id^='menu_']" ).hide();
+        });
+
+        updatePerformanceStatistic();
     });
 
-    $("#page").click(function(){
-        $( "ul[id^='menu_']" ).hide();
-    });
+    function updatePerformanceStatistic(startDate, endDate)
+    {
+        $("#ajaxloading").css("display", "block");
+        $.ajax({
+            type: "POST",
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/getIndexPerformance");?>',
+            data: {
+                start: startDate,
+                end: endDate
+            },
+            dataType: "JSON",
+            success: function (data, status, xhr) {
+                $("#ajaxloading").css("display", "none");
+                updatePerformanceAll(data['all']);
+            },
+            error: function (data, status, xhr) {
+                $("#ajaxloading").css("display", "none");
+                alert("Faile to load performance data.\nPlease try again later.")
+            }
+        });
+    }
+
+    function updatePerformanceAll(data)
+    {
+        var totalClicks = 0;
+        var totalImpr = 0;
+        var totalCost = 0;
+        var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/view", array('id'=>'replace_id'));?>';
+
+        $("#campaign_performance tr:gt(0)").remove();
+        for(var i=0;i<data.length;i++)
+        {
+            var line = "<tr>"+
+                "<td align='left'><input id='campaignID[]' name='campaignID[]' type='checkbox' value='"+data[i]['id']+"' /><input id='campaign_"+data[i]['id']+"_status' type='hidden' value='"+data[i]['status']+"' /></td>"+
+            "<td align='center'><img id='campaign_"+data[i]['id']+"_img' src='"+getStatusImg(data[i]['status'])+"' border='0' /></td>"+
+            "<td align='right'><a href='"+url.replace('replace_id', data[i]['id'])+"'>"+data[i]['name']+"</a></td>"+
+            "<td align='right'>"+"$"+parseFloat(data[i]['budget']).toFixed(2)+"</td>"+
+            "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? data[i]['clicks'] : 0)+"</td>"+
+            "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? data[i]['impr'] : 0)+"</td>"+
+            "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? (data[i]['clicks']/data[i]['impr']*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
+            "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? "$"+parseFloat(data[i]['clicks']/data[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
+            "<td align='right'>"+(parseFloat(data[i]['cost']) > 0 ? "$"+parseFloat(data[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
+            "</tr>";
+            totalClicks += data[i]['clicks'] != null ? parseInt(data[i]['clicks']) : 0;
+            totalImpr += data[i]['impr'] != null ? parseInt(data[i]['impr']) : 0;
+            totalCost += data[i]['cost'] != null ? parseFloat(data[i]['cost']) : 0;
+            $("#campaign_performance").append(line);
+        }
+
+        $("#campaign_performance").append("<tr>"+
+        "<td align='left'>&nbsp;</th>"+
+        "<td align='left'>&nbsp;</td>"+
+        "<td align='right' class='boldFont'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'total');?></td>"+
+        "<td align='left'>&nbsp;</td>"+
+        "<td align='right' class='boldFont'>"+totalClicks+"</td>"+
+        "<td align='right' class='boldFont'>"+totalImpr+"</td>"+
+        "<td align='right' class='boldFont'>"+(totalImpr > 0 ? (totalClicks/totalImpr*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
+        "<td align='right' class='boldFont'>"+(totalClicks > 0 ? '$'+(totalCost/totalClicks).toFixed(2) : '&nbsp;')+"</td>"+
+        "<td align='right' class='boldFont'>"+(totalCost > 0 ? '$'+parseFloat(totalCost).toFixed(2) : '&nbsp;')+"</td>"+
+        "</tr>");
+    }
+
+    function getStatusImg(status)
+    {
+        switch(status)
+        {
+            case '<?php echo ADCampaign::Status_Eligible;?>':
+                return "/themes/facebook/images/enabled.png";
+            case '<?php echo ADCampaign::Status_Paused;?>':
+                return "/themes/facebook/images/pause.gif";
+            case '<?php echo ADCampaign::Status_Pending;?>':
+                return "/themes/facebook/images/pause.gif";
+            case '<?php echo ADCampaign::Status_Suspended;?>':
+                return "/themes/facebook/images/pause.gif";
+            case '<?php echo ADCampaign::Status_LimitedByBudget;?>':
+                return "/themes/facebook/images/pause.gif";
+            case '<?php echo ADCampaign::Status_Removed;?>':
+                return "/themes/facebook/images/removed.png";
+            case '<?php echo ADCampaign::Stauts_Ended;?>':
+                return "/themes/facebook/images/disabled.png";
+        }
+    }
 
     function showMenu(id)
     {

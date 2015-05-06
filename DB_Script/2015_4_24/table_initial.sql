@@ -23,7 +23,6 @@ ALTER TABLE lt_company change COLUMN `markup_type` `markup_type` tinyint(4) defa
 ALTER TABLE lt_company change COLUMN `markup_amount` `markup_amount` DECIMAL(20,4) default '0.3';
 ALTER TABLE lt_company change COLUMN `authorize_day` `authorize_day` tinyint(4) default '1' ;
 
-alter TABLE lt_google_adwords_ad ADD COLUMN ad_id INT DEFAULT null;
 /*end 2015-04-29*/
 
 /*start 2015-05-02*/
@@ -83,8 +82,20 @@ ALTER TABLE lt_ad_google_adwords_report_geo ADD COLUMN lt_ad_group_id int(11);
 ALTER TABLE lt_ad_google_adwords_report_destination_url ADD COLUMN lt_ad_group_id int(11);
 ALTER TABLE lt_ad_google_adwords_report_automatic_placements ADD COLUMN lt_ad_group_id int(11);
 
-ALTER TABLE lt_ad_google_adwords_report_ad_group ADD COLUMN pk_id int(11) NOT NULL AUTO_INCREMENT,add primary key (pk_id); 
 ALTER TABLE lt_ad_google_adwords_report_geo ADD COLUMN pk_id int(11) NOT NULL AUTO_INCREMENT,add primary key (pk_id); 
 ALTER TABLE lt_ad_google_adwords_report_destination_url ADD COLUMN pk_id int(11) NOT NULL AUTO_INCREMENT,add primary key (pk_id); 
 ALTER TABLE lt_ad_google_adwords_report_automatic_placements ADD COLUMN pk_id int(11) NOT NULL AUTO_INCREMENT,add primary key (pk_id); 
+
+ALTER TABLE lt_ad_google_adwords_report_ad MODIFY COLUMN charge_amount DECIMAL(20,4) default 0;
+ALTER TABLE lt_ad_google_adwords_report_campaign MODIFY COLUMN charge_amount DECIMAL(20,4) default 0;
+ALTER TABLE lt_ad_google_adwords_report_campaign_temp MODIFY COLUMN charge_amount DECIMAL(20,4) default 0;
+ALTER TABLE lt_ad_google_adwords_report_ad_group MODIFY COLUMN charge_amount DECIMAL(20,4) default 0;
+ALTER TABLE lt_ad_google_adwords_report_geo MODIFY COLUMN charge_amount DECIMAL(20,4) default 0;
+ALTER TABLE lt_ad_google_adwords_report_destination_url MODIFY COLUMN charge_amount DECIMAL(20,4) default 0;
+ALTER TABLE lt_ad_google_adwords_report_automatic_placements MODIFY COLUMN charge_amount DECIMAL(20,4) default 0;
 /*end 2015-05-4*/
+
+/*start 2015-05-05*/
+alter TABLE lt_google_adwords_ad drop COLUMN ad_id;
+
+/*end 2015-05-05*/

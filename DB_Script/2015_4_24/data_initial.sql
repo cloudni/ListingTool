@@ -290,3 +290,16 @@ INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`crea
 INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('ad_advertisement_get_product_failed',2,0,'Get Listing Data Failed!\\nPlease try again.',1430186815,1,1430186815,1);
 UNLOCK TABLES;
 /*end 2015-04-28*/
+
+/*start 2015-05-05*/
+LOCK TABLES `lt_resource_string` WRITE;
+INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('all_listing_type',1,0,'所有物品类型',1430793276,1,1430793276,1);
+INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('all_listing_type',2,0,'All Listing Type',1430793289,1,1430793289,1);
+INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('ebay_listing_type_fix_priced_item',1,0,'一口价',1430793315,1,1430793315,1);
+INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('ebay_listing_type_fix_priced_item',2,0,'Fix Priced Item',1430793326,1,1430793326,1);
+INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('ebay_listing_type_auction',1,0,'拍卖商品',1430793339,1,1430793339,1);
+INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('ebay_listing_type_auction',2,0,'Auction Item',1430793350,1,1430793350,1);
+INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('ebay_bulk_update_applied_item',1,0,'您选择了<span id=\"applied_listing_div_result_count\"></span>个商品',1430793421,1,1430793421,1);
+INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('ebay_bulk_update_applied_item',2,0,'You have chosen <span id=\"applied_listing_div_result_count\"></span> item(s).',1430793433,1,1430793433,1);
+UNLOCK TABLES;
+/*end 2015-05-05*/

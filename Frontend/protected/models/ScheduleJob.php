@@ -37,6 +37,7 @@ class ScheduleJob extends CActiveRecord
             self::ACTION_EBAYGETCATEGORYFEATURES=>'eBay Get Category Features',
             self::ACTION_EBAYGETSELLERDASHBOARD=>'eBay Get Seller Dashboard',
             self::ACTION_EBAYGETUSER=>'eBay Get User',
+            self::ACTION_EBAYSHOPPINGAPIGETMULTIPLEITEMS=>'eBay Shopping API Get Multiple Items',
         );
     }
 

@@ -8,20 +8,7 @@ class ADCampaignController extends Controller
 	{
         $this->layout='//layouts/column2';
 
-        $campaignPerformanceSQL = "SELECT t.id, t.name, t.budget, t.status, sum(garc.clicks) as clicks, sum(garc.impressions) as impr, sum(garc.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
-                                    FROM lt_ad_campaign t
-                                    left join lt_google_adwords_campaign gac on gac.lt_ad_campaign_id = t.id
-                                    left join lt_google_adwords_report_campaign garc on garc.campaign_id = gac.id
-                                    where t.company_id = :company_id
-                                    group by t.id
-                                    order by t.id desc";
-        $command = Yii::app()->db->createCommand($campaignPerformanceSQL);
-        $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
-        $campaignPerformance = $command->queryAll();
-
-		$this->render('index',array(
-            'campaignPerformance'=>$campaignPerformance,
-        ));
+		$this->render('index',array());
 	}
 
     public function actionCreate()
@@ -33,7 +20,7 @@ class ADCampaignController extends Controller
             $model->name = (string)$_POST['campaign']['name'];
             $model->budget = (float)$_POST['campaign']['budget'];
             $model->company_id = Yii::app()->session['user']->company_id;
-            $model->status = ADCampaign::Status_Eligible;
+            $model->status = ADCampaign::Status_Pending;
             $model->is_delete = ADCampaign::Delete_No;
             $criteria['language'] = !isset($_POST['language_option_all_value']) && isset($_POST['language_option_value']) && !empty($_POST['language_option_value']) ? implode(',', $_POST['language_option_value']) : '';
             $locations = array();
@@ -105,32 +92,8 @@ class ADCampaignController extends Controller
         $this->layout='//layouts/column2';
         $model = $this->loadModel($id);
 
-        $performanceSQL = "SELECT sum(t.clicks) as clicks, sum(t.impressions) as impr, sum(t.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
-                            FROM lt_google_adwords_report_campaign t
-                            left join lt_google_adwords_campaign gac on gac.id = t.campaign_id
-                            left join lt_ad_campaign adc on adc.id = gac.lt_ad_campaign_id
-                            where adc.id=:id";
-        $command = Yii::app()->db->createCommand($performanceSQL);
-        $command->bindValue(":id", $id, PDO::PARAM_INT);
-        $result = $command->queryRow();
-        $performance = array('clicks'=>null, 'impr'=>null, 'cost'=>null);
-        if(!empty($result)) $performance = array('clicks'=>$result['clicks'], 'impr'=>$result['impr'], 'cost'=>$result['cost']);
-
-        $adGroupPerformanceSQL = "SELECT t.id, t.name, t.default_bid, t.status, sum(garc.clicks) as clicks, sum(garc.impressions) as impr, sum(garc.cost / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit'].") as cost
-                                    FROM lt_ad_group t
-                                    left join lt_google_adwords_ad_group gac on gac.lt_ad_group_id = t.id
-                                    left join lt_google_adwords_report_ad_group garc on garc.ad_group_id = gac.id
-                                    where t.campaign_id = :campaign_id
-                                    group by t.id";
-        $command = Yii::app()->db->createCommand($adGroupPerformanceSQL);
-        $command->bindValue(":campaign_id", $id, PDO::PARAM_INT);
-        $result = $command->queryAll();
-        $adGroupPerformance = $result;
-
         $this->render('view',array(
             'model'=>$model,
-            'performance'=>$performance,
-            'adGroupPerformance'=>$adGroupPerformance,
         ));
     }
 
@@ -216,87 +179,56 @@ class ADCampaignController extends Controller
         ));
     }
 
-    protected function getCampaignPerformance($groupBy = ADCampaign::GroupBy_Day, $adgroupid=null)
+    protected function getCampaignPerformance($campaignid=0, $adgroupid=null, $start='', $end='')
     {
         $performanceList = array();
 
         $whereSQL = "";
-        $groupBySQL = "";
-        switch($groupBy)
-        {
-            case ADCampaign::GroupBy_Day:
-                $period = 21;
-                $groupBySQL = "group by garc.date
-                            order by garc.date desc
-                            limit 0, $period";
-                $today = strtotime(date("Y-m-d", time()));
-                for($i=$period;$i>0;$i--)
-                {
-                    $performanceList[date('Y-m-d', strtotime("-$i day"))] = array();
-                }
-                $performanceList[date('Y-m-d', time())] = array();
-                break;
-            case ADCampaign::GroupBy_Week:
-                $period = 8;
-                $groupBySQL = "group by garc.date
-                            order by garc.date desc
-                            limit 0, $period";
-                $today = date('Y-m-d', strtotime("last Monday"));
-                for($i=$period;$i>0;$i--)
-                {
-                    $performanceList[date('Y-m-d', strtotime($today) - ($i - 2) * 60 * 60 * 24 * 7)] = array();
-                }
-                break;
-            case ADCampaign::GroupBy_Month:
-                $period = 6;
-                $groupBySQL = "group by garc.date
-                            order by garc.date desc
-                            limit 0, $period";
-                for($i=$period-1;$i>0;$i--)
-                {
-                    $performanceList[date('Y-m-01', strtotime("-$i month"))] = array();
-                }
-                $performanceList[date('Y-m-01', time())] = array();
-                break;
-            default:
-                return false;
-                break;
-        }
+        $groupBySQL = "group by garag.date ";
         if(isset($adgroupid) && $adgroupid)
         {
-            $whereSQL .= " and ac.id = :group_id ";
+            $whereSQL .= " and ag.id = :group_id ";
+            $groupBySQL .= ", ag.id ";
         }
-        $performanceSQL = "select sum(garc.clicks) as clicks, sum(garc.impressions) as impr, sum(garc.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost, garc.date, garc.month, garc.year, garc.date, garc.week, garc.month_of_year, gac.id
-                            from lt_google_adwords_report_ad_group garc
-                            left join lt_google_adwords_ad_group gac on gac.id = garc.ad_group_id
-                            left join lt_ad_group ac on ac.id = gac.lt_ad_group_id
-                            where ac.company_id = :company_id $whereSQL $groupBySQL";
+        $performanceSQL = "select sum(garag.clicks) as clicks, sum(garag.impressions) as impr, sum(garag.charge_amount) as cost,
+                            garag.date, garag.month, garag.year, garag.date, garag.week, garag.month_of_year
+                            from lt_ad_campaign t
+                            left join lt_ad_group ag on ag.campaign_id = t.id
+                            left join lt_google_adwords_ad_group gaag on gaag.lt_ad_group_id = ag.id
+                            inner join lt_ad_google_adwords_report_ad_group garag on garag.ad_group_id = gaag.id and garag.date >= :startdate and garag.date <= :enddate
+                            where t.company_id = :company_id and t.id = :campaignid
+                            $whereSQL $groupBySQL
+                            order by garag.date desc";
         $command = Yii::app()->db->createCommand($performanceSQL);
         $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+        $command->bindValue(":campaignid", $campaignid, PDO::PARAM_INT);
+        $command->bindValue(":startdate", $start, PDO::PARAM_STR);
+        $command->bindValue(":enddate", $end, PDO::PARAM_STR);
         if(isset($adgroupid) && $adgroupid)
         {
             $command->bindValue(":group_id", $adgroupid, PDO::PARAM_INT);
         }
         $performances = $command->queryAll();
 
+        $index = 0;
+        while(true)
+        {
+            if( strtotime($start) + 60 * 60 * 24 * $index > strtotime($end) ) break;
+            $performanceList[date("Y-m-d", strtotime($start) + 60 * 60 * 24 * $index)] = array(
+                'clicks'=> "0",
+                'impr'=> "0",
+                'ctr'=> "0",
+                'cpc'=> "0",
+                'cost'=> "0",
+            );
+            $index++;
+        }
+
         if(isset($performances) && !empty($performances))
         {
             foreach($performances as $performance)
             {
-                $key = '';
-                switch($groupBy)
-                {
-                    case ADCampaign::GroupBy_Day:
-                        $key = $performance['date'];
-                        break;
-                    case ADCampaign::GroupBy_Week:
-                        $key = $performance['week'];
-                        break;
-                    case ADCampaign::GroupBy_Month:
-                        $key = $performance['month'];
-                        break;
-                }
-                if(isset($performanceList[$key])) $performanceList[$key] = array(
+                if(isset($performanceList[$performance['date']])) $performanceList[$performance['date']] = array(
                     'clicks'=> $performance['clicks'],
                     'impr'=> $performance['impr'],
                     'ctr'=> isset($performance['impr']) && $performance['impr'] ? sprintf("%1\$.2f%", $performance['clicks'] / $performance['impr'] * 100) : "0",
@@ -305,30 +237,28 @@ class ADCampaignController extends Controller
                 );
             }
         }
-        foreach($performanceList as $key => $performance)
-        {
-            if(empty($performance))
-                $performanceList[$key] = array(
-                    'clicks'=> "0",
-                    'impr'=> "0",
-                    'ctr'=> "0",
-                    'cpc'=> "0",
-                    'cost'=> "0",
-                );
-        }
 
         return $performanceList;
     }
 
-    public function actionGetPerformanceData()
+    public function actionGetPerformanceData($adcampaignid=null, $adgroupid=null, $start='', $end='')
     {
-        $groupBy = ADCampaign::GroupBy_Day;
-        $adgroupid = '';
+        if(!$end) $end = date("Y-m-d");
+        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 14);
 
-        if(isset($_POST['groupBy'])) $groupBy = $_POST['groupBy'];
+        if(isset($_POST['adcampaignid'])) $adcampaignid = $_POST['adcampaignid'];
         if(isset($_POST['adgroupid'])) $adgroupid = $_POST['adgroupid'];
+        if(isset($_POST['start'])) $start = $_POST['start'];
+        if(isset($_POST['end'])) $end = $_POST['end'];
 
-        $performanceList = $this->getCampaignPerformance($groupBy, $adgroupid);
+        if(!isset($adcampaignid))
+        {
+            $result = array('status'=>'fail', 'data'=>"Invalid AD Campaign and AD Group!");
+            echo json_encode($result);
+            exit();
+        }
+
+        $performanceList = $this->getCampaignPerformance($adcampaignid, $adgroupid, $start, $end);
 
         echo json_encode($performanceList);
         exit();
@@ -365,8 +295,8 @@ class ADCampaignController extends Controller
         $this->layout='//layouts/column2';
         $model = $this->loadModel($id);
 
-        $placementSQL = "SELECT t.domain, t.clicks, t.impressions as impr, t.cost / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
-                            FROM lt_google_adwords_report_automatic_placements t
+        $placementSQL = "SELECT t.domain, t.clicks, t.impressions as impr, t.charge_amount as cost
+                            FROM lt_ad_google_adwords_report_automatic_placements t
                             left join lt_google_adwords_campaign gaag on gaag.id = t.campaign_id
                             left join lt_ad_campaign ag on ag.id = gaag.lt_ad_campaign_id
                             where ag.company_id = :company_id and ag.id = :campaign_id";
@@ -400,8 +330,8 @@ class ADCampaignController extends Controller
         $model = $this->loadModel($id);
 
         $performanceSQL = "SELECT t.click_type, t.criteria_parameters, t.device, t.effective_destination_url,
-                            t.clicks, t.impressions as impr, t.cost / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
-                            FROM lt_google_adwords_report_destination_url t
+                            t.clicks, t.impressions as impr, t.charge_amount as cost
+                            FROM lt_ad_google_adwords_report_destination_url t
                             left join lt_google_adwords_campaign gaag on gaag.id = t.campaign_id
                             left join lt_ad_campaign ag on ag.id = gaag.lt_ad_campaign_id
                             where ag.company_id = :company_id and ag.id = :campaign_id";
@@ -414,6 +344,80 @@ class ADCampaignController extends Controller
             'model'=>$model,
             'performances'=>$performances,
         ));
+    }
+
+    public function actionGetPerformanceStatistic($adcampaignid=null, $adgroupid=null, $start='', $end='')
+    {
+        if(!$end) $end = date("Y-m-d");
+        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 14);
+
+        if(isset($_POST['adcampaignid'])) $adcampaignid = $_POST['adcampaignid'];
+        if(isset($_POST['adgroupid'])) $adgroupid = $_POST['adgroupid'];
+        if(isset($_POST['start'])) $start = $_POST['start'];
+        if(isset($_POST['end'])) $end = $_POST['end'];
+
+        if(!isset($adcampaignid))
+        {
+            $result = array('status'=>'fail', 'data'=>"Invalid AD Campaign and AD Group!");
+            echo json_encode($result);
+            exit();
+        }
+
+        $performanceSQL = "SELECT sum(t.clicks) as clicks, sum(t.impressions) as impr, sum(t.charge_amount) as cost
+                            FROM lt_ad_google_adwords_report_campaign t
+                            left join lt_google_adwords_campaign gac on gac.id = t.campaign_id
+                            left join lt_ad_campaign adc on adc.id = gac.lt_ad_campaign_id
+                            where adc.id=:id and t.date >= :startdate and t.date <= :enddate ";
+        $command = Yii::app()->db->createCommand($performanceSQL);
+        $command->bindValue(":id", $adcampaignid, PDO::PARAM_INT);
+        $command->bindValue(":startdate", $start, PDO::PARAM_STR);
+        $command->bindValue(":enddate", $end, PDO::PARAM_STR);
+        $result = $command->queryRow();
+        $performance = array('clicks'=>null, 'impr'=>null, 'cost'=>null);
+        if(!empty($result)) $performance = array('clicks'=>$result['clicks'], 'impr'=>$result['impr'], 'cost'=>$result['cost']);
+
+        $adGroupPerformanceSQL = "SELECT t.id, t.name, t.default_bid, t.status, sum(garc.clicks) as clicks, sum(garc.impressions) as impr, sum(garc.charge_amount) as cost
+                                    FROM lt_ad_group t
+                                    left join lt_google_adwords_ad_group gac on gac.lt_ad_group_id = t.id
+                                    left join lt_ad_google_adwords_report_ad_group garc on garc.ad_group_id = gac.id and garc.date >= :startdate and garc.date <= :enddate
+                                    where t.campaign_id = :campaign_id
+                                    group by t.id";
+        $command = Yii::app()->db->createCommand($adGroupPerformanceSQL);
+        $command->bindValue(":campaign_id", $adcampaignid, PDO::PARAM_INT);
+        $command->bindValue(":startdate", $start, PDO::PARAM_STR);
+        $command->bindValue(":enddate", $end, PDO::PARAM_STR);
+        $result = $command->queryAll();
+        $adGroupPerformance = $result;
+
+        $performanceList = $this->getCampaignPerformance($adcampaignid, $adgroupid, $start, $end);
+
+        $result = array('status'=>'success', 'all'=>$performance, 'group'=>$adGroupPerformance, 'chart'=>$performanceList);
+        echo json_encode($result);
+    }
+
+    public function actionGetIndexPerformance($start='', $end='')
+    {
+        if(!$end) $end = date("Y-m-d");
+        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 14);
+
+        if(isset($_POST['start'])) $start = $_POST['start'];
+        if(isset($_POST['end'])) $end = $_POST['end'];
+
+        $campaignPerformanceSQL = "SELECT t.id, t.name, t.budget, t.status, sum(garc.clicks) as clicks, sum(garc.impressions) as impr, sum(garc.charge_amount) as cost
+                                    FROM lt_ad_campaign t
+                                    left join lt_google_adwords_campaign gac on gac.lt_ad_campaign_id = t.id
+                                    left join lt_ad_google_adwords_report_campaign garc on garc.campaign_id = gac.id and garc.date >= :startdate and garc.date <= :enddate
+                                    where t.company_id = :company_id
+                                    group by t.id
+                                    order by t.id desc";
+        $command = Yii::app()->db->createCommand($campaignPerformanceSQL);
+        $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+        $command->bindValue(":startdate", $start, PDO::PARAM_STR);
+        $command->bindValue(":enddate", $end, PDO::PARAM_STR);
+        $campaignPerformance = $command->queryAll();
+
+        $result = array('status'=>'success', 'all'=>$campaignPerformance);
+        echo json_encode($result);
     }
 
     /**
@@ -438,7 +442,7 @@ class ADCampaignController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + delete, getPerformanceData, updateCampaignStatus', // we only allow deletion via POST request
+            'postOnly + delete, getPerformanceData, updateCampaignStatus, getPerformanceStatistic, getIndexPerformance', // we only allow deletion via POST request
         );
     }
 
@@ -451,7 +455,7 @@ class ADCampaignController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index', 'create', 'view', 'update', 'getPerformanceData', 'updateCampaignStatus', 'automaticPlacementReport', 'geoGraphicReport', 'destinationURLReport'),
+                'actions'=>array('index', 'create', 'view', 'update', 'getPerformanceData', 'updateCampaignStatus', 'automaticPlacementReport', 'geoGraphicReport', 'destinationURLReport', 'getPerformanceStatistic', 'getIndexPerformance'),
                 'users'=>array('@'),
             ),
             array('deny',  // deny all users

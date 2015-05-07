@@ -72,6 +72,7 @@ class ADAdvertiseVariation extends NIActiveRecord
     CONST Status_Enabled=0;
     CONST Status_Paused=1;
     CONST Status_Removed=2;
+    CONST Status_Pending=3;
 
     public static function getCodeOptions()
     {

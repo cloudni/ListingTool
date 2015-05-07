@@ -659,13 +659,13 @@ $this->breadcrumbs=array(
             $("#form_submit").removeAttr('disabled');
             $("#applied_listing_div_result").css('display', 'block');
             $("#applied_listing_div_result_count").html($("#applied_listing_table tr:gt(0) input:checkbox:checked").length);
-            $("#applied_listing_div_result_list").html('');
+            /*$("#applied_listing_div_result_list").html('');
             var html = '';
             for(var i=0;i<$("#applied_listing_table tr:gt(0) input:checkbox:checked").length;i++)
             {
                 html +="<a style='padding-right: 12px;' href='http://www.ebay.com/itm/"+$($("#applied_listing_table tr:gt(0) input:checkbox:checked")[i]).val()+"' target='_blank'>"+$($("#applied_listing_table tr:gt(0) input:checkbox:checked")[i]).val()+"</a>";
             }
-            $("#applied_listing_div_result_list").html(html);
+            $("#applied_listing_div_result_list").html(html);*/
         }
     }
 

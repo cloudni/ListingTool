@@ -393,7 +393,6 @@ CREATE TABLE `lt_google_adwords_customer` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_ad`;
 CREATE TABLE `lt_google_adwords_report_ad` (
-  `pk_id` int(11) NOT NULL AUTO_INCREMENT,
   `id` bigint(20) NOT NULL,
   `account_currency_code` varchar(255) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
@@ -488,8 +487,7 @@ CREATE TABLE `lt_google_adwords_report_ad` (
   `view_through_conversions` int(11) DEFAULT NULL,
   `view_through_conversions_significance` text,
   `week` varchar(10) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`pk_id`)
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -497,7 +495,6 @@ CREATE TABLE `lt_google_adwords_report_ad` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_ad_group`;
 CREATE TABLE `lt_google_adwords_report_ad_group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ad_group_id` bigint(20) NOT NULL,
   `account_currency_code` varchar(36) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
@@ -602,8 +599,7 @@ CREATE TABLE `lt_google_adwords_report_ad_group` (
   `view_through_conversions` int(11) DEFAULT NULL,
   `view_through_conversions_significance` text,
   `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -611,7 +607,6 @@ CREATE TABLE `lt_google_adwords_report_ad_group` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_automatic_placements`;
 CREATE TABLE `lt_google_adwords_report_automatic_placements` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_currency_code` varchar(255) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
   `account_time_zone_id` varchar(255) DEFAULT NULL,
@@ -660,8 +655,7 @@ CREATE TABLE `lt_google_adwords_report_automatic_placements` (
   `value_per_converted_click` double DEFAULT NULL,
   `view_through_conversions` int(11) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -669,7 +663,6 @@ CREATE TABLE `lt_google_adwords_report_automatic_placements` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_campaign`;
 CREATE TABLE `lt_google_adwords_report_campaign` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_currency_code` varchar(20) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
   `account_time_zone_id` varchar(36) DEFAULT NULL,
@@ -781,8 +774,7 @@ CREATE TABLE `lt_google_adwords_report_campaign` (
   `view_through_conversions` int(11) DEFAULT NULL,
   `view_through_conversions_significance` text,
   `week` varchar(10) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -790,7 +782,6 @@ CREATE TABLE `lt_google_adwords_report_campaign` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_destination_url`;
 CREATE TABLE `lt_google_adwords_report_destination_url` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_currency_code` varchar(255) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
   `account_time_zone_id` varchar(255) DEFAULT NULL,
@@ -842,8 +833,7 @@ CREATE TABLE `lt_google_adwords_report_destination_url` (
   `value_per_converted_click` double DEFAULT NULL,
   `view_through_conversions` int(11) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -851,7 +841,6 @@ CREATE TABLE `lt_google_adwords_report_destination_url` (
 -- ----------------------------
 DROP TABLE IF EXISTS `lt_google_adwords_report_geo`;
 CREATE TABLE `lt_google_adwords_report_geo` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_currency_code` varchar(255) DEFAULT NULL,
   `account_descriptive_name` varchar(255) DEFAULT NULL,
   `account_time_zone_id` varchar(255) DEFAULT NULL,
@@ -901,79 +890,9 @@ CREATE TABLE `lt_google_adwords_report_geo` (
   `value_per_converted_click` double DEFAULT NULL,
   `view_through_conversions` bigint(20) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ----------------------------
--- Table structure for `lt_google_adwords_report_placement`
--- ----------------------------
-DROP TABLE IF EXISTS `lt_google_adwords_report_placement`;
-CREATE TABLE `lt_google_adwords_report_placement` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `account_currency_code` varchar(255) DEFAULT NULL,
-  `account_descriptive_name` varchar(255) DEFAULT NULL,
-  `account_time_zone_id` varchar(255) DEFAULT NULL,
-  `active_view_cpm` decimal(20,4) DEFAULT NULL,
-  `active_view_impressions` int(11) DEFAULT NULL,
-  `ad_group_id` bigint(20) DEFAULT NULL,
-  `ad_group_name` varchar(255) DEFAULT NULL,
-  `ad_group_status` varchar(36) DEFAULT NULL,
-  `ad_network_type1` varchar(36) DEFAULT NULL,
-  `ad_network_type2` varchar(36) DEFAULT NULL,
-  `average_cpc` decimal(20,4) DEFAULT NULL,
-  `average_cpm` decimal(20,4) DEFAULT NULL,
-  `bid_modifier` double DEFAULT NULL,
-  `bid_type` varchar(36) DEFAULT NULL,
-  `campaign_id` bigint(20) DEFAULT NULL,
-  `campaign_name` varchar(255) DEFAULT NULL,
-  `campaign_status` varchar(36) DEFAULT NULL,
-  `click_conversion_rate` double DEFAULT NULL,
-  `click_type` varchar(36) DEFAULT NULL,
-  `clicks` bigint(20) DEFAULT NULL,
-  `conversion_category_name` varchar(255) DEFAULT NULL,
-  `conversion_rate_many_per_click` double DEFAULT NULL,
-  `conversion_tracker_id` bigint(20) DEFAULT NULL,
-  `conversion_type_name` varchar(255) DEFAULT NULL,
-  `conversion_value` double DEFAULT NULL,
-  `conversions_many_per_click` bigint(20) DEFAULT NULL,
-  `converted_clicks` bigint(20) DEFAULT NULL,
-  `cost` decimal(20,4) DEFAULT NULL,
-  `cost_per_conversion_many_per_click` decimal(20,4) DEFAULT NULL,
-  `cost_per_converted_click` decimal(20,4) DEFAULT NULL,
-  `cpc_bid` decimal(20,4) DEFAULT NULL,
-  `cpc_bid_source` text,
-  `cpm_bid` decimal(20,4) DEFAULT NULL,
-  `cpm_bid_source` text,
-  `criteria_destination_url` varchar(255) DEFAULT NULL,
-  `ctr` double DEFAULT NULL,
-  `customer_descriptive_name` varchar(255) DEFAULT NULL,
-  `date` varchar(10) DEFAULT NULL,
-  `day_of_week` varchar(10) DEFAULT NULL,
-  `device` varchar(36) DEFAULT NULL,
-  `display_name` varchar(255) DEFAULT NULL,
-  `external_customer_id` bigint(20) DEFAULT NULL,
-  `final_app_urls` text,
-  `final_mobile_urls` text,
-  `final_urls` text,
-  `impressions` bigint(20) DEFAULT NULL,
-  `is_negative` varchar(36) DEFAULT NULL,
-  `is_restrict` varchar(36) DEFAULT NULL,
-  `month` varchar(255) DEFAULT NULL,
-  `month_of_year` varchar(10) DEFAULT NULL,
-  `placement_url` varchar(255) DEFAULT NULL,
-  `primary_company_name` varchar(255) DEFAULT NULL,
-  `quarter` varchar(255) DEFAULT NULL,
-  `status` varchar(36) DEFAULT NULL,
-  `tracking_url_template` varchar(255) DEFAULT NULL,
-  `url_custom_parameters` text,
-  `value_per_conversion_many_per_click` double DEFAULT NULL,
-  `value_per_converted_click` double DEFAULT NULL,
-  `view_through_conversions` bigint(20) DEFAULT NULL,
-  `week` varchar(255) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `lt_google_adwords_userlist`
@@ -1008,9 +927,9 @@ alter table lt_transaction change transaction_type `type` varchar(20);
 /*end 2015-04-16*/
 
 /*start 2015/04/19*/
-alter table lt_transaction modify column type tinyint(4) COMMENT '支付平台类型：1 paypal';
+alter table lt_transaction modify column `type` tinyint(4) COMMENT '支付平台类型：1 paypal';
 alter table lt_transaction MODIFY column `status` TINYINT(4) COMMENT '交易状态：1 创建；2 成功；3 取消；4 失败';
-alter table lt_transaction modify column payment_transaction_type TINYINT(4) COMMENT '交易类型：1 存款；2 取款；3 冻结；4 解冻；5 扣款';
+alter table lt_transaction modify column `payment_transaction_type` TINYINT(4) COMMENT '交易类型：1 存款；2 取款；3 冻结；4 解冻；5 扣款';
 alter table lt_transaction modify column `total` decimal(20,4)  not null default '0' COMMENT '交易总额';
 alter table lt_transaction modify column `fee` decimal(20,4) not null default '0' COMMENT '交易手续费';
 alter table lt_transaction MODIFY COLUMN `net` DECIMAL(20,4) not null default '0' COMMENT '实际金额';
@@ -1028,3 +947,75 @@ ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN markup_amount DECIMAL(2
 ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN charge_amount DECIMAL(20,4);
 ALTER TABLE lt_google_adwords_report_campaign ADD COLUMN is_charged tinyint(1) default '0';
 /*end 2015-04-21*/
+
+/*start 2015-04-24*/
+DROP TABLE IF EXISTS `lt_google_adwords_para_geographical_targeting`;
+CREATE TABLE `lt_google_adwords_para_geographical_targeting` (
+  `criteria_id` varchar(16) NOT NULL COMMENT '主键',
+  `name` varchar(255) DEFAULT NULL COMMENT '名称',
+  `canonical_name` varchar(255) DEFAULT NULL COMMENT '全称，父子组合',
+  `parent_id` varchar(16) DEFAULT NULL COMMENT '父ID',
+  `country_code` varchar(2) DEFAULT NULL COMMENT '国家代码',
+  `target_type` varchar(36) DEFAULT NULL COMMENT 'criteria类型（24种）：City，Country，Region，Province，Territory，University等',
+  `status` varchar(20) DEFAULT NULL COMMENT '状态：Active，Removal Planned',
+  PRIMARY KEY (`criteria_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-04-24*/
+
+/*start 2015-04-26*/
+ALTER TABLE lt_google_adwords_report_campaign drop COLUMN markup_type;
+ALTER TABLE lt_google_adwords_report_campaign drop COLUMN markup_amount;
+ALTER TABLE lt_google_adwords_report_campaign drop COLUMN charge_amount;
+ALTER TABLE lt_google_adwords_report_campaign drop COLUMN is_charged;
+
+CREATE TABLE lt_ad_google_adwords_report_ad LIKE lt_google_adwords_report_ad;
+CREATE TABLE lt_ad_google_adwords_report_campaign LIKE lt_google_adwords_report_campaign;
+
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN pk_id int(11) NOT NULL AUTO_INCREMENT,add primary key (pk_id);  
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN markup_type tinyint(4);
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN markup_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN ad_ad_id int(11);
+ALTER TABLE lt_ad_google_adwords_report_ad ADD COLUMN is_charged tinyint(1) default '0';
+
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN id int(11) NOT NULL AUTO_INCREMENT,add primary key (id);  
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN markup_type tinyint(4);
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN markup_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN ad_campaign_id int(11);
+ALTER TABLE lt_ad_google_adwords_report_campaign ADD COLUMN is_charged tinyint(1) default '0';
+
+DROP TABLE IF EXISTS `lt_transaction_detail`;
+CREATE TABLE `lt_transaction_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `transaciton_id` int(11) NOT NULL COMMENT 'lt_transaction.id',
+  `ref_id` int(11) NOT NULL COMMENT '关联表主键',
+  `ref_object` varchar(30) NOT NULL COMMENT '关联表对象',
+  `amount` decimal(20,4) NOT NULL DEFAULT '0.0000',
+  `charge_date_utc` int(11) DEFAULT NULL,
+  `create_time_utc` int(11) DEFAULT NULL,
+  `create_user_id` int(11) DEFAULT NULL default '0',
+  `update_time_utc` int(11) DEFAULT NULL default '0',
+  `update_user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `lt_transaction_detail_transaciton_id` (`transaciton_id`),
+  CONSTRAINT `lt_transaction_detail_transaciton_id` FOREIGN KEY (`transaciton_id`) REFERENCES `lt_transaction` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+alter TABLE lt_google_adwords_ad ADD COLUMN ad_id INT not null;
+/*end 2015-04-26*/
+
+/*end 2015-04-27*/
+DROP TABLE IF EXISTS `lt_google_adwords_budget`;
+CREATE TABLE `lt_google_adwords_budget` (
+  `budget_id` bigint(20) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `period` varchar(36) DEFAULT NULL,
+  `amount` bigint(20) DEFAULT NULL,
+  `delivery_method` varchar(255) DEFAULT NULL,
+  `reference_count` int(11) DEFAULT NULL,
+  `is_explicitly_shared` bit(1) DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`budget_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-04-27*/

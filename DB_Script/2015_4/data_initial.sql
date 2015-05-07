@@ -15131,3 +15131,22 @@ update lt_ebay_category set google_adwords_category_id = 13865 where id = 99046;
 update lt_ebay_category set google_adwords_category_id = 13865 where id = 99047;
 UNLOCK TABLES;
 /*end 2015/04/14*/
+/*start 2015/04/27 */
+LOCK TABLES `lt_resource_string` WRITE;
+insert into lt_resource_string (`key`, `language`, `environment`, `message`)
+values ('date_from', 2, 0, 'from'), ('date_from', 1, 0, '从'),
+('date_to', 2, 0, 'to'), ('date_to', 1, 0, '至');
+insert into lt_resource_string (`key`, `language`, `environment`, `message`)
+values ('transaction_type_paypal', 1, 0, 'Paypal'), ('transaction_type_paypal', 2, 0, 'Paypal'),
+('transaction_type_system', 1, 0, 'System'), ('transaction_type_system', 2, 0, 'System'),
+('transaction_status_create', 1, 0, '创建'), ('transaction_status_create', 2, 0, 'create'),
+('transaction_status_success', 1, 0, '成功'), ('transaction_status_success', 2, 0, 'success'),
+('transaction_status_cancel', 1, 0, '取消'), ('transaction_status_cancel', 2, 0, 'cancel'),
+('transaction_status_fail', 1, 0, '失败'), ('transaction_status_fail', 2, 0, 'fail'),
+('payment_transaction_type_deposit', 1, 0, '存款'), ('payment_transaction_type_deposit', 2, 0, 'Deposit'),
+('payment_transaction_type_withdraw', 1, 0, '取款'), ('payment_transaction_type_withdraw', 2, 0, 'Withdraw'),
+('payment_transaction_type_freeze', 1, 0, '冻结'), ('payment_transaction_type_freeze', 2, 0, 'Freeze'),
+('payment_transaction_type_unfreeze', 1, 0, '解冻'), ('payment_transaction_type_unfreeze', 2, 0, 'Unfreeze'),
+('payment_transaction_type_deduaction', 1, 0, '冻结'), ('payment_transaction_type_deduaction', 2, 0, 'Deduaction');
+UNLOCK TABLES;
+/*end 2015/04/27*/

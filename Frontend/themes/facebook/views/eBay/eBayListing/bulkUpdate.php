@@ -208,7 +208,7 @@ $this->breadcrumbs=array(
                     </div>
                     <hr style="margin-top: 7px;" />
                 </div>
-                <div style="padding: 0px 10px 0px 10px;">
+                <div style="padding: 0px 10px 0px 10px; display: none">
                     <h4>
                         <input id="update_exclude_ship_location_panel_enable" name="update_exclude_ship_location_panel_enable" type="checkbox" checked="checked" onclick="updateRulePanel(this, 'exclude_ship_location');"/>
                         <span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'update');?><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'exclude_shipping_location');?></span>

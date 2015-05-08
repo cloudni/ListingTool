@@ -1238,7 +1238,6 @@ class eBayTradingAPI
                 $temp .= eBayService::createXMLElement('SellerExcludeShipToLocationsPreference', 'false');
             }
             $xml .= eBayService::createXMLElement('ShippingDetails', $temp);
-            $xml .= eBayService::createXMLElement('ShipToLocations', 'Worldwide');
         }
 
         $xml = eBayService::createXMLElement('Item',$xml);
@@ -1360,7 +1359,6 @@ class eBayTradingAPI
                 $temp .= eBayService::createXMLElement('SellerExcludeShipToLocationsPreference', 'false');
             }
             $xml .= eBayService::createXMLElement('ShippingDetails', $temp);
-            $xml .= eBayService::createXMLElement('ShipToLocations', 'Worldwide');
         }
         $xml = eBayService::createXMLElement('Item',$xml);
 

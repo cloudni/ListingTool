@@ -1233,7 +1233,12 @@ class eBayTradingAPI
             $temp = "";
             foreach($params['ExcludeShipToLocation'] as $exclude)
                 $temp .= eBayService::createXMLElement('ExcludeShipToLocation', $exclude);
+            if($temp)
+            {
+                $temp .= eBayService::createXMLElement('SellerExcludeShipToLocationsPreference', 'false');
+            }
             $xml .= eBayService::createXMLElement('ShippingDetails', $temp);
+            $xml .= eBayService::createXMLElement('ShipToLocations', 'Worldwide');
         }
 
         $xml = eBayService::createXMLElement('Item',$xml);

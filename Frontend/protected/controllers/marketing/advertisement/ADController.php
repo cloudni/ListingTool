@@ -180,6 +180,23 @@ class ADController extends Controller
                     if(!$variation->save()) $error .= "HTML5 variation creation failed. Width: {$html5['width']}, Height: {$html5['height']}.<br />";
                 }
 
+                $aDLog = new ADChangeLog();
+                $aDLog->company_id = Yii::app()->session['user']->company_id;
+                $aDLog->object_type = "ADAdvertise";
+                $aDLog->object_id = $model->id;
+                $aDLog->title = "Add New AD for Company: " . Yii::app()->session['user']->company->name;
+                $aDLog->action = ADChangeLog::Action_AddNew;
+                $aDLog->status = ADChangeLog::Status_Pending;
+                $aDLog->priority = ADChangeLog::Priority_Normal;
+                $aDLog->create_time_utc = time();
+                $aDLog->create_user_id = Yii::app()->session['user']->id;
+                $content = "";
+                $content .= "Add New AD for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                $content .= "AD Name: {$model->name}.<br />";
+                $content .= "AD id: {$model->id}.<br />";
+                $aDLog->content = $content;
+                $aDLog->save();
+
                 $transaction->commit();
                 if($error) Yii::app()->user->setFlash('Error', $error);
                 $this->redirect($this->createAbsoluteUrl("marketing/advertisement/AD/view", array('id'=>$model->id)));
@@ -426,11 +443,43 @@ class ADController extends Controller
         }
         foreach($appliedList as $id)
         {
-            $variation = ADAdvertiseVariation::model()->findByPk($id, "company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
-            if($variation!=null)
+            $transaction=NULL;
+            try
             {
-                $variation->status = $status;
-                if($variation->save()) $successList[] = $variation->id;
+                $transaction = Yii::app()->db->beginTransaction();
+                $variation = ADAdvertiseVariation::model()->findByPk($id, "company_id=:company_id", array(':company_id' => Yii::app()->session['user']->company_id));
+                if($variation != null)
+                {
+                    $oldStatus = $variation->status;
+                    $variation->status = $status;
+                    if($variation->save())
+                    {
+                        $successList[] = $variation->id;
+
+                        $aDLog = new ADChangeLog();
+                        $aDLog->company_id = Yii::app()->session['user']->company_id;
+                        $aDLog->object_type = "ADAdvertiseVariation";
+                        $aDLog->object_id = $variation->id;
+                        $aDLog->title = "UpDate AD Variation Status for Company: " . Yii::app()->session['user']->company->name . ", AD Name: " . $variation->adAdvertise->name;
+                        $aDLog->action = ADChangeLog::Action_Update;
+                        $aDLog->status = ADChangeLog::Status_Pending;
+                        $aDLog->priority = ADChangeLog::Priority_Normal;
+                        $aDLog->create_time_utc = time();
+                        $aDLog->create_user_id = Yii::app()->session['user']->id;
+                        $content = "";
+                        $content .= "UpDate AD Variation Status for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                        $content .= "AD Name: {$variation->adAdvertise->name}.<br />";
+                        $content .= "AD Variation Type: ".ADAdvertiseVariation::getTypeText($variation->type).",  width: {$variation->width}, Height: {$variation->height}, Code: ".ADAdvertiseVariation::getCodeText($variation->code).".<br />";
+                        $content .= "AD Variation Status Changed From: " . ADAdvertiseVariation::getStatusText($oldStatus) . ", To: " . ADAdvertiseVariation::getStatusText($status) . "<br />";
+                        $aDLog->content = $content;
+                        $aDLog->save();
+                    }
+                }
+                $transaction->commit();
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
             }
         }
 

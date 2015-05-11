@@ -21,20 +21,47 @@ class ADGroupController extends Controller
 
         if(isset($_POST['adgroup']))
         {
-            $model->company_id = Yii::app()->session['user']->company_id;
-            $model->name = $_POST['adgroup']['name'];
-            $model->default_bid = $_POST['adgroup']['default_bid'];
-            $model->campaign_id = $campaignid;
-            $model->status = ADGroup::Status_Pending;
-            $model->is_delete = ADGroup::Delete_No;
-            $criteria = array(
-                'keywords'=>str_replace("\n", ADGroup::Criteria_Separator,$_POST['keywords']),
-                'placements'=>str_replace("\n", ADGroup::Criteria_Separator,$_POST['placements']),
-            );
-            $model->criteria = json_encode($criteria);
-            if($model->save())
+            $transaction=NULL;
+            try
             {
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid'=>$model->id, 'adgroupid'=>$model->id, 'lead' => $lead,)));
+                $transaction = Yii::app()->db->beginTransaction();
+                $model->company_id = Yii::app()->session['user']->company_id;
+                $model->name = $_POST['adgroup']['name'];
+                $model->default_bid = $_POST['adgroup']['default_bid'];
+                $model->campaign_id = $campaignid;
+                $model->status = ADGroup::Status_Pending;
+                $model->is_delete = ADGroup::Delete_No;
+                $criteria = array('keywords' => str_replace("\n", ADGroup::Criteria_Separator, $_POST['keywords']), 'placements' => str_replace("\n", ADGroup::Criteria_Separator, $_POST['placements']),);
+                $model->criteria = json_encode($criteria);
+                if($model->save())
+                {
+                    $aDLog = new ADChangeLog();
+                    $aDLog->company_id = Yii::app()->session['user']->company_id;
+                    $aDLog->object_type = "ADGroup";
+                    $aDLog->object_id = $model->id;
+                    $aDLog->title = "Add New AD Group for Company: " . Yii::app()->session['user']->company->name;
+                    $aDLog->action = ADChangeLog::Action_AddNew;
+                    $aDLog->status = ADChangeLog::Status_Pending;
+                    $aDLog->priority = ADChangeLog::Priority_Normal;
+                    $aDLog->create_time_utc = time();
+                    $aDLog->create_user_id = Yii::app()->session['user']->id;
+                    $content = "";
+                    $content .= "Add New AD Group for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                    $content .= "Group Name: {$model->name}.<br />";
+                    $content .= "Group Max default CPC: " . sprintf("$%1\$.2f", $model->default_bid) . "<br />";
+                    $content .= "Group Display Keywords: " . ($criteria['keywords'] ? $criteria['keywords'] : "") . "<br />";
+                    $content .= "Group Placements: " . ($criteria['placements'] ? $criteria['placements'] : "") . "<br />";
+                    $aDLog->content = $content;
+                    $aDLog->save();
+
+                    $transaction->commit();
+                    $this->redirect($this->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid' => $model->id, 'adgroupid' => $model->id, 'lead' => $lead,)));
+                }
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
+                Yii::app()->user->setFlash('Error', "Fail to create new AD Group, Code: ".$ex->getCode().", Msg: ".$ex->getMessage());
             }
         }
 
@@ -56,15 +83,43 @@ class ADGroupController extends Controller
 
         if(isset($_POST['adgroup']))
         {
-            $model->default_bid = $_POST['adgroup']['default_bid'];
-            $criteria = array(
-                'keywords'=>str_replace("\n", ADGroup::Criteria_Separator,$_POST['keywords']),
-                'placements'=>str_replace("\n", ADGroup::Criteria_Separator,$_POST['placements']),
-            );
-            $model->criteria = json_encode($criteria);
-            if($model->save())
+            $transaction=NULL;
+            try
             {
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ADGroup/view", array('id'=>$model->id)));
+                $transaction = Yii::app()->db->beginTransaction();
+                $oldModel = $this->loadModel($id);
+                $oldCriteria = json_decode($oldModel->criteria);
+                $model->default_bid = $_POST['adgroup']['default_bid'];
+                $criteria = array('keywords' => str_replace("\n", ADGroup::Criteria_Separator, $_POST['keywords']), 'placements' => str_replace("\n", ADGroup::Criteria_Separator, $_POST['placements']),);
+                $model->criteria = json_encode($criteria);
+                if($model->save())
+                {
+                    $aDLog = new ADChangeLog();
+                    $aDLog->company_id = Yii::app()->session['user']->company_id;
+                    $aDLog->object_type = "ADGroup";
+                    $aDLog->object_id = $model->id;
+                    $aDLog->title = "UpDate AD Group for Company: " . Yii::app()->session['user']->company->name . ", Group Name: " . $model->name;
+                    $aDLog->action = ADChangeLog::Action_Update;
+                    $aDLog->status = ADChangeLog::Status_Pending;
+                    $aDLog->priority = ADChangeLog::Priority_Normal;
+                    $aDLog->create_time_utc = time();
+                    $aDLog->create_user_id = Yii::app()->session['user']->id;
+                    $content = "";
+                    $content .= "UpDate AD Group for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                    $content .= "Group Name: {$model->name}.<br />";
+                    if($oldModel->default_bid != $model->default_bid) $content .= "Group Max default CPC From: " . sprintf("$%1\$.2f", $oldModel->default_bid) . ", To: " . sprintf("$%1\$.2f", $model->default_bid) . "<br />";
+                    if($oldCriteria->keywords != $criteria->keywords) $content .= "Group Display Keywords: " . $oldCriteria->keywords . ", To: " . $criteria->keywords . "<br />";
+                    if($oldCriteria->placements != $criteria->placements) $content .= "Group Placements: " . $oldCriteria->placements . ", To: " . $criteria->placements . "<br />";
+                    $aDLog->content = $content;
+
+                    $transaction->commit();
+                    $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ADGroup/view", array('id' => $model->id)));
+                }
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
+                Yii::app()->user->setFlash('Error', "Fail to update new AD Group, Code: ".$ex->getCode().", Msg: ".$ex->getMessage());
             }
         }
 
@@ -180,11 +235,42 @@ class ADGroupController extends Controller
         }
         foreach($appliedList as $id)
         {
-            $adGroup = ADGroup::model()->findByPk($id, "company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
-            if($adGroup!=null)
+            $transaction=NULL;
+            try
             {
-                $adGroup->status = $status;
-                if($adGroup->save()) $successList[] = $adGroup->id;
+                $transaction = Yii::app()->db->beginTransaction();
+                $adGroup = ADGroup::model()->findByPk($id, "company_id=:company_id", array(':company_id' => Yii::app()->session['user']->company_id));
+                if($adGroup != null)
+                {
+                    $oldStatus = $adGroup->status;
+                    $adGroup->status = $status;
+                    if($adGroup->save())
+                    {
+                        $successList[] = $adGroup->id;
+
+                        $aDLog = new ADChangeLog();
+                        $aDLog->company_id = Yii::app()->session['user']->company_id;
+                        $aDLog->object_type = "ADGroup";
+                        $aDLog->object_id = $adGroup->id;
+                        $aDLog->title = "UpDate AD Group for Company: " . Yii::app()->session['user']->company->name . ", Group Name: " . $adGroup->name;
+                        $aDLog->action = ADChangeLog::Action_Update;
+                        $aDLog->status = ADChangeLog::Status_Pending;
+                        $aDLog->priority = ADChangeLog::Priority_Normal;
+                        $aDLog->create_time_utc = time();
+                        $aDLog->create_user_id = Yii::app()->session['user']->id;
+                        $content = "";
+                        $content .= "UpDate AD Group for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                        $content .= "AD Group Name: {$adGroup->name}.<br />";
+                        $content .= "AD Group Status Changed From: " . ADGroup::getStatusText($oldStatus) . ", To: " . ADGroup::getStatusText($status) . "<br />";
+                        $aDLog->content = $content;
+                        $aDLog->save();
+                    }
+                }
+                $transaction->commit();
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
             }
         }
 
@@ -362,7 +448,7 @@ class ADGroupController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + delete, updateGroupStatus, getPerformanceStatistic, getIndexPerformance', // we only allow deletion via POST request
+            'postOnly + delete, updateGroupStatus, getPerformanceData, getPerformanceStatistic, getIndexPerformance', // we only allow deletion via POST request
         );
     }
 

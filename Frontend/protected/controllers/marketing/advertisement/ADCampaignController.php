@@ -17,68 +17,73 @@ class ADCampaignController extends Controller
 
         if(isset($_POST['campaign']))
         {
-            $model->name = (string)$_POST['campaign']['name'];
-            $model->budget = (float)$_POST['campaign']['budget'];
-            $model->company_id = Yii::app()->session['user']->company_id;
-            $model->status = ADCampaign::Status_Pending;
-            $model->is_delete = ADCampaign::Delete_No;
-            $criteria['language'] = !isset($_POST['language_option_all_value']) && isset($_POST['language_option_value']) && !empty($_POST['language_option_value']) ? implode(',', $_POST['language_option_value']) : '';
-            $locations = array();
-            foreach($_POST as $key => $value)
+            $transaction=NULL;
+            try
             {
-                if(substr($key, 0, 37) === 'exclude_ship_location_worldwide_list_') foreach($value as $local) $locations[] = $local;
-            }
-            $criteria['location'] = implode(',', $locations);
-            $criteria['timezone'] = $_POST['schedule_timezone'];
-            $model->start_datetime = strtotime($_POST['startdate']);
-            $model->end_datetime = $_POST['enddate_select'] == 'select_end_date' && isset($_POST['enddate']) ? strtotime($_POST['enddate']) : null;
-            if(isset($_POST['schedule_option_value_day']) && !empty($_POST['schedule_option_value_day']))
-            {
-                $criteria['schedule'] = array();
-                for($i=0;$i<count($_POST['schedule_option_value_day']);$i++)
+                $transaction = Yii::app()->db->beginTransaction();
+                $model->name = (string)$_POST['campaign']['name'];
+                $model->budget = (float)$_POST['campaign']['budget'];
+                $model->company_id = Yii::app()->session['user']->company_id;
+                $model->status = ADCampaign::Status_Pending;
+                $model->is_delete = ADCampaign::Delete_No;
+                $criteria['language'] = !isset($_POST['language_option_all_value']) && isset($_POST['language_option_value']) && !empty($_POST['language_option_value']) ? implode(',', $_POST['language_option_value']) : '';
+                $locations = array();
+                foreach($_POST as $key => $value)
                 {
-                    if(!isset($_POST['schedule_option_value_day'][$i]) || !isset($_POST['schedule_option_value_from_hour'][$i]) || !isset($_POST['schedule_option_value_from_minute'][$i]) || !isset($_POST['schedule_option_value_to_hour'][$i]) || !isset($_POST['schedule_option_value_to_minute'][$i])) continue;
-                    $criteria['schedule'][] = array(
-                        'day'=>$_POST['schedule_option_value_day'][$i],
-                        'from_hour'=>$_POST['schedule_option_value_from_hour'][$i],
-                        'from_minute'=>$_POST['schedule_option_value_from_minute'][$i],
-                        'to_hour'=>$_POST['schedule_option_value_to_hour'][$i],
-                        'to_minute'=>$_POST['schedule_option_value_to_minute'][$i],
-                    );
+                    if(substr($key, 0, 37) === 'exclude_ship_location_worldwide_list_') foreach($value as $local) $locations[] = $local;
                 }
-            }
-            $model->criteria = json_encode($criteria);
-            if($model->save())
-            {
-                $aDLog = new ADChangeLog();
-                $aDLog->company_id = Yii::app()->session['user']->company_id;
-                $aDLog->object_type = "ADCampaign";
-                $aDLog->object_id = $model->id;
-                $aDLog->title = "Add New AD Campaign for Company: ".Yii::app()->session['user']->company->name;
-                $aDLog->action = ADChangeLog::Action_AddNew;
-                $aDLog->status = ADChangeLog::Status_Pending;
-                $aDLog->priority = ADChangeLog::Priority_Normal;
-                $aDLog->create_time_utc = time();
-                $aDLog->create_user_id = Yii::app()->session['user']->id;
-                $content = "";
-                $content .= "Add New AD Campaign for Company id: ".Yii::app()->session['user']->company->id.", name: ".Yii::app()->session['user']->company->name."<br />";
-                $content .= "Campaign Name: {$model->name}.<br />";
-                $content .= "Campaign Budget: ".sprintf("$%1\$.2f", $model->budget)."<br />";
-                $content .= "Campaign Start Date: ".date('Y-m-d', $model->start_datetime)."<br />";
-                if(isset($model->end_datetime)) $content .= "Campaign End Date: ".date('Y-m-d', $model->end_datetime)."<br />";
-                $content .= "Campaign Language: ".($criteria['language'] ? $criteria['language'] : "All Languages")."<br />";
-                $content .= "Campaign Location: ".($criteria['location'] ? $criteria['location'] : "All Countries and Regions")."<br />";
-                if(isset($criteria['schedule']) && !empty($criteria['schedule']))
+                $criteria['location'] = implode(',', $locations);
+                $criteria['timezone'] = $_POST['schedule_timezone'];
+                $model->start_datetime = strtotime($_POST['startdate']);
+                $model->end_datetime = $_POST['enddate_select'] == 'select_end_date' && isset($_POST['enddate']) ? strtotime($_POST['enddate']) : null;
+                if(isset($_POST['schedule_option_value_day']) && !empty($_POST['schedule_option_value_day']))
                 {
-                    $content .= "Campaign Time-zone: {$criteria['timezone']}<br />";
-                    $content .= "Campaign Schedule:<br/>";
-                    foreach($criteria['schedule'] as $schedule)
-                        $content .= "Day: {$schedule['day']}, From: {$schedule['from_hour']}:{$schedule['from_minute']}, To: {$schedule['to_hour']}:{$schedule['to_minute']}<br />";
+                    $criteria['schedule'] = array();
+                    for($i = 0; $i < count($_POST['schedule_option_value_day']); $i++)
+                    {
+                        if(!isset($_POST['schedule_option_value_day'][$i]) || !isset($_POST['schedule_option_value_from_hour'][$i]) || !isset($_POST['schedule_option_value_from_minute'][$i]) || !isset($_POST['schedule_option_value_to_hour'][$i]) || !isset($_POST['schedule_option_value_to_minute'][$i])) continue;
+                        $criteria['schedule'][] = array('day' => $_POST['schedule_option_value_day'][$i], 'from_hour' => $_POST['schedule_option_value_from_hour'][$i], 'from_minute' => $_POST['schedule_option_value_from_minute'][$i], 'to_hour' => $_POST['schedule_option_value_to_hour'][$i], 'to_minute' => $_POST['schedule_option_value_to_minute'][$i],);
+                    }
                 }
-                $aDLog->content = $content;
-                $aDLog->save();
+                $model->criteria = json_encode($criteria);
+                if($model->save())
+                {
+                    $aDLog = new ADChangeLog();
+                    $aDLog->company_id = Yii::app()->session['user']->company_id;
+                    $aDLog->object_type = "ADCampaign";
+                    $aDLog->object_id = $model->id;
+                    $aDLog->title = "Add New AD Campaign for Company: " . Yii::app()->session['user']->company->name;
+                    $aDLog->action = ADChangeLog::Action_AddNew;
+                    $aDLog->status = ADChangeLog::Status_Pending;
+                    $aDLog->priority = ADChangeLog::Priority_Normal;
+                    $aDLog->create_time_utc = time();
+                    $aDLog->create_user_id = Yii::app()->session['user']->id;
+                    $content = "";
+                    $content .= "Add New AD Campaign for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                    $content .= "Campaign Name: {$model->name}.<br />";
+                    $content .= "Campaign Budget: " . sprintf("$%1\$.2f", $model->budget) . "<br />";
+                    $content .= "Campaign Start Date: " . date('Y-m-d', $model->start_datetime) . "<br />";
+                    if(isset($model->end_datetime)) $content .= "Campaign End Date: " . date('Y-m-d', $model->end_datetime) . "<br />";
+                    $content .= "Campaign Language: " . ($criteria['language'] ? $criteria['language'] : "All Languages") . "<br />";
+                    $content .= "Campaign Location: " . ($criteria['location'] ? $criteria['location'] : "All Countries and Regions") . "<br />";
+                    if(isset($criteria['schedule']) && !empty($criteria['schedule']))
+                    {
+                        $content .= "Campaign Time-zone: {$criteria['timezone']}<br />";
+                        $content .= "Campaign Schedule:<br/>";
+                        foreach($criteria['schedule'] as $schedule) $content .= "Day: {$schedule['day']}, From: {$schedule['from_hour']}:{$schedule['from_minute']}, To: {$schedule['to_hour']}:{$schedule['to_minute']}<br />";
+                    }
+                    $aDLog->content = $content;
+                    $aDLog->save();
 
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ADGroup/create", array('campaignid'=>$model->id, 'lead' => true,)));
+                    $transaction->commit();
+
+                    $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ADGroup/create", array('campaignid' => $model->id, 'lead' => true,)));
+                }
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
+                Yii::app()->user->setFlash('Error', "Fail to create new AD Campaign, Code: ".$ex->getCode().", Msg: ".$ex->getMessage());
             }
         }
 
@@ -103,74 +108,74 @@ class ADCampaignController extends Controller
 
         if(isset($_POST['campaign']))
         {
-            $oldModel = $this->loadModel($id);
-            $model->budget = (float)$_POST['campaign']['budget'];
-            $model->company_id = Yii::app()->session['user']->company_id;
-            $model->status = ADCampaign::Status_Eligible;
-            $model->is_delete = ADCampaign::Delete_No;
-            $criteria['language'] = !isset($_POST['language_option_all_value']) && isset($_POST['language_option_value']) && !empty($_POST['language_option_value']) ? implode(',', $_POST['language_option_value']) : '';
-            $locations = array();
-            foreach($_POST as $key => $value)
+            $transaction=NULL;
+            try
             {
-                if(substr($key, 0, 37) === 'exclude_ship_location_worldwide_list_') foreach($value as $local) $locations[] = $local;
-            }
-            $criteria['location'] = implode(',', $locations);
-            $criteria['timezone'] = $_POST['schedule_timezone'];
-            $model->start_datetime = strtotime($_POST['startdate']);
-            $model->end_datetime = $_POST['enddate_select'] == 'select_end_date' && isset($_POST['enddate']) ? strtotime($_POST['enddate']) : null;
-            if(isset($_POST['schedule_option_value_day']) && !empty($_POST['schedule_option_value_day']))
-            {
-                $criteria['schedule'] = array();
-                for($i=0;$i<count($_POST['schedule_option_value_day']);$i++)
+                $transaction = Yii::app()->db->beginTransaction();
+                $oldModel = $this->loadModel($id);
+                $model->budget = (float)$_POST['campaign']['budget'];
+                $model->company_id = Yii::app()->session['user']->company_id;
+                $model->status = ADCampaign::Status_Eligible;
+                $model->is_delete = ADCampaign::Delete_No;
+                $criteria['language'] = !isset($_POST['language_option_all_value']) && isset($_POST['language_option_value']) && !empty($_POST['language_option_value']) ? implode(',', $_POST['language_option_value']) : '';
+                $locations = array();
+                foreach($_POST as $key => $value)
                 {
-                    if(!isset($_POST['schedule_option_value_day'][$i]) || !isset($_POST['schedule_option_value_from_hour'][$i]) || !isset($_POST['schedule_option_value_from_minute'][$i]) || !isset($_POST['schedule_option_value_to_hour'][$i]) || !isset($_POST['schedule_option_value_to_minute'][$i])) continue;
-                    $criteria['schedule'][] = array(
-                        'day'=>$_POST['schedule_option_value_day'][$i],
-                        'from_hour'=>$_POST['schedule_option_value_from_hour'][$i],
-                        'from_minute'=>$_POST['schedule_option_value_from_minute'][$i],
-                        'to_hour'=>$_POST['schedule_option_value_to_hour'][$i],
-                        'to_minute'=>$_POST['schedule_option_value_to_minute'][$i],
-                    );
+                    if(substr($key, 0, 37) === 'exclude_ship_location_worldwide_list_') foreach($value as $local) $locations[] = $local;
                 }
-            }
-            $model->criteria = json_encode($criteria);
-            if($model->save())
-            {
-                $aDLog = new ADChangeLog();
-                $aDLog->company_id = Yii::app()->session['user']->company_id;
-                $aDLog->object_type = "ADCampaign";
-                $aDLog->object_id = $model->id;
-                $aDLog->title = "UpDate AD Campaign for Company: ".Yii::app()->session['user']->company->name.", Campaign Name: ".$model->name;
-                $aDLog->action = ADChangeLog::Action_Update;
-                $aDLog->status = ADChangeLog::Status_Pending;
-                $aDLog->priority = ADChangeLog::Priority_Normal;
-                $aDLog->create_time_utc = time();
-                $aDLog->create_user_id = Yii::app()->session['user']->id;
-                $content = "";
-                $content .= "UpDate AD Campaign for Company id: ".Yii::app()->session['user']->company->id.", name: ".Yii::app()->session['user']->company->name."<br />";
-                $content .= "Campaign Name: {$model->name}.<br />";
-                if($oldModel->budget != $model->budget)
-                    $content .= "Campaign Budget Changed From: ".sprintf("$%1\$.2f", $oldModel->budget).", To: ".sprintf("$%1\$.2f", $model->budget)."<br />";
-                if($oldModel->start_datetime != $model->start_datetime)
-                    $content .= "Campaign Start Date Changed From: ".date('Y-m-d', $oldModel->start_datetime).", To: ".date('Y-m-d', $model->start_datetime)."<br />";
-                if($oldModel->end_datetime != $model->end_datetime)
-                    $content .= "Campaign End Date Changed From: ".(isset($oldModel->end_datetime) ? date('Y-m-d', $oldModel->end_datetime) : "NULL").", TO: ".(isset($model->end_datetime) ? date('Y-m-d', $model->end_datetime) : "NULL")."<br />";
-                $oldCriteria = json_decode($oldModel->criteria);
-                if((string)$oldCriteria->language != $criteria['language'])
-                    $content .= "Campaign Language Changed From: ".((string)$oldCriteria->language ? (string)$oldCriteria->language : "All Languages").", To: ".($criteria['language'] ? $criteria['language'] : "All Languages")."<br />";
-                if((string)$oldCriteria->location != $criteria['location'])
-                    $content .= "Campaign Location Changed From: ".((string)$oldCriteria->location ? (string)$oldCriteria->location : "All Countries and Regions").", To: ".($criteria['location'] ? $criteria['location'] : "All Countries and Regions")."<br />";
-                if(isset($criteria['schedule']) && !empty($criteria['schedule']))
+                $criteria['location'] = implode(',', $locations);
+                $criteria['timezone'] = $_POST['schedule_timezone'];
+                $model->start_datetime = strtotime($_POST['startdate']);
+                $model->end_datetime = $_POST['enddate_select'] == 'select_end_date' && isset($_POST['enddate']) ? strtotime($_POST['enddate']) : null;
+                if(isset($_POST['schedule_option_value_day']) && !empty($_POST['schedule_option_value_day']))
                 {
-                    $content .= "Campaign Time-zone Changed To: {$criteria['timezone']}<br />";
-                    $content .= "Campaign Schedule Changed To:<br />";
-                    foreach($criteria['schedule'] as $schedule)
-                        $content .= "Day: {$schedule['day']}, From: {$schedule['from_hour']}:{$schedule['from_minute']}, To: {$schedule['to_hour']}:{$schedule['to_minute']}<br />";
+                    $criteria['schedule'] = array();
+                    for($i = 0; $i < count($_POST['schedule_option_value_day']); $i++)
+                    {
+                        if(!isset($_POST['schedule_option_value_day'][$i]) || !isset($_POST['schedule_option_value_from_hour'][$i]) || !isset($_POST['schedule_option_value_from_minute'][$i]) || !isset($_POST['schedule_option_value_to_hour'][$i]) || !isset($_POST['schedule_option_value_to_minute'][$i])) continue;
+                        $criteria['schedule'][] = array('day' => $_POST['schedule_option_value_day'][$i], 'from_hour' => $_POST['schedule_option_value_from_hour'][$i], 'from_minute' => $_POST['schedule_option_value_from_minute'][$i], 'to_hour' => $_POST['schedule_option_value_to_hour'][$i], 'to_minute' => $_POST['schedule_option_value_to_minute'][$i],);
+                    }
                 }
-                $aDLog->content = $content;
-                $aDLog->save();
+                $model->criteria = json_encode($criteria);
+                if($model->save())
+                {
+                    $aDLog = new ADChangeLog();
+                    $aDLog->company_id = Yii::app()->session['user']->company_id;
+                    $aDLog->object_type = "ADCampaign";
+                    $aDLog->object_id = $model->id;
+                    $aDLog->title = "UpDate AD Campaign for Company: " . Yii::app()->session['user']->company->name . ", Campaign Name: " . $model->name;
+                    $aDLog->action = ADChangeLog::Action_Update;
+                    $aDLog->status = ADChangeLog::Status_Pending;
+                    $aDLog->priority = ADChangeLog::Priority_Normal;
+                    $aDLog->create_time_utc = time();
+                    $aDLog->create_user_id = Yii::app()->session['user']->id;
+                    $content = "";
+                    $content .= "UpDate AD Campaign for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                    $content .= "Campaign Name: {$model->name}.<br />";
+                    if($oldModel->budget != $model->budget) $content .= "Campaign Budget Changed From: " . sprintf("$%1\$.2f", $oldModel->budget) . ", To: " . sprintf("$%1\$.2f", $model->budget) . "<br />";
+                    if($oldModel->start_datetime != $model->start_datetime) $content .= "Campaign Start Date Changed From: " . date('Y-m-d', $oldModel->start_datetime) . ", To: " . date('Y-m-d', $model->start_datetime) . "<br />";
+                    if($oldModel->end_datetime != $model->end_datetime) $content .= "Campaign End Date Changed From: " . (isset($oldModel->end_datetime) ? date('Y-m-d', $oldModel->end_datetime) : "NULL") . ", TO: " . (isset($model->end_datetime) ? date('Y-m-d', $model->end_datetime) : "NULL") . "<br />";
+                    $oldCriteria = json_decode($oldModel->criteria);
+                    if((string)$oldCriteria->language != $criteria['language']) $content .= "Campaign Language Changed From: " . ((string)$oldCriteria->language ? (string)$oldCriteria->language : "All Languages") . ", To: " . ($criteria['language'] ? $criteria['language'] : "All Languages") . "<br />";
+                    if((string)$oldCriteria->location != $criteria['location']) $content .= "Campaign Location Changed From: " . ((string)$oldCriteria->location ? (string)$oldCriteria->location : "All Countries and Regions") . ", To: " . ($criteria['location'] ? $criteria['location'] : "All Countries and Regions") . "<br />";
+                    if(isset($criteria['schedule']) && !empty($criteria['schedule']))
+                    {
+                        $content .= "Campaign Time-zone Changed To: {$criteria['timezone']}<br />";
+                        $content .= "Campaign Schedule Changed To:<br />";
+                        foreach($criteria['schedule'] as $schedule) $content .= "Day: {$schedule['day']}, From: {$schedule['from_hour']}:{$schedule['from_minute']}, To: {$schedule['to_hour']}:{$schedule['to_minute']}<br />";
+                    }
+                    $aDLog->content = $content;
+                    $aDLog->save();
 
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ADCampaign/view", array('id' => $model->id)));
+                    $transaction->commit();
+
+                    $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ADCampaign/view", array('id' => $model->id)));
+                }
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
+                Yii::app()->user->setFlash('Error', "Fail to update new AD Campaign, Code: ".$ex->getCode().", Msg: ".$ex->getMessage());
             }
         }
 
@@ -277,11 +282,42 @@ class ADCampaignController extends Controller
         }
         foreach($appliedList as $id)
         {
-            $campaign = ADCampaign::model()->findByPk($id, "company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
-            if($campaign!=null)
+            $transaction=NULL;
+            try
             {
-                $campaign->status = $status;
-                if($campaign->save()) $successList[] = $campaign->id;
+                $transaction = Yii::app()->db->beginTransaction();
+                $campaign = ADCampaign::model()->findByPk($id, "company_id=:company_id", array(':company_id' => Yii::app()->session['user']->company_id));
+                if($campaign != null)
+                {
+                    $oldStatus = $campaign->status;
+                    $campaign->status = $status;
+                    if($campaign->save())
+                    {
+                        $successList[] = $campaign->id;
+
+                        $aDLog = new ADChangeLog();
+                        $aDLog->company_id = Yii::app()->session['user']->company_id;
+                        $aDLog->object_type = "ADCampaign";
+                        $aDLog->object_id = $campaign->id;
+                        $aDLog->title = "UpDate AD Campaign for Company: " . Yii::app()->session['user']->company->name . ", Campaign Name: " . $campaign->name;
+                        $aDLog->action = ADChangeLog::Action_Update;
+                        $aDLog->status = ADChangeLog::Status_Pending;
+                        $aDLog->priority = ADChangeLog::Priority_Normal;
+                        $aDLog->create_time_utc = time();
+                        $aDLog->create_user_id = Yii::app()->session['user']->id;
+                        $content = "";
+                        $content .= "UpDate AD Campaign for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                        $content .= "Campaign Name: {$campaign->name}.<br />";
+                        $content .= "Campaign Status Changed From: " . ADCampaign::getStatusText($oldStatus) . ", To: " . ADCampaign::getStatusText($status) . "<br />";
+                        $aDLog->content = $content;
+                        $aDLog->save();
+                    }
+                }
+                $transaction->commit();
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
             }
         }
 

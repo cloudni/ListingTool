@@ -663,20 +663,13 @@ $this->menu=array(
     {
         switch(status)
         {
-            case '<?php echo ADCampaign::Status_Eligible;?>':
+            case '<?php echo ADGroup::Status_Enabled;?>':
                 return "/themes/facebook/images/enabled.png";
-            case '<?php echo ADCampaign::Status_Paused;?>':
+            case '<?php echo ADGroup::Status_Paused;?>':
+            case '<?php echo ADGroup::Status_Pending;?>':
                 return "/themes/facebook/images/pause.gif";
-            case '<?php echo ADCampaign::Status_Pending;?>':
-                return "/themes/facebook/images/pause.gif";
-            case '<?php echo ADCampaign::Status_Suspended;?>':
-                return "/themes/facebook/images/pause.gif";
-            case '<?php echo ADCampaign::Status_LimitedByBudget;?>':
-                return "/themes/facebook/images/pause.gif";
-            case '<?php echo ADCampaign::Status_Removed;?>':
+            case '<?php echo ADGroup::Status_Removed;?>':
                 return "/themes/facebook/images/removed.png";
-            case '<?php echo ADCampaign::Stauts_Ended;?>':
-                return "/themes/facebook/images/disabled.png";
         }
     }
 

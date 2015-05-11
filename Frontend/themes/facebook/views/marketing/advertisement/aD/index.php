@@ -148,7 +148,7 @@ $this->menu=array(
                     if(status == 'success')
                     {
                         $("#ad_group_list option").remove();
-                        $("#ad_group_list").append("<option value=''>Please select an AD Group...</option>");
+                        $("#ad_group_list").append("<option value=''><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'dropdown_choose_ad_group');?></option>");
                         $.each(data['data'],function(n,value){
                             $("#ad_group_list").append("<option value='"+n+"'>"+value+"</option>");
                         });

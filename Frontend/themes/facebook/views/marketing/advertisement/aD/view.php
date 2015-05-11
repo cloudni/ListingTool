@@ -643,6 +643,7 @@ $this->menu=array(
             case '<?php echo ADAdvertiseVariation::Status_Enabled;?>':
                 return "/themes/facebook/images/enabled.png";
             case '<?php echo ADAdvertiseVariation::Status_Paused;?>':
+            case '<?php echo ADAdvertiseVariation::Status_Pending;?>':
                 return "/themes/facebook/images/pause.gif";
             case '<?php echo ADAdvertiseVariation::Status_Removed;?>':
                 return "/themes/facebook/images/removed.png";

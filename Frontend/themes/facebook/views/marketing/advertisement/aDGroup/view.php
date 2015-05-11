@@ -208,30 +208,28 @@ $this->menu=array(
                 <div style="height: 26px; color: #9197a3; font-weight: normal;">
                     <input type="button" class="boldFont greenButton redButton" value="+ <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_group');?>" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/create", array('campaignid'=>$model->adCampaign->id)); ?>'; " />
                     <input type="button" class="boldFont greenButton redButton" value="+ <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement');?>" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid'=>$model->adCampaign->id, 'adgroupid'=>$model->id)); ?>'; " />
-                    <?php if(!empty($adPerformance)):?>
-                        <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
-                        <ul id="menu_segment_action" class="ui-menu" >
-                            <li value="All_Campaigns">None</li>
-                            <li value="All_enabled_Campaigns">
-                                Time
-                                <ul>
-                                    <li>Day</li>
-                                    <li>Week</li>
-                                    <li>Month</li>
-                                    <li>Quarter</li>
-                                    <li>Year</li>
-                                </ul>
-                            </li>
-                            <li value="All_but_removed_Campaigns">Click Type</li>
-                            <li value="All_but_removed_Campaigns">Device</li>
-                        </ul>
-                        <input id="menu_dimensions_action_button" type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'dimension_report');?> ▼" class="menuButton" onclick="showMenu('menu_dimensions_action');" style="width: 142px;" />
-                        <ul id="menu_dimensions_action" class="ui-menu" >
-                            <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/automaticPlacementReport", array('id'=>$model->id));?>';"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'automatic_placement_report');?></li>
-                            <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/geoGraphicReport", array('id'=>$model->id));?>';"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'geo_graphic_report');?></li>
-                            <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/destinationURLReport", array('id'=>$model->id));?>';"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'destination_url_report');?></li>
-                        </ul>
-                    <?php endif;?>
+                    <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
+                    <ul id="menu_segment_action" class="ui-menu" >
+                        <li value="All_Campaigns">None</li>
+                        <li value="All_enabled_Campaigns">
+                            Time
+                            <ul>
+                                <li>Day</li>
+                                <li>Week</li>
+                                <li>Month</li>
+                                <li>Quarter</li>
+                                <li>Year</li>
+                            </ul>
+                        </li>
+                        <li value="All_but_removed_Campaigns">Click Type</li>
+                        <li value="All_but_removed_Campaigns">Device</li>
+                    </ul>
+                    <input id="menu_dimensions_action_button" type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'dimension_report');?> ▼" class="menuButton" onclick="showMenu('menu_dimensions_action');" style="width: 142px;" />
+                    <ul id="menu_dimensions_action" class="ui-menu" >
+                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/automaticPlacementReport", array('id'=>$model->id));?>';"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'automatic_placement_report');?></li>
+                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/geoGraphicReport", array('id'=>$model->id));?>';"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'geo_graphic_report');?></li>
+                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/destinationURLReport", array('id'=>$model->id));?>';"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'destination_url_report');?></li>
+                    </ul>
                 </div>
             </div>
             <div>

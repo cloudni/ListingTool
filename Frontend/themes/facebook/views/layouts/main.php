@@ -264,7 +264,7 @@ if(isset(Yii::app()->session['user']))
     $user_key = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, Yii::app()->params['sitePrivateKey'], Yii::app()->session['user']->username . Yii::app()->params['sitePrivateKey'], MCRYPT_MODE_ECB, $iv);;
     //setcookie("user", Crypt::urlsafe_b64encode(Yii::app()->session['user']->username), time() + 60 * 30, "", "it.net");
     //setcookie("user_key", md5(Yii::app()->session['user']->username . Yii::app()->params['sitePrivateKey']), time() + 60 * 30, "", "it.net");
-    setcookie("user", $user, time() + 60 * 30, "", "it.net");
-    setcookie("user_key", $user_key, time() + 60 * 30, "", "it.net");
+    setcookie("user", urlencode($user), time() + 60 * 30, "", "it.net");
+    setcookie("user_key", urlencode($user_key), time() + 60 * 30, "", "it.net");
 }
 ?>

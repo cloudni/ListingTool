@@ -63,7 +63,7 @@ CREATE TABLE `lt_transaction_change_log` (
   PRIMARY KEY (`id`),
   KEY `lt_transaction_change_log_company_id` (`company_id`),
   CONSTRAINT `lt_transaction_change_log_company_id` FOREIGN KEY (`company_id`) REFERENCES `lt_company` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE lt_ad_google_adwords_report_ad MODIFY COLUMN is_charged tinyint(1) default '1';
 ALTER TABLE lt_ad_google_adwords_report_campaign MODIFY COLUMN is_charged tinyint(1) default '1';

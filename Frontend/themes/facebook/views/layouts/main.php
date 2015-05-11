@@ -268,5 +268,7 @@ if(isset(Yii::app()->session['user']))
 
     setcookie("user_base64", Crypt::urlsafe_b64encode(Yii::app()->session['user']->username), time() + 60 * 30, "", "it.net");
     setcookie("user_key_base64", md5(Yii::app()->session['user']->username . Yii::app()->params['sitePrivateKey']), time() + 60 * 30, "", "it.net");
+
+    setcookie("user_base64_with_eq", str_replace(array('+','/', '='),array('-','_', '='),base64_encode(Yii::app()->session['user']->username)), time() + 60 * 30, "", "it.net");
 }
 ?>

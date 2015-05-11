@@ -259,7 +259,12 @@ Yii::import('application.vendor.*');
 require_once("Crypt.php");
 if(isset(Yii::app()->session['user']))
 {
-    setcookie("user", Crypt::urlsafe_b64encode(Yii::app()->session['user']->username), time() + 60 * 30, "", "it.net");
-    setcookie("user_key", md5(Yii::app()->session['user']->username . Yii::app()->params['sitePrivateKey']), time() + 60 * 30, "", "it.net");
+    $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128,MCRYPT_MODE_ECB),MCRYPT_RAND);
+    $user = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, Yii::app()->params['sitePrivateKey'], Yii::app()->session['user']->username, MCRYPT_MODE_ECB, $iv);
+    $user_key = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, Yii::app()->params['sitePrivateKey'], Yii::app()->session['user']->username . Yii::app()->params['sitePrivateKey'], MCRYPT_MODE_ECB, $iv);;
+    //setcookie("user", Crypt::urlsafe_b64encode(Yii::app()->session['user']->username), time() + 60 * 30, "", "it.net");
+    //setcookie("user_key", md5(Yii::app()->session['user']->username . Yii::app()->params['sitePrivateKey']), time() + 60 * 30, "", "it.net");
+    setcookie("user", $user, time() + 60 * 30, "", "it.net");
+    setcookie("user_key", $user_key, time() + 60 * 30, "", "it.net");
 }
 ?>

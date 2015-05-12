@@ -21,20 +21,47 @@ class ADGroupController extends Controller
 
         if(isset($_POST['adgroup']))
         {
-            $model->company_id = Yii::app()->session['user']->company_id;
-            $model->name = $_POST['adgroup']['name'];
-            $model->default_bid = $_POST['adgroup']['default_bid'];
-            $model->campaign_id = $campaignid;
-            $model->status = ADGroup::Status_Enabled;
-            $model->is_delete = ADGroup::Delete_No;
-            $criteria = array(
-                'keywords'=>str_replace("\n", ADGroup::Criteria_Separator,$_POST['keywords']),
-                'placements'=>str_replace("\n", ADGroup::Criteria_Separator,$_POST['placements']),
-            );
-            $model->criteria = json_encode($criteria);
-            if($model->save())
+            $transaction=NULL;
+            try
             {
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid'=>$model->id, 'adgroupid'=>$model->id, 'lead' => $lead,)));
+                $transaction = Yii::app()->db->beginTransaction();
+                $model->company_id = Yii::app()->session['user']->company_id;
+                $model->name = $_POST['adgroup']['name'];
+                $model->default_bid = $_POST['adgroup']['default_bid'];
+                $model->campaign_id = $campaignid;
+                $model->status = ADGroup::Status_Pending;
+                $model->is_delete = ADGroup::Delete_No;
+                $criteria = array('keywords' => str_replace("\n", ADGroup::Criteria_Separator, $_POST['keywords']), 'placements' => str_replace("\n", ADGroup::Criteria_Separator, $_POST['placements']),);
+                $model->criteria = json_encode($criteria);
+                if($model->save())
+                {
+                    $aDLog = new ADChangeLog();
+                    $aDLog->company_id = Yii::app()->session['user']->company_id;
+                    $aDLog->object_type = "ADGroup";
+                    $aDLog->object_id = $model->id;
+                    $aDLog->title = "Add New AD Group for Company: " . Yii::app()->session['user']->company->name;
+                    $aDLog->action = ADChangeLog::Action_AddNew;
+                    $aDLog->status = ADChangeLog::Status_Pending;
+                    $aDLog->priority = ADChangeLog::Priority_Normal;
+                    $aDLog->create_time_utc = time();
+                    $aDLog->create_user_id = Yii::app()->session['user']->id;
+                    $content = "";
+                    $content .= "Add New AD Group for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                    $content .= "Group Name: {$model->name}.<br />";
+                    $content .= "Group Max default CPC: " . sprintf("$%1\$.2f", $model->default_bid) . "<br />";
+                    $content .= "Group Display Keywords: " . ($criteria['keywords'] ? $criteria['keywords'] : "") . "<br />";
+                    $content .= "Group Placements: " . ($criteria['placements'] ? $criteria['placements'] : "") . "<br />";
+                    $aDLog->content = $content;
+                    $aDLog->save();
+
+                    $transaction->commit();
+                    $this->redirect($this->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid' => $model->id, 'adgroupid' => $model->id, 'lead' => $lead,)));
+                }
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
+                Yii::app()->user->setFlash('Error', "Fail to create new AD Group, Code: ".$ex->getCode().", Msg: ".$ex->getMessage());
             }
         }
 
@@ -56,15 +83,43 @@ class ADGroupController extends Controller
 
         if(isset($_POST['adgroup']))
         {
-            $model->default_bid = $_POST['adgroup']['default_bid'];
-            $criteria = array(
-                'keywords'=>str_replace("\n", ADGroup::Criteria_Separator,$_POST['keywords']),
-                'placements'=>str_replace("\n", ADGroup::Criteria_Separator,$_POST['placements']),
-            );
-            $model->criteria = json_encode($criteria);
-            if($model->save())
+            $transaction=NULL;
+            try
             {
-                $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ADGroup/view", array('id'=>$model->id)));
+                $transaction = Yii::app()->db->beginTransaction();
+                $oldModel = $this->loadModel($id);
+                $oldCriteria = json_decode($oldModel->criteria);
+                $model->default_bid = $_POST['adgroup']['default_bid'];
+                $criteria = array('keywords' => str_replace("\n", ADGroup::Criteria_Separator, $_POST['keywords']), 'placements' => str_replace("\n", ADGroup::Criteria_Separator, $_POST['placements']),);
+                $model->criteria = json_encode($criteria);
+                if($model->save())
+                {
+                    $aDLog = new ADChangeLog();
+                    $aDLog->company_id = Yii::app()->session['user']->company_id;
+                    $aDLog->object_type = "ADGroup";
+                    $aDLog->object_id = $model->id;
+                    $aDLog->title = "UpDate AD Group for Company: " . Yii::app()->session['user']->company->name . ", Group Name: " . $model->name;
+                    $aDLog->action = ADChangeLog::Action_Update;
+                    $aDLog->status = ADChangeLog::Status_Pending;
+                    $aDLog->priority = ADChangeLog::Priority_Normal;
+                    $aDLog->create_time_utc = time();
+                    $aDLog->create_user_id = Yii::app()->session['user']->id;
+                    $content = "";
+                    $content .= "UpDate AD Group for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                    $content .= "Group Name: {$model->name}.<br />";
+                    if($oldModel->default_bid != $model->default_bid) $content .= "Group Max default CPC From: " . sprintf("$%1\$.2f", $oldModel->default_bid) . ", To: " . sprintf("$%1\$.2f", $model->default_bid) . "<br />";
+                    if($oldCriteria->keywords != $criteria->keywords) $content .= "Group Display Keywords: " . $oldCriteria->keywords . ", To: " . $criteria->keywords . "<br />";
+                    if($oldCriteria->placements != $criteria->placements) $content .= "Group Placements: " . $oldCriteria->placements . ", To: " . $criteria->placements . "<br />";
+                    $aDLog->content = $content;
+
+                    $transaction->commit();
+                    $this->redirect($this->createAbsoluteUrl("marketing/advertisement/ADGroup/view", array('id' => $model->id)));
+                }
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
+                Yii::app()->user->setFlash('Error', "Fail to update new AD Group, Code: ".$ex->getCode().", Msg: ".$ex->getMessage());
             }
         }
 
@@ -95,11 +150,11 @@ class ADGroupController extends Controller
             $whereSQL .= " and t.id = :advertisement_id ";
             $groupBySQL .= " , t.id ";
         }
-        $performanceSQL = "select t.id, gaa.id, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost, gara.date, gara.month, gara.year, gara.week, gara.month_of_year
+        $performanceSQL = "select t.id, gaa.id, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.charge_amount) as cost, gara.date, gara.month, gara.year, gara.week, gara.month_of_year
                             from lt_ad_advertise t
                             left join lt_ad_advertise_variation aav on aav.ad_advertise_id = t.id
                             left join lt_google_adwords_ad gaa on gaa.lt_ad_advertise_variation_id = aav.id
-                            inner join lt_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
+                            inner join lt_ad_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
                             where t.company_id = :company_id and t.ad_group_id = :ad_group_id
                             $whereSQL $groupBySQL";
         $command = Yii::app()->db->createCommand($performanceSQL);
@@ -180,11 +235,42 @@ class ADGroupController extends Controller
         }
         foreach($appliedList as $id)
         {
-            $adGroup = ADGroup::model()->findByPk($id, "company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
-            if($adGroup!=null)
+            $transaction=NULL;
+            try
             {
-                $adGroup->status = $status;
-                if($adGroup->save()) $successList[] = $adGroup->id;
+                $transaction = Yii::app()->db->beginTransaction();
+                $adGroup = ADGroup::model()->findByPk($id, "company_id=:company_id", array(':company_id' => Yii::app()->session['user']->company_id));
+                if($adGroup != null)
+                {
+                    $oldStatus = $adGroup->status;
+                    $adGroup->status = $status;
+                    if($adGroup->save())
+                    {
+                        $successList[] = $adGroup->id;
+
+                        $aDLog = new ADChangeLog();
+                        $aDLog->company_id = Yii::app()->session['user']->company_id;
+                        $aDLog->object_type = "ADGroup";
+                        $aDLog->object_id = $adGroup->id;
+                        $aDLog->title = "UpDate AD Group for Company: " . Yii::app()->session['user']->company->name . ", Group Name: " . $adGroup->name;
+                        $aDLog->action = ADChangeLog::Action_Update;
+                        $aDLog->status = ADChangeLog::Status_Pending;
+                        $aDLog->priority = ADChangeLog::Priority_Normal;
+                        $aDLog->create_time_utc = time();
+                        $aDLog->create_user_id = Yii::app()->session['user']->id;
+                        $content = "";
+                        $content .= "UpDate AD Group for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                        $content .= "AD Group Name: {$adGroup->name}.<br />";
+                        $content .= "AD Group Status Changed From: " . ADGroup::getStatusText($oldStatus) . ", To: " . ADGroup::getStatusText($status) . "<br />";
+                        $aDLog->content = $content;
+                        $aDLog->save();
+                    }
+                }
+                $transaction->commit();
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
             }
         }
 
@@ -198,8 +284,8 @@ class ADGroupController extends Controller
         $this->layout='//layouts/column2';
         $model = $this->loadModel($id);
 
-        $placementSQL = "SELECT t.domain, t.clicks, t.impressions as impr, t.cost / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
-                            FROM lt_google_adwords_report_automatic_placements t
+        $placementSQL = "SELECT t.domain, t.clicks, t.impressions as impr, t.charge_amount as cost
+                            FROM lt_ad_google_adwords_report_automatic_placements t
                             left join lt_google_adwords_ad_group gaag on gaag.id = t.ad_group_id
                             left join lt_ad_group ag on ag.id = gaag.lt_ad_group_id
                             where ag.company_id = :company_id and ag.id = :group_id";
@@ -233,8 +319,8 @@ class ADGroupController extends Controller
         $model = $this->loadModel($id);
 
         $performanceSQL = "SELECT t.click_type, t.criteria_parameters, t.device, t.effective_destination_url,
-                            t.clicks, t.impressions as impr, t.cost / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
-                            FROM lt_google_adwords_report_destination_url t
+                            t.clicks, t.impressions as impr, t.charge_amount as cost
+                            FROM lt_ad_google_adwords_report_destination_url t
                             left join lt_google_adwords_ad_group gaag on gaag.id = t.ad_group_id
                             left join lt_ad_group ag on ag.id = gaag.lt_ad_group_id
                             where ag.company_id = :company_id and ag.id = :group_id";
@@ -266,8 +352,8 @@ class ADGroupController extends Controller
             exit();
         }
 
-        $performanceSQL = "SELECT ag.id, ag.name, ag.default_bid, ag.status, sum(t.clicks) as clicks, sum(t.impressions) as impr, sum(t.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
-                            FROM lt_google_adwords_report_ad_group t
+        $performanceSQL = "SELECT ag.id, ag.name, ag.default_bid, ag.status, sum(t.clicks) as clicks, sum(t.impressions) as impr, sum(t.charge_amount) as cost
+                            FROM lt_ad_google_adwords_report_ad_group t
                             left join lt_google_adwords_ad_group aag on aag.id = t.ad_group_id
                             left join lt_ad_group ag on aag.lt_ad_group_id = ag.id
                             where ag.company_id = :company_id and ag.id = :id and t.date >= :startdate and t.date <= :enddate ";
@@ -282,11 +368,11 @@ class ADGroupController extends Controller
 
         //get ad performance if have
         $adPerformanceSQL = "SELECT t.id, t.name, aav.width, aav.height, aav.code, aav.type,
-                                sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
+                                sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.charge_amount) as cost
                                 FROM lt_ad_advertise t
                                 left join lt_ad_advertise_variation aav on aav.ad_advertise_id = t.id
                                 left join lt_google_adwords_ad gaa on gaa.lt_ad_advertise_variation_id = aav.id
-                                left join lt_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
+                                left join lt_ad_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
                                 where t.company_id = :company_id and t.ad_group_id = :id
                                 group by t.id
                                 order by t.id desc";
@@ -317,10 +403,10 @@ class ADGroupController extends Controller
         {
             $whereSQL .= " and t.campaign_id = :campaign_id ";
         }
-        $performanceSQL = "select t.id, t.name, t.default_bid, t.status, sum(garag.clicks) as clicks, sum(garag.impressions) as impr, sum(garag.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']."  as cost
+        $performanceSQL = "select t.id, t.name, t.default_bid, t.status, sum(garag.clicks) as clicks, sum(garag.impressions) as impr, sum(garag.charge_amount) as cost
                             from lt_ad_group t
                             left join lt_google_adwords_ad_group gaag on gaag.lt_ad_group_id = t.id
-                            left join lt_google_adwords_report_ad_group garag on garag.ad_group_id = gaag.id and garag.date >= :startdate and garag.date <= :enddate
+                            left join lt_ad_google_adwords_report_ad_group garag on garag.ad_group_id = gaag.id and garag.date >= :startdate and garag.date <= :enddate
                             where t.company_id = :company_id
                             $whereSQL
                             group by t.id
@@ -362,7 +448,7 @@ class ADGroupController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + delete, updateGroupStatus', // we only allow deletion via POST request
+            'postOnly + delete, updateGroupStatus, getPerformanceData, getPerformanceStatistic, getIndexPerformance', // we only allow deletion via POST request
         );
     }
 

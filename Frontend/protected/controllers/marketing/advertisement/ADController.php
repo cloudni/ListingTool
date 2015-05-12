@@ -152,7 +152,7 @@ class ADController extends Controller
                     $variation->company_id = Yii::app()->session['user']->company_id;
                     $variation->type = ADAdvertiseVariation::Type_AdGallery;
                     $variation->code = ADAdvertiseVariation::Code_Flash;
-                    $variation->status = ADAdvertiseVariation::Status_Paused;
+                    $variation->status = ADAdvertiseVariation::Status_Pending;
                     $variation->criteria = json_encode($params);
                     $variation->display_url = $_POST['displayURL_value'];
                     $variation->landing_page = isset($_POST['landingPage_value']) ? $_POST['landingPage_value'] : '';
@@ -170,7 +170,7 @@ class ADController extends Controller
                     $variation->company_id = Yii::app()->session['user']->company_id;
                     $variation->type = ADAdvertiseVariation::Type_AdGallery;
                     $variation->code = ADAdvertiseVariation::Code_Html5;
-                    $variation->status = ADAdvertiseVariation::Status_Paused;
+                    $variation->status = ADAdvertiseVariation::Status_Pending;
                     $variation->criteria = json_encode($params);
                     $variation->display_url = $_POST['displayURL_value'];
                     $variation->landing_page = isset($_POST['landingPage_value']) ? $_POST['landingPage_value'] : '';
@@ -179,6 +179,23 @@ class ADController extends Controller
                     $variation->is_delete = ADAdvertiseVariation::Delete_No;
                     if(!$variation->save()) $error .= "HTML5 variation creation failed. Width: {$html5['width']}, Height: {$html5['height']}.<br />";
                 }
+
+                $aDLog = new ADChangeLog();
+                $aDLog->company_id = Yii::app()->session['user']->company_id;
+                $aDLog->object_type = "ADAdvertise";
+                $aDLog->object_id = $model->id;
+                $aDLog->title = "Add New AD for Company: " . Yii::app()->session['user']->company->name;
+                $aDLog->action = ADChangeLog::Action_AddNew;
+                $aDLog->status = ADChangeLog::Status_Pending;
+                $aDLog->priority = ADChangeLog::Priority_Normal;
+                $aDLog->create_time_utc = time();
+                $aDLog->create_user_id = Yii::app()->session['user']->id;
+                $content = "";
+                $content .= "Add New AD for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                $content .= "AD Name: {$model->name}.<br />";
+                $content .= "AD id: {$model->id}.<br />";
+                $aDLog->content = $content;
+                $aDLog->save();
 
                 $transaction->commit();
                 if($error) Yii::app()->user->setFlash('Error', $error);
@@ -338,11 +355,11 @@ class ADController extends Controller
             $whereSQL .= " and t.id = :ad_variation_id ";
             $groupBySQL .= " , t.id ";
         }
-        $performanceSQL = "select sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost,
+        $performanceSQL = "select sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.charge_amount) as cost,
                             gara.date, gara.month, gara.year, gara.week, gara.month_of_year
                             from lt_ad_advertise_variation t
                             left join lt_google_adwords_ad gaa on gaa.lt_ad_advertise_variation_id = t.id
-                            inner join lt_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
+                            inner join lt_ad_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
                             where t.company_id = :company_id and t.ad_advertise_id = :ad_advertise_id
                             $whereSQL
                             $groupBySQL;";
@@ -426,11 +443,43 @@ class ADController extends Controller
         }
         foreach($appliedList as $id)
         {
-            $variation = ADAdvertiseVariation::model()->findByPk($id, "company_id=:company_id" ,array(':company_id' => Yii::app()->session['user']->company_id));
-            if($variation!=null)
+            $transaction=NULL;
+            try
             {
-                $variation->status = $status;
-                if($variation->save()) $successList[] = $variation->id;
+                $transaction = Yii::app()->db->beginTransaction();
+                $variation = ADAdvertiseVariation::model()->findByPk($id, "company_id=:company_id", array(':company_id' => Yii::app()->session['user']->company_id));
+                if($variation != null)
+                {
+                    $oldStatus = $variation->status;
+                    $variation->status = $status;
+                    if($variation->save())
+                    {
+                        $successList[] = $variation->id;
+
+                        $aDLog = new ADChangeLog();
+                        $aDLog->company_id = Yii::app()->session['user']->company_id;
+                        $aDLog->object_type = "ADAdvertiseVariation";
+                        $aDLog->object_id = $variation->id;
+                        $aDLog->title = "UpDate AD Variation Status for Company: " . Yii::app()->session['user']->company->name . ", AD Name: " . $variation->adAdvertise->name;
+                        $aDLog->action = ADChangeLog::Action_Update;
+                        $aDLog->status = ADChangeLog::Status_Pending;
+                        $aDLog->priority = ADChangeLog::Priority_Normal;
+                        $aDLog->create_time_utc = time();
+                        $aDLog->create_user_id = Yii::app()->session['user']->id;
+                        $content = "";
+                        $content .= "UpDate AD Variation Status for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
+                        $content .= "AD Name: {$variation->adAdvertise->name}.<br />";
+                        $content .= "AD Variation Type: ".ADAdvertiseVariation::getTypeText($variation->type).",  width: {$variation->width}, Height: {$variation->height}, Code: ".ADAdvertiseVariation::getCodeText($variation->code).".<br />";
+                        $content .= "AD Variation Status Changed From: " . ADAdvertiseVariation::getStatusText($oldStatus) . ", To: " . ADAdvertiseVariation::getStatusText($status) . "<br />";
+                        $aDLog->content = $content;
+                        $aDLog->save();
+                    }
+                }
+                $transaction->commit();
+            }
+            catch(Exception $ex)
+            {
+                if(isset($transaction)) $transaction->rollback();
             }
         }
 
@@ -442,7 +491,7 @@ class ADController extends Controller
     public function actionGetPerformanceStatistic($advertisementid=null, $advariationid=null, $start='', $end='')
     {
         if(!$end) $end = date("Y-m-d");
-        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 34);
+        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 14);
 
         if(isset($_POST['advertisementid'])) $advertisementid = $_POST['advertisementid'];
         if(isset($_POST['advariationid'])) $advariationid = $_POST['advariationid'];
@@ -456,10 +505,10 @@ class ADController extends Controller
             exit();
         }
 
-        $performanceSQL = "select sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
+        $performanceSQL = "select sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.charge_amount) as cost
                             from lt_ad_advertise_variation t
                             left join lt_google_adwords_ad gaa on gaa.lt_ad_advertise_variation_id = t.id
-                            left join lt_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
+                            left join lt_ad_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
                             where t.company_id = :company_id and t.ad_advertise_id = :ad_advertise_id";
         $command = Yii::app()->db->createCommand($performanceSQL);
         $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
@@ -471,10 +520,10 @@ class ADController extends Controller
         if(!empty($result)) $performance = array('clicks'=>$result['clicks'], 'impr'=>$result['impr'], 'cost'=>$result['cost']);
 
         //get ad variation performance if have
-        $adPerformanceSQL = "select t.id, t.code, t.width, t.height, t.status, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
+        $adPerformanceSQL = "select t.id, t.code, t.width, t.height, t.status, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.charge_amount) as cost
                                 from lt_ad_advertise_variation t
                                 left join lt_google_adwords_ad gaa on gaa.lt_ad_advertise_variation_id = t.id
-                                left join lt_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
+                                left join lt_ad_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
                                 where t.company_id = :company_id and t.ad_advertise_id = :ad_advertise_id
                                 group by t.id
                                 order by t.id desc";
@@ -508,7 +557,7 @@ class ADController extends Controller
     public function actionGetIndexPerformance($adcampaignid=null, $adgroupid=null, $start='', $end='')
     {
         if(!$end) $end = date("Y-m-d");
-        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 34);
+        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 14);
 
         if(isset($_POST['adcampaignid'])) $adcampaignid = $_POST['adcampaignid'];
         if(isset($_POST['adgroupid'])) $adgroupid = $_POST['adgroupid'];
@@ -524,11 +573,11 @@ class ADController extends Controller
         {
             $whereSQL .= " and t.ad_group_id = :ad_group_id ";
         }
-        $performanceSQL = "SELECT t.id, t.name, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.cost) / ".Yii::app()->params['google']['AdWords']['reportCurrencyUnit']." as cost
+        $performanceSQL = "SELECT t.id, t.name, sum(gara.clicks) as clicks, sum(gara.impressions) as impr, sum(gara.charge_amount) as cost
                             FROM lt_ad_advertise t
                             left join lt_ad_advertise_variation aav on aav.ad_advertise_id = t.id
                             left join lt_google_adwords_ad gaa on gaa.lt_ad_advertise_variation_id = aav.id
-                            left join lt_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
+                            left join lt_ad_google_adwords_report_ad gara on gara.id = gaa.id and gara.date >= :startdate and gara.date <= :enddate
                             where t.company_id = :company_id
                             $whereSQL
                             group by t.id
@@ -573,7 +622,7 @@ class ADController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + delete, getDynamicGroupList, getListingParams, uploadLogo, getPerformanceData, updateVariationStatus', // we only allow deletion via POST request
+            'postOnly + delete, getDynamicGroupList, getListingParams, uploadLogo, getPerformanceData, updateVariationStatus, getPerformanceStatistic, getADGroupList, getIndexPerformance', // we only allow deletion via POST request
         );
     }
 

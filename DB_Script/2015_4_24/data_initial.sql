@@ -319,5 +319,7 @@ INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`crea
 INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('last_month',2,0,'Last Month',1430796812,1,1430796812,1);
 INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('dropdown_choose_ad_group',1,0,'请选择广告组...',1431012232,1,1431012232,1);
 INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('dropdown_choose_ad_group',2,0,'Choose AD Group...',1431012246,1,1431012313,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (774,'company_financa',1,0,'财务信息',1431327025,1,1431327025,1);
+INSERT INTO `lt_resource_string` (`id`,`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES (775,'company_financa',2,0,'Finance',1431327036,1,1431327036,1);
 UNLOCK TABLES;
 /*end 2015-05-05*/

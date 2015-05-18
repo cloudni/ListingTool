@@ -455,9 +455,13 @@ require_once 'reference.php';
                         <h1><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_feed');?></h1>
                         <div style="padding-top: 7px; clear: both; width: 100%;">
                             <?php echo CHtml::textField('search_string', NULL, array('size'=>24, 'style'=>'height: 17px;'));?>
+                            <?php echo CHtml::dropDownList('platform', NULL, Store::getPlatformOptionsStatic(), array('id'=>'platform_selector', 'style'=>'width: 100px; height: 23px;')); ?>
                             <?php echo CHtml::dropDownList('store', NULL, Store::getStoreOptions(Store::PLATFORM_EBAY), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_stores')), 'style'=>'width: 120px;'));?>
-                            <?php echo CHtml::dropDownList('ebay_site', NULL, eBaySiteIdCodeType::getSiteIdCodeTypeOptions(), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_ebay_sites')), 'style'=>'width: 120px;'));?>
-                            <?php echo CHtml::button(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'search'), array('id'=>'search_button', 'name'=>'search_button', 'style'=>'height: 23px;'));?>
+                            <div id="platform_options_<?php echo Store::PLATFORM_EBAY;?>" style="display: inline;">
+                                <?php echo CHtml::dropDownList('ebay_site', NULL, eBaySiteIdCodeType::getSiteIdCodeTypeOptions(), array('empty'=>array('all'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'all_ebay_sites')), 'style'=>'width: 120px;'));?>
+                            </div>
+                            <div id="platform_options_<?php echo Store::PLATFORM_WISH;?>" style="display: none;"></div>
+                            <?php echo CHtml::button(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'search'), array('id'=>'search_button', 'name'=>'search_button', 'style'=>'height: 23px;', 'diabled'=>'disabled'));?>
                         </div>
                         <div id="searched_listing_table_div" style="padding-top: 7px; clear: both; width: 590px; display: none;">
                             <table id="searched_listing_table" border="0" cellspacing="0" cellpadding="0" width="100%"></table>
@@ -1033,8 +1037,43 @@ require_once 'reference.php';
             }
         });
 
+        $("#platform_selector").change(function(){
+            $("div[id^='platform_options_']").css('display', 'none');
+            $("#platform_options_"+$("#platform_selector").val()).css('display', 'inline');
+
+            $("#store option:gt(0)").remove();
+            $("#ajaxloading").css("display", "block");
+            $.ajax({
+                type: "POST",
+                url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/getActiveStoreList");?>',
+                data: {
+                    platform: $("#platform_selector").val()
+                },
+                dataType: "JSON",
+                success: function(data, status, xhr) {
+                    $("#ajaxloading").css("display", "none");
+                    for(var i in data['data'])
+                        $("#store").append("<option value='"+i+"'>"+data['data'][i]+"</option>");
+
+                    $("#searched_listing_table_div").css('display', 'none');
+                    $("#searched_listing_table tr").remove();
+
+                    var aapliedList = $("#applied_listing_result span");
+                    for(var i=0;i<aapliedList.length;i++)
+                        $(aapliedList[i]).remove();
+                    updateAppliedListingPanel();
+                    updateADPreview($("#platform_selector").val());
+                },
+                error: function(data, status, xhr) {
+                    $("#ajaxloading").css("display", "none");
+                    alert("Fail to get store list.\nPlease try again later.");
+                }
+            });
+        });
+
         $("#search_button").click(function(){
             var searchKeyword = $("#search_string").val();
+            var platform = $("#platform_selector").val();
             var searchSite = $("#ebay_site").val();
             var searchCategory = 'all';
             var searchStore = $("#store").val();
@@ -1044,64 +1083,118 @@ require_once 'reference.php';
 
             $("#ajaxloading").css("display", "block");
 
-            $.ajax({
-                type: "POST",
-                url: '<?php echo Yii::app()->createAbsoluteUrl("eBay/eBayListing/searchAppliedListings");?>',
-                data: {
-                    searchKeyword:searchKeyword,
-                    searchSite: searchSite,
-                    searchCategory: searchCategory,
-                    searchStore: searchStore,
-                    searchMode: searchMode,
-                    searchEngine: searchEngine,
-                    excludeShipLocation: false,
-                    searchListType: "<?php echo eBayListingTypeCodeType::FixedPriceItem;?>"
-                },
-                dataType: "JSON",
-                success: function(data, status, xhr) {
-                    $("#ajaxloading").css("display", "none");
+            if(platform == <?php echo Store::PLATFORM_EBAY;?>) {
+                $.ajax({
+                    type: "POST",
+                    url: '<?php echo Yii::app()->createAbsoluteUrl("eBay/eBayListing/searchAppliedListings");?>',
+                    data: {
+                        searchKeyword: searchKeyword,
+                        searchPlatform: platform,
+                        searchSite: searchSite,
+                        searchCategory: searchCategory,
+                        searchStore: searchStore,
+                        searchMode: searchMode,
+                        searchEngine: searchEngine,
+                        excludeShipLocation: false,
+                        searchListType: "<?php echo eBayListingTypeCodeType::FixedPriceItem;?>"
+                    },
+                    dataType: "JSON",
+                    success: function (data, status, xhr) {
+                        $("#ajaxloading").css("display", "none");
 
-                    if(data['status']=='success')
-                    {
-                        if($("#searched_listing_table_div").css('display') == 'none')
-                            $("#searched_listing_table_div").css('display', 'block');
+                        if (data['status'] == 'success') {
+                            if ($("#searched_listing_table_div").css('display') == 'none')
+                                $("#searched_listing_table_div").css('display', 'block');
 
-                        $("#searched_listing_table tr").remove();
-                        for(var i=0;i<data['data'].length;i++)
-                        {
-                            var temp = data['data'][i];
-                            temp = data['data'][i]['title'];
-                            data['data'][i]['title'] = "";
-                            $("#searched_listing_table").append(
-                                "<tr>" +
-                                "<td><input type='checkbox' id='searched_listing_id[]' name='searched_listing_id[]' value='"+data['data'][i]['ebay_listing_id']+"' onclick=' ' /></td>" +
-                                "<td>"+(data['data'][i]['msku'])+"</td>" +
-                                "<td>"+(data['data'][i]['storename'])+"</td>" +
-                                "<td><a href='"+(data['data'][i]['viewurl'])+"' target='_blank'>"+(data['data'][i]['ebay_listing_id'])+"</a></td>" +
-                                "<td><span title='"+(temp)+"'>"+((temp.length > 10 ? temp.substring(0,10) : temp)+'...')+"</span></td>" +
-                                "<td><input type='button' value='<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'add');?>' onclick='addSearchedListingToTrack("+data['data'][i]['ebay_listing_id']+");' /><input id='searched_listing_"+data['data'][i]['ebay_listing_id']+"' type='hidden' value='"+$.toJSON(data['data'][i])+"'></td>"+
-                                "</tr>"
-                            );
+                            $("#searched_listing_table tr").remove();
+                            for (var i = 0; i < data['data'].length; i++) {
+                                var temp = data['data'][i];
+                                temp = data['data'][i]['title'];
+                                data['data'][i]['title'] = "";
+                                $("#searched_listing_table").append(
+                                    "<tr>" +
+                                    "<td><input type='checkbox' id='searched_listing_id[]' name='searched_listing_id[]' value='" + data['data'][i]['ebay_listing_id'] + "' onclick=' ' /></td>" +
+                                    "<td>" + (data['data'][i]['msku']) + "</td>" +
+                                    "<td>" + (data['data'][i]['storename']) + "</td>" +
+                                    "<td><a href='" + (data['data'][i]['viewurl']) + "' target='_blank'>" + (data['data'][i]['ebay_listing_id']) + "</a></td>" +
+                                    "<td><span title='" + (temp) + "'>" + ((temp.length > 10 ? temp.substring(0, 10) : temp) + '...') + "</span></td>" +
+                                    "<td>"+
+                                        '<input type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'add');?>" onclick="addSearchedListingToTrack(\''+ data['data'][i]['ebay_listing_id'] + '\');" />'+
+                                        "<input id='searched_listing_" + data['data'][i]['ebay_listing_id'] + "' type='hidden' value='" + $.toJSON(data['data'][i]) + "'>"+
+                                    "</td>" +
+                                    "</tr>"
+                                );
+                            }
+                            if (data['data'].length > 5) {
+                                $("#searched_listing_table_div").addClass('applied_listing_table_div');
+                            }
+                            else {
+                                $("#searched_listing_table_div").removeClass('applied_listing_table_div');
+                            }
                         }
-                        if(data['data'].length>5)
-                        {
-                            $("#searched_listing_table_div").addClass('applied_listing_table_div');
+                        else {
+                            alert("<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'search_listing_failed');?>");
                         }
-                        else
-                        {
-                            $("#searched_listing_table_div").removeClass('applied_listing_table_div');
-                        }
-                    }
-                    else
-                    {
+                    },
+                    error: function (data, status, xhr) {
+                        $("#ajaxloading").css("display", "none");
                         alert("<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'search_listing_failed');?>");
                     }
-                },
-                error: function(data, status, xhr) {
-                    $("#ajaxloading").css("display", "none");
-                    alert("<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'search_listing_failed');?>");
-                }
-            });
+                });
+            }
+            else if(platform == <?php echo Store::PLATFORM_WISH;?>)
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '<?php echo Yii::app()->createAbsoluteUrl("Wish/WishListing/searchAppliedListings");?>',
+                    data: {
+                        searchKeyword: searchKeyword,
+                        searchStore: searchStore
+                    },
+                    dataType: "JSON",
+                    success: function(data, status, xhr) {
+                        $("#ajaxloading").css("display", "none");
+                        if (data['status'] == 'success') {
+                            if ($("#searched_listing_table_div").css('display') == 'none')
+                                $("#searched_listing_table_div").css('display', 'block');
+
+                            $("#searched_listing_table tr").remove();
+                            var itemURL = "<?php echo Yii::app()->params['wish']['itemURL'];?>";
+                            for (var i = 0; i < data['data'].length; i++) {
+                                var temp = data['data'][i];
+                                temp = data['data'][i]['name'];
+                                data['data'][i]['name'] = "";
+                                $("#searched_listing_table").append(
+                                    "<tr>" +
+                                    "<td><input type='checkbox' id='searched_listing_id[]' name='searched_listing_id[]' value='" + data['data'][i]['wish_id'] + "' onclick='' /></td>" +
+                                    "<td>" + (data['data'][i]['parent_sku']) + "</td>" +
+                                    "<td>" + (data['data'][i]['storename']) + "</td>" +
+                                    "<td><a href='" + itemURL.replace('%s', data['data'][i]['wish_id']) + "' target='_blank'>" + (data['data'][i]['wish_id']) + "</a></td>" +
+                                    "<td><span title='" + (temp) + "'>" + ((temp.length > 10 ? temp.substring(0, 10) : temp) + '...') + "</span></td>" +
+                                    "<td>"+
+                                        '<input type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'add');?>" onclick="addSearchedListingToTrack(\''+ data['data'][i]['wish_id'] + '\');" />'+
+                                        "<input id='searched_listing_" + data['data'][i]['wish_id'] + "' type='hidden' value='" + $.toJSON(data['data'][i]) + "'>"+
+                                    "</td>" +
+                                    "</tr>"
+                                );
+                                if (data['data'].length > 5) {
+                                    $("#searched_listing_table_div").addClass('applied_listing_table_div');
+                                }
+                                else {
+                                    $("#searched_listing_table_div").removeClass('applied_listing_table_div');
+                                }
+                            }
+                        }
+                        else {
+                            alert("<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'search_listing_failed');?>");
+                        }
+                    },
+                    error: function(data, status, xhr) {
+                        $("#ajaxloading").css("display", "none");
+                        alert("Fail to get Wish listing.\nPlease try again later.");
+                    }
+                });
+            }
         });
     });
 
@@ -1135,6 +1228,7 @@ require_once 'reference.php';
 
     function addAppliedListingToTrack(id)
     {
+        var platform = $("#platform_selector").val();
         if(id)
         {
             var obj = jQuery.parseJSON($("#searched_listing_"+id).val());
@@ -1145,19 +1239,34 @@ require_once 'reference.php';
                 if($(appliedList[i]).val()==obj.id)
                     return false;
             }
-            var spanName = "applied_listing_id_"+obj.ebay_listing_id+"_"+obj.id;
-            $("#applied_listing_result").html(
-                $("#applied_listing_result").html()+
-                "<span id='"+spanName+"' style='padding-right: 15px;'>"+"" +
-                "<a href='/ebay/ebaylisting/view/id/"+obj.id+"' title='"+obj.title+"' target='_blank'>"+obj.ebay_listing_id+"</a>"+
-                "<input id='applied_listings_value[]' name='applied_listings_value[]' value='"+obj.id+"' type='hidden' />"+
-                "<div class='removeAppliedListing' onclick='removeAppliedListing($(\"#"+spanName +"\")[0])' ></div>"+
-                "</span>"
-            );
+            if(platform == <?php echo Store::PLATFORM_EBAY;?>) {
+                var spanName = "applied_listing_id_" + obj.ebay_listing_id + "_" + obj.id;
+                $("#applied_listing_result").html(
+                    $("#applied_listing_result").html() +
+                    "<span id='" + spanName + "' style='padding-right: 15px;'>" + "" +
+                    "<a href='/ebay/ebaylisting/view/id/" + obj.id + "' title='" + obj.title + "' target='_blank'>" + obj.ebay_listing_id + "</a>" +
+                    "<input id='applied_listings_value[]' name='applied_listings_value[]' value='" + obj.id + "' type='hidden' />" +
+                    "<div class='removeAppliedListing' onclick='removeAppliedListing($(\"#" + spanName + "\")[0])' ></div>" +
+                    "</span>"
+                );
+                //get listing params and save in local cache if needed
+                getListingsParams(<?php echo Store::PLATFORM_EBAY;?>, obj.id);
+            }
+            else if(platform == <?php echo Store::PLATFORM_WISH;?>) {
+                var spanName = "applied_listing_id_" + obj.wish_id + "_" + obj.id;
+                var itemURL = "<?php echo Yii::app()->params['wish']['itemURL'];?>";
+                $("#applied_listing_result").html(
+                    $("#applied_listing_result").html() +
+                    "<span id='" + spanName + "' style='padding-right: 15px;'>" + "" +
+                    "<a href='" + itemURL.replace('%s', obj.wish_id) + "' title='" + obj.name + "' target='_blank'>" + obj.wish_id + "</a>" +
+                    "<input id='applied_listings_value[]' name='applied_listings_value[]' value='" + obj.id + "' type='hidden' />" +
+                    "<div class='removeAppliedListing' onclick='removeAppliedListing($(\"#" + spanName + "\")[0])' ></div>" +
+                    "</span>"
+                );
+                getListingsParams(<?php echo Store::PLATFORM_WISH;?>, obj.id);
+            }
 
             updateAppliedListingPanel();
-            //get listing params and save in local cache if needed
-            getListingsParams('eBayListing', obj.id);
 
             return true;
         }
@@ -1171,13 +1280,18 @@ require_once 'reference.php';
     {
         $(obj).remove();
         updateAppliedListingPanel();
-        updateADPreview();
+        updateADPreview($("#platform_selector").val());
     }
 
     function getListingsParams(type, id)
     {
-        if(listingParams["eBayListing_"+id] != undefined) {
-            updateADPreview();
+        if(type == <?php echo Store::PLATFORM_EBAY;?> && listingParams["eBayListing_"+id] != undefined) {
+            updateADPreview(<?php echo Store::PLATFORM_EBAY;?>);
+            return;
+        }
+
+        if(type == <?php echo Store::PLATFORM_WISH;?> && listingParams["WishListing_"+id] != undefined) {
+            updateADPreview(<?php echo Store::PLATFORM_WISH;?>);
             return;
         }
 
@@ -1195,8 +1309,9 @@ require_once 'reference.php';
                 $("#ajaxloading").css("display", "none");
                 if(data['status']=='success')
                 {
-                    listingParams["eBayListing_"+id] = data['data'];
-                    updateADPreview();
+                    if(type == <?php echo Store::PLATFORM_EBAY;?>) listingParams["eBayListing_"+id] = data['data'];
+                    if(type == <?php echo Store::PLATFORM_WISH;?>) listingParams["WishListing_"+id] = data['data'];
+                    updateADPreview(type);
                 }
                 else
                 {
@@ -1210,77 +1325,148 @@ require_once 'reference.php';
         });
     }
 
-    function updateADPreview()
+    function updateADPreview(platform)
     {
         var item = $($("#applied_listing_result input")[0]).val();
         var item2 = $($("#applied_listing_result input")[1]).val();
-        if(item != undefined)
-        {
-            if(listingParams["eBayListing_"+item] == undefined)
-                item = undefined;
-            else
-                item = listingParams["eBayListing_"+item];
 
-            if(item2 != undefined && listingParams["eBayListing_"+item2] == undefined)
-                item2 = getListingsParams('eBayListing', item2);
-            else
-                item2 = listingParams["eBayListing_"+item2];
-        }
+        if(platform == <?php echo Store::PLATFORM_EBAY;?>) {
+            if (item != undefined) {
+                if (listingParams["eBayListing_" + item] == undefined)
+                    item = undefined;
+                else
+                    item = listingParams["eBayListing_" + item];
 
-        //single & item1
-        if(item != undefined && item['title'] != undefined) {
-            $("#adPreViewSingle_itemHeadline").html(item['title']);
-            $("#adPreViewM_itemHeadline1").html(item['title']);
-            $("#adPreViewSingle_itemDesc").html(item['title']);
-        }
-        else {
-            $("#adPreViewSingle_itemHeadline").html(adPreviewDefault['itemHeadline']);
-            $("#adPreViewM_itemHeadline1").html(adPreviewDefault['itemDesc']);
-            $("#adPreViewSingle_itemDesc").html(adPreviewDefault['itemDesc']);
-        }
-        if(item != undefined && item['subtitle'] != undefined) {
-            $("#adPreViewSingle_itemSubTitle").html(item['subtitle']);
-            $("#adPreViewSingle_itemSubTitle_div").css('display', 'block');
-        }
-        else {
-            $("#adPreViewSingle_itemSubTitle").html('');
-            $("#adPreViewSingle_itemSubTitle_div").css('display', 'none');
-        }
-        if(item != undefined && item['startprice'] != undefined) {
-            $("#adPreViewSingle_itemPrice").html(item['startprice']);
-            $("#adPreViewM_itemPrice1").html(item['startprice']);
-        }
-        else {
-            $("#adPreViewSingle_itemPrice").html(adPreviewDefault['itemPrice']);
-            $("#adPreViewM_itemPrice1").html(adPreviewDefault['itemPrice']);
-        }
-        if(item != undefined && item['picture'] != undefined) {
-            $("#adPreViewSingle_itemImage").prop('src', item['picture']);
-            $("#adPreViewM_itemImage1").prop('src', item['picture']);
-        }
-        else {
-            $("#adPreViewSingle_itemImage").prop('src', adPreviewDefault['itemImage']);
-            $("#adPreViewM_itemImage1").prop('src', adPreviewDefault['itemImage']);
-        }
+                if (item2 != undefined && listingParams["eBayListing_" + item2] == undefined)
+                    item2 = getListingsParams(<?php echo Store::PLATFORM_EBAY;?>, item2);
+                else
+                    item2 = listingParams["eBayListing_" + item2];
+            }
 
-        //item2
-        if(item2 != undefined && item2['title'] != undefined) {
-            $("#adPreViewM_itemHeadline2").html(item2['title']);
+            //single & item1
+            if (item != undefined && item['title'] != undefined) {
+                $("#adPreViewSingle_itemHeadline").html(item['title']);
+                $("#adPreViewM_itemHeadline1").html(item['title']);
+                $("#adPreViewSingle_itemDesc").html(item['title']);
+            }
+            else {
+                $("#adPreViewSingle_itemHeadline").html(adPreviewDefault['itemHeadline']);
+                $("#adPreViewM_itemHeadline1").html(adPreviewDefault['itemDesc']);
+                $("#adPreViewSingle_itemDesc").html(adPreviewDefault['itemDesc']);
+            }
+            if (item != undefined && item['subtitle'] != undefined) {
+                $("#adPreViewSingle_itemSubTitle").html(item['subtitle']);
+                $("#adPreViewSingle_itemSubTitle_div").css('display', 'block');
+            }
+            else {
+                $("#adPreViewSingle_itemSubTitle").html('');
+                $("#adPreViewSingle_itemSubTitle_div").css('display', 'none');
+            }
+            if (item != undefined && item['startprice'] != undefined) {
+                $("#adPreViewSingle_itemPrice").html(item['startprice']);
+                $("#adPreViewM_itemPrice1").html(item['startprice']);
+            }
+            else {
+                $("#adPreViewSingle_itemPrice").html(adPreviewDefault['itemPrice']);
+                $("#adPreViewM_itemPrice1").html(adPreviewDefault['itemPrice']);
+            }
+            if (item != undefined && item['picture'] != undefined) {
+                $("#adPreViewSingle_itemImage").prop('src', item['picture']);
+                $("#adPreViewM_itemImage1").prop('src', item['picture']);
+            }
+            else {
+                $("#adPreViewSingle_itemImage").prop('src', adPreviewDefault['itemImage']);
+                $("#adPreViewM_itemImage1").prop('src', adPreviewDefault['itemImage']);
+            }
+
+            //item2
+            if (item2 != undefined && item2['title'] != undefined) {
+                $("#adPreViewM_itemHeadline2").html(item2['title']);
+            }
+            else {
+                $("#adPreViewM_itemHeadline2").html(adPreviewDefault['itemDesc']);
+            }
+            if (item2 != undefined && item2['startprice'] != undefined) {
+                $("#adPreViewM_itemPrice2").html(item2['startprice']);
+            }
+            else {
+                $("#adPreViewM_itemPrice2").html(adPreviewDefault['itemPrice']);
+            }
+            if (item2 != undefined && item2['picture'] != undefined) {
+                $("#adPreViewM_itemImage2").prop('src', item2['picture']);
+            }
+            else {
+                $("#adPreViewM_itemImage2").prop('src', adPreviewDefault['itemImage']);
+            }
         }
-        else {
-            $("#adPreViewM_itemHeadline2").html(adPreviewDefault['itemDesc']);
-        }
-        if(item2 != undefined && item2['startprice'] != undefined) {
-            $("#adPreViewM_itemPrice2").html(item2['startprice']);
-        }
-        else {
-            $("#adPreViewM_itemPrice2").html(adPreviewDefault['itemPrice']);
-        }
-        if(item2 != undefined && item2['picture'] != undefined) {
-            $("#adPreViewM_itemImage2").prop('src', item2['picture']);
-        }
-        else {
-            $("#adPreViewM_itemImage2").prop('src', adPreviewDefault['itemImage']);
+        else if(platform == <?php echo Store::PLATFORM_WISH;?>) {
+            if (item != undefined) {
+                if (listingParams["WishListing_" + item] == undefined)
+                    item = undefined;
+                else
+                    item = listingParams["WishListing_" + item];
+
+                if (item2 != undefined && listingParams["WishListing_" + item2] == undefined)
+                    item2 = getListingsParams(<?php echo Store::PLATFORM_EBAY;?>, item2);
+                else
+                    item2 = listingParams["WishListing_" + item2];
+            }
+
+            //single & item1
+            if (item != undefined && item['name'] != undefined) {
+                $("#adPreViewSingle_itemHeadline").html(item['name']);
+                $("#adPreViewM_itemHeadline1").html(item['name']);
+                $("#adPreViewSingle_itemDesc").html(item['name']);
+            }
+            else {
+                $("#adPreViewSingle_itemHeadline").html(adPreviewDefault['itemHeadline']);
+                $("#adPreViewM_itemHeadline1").html(adPreviewDefault['itemDesc']);
+                $("#adPreViewSingle_itemDesc").html(adPreviewDefault['itemDesc']);
+            }
+            if (item != undefined && item['name'] != undefined) {
+                $("#adPreViewSingle_itemSubTitle").html(item['name']);
+                $("#adPreViewSingle_itemSubTitle_div").css('display', 'block');
+            }
+            else {
+                $("#adPreViewSingle_itemSubTitle").html('');
+                $("#adPreViewSingle_itemSubTitle_div").css('display', 'none');
+            }
+            if (item != undefined && item['startprice'] != undefined) {
+                $("#adPreViewSingle_itemPrice").html(item['startprice']);
+                $("#adPreViewM_itemPrice1").html(item['startprice']);
+            }
+            else {
+                $("#adPreViewSingle_itemPrice").html(adPreviewDefault['itemPrice']);
+                $("#adPreViewM_itemPrice1").html(adPreviewDefault['itemPrice']);
+            }
+            if (item != undefined && item['main_image'] != undefined) {
+                $("#adPreViewSingle_itemImage").prop('src', item['main_image']);
+                $("#adPreViewM_itemImage1").prop('src', item['main_image']);
+            }
+            else {
+                $("#adPreViewSingle_itemImage").prop('src', adPreviewDefault['itemImage']);
+                $("#adPreViewM_itemImage1").prop('src', adPreviewDefault['itemImage']);
+            }
+
+            //item2
+            if (item2 != undefined && item2['name'] != undefined) {
+                $("#adPreViewM_itemHeadline2").html(item2['name']);
+            }
+            else {
+                $("#adPreViewM_itemHeadline2").html(adPreviewDefault['itemDesc']);
+            }
+            if (item2 != undefined && item2['startprice'] != undefined) {
+                $("#adPreViewM_itemPrice2").html(item2['startprice']);
+            }
+            else {
+                $("#adPreViewM_itemPrice2").html(adPreviewDefault['itemPrice']);
+            }
+            if (item2 != undefined && item2['main_image'] != undefined) {
+                $("#adPreViewM_itemImage2").prop('src', item2['main_image']);
+            }
+            else {
+                $("#adPreViewM_itemImage2").prop('src', adPreviewDefault['itemImage']);
+            }
         }
 
         if((item != undefined && item2 != undefined) || (item == undefined && item2 == undefined))

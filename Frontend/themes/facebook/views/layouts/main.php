@@ -157,6 +157,14 @@
                     ),
                 ),
                 array(
+                    'label'=>'Wish',
+                    'itemOptions'=>array('class'=>'dir'),
+                    'visible'=>!Yii::app()->user->isGuest,
+                    'items'=>array(
+                        array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'wish_listing'), 'url'=>array('/Wish/WishListing')),
+                    ),
+                ),
+                array(
                     'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_marketing'),
                     'itemOptions'=>array('class'=>'dir'),
                     'visible'=>!Yii::app()->user->isGuest,

@@ -90,6 +90,15 @@ require_once("reference.php");
     </div>
 
     <div id="platform_<?php echo Store::PLATFORM_WISH;?>" class="platform">
+        <div class="container">
+            <div class="row left span-4">
+                <?php echo $form->labelEx($model,ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'wish_api_key')); ?>
+            </div>
+            <div class="row left">
+                <?php echo $form->textField($model,'wish_token',array('size'=>60,'maxlength'=>1000, )); ?>
+                <?php echo $form->error($model,'wish_token'); ?>
+            </div>
+        </div>
     </div>
 
     <div class="container">

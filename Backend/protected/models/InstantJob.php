@@ -39,6 +39,7 @@ class InstantJob extends CActiveRecord
 
     const ACTION_BULKUPDATEITEMS=1;
     CONST ACTION_EBAYGETSELLERLIST=2;
+    CONST ACTION_WISHGETALLPRODUCTS=3;
 
     public function getActionOptions()
     {

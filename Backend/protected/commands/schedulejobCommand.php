@@ -10,6 +10,7 @@ Yii::import('application.vendor.*');
 require_once 'eBay/eBayTradingAPI.php';
 require_once 'eBay/eBayShoppingAPI.php';
 require_once 'LogFile.php';
+require_once 'Wish/WishAPI.php';
 
 class schedulejobCommand extends CConsoleCommand
 {
@@ -54,7 +55,8 @@ class schedulejobCommand extends CConsoleCommand
             case Store::PLATFORM_EBAY:
                 $result = $this->processeBayScheduleJob($scheduleJob);
                 break;
-            case Store::PLATFORM_AMAZON:
+            case Store::PLATFORM_WISH:
+                $result = $this->processWishScheduleJob($scheduleJob);
                 break;
             default:
                 echo "Unknow platform: {$scheduleJob->platform}! exit.\n";
@@ -118,6 +120,45 @@ class schedulejobCommand extends CConsoleCommand
                 return false;
                 break;
         }
+    }
+
+    protected function processWishScheduleJob($scheduleJob)
+    {
+        if(empty($scheduleJob)) return false;
+        switch($scheduleJob->action)
+        {
+            case ScheduleJob::ACTION_WISHGETALLPRODUCTS:
+                return $this->wishGetAllProducts($scheduleJob);
+                break;
+            default:
+            echo "Unknow action: {$scheduleJob->action}. Exit!\n";
+            return false;
+            break;
+        }
+    }
+
+    protected function wishGetAllProducts($scheduleJob)
+    {
+        $logFile = new LogFile(Yii::app()->params['wish']['logPath'], 'GetSellerList.'.date("Ymd.his", time()).'.log');
+        $logFile->saveOutputToFile();
+
+        if(intval($scheduleJob->params) <=0)
+        {
+            echo "Input parameter(s) error for Wish GetAllProducts, exit!\n";
+            return false;
+        }
+
+        $store = Store::model()->find("id=:id and platform=:platform and is_active=:is_active", array(":id"=>(int)$scheduleJob->params, ':platform'=>Store::PLATFORM_WISH, ':is_active'=>Store::ACTIVE_YES));
+        if(empty($store))
+        {
+            echo "store doesn't exist or is not active, exit!\n";
+            return false;
+        }
+
+        WishAPI::GetAllProducts($store->id);
+
+        echo "end schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n\n";
+        return true;
     }
 
     protected function eBayGetSellerList($scheduleJob)

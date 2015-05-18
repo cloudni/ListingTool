@@ -39,10 +39,10 @@ class WishAPI {
             {
                 $wishProd = WishListing::model()->find("wish_id=:id and company_id=:company_id", array(
                     ':id'=>(string)$prod->id,
-                    ':company_id'=>Yii::app()->session['user']->company_id,
+                    ':company_id'=>$store->company_id,
                 ));
                 if(empty($wishProd)) $wishProd = new WishListing();
-                $wishProd->company_id = Yii::app()->session['user']->company_id;
+                $wishProd->company_id = $store->company_id;
                 $wishProd->wish_id = (string)$prod->id;
                 $wishProd->store_id = $store->id;
                 $wishProd->main_image = isset($prod->main_image) ? (string)$prod->main_image : '';

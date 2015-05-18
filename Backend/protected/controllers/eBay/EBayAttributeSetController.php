@@ -46,8 +46,9 @@ class EBayAttributeSetController extends Controller
 
     public function actionTestGetSellerList()
     {
-        $params=array('CategorySiteID'=>203, 'CategoryParent'=>'', 'LevelLimit'=>4, 'ViewAllNodes'=>true, 'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll);
-        eBayTradingAPI::GetCategories($params);
+        //echo 'dd';eBayTradingAPI::GetItem(eBayListing::model()->findByPk(2118));
+        /*$params=array('CategorySiteID'=>203, 'CategoryParent'=>'', 'LevelLimit'=>4, 'ViewAllNodes'=>true, 'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll);
+        eBayTradingAPI::GetCategories($params);*/
         /*eBayTradingAPI::GeteBayDetails(eBaySiteIdCodeType::eBayMotors, 2);die();
         $siteID = eBaySiteIdCodeType::US;
         $siteDetail = eBayDetail::model()->find("site_id=:site_id", array(':site_id' => $siteID));
@@ -125,7 +126,7 @@ class EBayAttributeSetController extends Controller
         /*$scheduleJob = new ScheduleJob();
         $scheduleJob->crontab = "10-12/2,16-50/4,5,9,10,51,80 * * 1-10/2 *";
         $this->getNextExecuteTimeV2($scheduleJob);*/
-        //eBayTradingAPI::GetItem(eBayListing::model()->findByPk(292));
+
         /*eBayTradingAPI::GetSellerEvents(3,array(
             'HideVariations'=>false,
             'IncludeVariationSpecifics'=>true,

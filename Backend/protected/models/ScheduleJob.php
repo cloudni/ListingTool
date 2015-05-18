@@ -27,6 +27,7 @@ class ScheduleJob extends CActiveRecord
     const ACTION_EBAYGETSELLERDASHBOARD=5;
     const ACTION_EBAYGETUSER=6;
     const ACTION_EBAYSHOPPINGAPIGETMULTIPLEITEMS=7;
+    const ACTION_WISHGETALLPRODUCTS=8;
 
     public function getActionOptions()
     {

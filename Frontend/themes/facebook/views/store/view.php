@@ -72,6 +72,14 @@ $this->menu=array(
                     );
                 }
 
+                if($model->platform==Store::PLATFORM_WISH)
+                {
+                    $attributes[] = array(
+                        'name'=>CHtml::encode(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'wish_api_key')),
+                        'value'=>CHtml::encode(substr($model->wish_token, 0, 10).'...'),
+                    );
+                }
+
                 $this->widget('zii.widgets.CDetailView', array(
                     'data'=>$model,
                     'attributes'=>$attributes

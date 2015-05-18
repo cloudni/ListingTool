@@ -139,4 +139,9 @@ if (!empty($google)) {
     $config['params']['google'] = $google;
 }
 
+$wish =  require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'wish.php');
+if (!empty($wish)) {
+    $config['params']['wish'] = $wish;
+}
+
 return $config;

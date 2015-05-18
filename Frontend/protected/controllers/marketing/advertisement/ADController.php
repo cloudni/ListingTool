@@ -55,19 +55,23 @@ class ADController extends Controller
                     throw new Exception("create advertise error");
 
                 //create ad_feed second
+                $platform = (int)$_POST['platform'];
                 $error = "";
-                $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
-                $eBayAttributeSet = eBayAttributeSet::model()->find('entity_type_id=:entity_type_id',array(':entity_type_id'=>$eBayEntityType->id,));
-                $titleAttribute = $eBayAttributeSet->getEntityAttribute("Title");
-                $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
-                $viewUrlAttribute = $eBayAttributeSet->getEntityAttribute("ListingDetails->ViewItemURL");
-                $locationAttribute = $eBayAttributeSet->getEntityAttribute("Location");
-                $pictureURLAttribute = $eBayAttributeSet->getEntityAttribute("PictureDetails->PictureURL");
-                $subTitleAttribute = $eBayAttributeSet->getEntityAttribute("SubTitle");
-                $startPriceAttribute = $eBayAttributeSet->getEntityAttribute("StartPrice->Value");
-                foreach($_POST['applied_listings_value'] as $id)
+                if($platform == Store::PLATFORM_EBAY)
                 {
-                    $select = "SELECT t.*,
+                    $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model' => 'eBayListing'));
+                    $eBayAttributeSet = eBayAttributeSet::model()->find('entity_type_id=:entity_type_id', array(':entity_type_id' => $eBayEntityType->id,));
+                    $titleAttribute = $eBayAttributeSet->getEntityAttribute("Title");
+                    $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
+                    $viewUrlAttribute = $eBayAttributeSet->getEntityAttribute("ListingDetails->ViewItemURL");
+                    $locationAttribute = $eBayAttributeSet->getEntityAttribute("Location");
+                    $pictureURLAttribute = $eBayAttributeSet->getEntityAttribute("PictureDetails->PictureURL");
+                    $subTitleAttribute = $eBayAttributeSet->getEntityAttribute("SubTitle");
+                    $startPriceAttribute = $eBayAttributeSet->getEntityAttribute("StartPrice->Value");
+
+                    foreach($_POST['applied_listings_value'] as $id)
+                    {
+                        $select = "SELECT t.*,
                             title.value as title,
                             vurl.value as viewurl,
                             location.value as location,
@@ -83,33 +87,66 @@ class ADController extends Controller
                             left join lt_ebay_entity_varchar as startprice on startprice.ebay_entity_id = t.id and startprice.ebay_entity_attribute_id = {$startPriceAttribute->id}
                             left join lt_ebay_entity_varchar as picture on picture.ebay_entity_id = t.id and picture.ebay_entity_attribute_id = {$pictureURLAttribute->id}
                             where t.company_id=:company_id
-                            and sstatus.value = '".eBayListingStatusCodeType::Active."'
+                            and sstatus.value = '" . eBayListingStatusCodeType::Active . "'
                             and t.id = :id";
-                    $command = Yii::app()->db->createCommand($select);
-                    $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
-                    $command->bindValue(":id", $id, PDO::PARAM_INT);
-                    $listing = $command->queryRow();
+                        $command = Yii::app()->db->createCommand($select);
+                        $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+                        $command->bindValue(":id", $id, PDO::PARAM_INT);
+                        $listing = $command->queryRow();
 
-                    $feed = new ADAdvertiseFeed();
-                    $feed->ad_advertise_id = $model->id;
-                    $feed->ad_group_id = $adgroupid;
-                    $feed->ad_campaign_id = $adcampaignid;
-                    $feed->company_id = Yii::app()->session['user']->company_id;
-                    $feed->item_id = $listing['ebay_listing_id'];var_dump($listing['ebay_listing_id']);
-                    $feed->item_type = 'eBayListing';
-                    $feed->item_keywords = '';
-                    $feed->item_headline = $listing['title'];
-                    $feed->item_sub_headline = isset($listing['subtitle']) ? $listing['subtitle'] : '';
-                    $feed->item_description = $listing['title'];
-                    $feed->item_address = $listing['location'];
-                    $feed->price = isset($listing['startprice']) ? $listing['startprice'] : 0;
-                    $feed->image_url = isset($listing['picture']) ? $listing['picture'] : '';
-                    $feed->sale_price = isset($listing['startprice']) ? $listing['startprice'] : 0;
-                    $feed->remarketing_url = isset($listing['viewurl']) ? $listing['viewurl'] : '';
-                    $feed->destination_url = isset($listing['viewurl']) ? $listing['viewurl'] : '';
-                    $feed->final_url = isset($listing['viewurl']) ? $listing['viewurl'] : '';
+                        $feed = new ADAdvertiseFeed();
+                        $feed->ad_advertise_id = $model->id;
+                        $feed->ad_group_id = $adgroupid;
+                        $feed->ad_campaign_id = $adcampaignid;
+                        $feed->company_id = Yii::app()->session['user']->company_id;
+                        $feed->item_id = $listing['ebay_listing_id'];
+                        $feed->item_type = $platform;
+                        $feed->item_keywords = '';
+                        $feed->item_headline = $listing['title'];
+                        $feed->item_sub_headline = isset($listing['subtitle']) ? $listing['subtitle'] : '';
+                        $feed->item_description = $listing['title'];
+                        $feed->item_address = $listing['location'];
+                        $feed->price = isset($listing['startprice']) ? $listing['startprice'] : 0;
+                        $feed->image_url = isset($listing['picture']) ? $listing['picture'] : '';
+                        $feed->sale_price = isset($listing['startprice']) ? $listing['startprice'] : 0;
+                        $feed->remarketing_url = isset($listing['viewurl']) ? $listing['viewurl'] : '';
+                        $feed->destination_url = isset($listing['viewurl']) ? $listing['viewurl'] : '';
+                        $feed->final_url = isset($listing['viewurl']) ? $listing['viewurl'] : '';
 
-                    if(!$feed->save()) $error .= "Item Feed processed error for eBay Listing, ID: ".$id."<br />";
+                        if(!$feed->save()) $error .= "Item Feed processed error for eBay Listing, ID: " . $id . "<br />";
+                    }
+                }
+                else if($platform == Store::PLATFORM_WISH)
+                {
+                    foreach($_POST['applied_listings_value'] as $id)
+                    {
+                        $listing = WishListing::model()->find("id=:id and company_id = :company_id", array(":id"=>$id, ':company_id'=>Yii::app()->session['user']->company_id));
+                        if(empty($listing))
+                        {
+                            $error .= "Item Feed processed error for Wish Listing, ID: " . $id . "<br />";
+                            continue;
+                        }
+                        $feed = new ADAdvertiseFeed();
+                        $feed->ad_advertise_id = $model->id;
+                        $feed->ad_group_id = $adgroupid;
+                        $feed->ad_campaign_id = $adcampaignid;
+                        $feed->company_id = Yii::app()->session['user']->company_id;
+                        $feed->item_id = $listing['wish_id'];
+                        $feed->item_type = $platform;
+                        $feed->item_keywords = '';
+                        $feed->item_headline = $listing['name'];
+                        $feed->item_sub_headline = isset($listing['name']) ? $listing['name'] : '';
+                        $feed->item_description = $listing['name'];
+                        $feed->item_address = '';
+                        $feed->price = 0;
+                        $feed->image_url = isset($listing['main_image']) ? $listing['main_image'] : '';
+                        $feed->sale_price = 0;
+                        $feed->remarketing_url = sprintf(Yii::app()->params['wish']['itemURL'], $listing['wish_id']);
+                        $feed->destination_url = sprintf(Yii::app()->params['wish']['itemURL'], $listing['wish_id']);
+                        $feed->final_url = sprintf(Yii::app()->params['wish']['itemURL'], $listing['wish_id']);
+
+                        if(!$feed->save(false)) $error .= "Item Feed processed error for Wish Listing, ID: " . $id . "<br />";
+                    }
                 }
 
                 //create variations third
@@ -225,10 +262,10 @@ class ADController extends Controller
     public function actionGetListingParams()
     {
         $params = array(
-            'itemType'=>'eBayListing',
+            'itemType'=>Store::PLATFORM_EBAY,
             'id'=>null,
         );
-        if(isset($_POST['itemType'])) $params['itemType'] = (string)$_POST['itemType'];
+        if(isset($_POST['itemType'])) $params['itemType'] = (int)$_POST['itemType'];
         if(isset($_POST['id'])) $params['id'] = (int)$_POST['id'];
 
         if(!isset($params['itemType']) || !isset($params['id']))
@@ -239,7 +276,7 @@ class ADController extends Controller
 
         switch($params['itemType'])
         {
-            case "eBayListing":
+            case Store::PLATFORM_EBAY:
                 $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
                 $eBayAttributeSet = eBayAttributeSet::model()->find('entity_type_id=:entity_type_id',array(':entity_type_id'=>$eBayEntityType->id,));
                 $titleAttribute = $eBayAttributeSet->getEntityAttribute("Title");
@@ -272,7 +309,19 @@ class ADController extends Controller
                 $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
                 $command->bindValue(":id", $params['id'], PDO::PARAM_INT);
                 $listings = $command->queryRow();
-                if(!isset($listings['startprice'])) $listings['startprice'] = sprintf("$%1\$.2f", $listings['startprice']); else $listings['startprice'] = sprintf("$%1\$.2f", 0);
+                if(isset($listings['startprice'])) $listings['startprice'] = sprintf("$%1\$.2f", $listings['startprice']); else $listings['startprice'] = sprintf("$%1\$.2f", 0);
+                $result = array('status'=>'success', 'data'=>$listings);
+                echo json_encode($result);
+                break;
+            case Store::PLATFORM_WISH:
+                $select = "SELECT t.`id`, t.`company_id`, t.`store_id`, t.`wish_id`, t.`main_image`, t.`name`, t.`review_status`, t.`upc`, t.`extra_images`, t.`landing_page_url`, t.`number_saves`, t.`number_sold`, t.`parent_sku`
+                        FROM lt_wish_listing t
+                        where t.company_id = :company_id and t.id = :id and t.review_status = 'approved' ;";
+                $command = Yii::app()->db->createCommand($select);
+                $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+                $command->bindValue(":id", $params['id'], PDO::PARAM_INT);
+                $listings = $command->queryRow();
+                if(isset($listings['startprice'])) $listings['startprice'] = sprintf("$%1\$.2f", $listings['startprice']); else $listings['startprice'] = sprintf("$%1\$.2f", 0);
                 $result = array('status'=>'success', 'data'=>$listings);
                 echo json_encode($result);
                 break;
@@ -600,6 +649,15 @@ class ADController extends Controller
         echo json_encode($result);
     }
 
+    public function actionGetActiveStoreList($platform=Store::PLATFORM_EBAY)
+    {
+        if(isset($_POST['platform'])) $platform = $_POST['platform'];
+
+        $storeList = Store::getStoreOptions($platform);
+        $result = array('status'=>'success', 'data'=>$storeList);
+        echo json_encode($result);
+    }
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
@@ -634,8 +692,24 @@ class ADController extends Controller
     public function accessRules()
     {
         return array(
-            array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index', 'create', 'view', 'update', 'getDynamicGroupList', 'getListingParams', 'uploadLogo', 'view', 'getPerformanceData', 'updateVariationStatus', 'getPerformanceStatistic', 'getADGroupList', 'getIndexPerformance'),
+            array(
+                'allow',  // allow all users to perform 'index' and 'view' actions
+                'actions'=>array(
+                    'index',
+                    'create',
+                    'view',
+                    'update',
+                    'getDynamicGroupList',
+                    'getListingParams',
+                    'uploadLogo',
+                    'view',
+                    'getPerformanceData',
+                    'updateVariationStatus',
+                    'getPerformanceStatistic',
+                    'getADGroupList',
+                    'getIndexPerformance',
+                    'getActiveStoreList'
+                ),
                 'users'=>array('@'),
             ),
             array('deny',  // deny all users

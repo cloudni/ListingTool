@@ -74,12 +74,27 @@ class ADAdvertiseVariation extends NIActiveRecord
     CONST Status_Removed=2;
     CONST Status_Pending=3;
 
+    public static function getTypeOptions()
+    {
+        return array(
+            self::Type_Text=>'Text Ad',
+            self::Type_Image=>'Image Ad',
+            self::Type_AdGallery=>'Gallery Ad',
+        );
+    }
+
     public static function getCodeOptions()
     {
         return array(
             self::Code_Flash=>'Flash',
             self::Code_Html5=>'HTML5',
         );
+    }
+
+    public static function getTypeText($type)
+    {
+        $typeOptions = self::getCodeOptions();
+        return isset($typeOptions[$type]) ? $typeOptions[$type] : "unknown Type ({$type})";
     }
 
     public static function getCodeText($code)

@@ -147,7 +147,8 @@ class EBayListingController extends Controller
                             duration.value as listduration,
                             ltype.value as listtype,
                             title.value as title,
-                            vurl.value as viewurl
+                            vurl.value as viewurl,
+                            ".Store::PLATFORM_EBAY." as platform
                             FROM `lt_ebay_listing` `t`
                             left join lt_ebay_entity_varchar as mainsku on mainsku.ebay_entity_id = t.id and mainsku.ebay_entity_attribute_id = {$mainSKUAttribute->id}
                             left join lt_ebay_entity_varchar as variationsku on variationsku.ebay_entity_id = t.id and variationsku.ebay_entity_attribute_id = {$variationSKUAttribute->id}

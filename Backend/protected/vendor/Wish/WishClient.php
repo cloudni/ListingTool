@@ -43,7 +43,7 @@ class WishClient{
 
   public function __construct($api_key,$merchant_id=null){
 
-      $session_type=self::Session_Type_SandBox;
+      $session_type=self::Session_Type_Prod;
     $this->session = new WishSession($api_key,$session_type,$merchant_id);
 
   }

@@ -41,7 +41,7 @@ class WishListingController extends Controller
         $command = Yii::app()->db->createCommand($statusSQL);
         $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
         $result = $command->queryAll();
-        if(empty($statusList))
+        if(empty($result))
             $statusList = array();
         else
             foreach($result as $status) $statusList[$status['review_status']] = $status['review_status'];

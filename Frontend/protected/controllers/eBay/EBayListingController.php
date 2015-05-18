@@ -50,7 +50,48 @@ class EBayListingController extends Controller
 
     public function actionTestGetItem()
     {
-
+        $inputs = json_decode('{"applied_listings":["151678494907"],"update_rules":{"price":{"action":"minus","value":0.1,"type":"amount"}},"company_id":"2"}');
+        if(!isset($inputs->applied_listings))
+        {
+            echo "find error in parameters, exit\n";
+            return false;
+        }
+        if(!isset($inputs->company_id))
+        {
+            echo "find error in parameters, exit\n";
+            return false;
+        }
+        $params['applied_listings'] = $inputs->applied_listings;
+        $params['company_id'] = $inputs->company_id;
+        $params['update_rules'] = array();
+        if(isset($inputs->update_rules->quantity))
+            $params['update_rules']['quantity'] = $inputs->update_rules->quantity;
+        if(isset($inputs->update_rules->price))
+        {
+            $params['update_rules']['price'] = array(
+                'action'=>$inputs->update_rules->price->action,
+                'value'=>$inputs->update_rules->price->value,
+                'type'=>$inputs->update_rules->price->type,
+            );
+        }
+        if(isset($inputs->update_rules->description))
+        {
+            $params['update_rules']['description'] = array(
+                'action'=>$inputs->update_rules->description->action,
+                'tag'=>$inputs->update_rules->description->tag,
+                'value'=>$inputs->update_rules->description->value,
+                'position'=>$inputs->update_rules->description->position,
+            );
+        }
+        if(isset($inputs->update_rules->excludeShipLocation))
+        {
+            $params['update_rules']['excludeShipLocation'] = $inputs->update_rules->excludeShipLocation;
+        }
+        var_dump($params);die();
+        /*Yii::import('application.vendor.Wish.*');
+        require_once 'WishAPI.php';
+        WishAPI::GetAllProducts(29);*/
+        //var_dump($client->getAllProducts());
         //eBayShoppingAPI::GetItem();
         /*try
         {
@@ -62,7 +103,7 @@ class EBayListingController extends Controller
         {
             echo 'eeee';
         }*/
-        eBayShoppingAPI::GetItem();
+        //eBayShoppingAPI::GetItem();
         //var_dump(Yii::app()->params['eBay']['logPath']);die();
         //$this->redirect($this->createAbsoluteUrl("/index", array()));
         //eBayTradingAPI::GetSellerDashboard(1);
@@ -207,7 +248,8 @@ class EBayListingController extends Controller
                             duration.value as listduration,
                             ltype.value as listtype,
                             title.value as title,
-                            vurl.value as viewurl
+                            vurl.value as viewurl,
+                            ".Store::PLATFORM_EBAY." as platform
                             FROM `lt_ebay_listing` `t`
                             left join lt_ebay_entity_varchar as mainsku on mainsku.ebay_entity_id = t.id and mainsku.ebay_entity_attribute_id = {$mainSKUAttribute->id}
                             left join lt_ebay_entity_varchar as variationsku on variationsku.ebay_entity_id = t.id and variationsku.ebay_entity_attribute_id = {$variationSKUAttribute->id}
@@ -455,7 +497,7 @@ class EBayListingController extends Controller
 
         $params["company_id"] = Yii::app()->session['user']->company_id;
 
-        if(count($params['applied_listings'])>0)
+        if(count($params['applied_listings'])>3)
         {
             $instantJob = new InstantJob();
             $instantJob->action = InstantJob::ACTION_BULKUPDATEITEMS;

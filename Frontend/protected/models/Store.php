@@ -14,6 +14,7 @@
  * @property string $ebay_token
  * @property integer $HardExpirationTime
  * @property integer $ebay_site_code
+ * @property string $wish_token
  * @property integer $create_time_utc
  * @property integer $create_user_id
  * @property integer $update_time_utc
@@ -56,10 +57,10 @@ class Store extends NIActiveRecord
 			array('name, platform', 'required'),
 			array('platform, is_active, company_id, ebay_api_key_id, ebay_site_code, HardExpirationTime', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>256),
-            array('ebay_token', 'safe'),
+            array('ebay_token, wish_token', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, platform, is_active, company_id, last_listing_sync_time_utc, ebay_api_key_id, ebay_token, ebay_site_code, HardExpirationTime, create_time_utc, create_user_id, update_time_utc, update_user_id', 'safe', 'on'=>'search'),
+			array('id, name, platform, is_active, company_id, last_listing_sync_time_utc, ebay_api_key_id, ebay_token, ebay_site_code, HardExpirationTime, wish_token, create_time_utc, create_user_id, update_time_utc, update_user_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -92,6 +93,7 @@ class Store extends NIActiveRecord
             'ebay_token' => 'eBay Token',
             'ebay_site_code' => 'eBay Site Code',
             'HardExpirationTime' => 'eBay Token Expiration Time',
+            'wish_token' => 'Wish Token',
             'last_listing_sync_time_utc' => Yii::t('models/Store','Last Listing Sync Time Utc'),
             'create_time_utc' => Yii::t('models/Store','Create Time Utc') ,
             'create_user_id' => Yii::t('models/Store','Create User'),
@@ -128,6 +130,7 @@ class Store extends NIActiveRecord
         $criteria->compare('ebay_token',$this->ebay_token,true);
         $criteria->compare('ebay_site_code',$this->ebay_site_code);
         $criteria->compare('HardExpirationTime',$this->HardExpirationTime);
+        $criteria->compare('wish_token',$this->wish_token);
 		$criteria->compare('create_time_utc',$this->create_time_utc);
 		$criteria->compare('create_user_id',$this->create_user_id);
 		$criteria->compare('update_time_utc',$this->update_time_utc);
@@ -157,9 +160,9 @@ class Store extends NIActiveRecord
     {
         return array(
             self::PLATFORM_EBAY=>'eBay.com',
+            self::PLATFORM_WISH=>'Wish.com',
             /*self::PLATFORM_AMAZON=>'Amazon.com',
             self::PLATFORM_ALIEXPRESS=>'AliExpress.com',
-            self::PLATFORM_WISH=>'Wish.com',
             self::PLATFORM_ECSHOP=>'Ecshop sites',
             self::PLATFORM_MAGENTO=>'Magento sites',*/
         );
@@ -169,9 +172,9 @@ class Store extends NIActiveRecord
     {
         return array(
             self::PLATFORM_EBAY=>'eBay.com',
+            self::PLATFORM_WISH=>'Wish.com',
             /*self::PLATFORM_AMAZON=>'Amazon.com',
             self::PLATFORM_ALIEXPRESS=>'AliExpress.com',
-            self::PLATFORM_WISH=>'Wish.com',
             self::PLATFORM_ECSHOP=>'Ecshop sites',
             self::PLATFORM_MAGENTO=>'Magento sites',*/
         );

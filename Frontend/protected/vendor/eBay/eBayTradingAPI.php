@@ -1126,7 +1126,7 @@ class eBayTradingAPI
         $params['VerifyOnly'] = $verifyOnly;
 
         $eBayService = new eBayService();
-        $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "ReviseFixedPriceItem").self::ReviseItemXML($params).$eBayService->getRequestAuthFoot("ReviseFixedPriceItem");
+        $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "ReviseFixedPriceItem").self::ReviseFixedPriceItemXML($params).$eBayService->getRequestAuthFoot("ReviseFixedPriceItem");
         $eBayService->api_url = $eBayListing->Store->eBayApiKey->api_url;
         $eBayService->createHTTPHead($eBayListing->site_id, $eBayListing->Store->eBayApiKey->compatibility_level, $eBayListing->Store->eBayApiKey->dev_id, $eBayListing->Store->eBayApiKey->app_id, $eBayListing->Store->eBayApiKey->cert_id, "ReviseFixedPriceItem");
 
@@ -1233,6 +1233,10 @@ class eBayTradingAPI
             $temp = "";
             foreach($params['ExcludeShipToLocation'] as $exclude)
                 $temp .= eBayService::createXMLElement('ExcludeShipToLocation', $exclude);
+            if($temp)
+            {
+                $temp .= eBayService::createXMLElement('SellerExcludeShipToLocationsPreference', 'false');
+            }
             $xml .= eBayService::createXMLElement('ShippingDetails', $temp);
         }
 
@@ -1350,6 +1354,10 @@ class eBayTradingAPI
             $temp = "";
             foreach($params['ExcludeShipToLocation'] as $exclude)
                 $temp .= eBayService::createXMLElement('ExcludeShipToLocation', $exclude);
+            if($temp)
+            {
+                $temp .= eBayService::createXMLElement('SellerExcludeShipToLocationsPreference', 'false');
+            }
             $xml .= eBayService::createXMLElement('ShippingDetails', $temp);
         }
         $xml = eBayService::createXMLElement('Item',$xml);

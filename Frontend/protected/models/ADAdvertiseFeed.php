@@ -9,8 +9,8 @@
  * @property integer $ad_group_id
  * @property integer $ad_campaign_id
  * @property integer $company_id
- * @property integer $item_id
- * @property string $item_type
+ * @property string $item_id
+ * @property integer $item_type
  * @property string $item_keywords
  * @property string $item_headline
  * @property string $item_sub_headline
@@ -53,9 +53,10 @@ class ADAdvertiseFeed extends NIActiveRecord
 		// will receive user inputs.
 		return array(
 			array('ad_advertise_id, ad_group_id, ad_campaign_id, company_id, item_id, item_headline, image_url, remarketing_url, destination_url, final_url', 'required'),
-			array('ad_advertise_id, ad_group_id, ad_campaign_id, company_id, item_id, item_category', 'numerical', 'integerOnly'=>true),
-			array('item_type, item_description, item_address', 'length', 'max'=>255),
+			array('ad_advertise_id, ad_group_id, ad_campaign_id, company_id, item_type, item_category', 'numerical', 'integerOnly'=>true),
+            array('item_id', 'length', 'max'=>50),
 			array('item_headline, item_sub_headline', 'length', 'max'=>100),
+            array('item_description, item_address', 'length', 'max'=>255),
 			array('price, sale_price', 'length', 'max'=>20),
 			array('image_url, remarketing_url, destination_url, final_url', 'length', 'max'=>500),
 			array('item_keywords', 'safe'),
@@ -135,8 +136,8 @@ class ADAdvertiseFeed extends NIActiveRecord
 		$criteria->compare('ad_group_id',$this->ad_group_id);
 		$criteria->compare('ad_campaign_id',$this->ad_campaign_id);
 		$criteria->compare('company_id',$this->company_id);
-		$criteria->compare('item_id',$this->item_id);
-		$criteria->compare('item_type',$this->item_type,true);
+        $criteria->compare('item_id',$this->item_id,true);
+		$criteria->compare('item_type',$this->item_type);
 		$criteria->compare('item_keywords',$this->item_keywords,true);
 		$criteria->compare('item_headline',$this->item_headline,true);
 		$criteria->compare('item_sub_headline',$this->item_sub_headline,true);

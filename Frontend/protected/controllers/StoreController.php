@@ -1,8 +1,10 @@
 <?php
 
 Yii::import('application.vendor.eBay.*');
+Yii::import('application.vendor.Wish.*');
 require_once 'reference.php';
 require_once 'eBayTradingAPI.php';
+require_once 'WishClient.php';
 
 class StoreController extends Controller
 {
@@ -74,23 +76,15 @@ class StoreController extends Controller
             $model->is_active = Store::ACTIVE_YES;
             $model->save(false);
 
-            $instantJob = new InstantJob();
-            $instantJob->platform = Store::PLATFORM_EBAY;
-            $instantJob->action = InstantJob::ACTION_EBAYGETSELLERLIST;
-            $instantJob->params = $model->id;
-            $instantJob->status = InstantJob::STATUS_WAIT;
-            $instantJob->create_time_utc = time();
-            $instantJob->save(false);
-
             $scheduleJob = new ScheduleJob();
             $scheduleJob->platform = Store::PLATFORM_EBAY;
             $scheduleJob->action = ScheduleJob::ACTION_EBAYGETSELLERLIST;
             $scheduleJob->params = $model->id;
-            $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_NO_OCCURRED;
+            $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
             $scheduleJob->create_time_utc = time();
             $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
-            $scheduleJob->crontab = "1 */4 * * *";
-            $scheduleJob->next_execute_time_utc = strtotime($scheduleJob->getNextExecuteTime());
+            $scheduleJob->crontab = "1 */6 * * *";
+            $scheduleJob->next_execute_time_utc = 0;
             $scheduleJob->type = ScheduleJob::TYPE_REPEAT;
             $scheduleJob->save(false);
 
@@ -100,6 +94,7 @@ class StoreController extends Controller
         }
         catch(Exception $ex)
         {
+            if(isset($transaction)) $transaction->rollback();
             Yii::app()->user->setFlash('Error', "Exception happened, please try authorize again later!\nError Code: ".$ex->getCode().', Error Message: '.$ex->getMessage());
             $this->redirect($this->createUrl("store/index",array()));
         }
@@ -231,6 +226,11 @@ class StoreController extends Controller
                 //$model->ebay_api_key_id = Yii::app()->params['ebay']['defaultAPIId'];
                 //$model->ebay_token = "";
             }
+            else if($model->platform == Store::PLATFORM_WISH)
+            {
+
+            }
+
 			if($model->save())
             {
                 switch($model->platform)
@@ -238,9 +238,54 @@ class StoreController extends Controller
                     case Store::PLATFORM_EBAY:
                         $this->redirect(array('getToken','id'=>$model->id));
                         break;
+                    case Store::PLATFORM_WISH:
+                        if(isset($model->wish_token) && $model->wish_token)
+                        {
+                            try
+                            {
+                                $client = new WishClient($model->wish_token);
+                                if(strtolower($client->authTest()) == 'success')
+                                {
+                                    $model->is_active = Store::ACTIVE_YES;
+
+                                    $transaction = null;
+                                    try
+                                    {
+                                        $transaction = Yii::app()->db->beginTransaction();
+
+                                        if($model->save())
+                                        {
+                                            $scheduleJob = new ScheduleJob();
+                                            $scheduleJob->platform = Store::PLATFORM_WISH;
+                                            $scheduleJob->action = ScheduleJob::ACTION_WISHGETALLPRODUCTS;
+                                            $scheduleJob->params = $model->id;
+                                            $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
+                                            $scheduleJob->create_time_utc = time();
+                                            $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
+                                            $scheduleJob->crontab = "1 */6 * * *";
+                                            $scheduleJob->next_execute_time_utc = 0;
+                                            $scheduleJob->type = ScheduleJob::TYPE_REPEAT;
+                                            $scheduleJob->save(false);
+                                        }
+
+                                        $transaction->commit();
+                                    } catch(Exception $ex)
+                                    {
+                                        if(isset($transaction)) $transaction->rollback();
+                                        //todo pop up error message
+                                    }
+                                }
+                            }
+                            catch(Exception $ex)
+                            {
+                                //todo
+                            }
+                        }
+                        break;
                     default:
                         break;
                 }
+                Yii::app()->user->setFlash('Success', "Store {$model->name} created successfully!");
                 $this->redirect(array('view','id'=>$model->id));
             }
 		}
@@ -258,13 +303,57 @@ class StoreController extends Controller
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);
-
+        $oldModel = $this->loadModel($id);
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['Store']))
 		{
 			$model->attributes=$_POST['Store'];
+            if($model->platform == Store::PLATFORM_WISH && isset($model->wish_token) && $model->wish_token && $model->wish_token != $oldModel->wish_token)
+            {
+                try
+                {
+                    $client = new WishClient($model->wish_token);
+                    $scheduleJob = ScheduleJob::model()->find("platform=:platform and action=:action and params=:params", array(':platform' => Store::PLATFORM_WISH, ':action' => ScheduleJob::ACTION_WISHGETALLPRODUCTS, ':params' => $model->id,));
+                    if(strtolower($client->authTest()) == 'success')
+                    {
+                        $model->is_active = Store::ACTIVE_YES;
+                        if(isset($scheduleJob))
+                        {
+                            $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
+                            $scheduleJob->save(false);
+                        }
+                        else
+                        {
+                            $scheduleJob = new ScheduleJob();
+                            $scheduleJob->platform = Store::PLATFORM_WISH;
+                            $scheduleJob->action = ScheduleJob::ACTION_WISHGETALLPRODUCTS;
+                            $scheduleJob->params = $model->id;
+                            $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
+                            $scheduleJob->create_time_utc = time();
+                            $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
+                            $scheduleJob->crontab = "1 */6 * * *";
+                            $scheduleJob->next_execute_time_utc = 0;
+                            $scheduleJob->type = ScheduleJob::TYPE_REPEAT;
+                            $scheduleJob->save(false);
+                        }
+                    }
+                    else
+                    {
+                        $model->is_active = Store::ACTIVE_NO;
+                        if(isset($scheduleJob))
+                        {
+                            $scheduleJob->is_active = ScheduleJob::ACTIVE_NO;
+                            $scheduleJob->save(false);
+                        }
+                    }
+                }
+                catch(Exception $ex)
+                {
+                    //todo
+                }
+            }
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}

@@ -160,8 +160,9 @@ class eBayService
         if($body)
         {
             //var_dump($this->post_data, $body);
-            $body = preg_replace("/<([a-zA-Z]*)\s([a-zA-Z]*)=\"([a-zA-Z0-9\.]*)\">([a-zA-Z0-9\.]*)<\/([a-zA-Z]*)>/is", "<$1><$2>$3</$2><Value>$4</Value></$5>", $body);
-            $body = preg_replace("/<([a-zA-Z]*)\s([a-zA-Z]*)=\"([a-zA-Z0-9\.]*)\">/is", "<$1><$2>$3</$2>", $body);
+            $body = preg_replace("/<([a-zA-Z]*)\s([a-zA-Z]*)=\"([a-zA-Z0-9\.]*)\"\s*>([a-zA-Z0-9\.]*)<\/([a-zA-Z]*)>/is", "<$1><$2>$3</$2><Value>$4</Value></$5>", $body);
+            $body = preg_replace("/<([a-zA-Z]*)\s([a-zA-Z]*)=\"([a-zA-Z0-9\.]*)\"\s*([a-zA-Z]*)=\"([a-zA-Z0-9\.]*)\"\s*>([a-zA-Z0-9\.]*)<\/([a-zA-Z]*)>/is", "<$1><$2>$3</$2><$4>$5</$4><Value>$6</Value></$7>", $body);
+            $body = preg_replace("/<([a-zA-Z]*)\s([a-zA-Z]*)=\"([a-zA-Z0-9\.]*)\"\s*([a-zA-Z]*)=\"([a-zA-Z0-9\.]*)\"\s*([a-zA-Z]*)=\"([a-zA-Z0-9\.]*)\"\s*>([a-zA-Z0-9\.]*)<\/([a-zA-Z]*)>/is", "<$1><$2>$3</$2><$4>$5</$4><$6>$7</$6><Value>$8</Value></$9>", $body);
 
             if(Yii::app()->params['ebay']['logRequest'])
                 LogFile::saveLogFile($this->callName.'.'.$time.'_response_processed.xml', Yii::app()->params['ebay']['logPath'] . DIRECTORY_SEPARATOR . 'xml', $body);

@@ -61,7 +61,8 @@ class EBayListingController extends Controller
         $list->save();*/
         $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id", array(":ebay_listing_id"=>"271824209129"));
         //eBayTradingAPI::GetItem($list);
-        var_dump($list->getEntityAttributeValueByCodeWithAllChildren("ShippingDetails"));
+        //var_dump($list->getEntityAttributeValueByCodeWithAllChildren("ShippingDetails"));
+        eBayTradingAPI::ReviseItem($list, array("ItemID"=>"271824209129", "ExcludeShipToLocation"=>array("PO Box", "CN")));
         /*Yii::import('application.vendor.Wish.*');
         require_once 'WishAPI.php';
         WishAPI::GetAllProducts(29);*/

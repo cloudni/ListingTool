@@ -986,9 +986,9 @@ class eBayTradingAPI
                     $input['ExcludeShipToLocation'] = $params['update_rules']['excludeShipLocation'];
                 }
 
+                $Variations = $eBayListing->getEntityAttributeValueByCodeWithAllChildren('Variations');
                 if(isset($params['update_rules']['quantity']) || isset($params['update_rules']['price']))
                 {
-                    $Variations = $eBayListing->getEntityAttributeValueByCodeWithAllChildren('Variations');
                     if(isset($Variations) && !empty($Variations))
                     {
                         $input['Variations'] = array();
@@ -1090,6 +1090,19 @@ class eBayTradingAPI
                             $input['Quantity'] = $params['update_rules']['quantity'];
                         }
 
+                        $result = eBayTradingAPI::ReviseItem($eBayListing, $input, $VerifyOnly);
+                        $resultStatus[$result['Status']][$listingId] = $result;
+                    }
+                }
+                else
+                {
+                    if(isset($Variations) && !empty($Variations))
+                    {
+                        $result = eBayTradingAPI::ReviseFixedPriceItem($eBayListing, $input, $VerifyOnly);
+                        $resultStatus[$result['Status']][$listingId] = $result;
+                    }
+                    else
+                    {
                         $result = eBayTradingAPI::ReviseItem($eBayListing, $input, $VerifyOnly);
                         $resultStatus[$result['Status']][$listingId] = $result;
                     }
@@ -1204,14 +1217,16 @@ class eBayTradingAPI
         $xml .= eBayService::createXMLElement('ItemID',$params['ItemID']);
         $VariationXML = "";
         if(isset($params['Variations']))
-        foreach($params['Variations'] as $variation)
         {
-            $temp = eBayService::createXMLElement('SKU',$variation['SKU']);
-            if(isset($variation['StartPrice'])) $temp .= eBayService::createXMLElement('StartPrice',$variation['StartPrice']);
-            if(isset($variation['Quantity'])) $temp .= eBayService::createXMLElement('Quantity',$variation['Quantity']);
-            $VariationXML .= eBayService::createXMLElement('Variation',$temp);
+            foreach($params['Variations'] as $variation)
+            {
+                $temp = eBayService::createXMLElement('SKU', $variation['SKU']);
+                if(isset($variation['StartPrice'])) $temp .= eBayService::createXMLElement('StartPrice', $variation['StartPrice']);
+                if(isset($variation['Quantity'])) $temp .= eBayService::createXMLElement('Quantity', $variation['Quantity']);
+                $VariationXML .= eBayService::createXMLElement('Variation', $temp);
+            }
+            $xml .= eBayService::createXMLElement('Variations', $VariationXML);
         }
-        $xml .= eBayService::createXMLElement('Variations',$VariationXML);
         if(isset($params['Description']) && isset($params['DescriptionReviseMode']))
         {
             $xml .= eBayService::createXMLElement('Description', "<![CDATA[".$params['Description']."]]>");

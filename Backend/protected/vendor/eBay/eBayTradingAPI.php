@@ -1254,7 +1254,7 @@ class eBayTradingAPI
         $params['VerifyOnly'] = $verifyOnly;
 
         $eBayService = new eBayService();
-        $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "ReviseItem").self::ReviseItemXML($params).$eBayService->getRequestAuthFoot("ReviseItem");
+        $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "ReviseItem").self::ReviseItemXML($params, $eBayListing).$eBayService->getRequestAuthFoot("ReviseItem");
         $eBayService->api_url = $eBayListing->Store->eBayApiKey->api_url;
         $eBayService->createHTTPHead($eBayListing->site_id, $eBayListing->Store->eBayApiKey->compatibility_level, $eBayListing->Store->eBayApiKey->dev_id, $eBayListing->Store->eBayApiKey->app_id, $eBayListing->Store->eBayApiKey->cert_id, "ReviseItem");
 
@@ -1337,7 +1337,7 @@ class eBayTradingAPI
         return $msg;
     }
 
-    protected static function ReviseItemXML($params=array())
+    protected static function ReviseItemXML($params=array(), $eBayListing=null)
     {
         if(empty($params)) return false;
         $xml = "";
@@ -1351,20 +1351,60 @@ class eBayTradingAPI
         }
         if(isset($params['ExcludeShipToLocation']))
         {
-            $temp = "";
-            foreach($params['ExcludeShipToLocation'] as $exclude)
-                $temp .= eBayService::createXMLElement('ExcludeShipToLocation', $exclude);
-            if($temp)
+            if(!isset($eBayListing) || empty($eBayListing))
+                $eBayListing = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id", array(":ebay_listing_id"=>$params['ItemID']));
+            if(isset($eBayListing) && !empty($eBayListing))
             {
-                $temp .= eBayService::createXMLElement('SellerExcludeShipToLocationsPreference', 'false');
+                $ShippingDetails = $eBayListing->getEntityAttributeValueByCodeWithAllChildren("ShippingDetails");
+                if(!empty($ShippingDetails))
+                {
+                    $ShippingDetails['ExcludeShipToLocation'] = $params['ExcludeShipToLocation'];
+                    $xml .= self::createXMLElementByValueRC("", "ShippingDetails", $ShippingDetails);
+                }
             }
-            $xml .= eBayService::createXMLElement('ShippingDetails', $temp);
         }
         $xml = eBayService::createXMLElement('Item',$xml);
 
         $xml .= eBayService::createXMLElement('VerifyOnly',$params['VerifyOnly'] ? 'true' : 'false');
         $xml .= eBayService::createXMLElement('ErrorLanguage',eBayErrorLanguageType::en_US);
         $xml .= eBayService::createXMLElement('WarningLevel',eBayWarningLevelCodeType::High);
+
+        return $xml;
+    }
+
+    protected static function createXMLElementByValueRC($xml, $key, $value)
+    {
+        if(is_array($value) && array_key_exists("currencyID", $value))
+        {
+            $xml .= "<$key currencyID=\"" . $value['currencyID'] . "\">" . sprintf("%1\$.2f", $value['Value']) . "</$key>";
+        }
+        else if(is_array($value) && (array_key_exists("measurementSystem", $value) || array_key_exists("unit", $value)))
+        {
+            $xml .= "<$key ".(array_key_exists("measurementSystem", $value) ? "measurementSystem=\"".$value['measurementSystem']."\"" : '')." ".(array_key_exists("unit", $value) ? "unit=\"".$value['unit']."\"" : '').">" . $value['Value'] . "</$key>";
+        }
+        else if(is_array($value) && count(array_intersect_key($value,range(0,count($value)-1))) == count($value))
+        {
+            foreach($value as $val)
+            {
+                $xml = self::createXMLElementByValueRC($xml, $key, $val);
+            }
+        }
+        else
+        {
+            $xml .= "<" . $key . ">";
+            if(is_array($value))
+            {
+                foreach($value as $index => $val)
+                {
+                    $xml = self::createXMLElementByValueRC($xml, $index, $val);
+                }
+            }
+            else
+            {
+                $xml .= $value;
+            }
+            $xml .= "</" . $key . ">";
+        }
 
         return $xml;
     }

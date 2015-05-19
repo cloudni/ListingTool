@@ -1248,14 +1248,14 @@ class eBayTradingAPI
         return $xml;
     }
 
-    public static function ReviseItem($eBayListing=null, $params=NULL, $verifyOnly=false)
+    protected static function ReviseItem($eBayListing=null, $params=NULL, $verifyOnly=false)
     {
         if(!isset($params) || !isset($eBayListing)) return false;
         $params['VerifyOnly'] = $verifyOnly;
 
         $eBayService = new eBayService();
         $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "ReviseItem").self::ReviseItemXML($params, $eBayListing).$eBayService->getRequestAuthFoot("ReviseItem");
-        $eBayService->api_url = $eBayListing->Store->eBayApiKey->api_url;var_dump($eBayService->post_data);die();
+        $eBayService->api_url = $eBayListing->Store->eBayApiKey->api_url;
         $eBayService->createHTTPHead($eBayListing->site_id, $eBayListing->Store->eBayApiKey->compatibility_level, $eBayListing->Store->eBayApiKey->dev_id, $eBayListing->Store->eBayApiKey->app_id, $eBayListing->Store->eBayApiKey->cert_id, "ReviseItem");
 
         $result = $eBayService->request();
@@ -1359,12 +1359,7 @@ class eBayTradingAPI
                 if(!empty($ShippingDetails))
                 {
                     $ShippingDetails['ExcludeShipToLocation'] = $params['ExcludeShipToLocation'];
-                    $sd = self::createXMLElementByValueRC("", "ShippingDetails", $ShippingDetails);
-
-                    $temp = "";
-                    foreach($params['ExcludeShipToLocation'] as $exclude) $temp .= eBayService::createXMLElement('ExcludeShipToLocation', $exclude);
-                    if($temp) $temp .= eBayService::createXMLElement('SellerExcludeShipToLocationsPreference', 'false');
-                    $xml .= $sd;//eBayService::createXMLElement('ShippingDetails', $temp);
+                    $xml .= self::createXMLElementByValueRC("", "ShippingDetails", $ShippingDetails);
                 }
             }
         }

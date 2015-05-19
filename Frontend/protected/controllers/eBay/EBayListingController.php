@@ -48,6 +48,81 @@ class EBayListingController extends Controller
 		);
 	}
 
+    public function actionTestGetItem()
+    {
+        /*$list = new eBayListing();
+        $list->company_id = 1;
+        $list->store_id = 3;
+        $list->ebay_listing_id = "161456835775";
+        $list->site_id = 0;
+        $list->ebay_entity_type_id = 1;
+        $list->ebay_attribute_set_id = 1;
+        $list->is_active = 1;
+        $list->save();*/
+        $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id", array(":ebay_listing_id"=>"271824209129"));
+        //eBayTradingAPI::GetItem($list);
+        var_dump($list->getEntityAttributeValueByCodeWithAllChildren("ShippingDetails"));
+        /*Yii::import('application.vendor.Wish.*');
+        require_once 'WishAPI.php';
+        WishAPI::GetAllProducts(29);*/
+        //var_dump($client->getAllProducts());
+        //eBayShoppingAPI::GetItem();
+        /*try
+        {
+            set_error_handler(array($this, 'errorHandler'));
+            $str = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><GetCategoryFeaturesResponse xmlns=\"urn:ebay:apis:eBLBaseComponents\"><Timestamp>2015-01-15T03:27:52.422Z</Tim";
+            simplexml_load_string($str);
+        }
+        catch(Exception $ex)
+        {
+            echo 'eeee';
+        }*/
+        //eBayShoppingAPI::GetItem();
+        //var_dump(Yii::app()->params['eBay']['logPath']);die();
+        //$this->redirect($this->createAbsoluteUrl("/index", array()));
+        //eBayTradingAPI::GetSellerDashboard(1);
+        //eBayTradingAPI::GetItem(eBayListing::model()->findByPk(259));
+        //Yii::app()->session['store_12_ebay_session_id'] = 'sfregeabvsfbaenethb';
+        //eBayTradingAPI::FetchToken(Store::model()->findByPk(12));
+    }
+
+    /*protected  function errorHandler($error_level,$error_message)
+    {
+        $info= "Error Level£º$error_level\n";
+        $info.= "Error Msg£º$error_message\n";
+        throw new Exception('ddd');
+    }*/
+
+    /*public function actionTestCurlLogin()
+    {
+        $login_url = 'https://developer.ebay.com/base/membership/signin/default.aspx?ReturnUrl=http%3a%2f%2fdeveloper.ebay.com%2fDevZone%2faccount%2fdefault.aspx&mo=true';
+
+        $post_fields['membername'] = 'cloud2012';
+        $post_fields['password'] = '123456pP!';
+        //$post_fields = 'membername=cloud2012&password=123456pP!';
+        $cookie_file = tempnam(dirname(__FILE__) . DIRECTORY_SEPARATOR . "..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR.'temp','cookie');
+
+        $viewUrl = 'https://developer.ebay.com/DevZone/account/default.aspx';
+
+        $ch = curl_init($login_url);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5');
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 100);
+        $result = curl_exec($ch);
+        var_dump('dd', $result, curl_error($ch));
+        curl_close($ch);
+
+        die();
+    }*/
 
     /*
      * search eBay listings by input params, remotely

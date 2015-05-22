@@ -37,6 +37,7 @@ class WishAPI {
             $products = $client->getAllProducts();
             if(count($products) > 0) foreach($products as $prod)
             {
+                $prod = $prod->Product;
                 $wishProd = WishListing::model()->find("wish_id=:id and company_id=:company_id", array(
                     ':id'=>(string)$prod->id,
                     ':company_id'=>$store->company_id,

@@ -219,7 +219,7 @@ $this->menu=array(
                         ),
                         array(
                             'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_criteria'),
-                            'value'=>$criteria,
+                            'value'=>"<div style='word-break: break-word;'>".$criteria."</div>",
                             'type'=>'html',
                         ),
                         array(

@@ -59,6 +59,7 @@ class WishRequest{
 
     $options = array(
         CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_TIMEOUT=>60*15,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_USERAGENT => 'wish-php-sdk',

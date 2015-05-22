@@ -19,7 +19,26 @@ require_once 'WishProductVariation.php';
 
 class WishProduct{
 
-  public function __construct($object){
+    public function __construct($object=null){
+        if(empty($object)) return;
+        $product = $object;
+        $vars = get_object_vars($product);
+        foreach ($vars as $key=>$val){
+            $this->$key = $val;
+        }
+        $variants = array();
+
+        if(!empty($product->variants))
+        {
+            foreach($product->variants as $variant)
+            {
+                $variants[] = new WishProductVariation($variant);
+            }
+            $this->variants = $variants;
+        }
+    }
+
+  /*public function __construct($object){
 
     $product = $object->Product;
     $vars = get_object_vars($product);
@@ -28,12 +47,16 @@ class WishProduct{
     }
     $variants = array();
 
-    foreach ($product->variants as $variant){
-      $variants[] = new WishProductVariation($variant);
-    }
-    $this->variants = $variants;
+        if(!empty($product->variants))
+        {
+            foreach($product->variants as $variant)
+            {
+                $variants[] = new WishProductVariation($variant);
+            }
+            $this->variants = $variants;
+        }
     
-  }
+  }*/
 
   public function getParams($keys){
     $params = array();

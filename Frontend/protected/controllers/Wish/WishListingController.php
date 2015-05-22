@@ -1,7 +1,25 @@
 <?php
 
+Yii::import('application.vendor.Wish.*');
+require_once 'WishAPI.php';
+Yii::import('application.vendor.Wish.Model.*');
+require_once 'WishProduct.php';
+
 class WishListingController extends Controller
 {
+    public function actionTest()
+    {
+        //WishAPI::GetProductById("54b777a64ecb0615580c5151");
+        //$wishProd = WishListing::model()->find("wish_id=:wish_id", array(":wish_id"=>"5550643f3420cb310010c744"));
+        //$client = new WishClient("JHBia2RmMiQxMDAkZlM4bHhKaHpUb25SV3N2NVgudTlOdyRWVzFieGI5Y3BpR2taMS5zcnQ2QS5wQTBVSjQ=", null, WishClient::Session_Type_SandBox);
+        //var_dump($client->getProductById("5550643f3420cb310010c744"));die();
+        //$WishProduct = new WishProduct($client->getProductById("54b777a64ecb0615580c5151")->Product);
+        //$WishProduct = new WishProduct();
+        //$WishProduct->id = "5550643f3420cb310010c744";
+        //$WishProduct->description = "ddd";
+        //var_dump($client->updateProduct($WishProduct));
+    }
+
 	public function actionIndex($currentStatus='All', $currentStore='All')
 	{
         if(strtolower($currentStore) != 'all' && $currentStore != (string)(int)$currentStore) $currentStore = 'all';
@@ -155,7 +173,7 @@ class WishListingController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index', 'searchAppliedListings'),
+                'actions'=>array('index', 'searchAppliedListings', 'test'),
                 'users'=>array('@'),
             ),
             array('deny',  // deny all users

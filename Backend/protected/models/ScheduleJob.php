@@ -20,7 +20,8 @@
  */
 class ScheduleJob extends CActiveRecord
 {
-    const ACTION_EBAYGETSELLERLIST=1;
+    const ACTION_EBAYGETMYEBAYSELLING=1;
+    const ACTION_EBAYGETSELLERLIST=9;
     const ACTION_EBAYGETCATEGORIES=2;
     const ACTION_EBAYGETEBAYDETAILS=3;
     const ACTION_EBAYGETCATEGORYFEATURES=4;
@@ -32,6 +33,7 @@ class ScheduleJob extends CActiveRecord
     public function getActionOptions()
     {
         return array(
+            self::ACTION_EBAYGETMYEBAYSELLING=>"eBay Get My eBay Selling",
             self::ACTION_EBAYGETSELLERLIST=>'eBay Get Seller List',
             self::ACTION_EBAYGETCATEGORIES=>'eBay Get Categories',
             self::ACTION_EBAYGETEBAYDETAILS=>'eBay Get eBay Details',
@@ -39,6 +41,7 @@ class ScheduleJob extends CActiveRecord
             self::ACTION_EBAYGETSELLERDASHBOARD=>'eBay Get Seller Dashboard',
             self::ACTION_EBAYGETUSER=>'eBay Get User',
             self::ACTION_EBAYSHOPPINGAPIGETMULTIPLEITEMS=>'eBay Shopping API Get Multiple Items',
+            self::ACTION_WISHGETALLPRODUCTS=>"Wish Get All Products",
         );
     }
 

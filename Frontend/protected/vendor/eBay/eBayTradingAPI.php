@@ -2599,4 +2599,175 @@ class eBayTradingAPI
 
         return $xml;
     }
+
+    public static function GetMyeBaySellingV2($storeId=null, $param=array(
+            'ActiveList'=>array(
+                'Include'=>true,
+                'IncludeNotes'=>false,
+                'Pagination'=>array('EntriesPerPage'=>100, 'PageNumber'=>1),
+            ),
+            /*'BidList'=>array(
+                'Include'=>true,
+                'Pagination'=>array('EntriesPerPage'=>100, 'PageNumber'=>1),
+            ),*/
+            'SellingSummary'=>array('Include'=>true),
+        )
+    )
+    {
+        if(!isset($storeId) || $storeId < 1)
+        {
+            return false;
+        }
+
+        $store = Store::model()->findByPk($storeId);
+        if(empty($store) || $store->is_active != Store::ACTIVE_YES || empty($store->ebay_token))
+        {
+            echo "store does not found or disactive!\n";
+            return false;
+        }
+
+        $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
+        if(empty($eBayEntityType)) { echo "invalid ebay entity!\n"; return false;}
+        $eBayAttributeSet = eBayAttributeSet::model()->find(
+            'entity_type_id=:entity_type_id and is_active=:is_active',
+            array(
+                ':entity_type_id'=>$eBayEntityType->id,
+                ':is_active'=>true,
+            )
+        );
+        if(empty($eBayAttributeSet)) { echo "invalid ebay attribute set.\n"; return false;}
+
+        $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
+        $select = "select t.ebay_listing_id
+                    from lt_ebay_listing t
+                    left join lt_ebay_entity_varchar eev on eev.ebay_entity_id = t.id and eev.ebay_entity_attribute_id = :ebay_entity_attribute_id
+                    left join lt_store s on s.id = t.store_id
+                    where eev.value = :listingStatus and s.id = :store_id; ";
+        $command = Yii::app()->db->createCommand($select);
+        $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
+        $command->bindValue(":listingStatus", eBayListingStatusCodeType::Active, PDO::PARAM_STR);
+        $command->bindValue(":store_id", $store->id, PDO::PARAM_INT);
+        $result = $command->queryAll();
+        $activeLists = array();
+        if(!empty($result)) foreach($result as $val) $activeLists[] = $val['ebay_listing_id'];
+
+        $updateLists = array();
+        $eBayService = new eBayService();
+        $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").self::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
+        $eBayService->api_url = $store->eBayApiKey->api_url;
+        $eBayService->createHTTPHead($store->ebay_site_code, 893, $store->eBayApiKey->dev_id, $store->eBayApiKey->app_id, $store->eBayApiKey->cert_id, "GetMyeBaySelling");
+        echo "start to get ebay selling for store id: ".$store->id.", site id: ".$store->ebay_site_code."\n";
+
+        try
+        {
+            $response = $eBayService->request();
+
+            if(empty($response) || !$response)
+            {
+                echo "eBay service call failed!\n";
+                return false;
+            }
+
+            if((string)$response->Ack===eBayAckCodeType::Success)
+            {
+                //process ebay active items
+                if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))
+                {
+                    foreach($response->ActiveList->ItemArray->Item as $item)
+                    {
+                        $listing = eBayListing::model()->find("store_id=:store_id and ebay_listing_id=:ebay_listing_id", array(":store_id"=>$store->id, ":ebay_listing_id"=>(string)$item->ItemID));
+                        if(empty($listing))
+                        {
+                            $listing = new eBayListing();
+                            $listing->store_id = $store->id;
+                            $listing->company_id = $store->company_id;
+                            $listing->ebay_listing_id = (string)$item->ItemID;
+                            $listing->site_id = (int)eBaySiteName::geteBaySiteNameCode((string)$item->Site);
+                            $listing->ebay_entity_type_id = $eBayEntityType->id;
+                            $listing->ebay_attribute_set_id = $eBayAttributeSet->id;
+                            $listing->is_active = true;
+                            if(!$listing->save(false))
+                            {
+                                echo("insert eBay item ".(string)$item->ItemID." failed!\n");
+                                continue;
+                            }
+                        }
+                        eBayTradingAPI::GetItem($listing);
+                        $updateLists[] = (string)$item->ItemID;
+                        echo (string)$item->ItemID." updated!\n";
+                    }
+                }
+
+                while(isset($response->ActiveList) && (int)$response->ActiveList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
+                {
+                    $param['ActiveList']['Pagination']['PageNumber']++;
+                    echo "\nprocess page: ".$param['ActiveList']['Pagination']['PageNumber'].".\n";
+                    $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").eBayTradingAPI::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
+                    $response = $eBayService->request();
+                    if(empty($response))
+                    {
+                        echo "service call failed with no return.\n";
+                        break;
+                    }
+
+                    if((string)$response->Ack===eBayAckCodeType::Success)
+                    {
+                        if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))
+                        {
+                            foreach($response->ActiveList->ItemArray->Item as $item)
+                            {
+                                $listing = eBayListing::model()->find("store_id=:store_id and ebay_listing_id=:ebay_listing_id", array(":store_id"=>$store->id, ":ebay_listing_id"=>(string)$item->ItemID));
+                                if(empty($listing))
+                                {
+                                    $listing = new eBayListing();
+                                    $listing->store_id = $store->id;
+                                    $listing->company_id = $store->company_id;
+                                    $listing->ebay_listing_id = (string)$item->ItemID;
+                                    $listing->site_id = (int)eBaySiteName::geteBaySiteNameCode((string)$item->Site);
+                                    $listing->ebay_entity_type_id = $eBayEntityType->id;
+                                    $listing->ebay_attribute_set_id = $eBayAttributeSet->id;
+                                    $listing->is_active = true;
+                                    if(!$listing->save(false))
+                                    {
+                                        echo("insert eBay item ".(string)$item->ItemID." failed!\n");
+                                        continue;
+                                    }
+                                }
+                                eBayTradingAPI::GetItem($listing);
+                                $updateLists[] = (string)$item->ItemID;
+                                echo (string)$item->ItemID." updated!\n";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var_dump($response);
+                        break;
+                    }
+                }
+                echo "\nupdate ebay selling finished.\n";
+
+                echo "\nstart to update offline product\n";
+                $offlineLists = array_diff($activeLists, $updateLists);
+                foreach($offlineLists as $item)
+                {
+                    $list = eBayListing::model()->find("ebay_list_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$item, ":store_id"=>$store->id));
+                    if(!empty($list)) eBayTradingAPI::GetItem($list);
+                    echo (string)$item->ItemID." updated!\n";
+                }
+            }
+            else
+            {
+                var_dump($response);
+                return false;
+            }
+        }
+        catch(Exception $ex)
+        {
+            echo "Exception detected, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
+            return false;
+        }
+
+        return true;
+    }
 } 

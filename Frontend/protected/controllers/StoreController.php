@@ -76,9 +76,10 @@ class StoreController extends Controller
             $model->is_active = Store::ACTIVE_YES;
             $model->save(false);
 
-            $scheduleJob = new ScheduleJob();
+            $scheduleJob = ScheduleJob::model()->find("params=:params and action=:action", array(":params"=>(string)$model->id, ":action"=>ScheduleJob::ACTION_EBAYGETMYEBAYSELLING));
+            if(empty($scheduleJob)) $scheduleJob = new ScheduleJob();
             $scheduleJob->platform = Store::PLATFORM_EBAY;
-            $scheduleJob->action = ScheduleJob::ACTION_EBAYGETSELLERLIST;
+            $scheduleJob->action = ScheduleJob::ACTION_EBAYGETMYEBAYSELLING;
             $scheduleJob->params = $model->id;
             $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
             $scheduleJob->create_time_utc = time();

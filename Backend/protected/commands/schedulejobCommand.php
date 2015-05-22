@@ -115,6 +115,10 @@ class schedulejobCommand extends CConsoleCommand
                 break;
             CASE ScheduleJob::ACTION_EBAYSHOPPINGAPIGETMULTIPLEITEMS:
                 return $this->eBayGetMultipleItems($scheduleJob);
+                break;
+            case ScheduleJob::ACTION_EBAYGETMYEBAYSELLING:
+                return $this->eBayGetMyeBaySelling($scheduleJob);
+                break;
             default:
                 echo "Unknow action: {$scheduleJob->action}. Exit!\n";
                 return false;
@@ -156,6 +160,27 @@ class schedulejobCommand extends CConsoleCommand
         }
 
         WishAPI::GetAllProducts($store->id);
+
+        echo "end schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n\n";
+        return true;
+    }
+
+    protected function eBayGetMyeBaySelling($scheduleJob)
+    {
+        $logFile = new LogFile(Yii::app()->params['ebay']['logPath'], 'GetSellerList.'.date("Ymd.his", time()).'.log');
+        $logFile->saveOutputToFile();
+
+        echo "start schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n";
+
+        if(intval($scheduleJob->params) <=0)
+        {
+            echo "Input parameter(s) error for eBay GetMyeBaySelling, exit!\n";
+            return false;
+        }
+
+        $store = Store::model()->findByPk((int)$scheduleJob->params);
+
+        eBayTradingAPI::GetMyeBaySellingV2($store->id);
 
         echo "end schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n\n";
         return true;

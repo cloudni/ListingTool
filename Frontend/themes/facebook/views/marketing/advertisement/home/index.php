@@ -614,7 +614,7 @@ $this->breadcrumbs=array(
         {
             case '<?php echo ADGroup::Status_Enabled;?>':
                 return "/themes/facebook/images/enabled.png";
-            case '<?php echo ADCampaign::Status_Pending;?>':
+            case '<?php echo ADGroup::Status_Pending;?>':
                 return "/themes/facebook/images/pause.gif";
             case '<?php echo ADGroup::Status_Paused;?>':
                 return "/themes/facebook/images/pause.gif";

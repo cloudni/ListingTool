@@ -56,7 +56,7 @@ class WishAPI {
                 $wishProd->number_saves = isset($prod->number_saves) ? (int)$prod->number_saves : 0;
                 $wishProd->number_sold = isset($prod->number_sold) ? (int)$prod->number_sold : 0;
                 $wishProd->parent_sku = isset($prod->parent_sku) ? (string)$prod->parent_sku : '';
-                $wishProd->save();
+                $wishProd->save(false);
                 echo "product {$wishProd->wish_id} has been processed.\n";
             }
         }

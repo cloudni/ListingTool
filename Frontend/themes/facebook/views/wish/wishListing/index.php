@@ -31,6 +31,7 @@ $this->breadcrumbs=array(
                                 <th><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'stores');?></th>
                                 <th><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'wish_listing_id');?></th>
                                 <th><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'name');?></th>
+                                <th>Parent SKU</th>
                                 <th><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'status');?></th>
                                 <th style="text-align: right;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'sold_quantity');?></th>
                                 <th><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'note');?></th>

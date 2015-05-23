@@ -176,7 +176,7 @@ $this->menu=array(
                 if(isset($setting['location']))
                 {
                     if(!empty($setting['location']))
-                        $criteria .= "Location: ".$setting['location']."<br />";
+                        $criteria .= "Location: ".str_replace(',', ', ', $setting['location'])."<br />";
                     else
                         $criteria .= "Location: All Countries and Regions."."<br />";
                 }
@@ -219,7 +219,7 @@ $this->menu=array(
                         ),
                         array(
                             'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign_criteria'),
-                            'value'=>$criteria,
+                            'value'=>"<div style=\"word-break: break-word; width: 100%;\">".$criteria."</div>",
                             'type'=>'html',
                         ),
                         array(

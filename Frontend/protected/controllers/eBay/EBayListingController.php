@@ -50,44 +50,20 @@ class EBayListingController extends Controller
 
     public function actionTestGetItem()
     {
-        $inputs = json_decode('{"applied_listings":["151678494907"],"update_rules":{"price":{"action":"minus","value":0.1,"type":"amount"}},"company_id":"2"}');
-        if(!isset($inputs->applied_listings))
-        {
-            echo "find error in parameters, exit\n";
-            return false;
-        }
-        if(!isset($inputs->company_id))
-        {
-            echo "find error in parameters, exit\n";
-            return false;
-        }
-        $params['applied_listings'] = $inputs->applied_listings;
-        $params['company_id'] = $inputs->company_id;
-        $params['update_rules'] = array();
-        if(isset($inputs->update_rules->quantity))
-            $params['update_rules']['quantity'] = $inputs->update_rules->quantity;
-        if(isset($inputs->update_rules->price))
-        {
-            $params['update_rules']['price'] = array(
-                'action'=>$inputs->update_rules->price->action,
-                'value'=>$inputs->update_rules->price->value,
-                'type'=>$inputs->update_rules->price->type,
-            );
-        }
-        if(isset($inputs->update_rules->description))
-        {
-            $params['update_rules']['description'] = array(
-                'action'=>$inputs->update_rules->description->action,
-                'tag'=>$inputs->update_rules->description->tag,
-                'value'=>$inputs->update_rules->description->value,
-                'position'=>$inputs->update_rules->description->position,
-            );
-        }
-        if(isset($inputs->update_rules->excludeShipLocation))
-        {
-            $params['update_rules']['excludeShipLocation'] = $inputs->update_rules->excludeShipLocation;
-        }
-        var_dump($params);die();
+        eBayTradingAPI::GetMyeBaySelling(3);
+        /*$list = new eBayListing();
+        $list->company_id = 1;
+        $list->store_id = 3;
+        $list->ebay_listing_id = "161456835775";
+        $list->site_id = 0;
+        $list->ebay_entity_type_id = 1;
+        $list->ebay_attribute_set_id = 1;
+        $list->is_active = 1;
+        $list->save();*/
+        //$list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id", array(":ebay_listing_id"=>"161456835775"));
+        //eBayTradingAPI::GetItem($list);
+        //var_dump($list->getEntityAttributeValueByCodeWithAllChildren("ShippingDetails"));
+        //eBayTradingAPI::ReviseFixedPriceItem($list, array("ItemID"=>"271824209129", "ExcludeShipToLocation"=>array("PO Box", "CN")));
         /*Yii::import('application.vendor.Wish.*');
         require_once 'WishAPI.php';
         WishAPI::GetAllProducts(29);*/

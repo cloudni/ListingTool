@@ -987,124 +987,125 @@ class eBayTradingAPI
                 }
 
                 $Variations = $eBayListing->getEntityAttributeValueByCodeWithAllChildren('Variations');
-                if(isset($Variations) && !empty($Variations))
+                if(isset($params['update_rules']['quantity']) || isset($params['update_rules']['price']))
                 {
-                    $input['Variations'] = array();
-                    foreach($Variations['Variation'] as $Variation)
+                    if(isset($Variations) && !empty($Variations))
                     {
-                        if(!isset($Variation["SKU"]) || !isset($Variation['StartPrice']) || !isset($Variation['StartPrice']["Value"])) continue;
-                        $temp = array();
-                        $temp['SKU'] = $Variation["SKU"];
-                        if(isset($params['update_rules']['quantity']) && !empty($params['update_rules']['quantity']))
+                        $input['Variations'] = array();
+                        foreach($Variations['Variation'] as $Variation)
                         {
-                            $temp['Quantity'] = $params['update_rules']['quantity'];
+                            if(!isset($Variation["SKU"]) || !isset($Variation['StartPrice']) || !isset($Variation['StartPrice']["Value"])) continue;
+                            $temp = array();
+                            $temp['SKU'] = $Variation["SKU"];
+                            if(isset($params['update_rules']['quantity']) && !empty($params['update_rules']['quantity']))
+                            {
+                                $temp['Quantity'] = $params['update_rules']['quantity'];
+                            }
+                            if(isset($params['update_rules']['price']) && !empty($params['update_rules']['price']))
+                            {
+                                switch($params['update_rules']['price']['action'])
+                                {
+                                    case 'Set':
+                                        if($params['update_rules']['price']['type'] == 'amount') $temp['StartPrice'] = $params['update_rules']['price']['value'];
+                                        else
+                                            $temp['StartPrice'] = $Variation['StartPrice']["Value"] * $params['update_rules']['price']['value'] / 100;
+                                        break;
+                                    case 'plus':
+                                        if($params['update_rules']['price']['type'] == 'amount') $temp['StartPrice'] = $Variation['StartPrice']["Value"] + $params['update_rules']['price']['value'];
+                                        else
+                                            $temp['StartPrice'] = $Variation['StartPrice']["Value"] * (100 + $params['update_rules']['price']['value']) / 100;
+                                        break;
+                                    case 'minus':
+                                        if($params['update_rules']['price']['type'] == 'amount') $temp['StartPrice'] = $Variation['StartPrice']["Value"] - $params['update_rules']['price']['value'];
+                                        else
+                                            $temp['StartPrice'] = $Variation['StartPrice']["Value"] * (100 - $params['update_rules']['price']['value']) / 100;
+                                        break;
+                                    case 'times':
+                                        if($params['update_rules']['price']['type'] == 'amount') $temp['StartPrice'] = $Variation['StartPrice']["Value"] * $params['update_rules']['price']['value'];
+                                        else
+                                            $temp['StartPrice'] = $Variation['StartPrice']["Value"] * $params['update_rules']['price']['value'] / 100;
+                                        break;
+                                    case 'divide':
+                                        if($params['update_rules']['price']['type'] == 'amount') $temp['StartPrice'] = $Variation['StartPrice']["Value"] / $params['update_rules']['price']['value'];
+                                        else
+                                            $temp['StartPrice'] = $Variation['StartPrice']["Value"] / $params['update_rules']['price']['value'] / 100;
+                                        break;
+                                }
+                            }
+
+                            $input['Variations'][] = $temp;
                         }
+                        $result = eBayTradingAPI::ReviseFixedPriceItem($eBayListing, $input, $VerifyOnly);
+                        $resultStatus[$result['Status']][$listingId] = $result;
+                    }
+                    else
+                    {
+                        $StartPrice = null;
+                        if(isset($params['update_rules']['price']['reference'])) $StartPrice = $params['update_rules']['price']['reference'];
+                        else
+                            $StartPrice = $eBayListing->getEntityAttributeValue('StartPrice->Value');
+
+                        if(!isset($StartPrice))
+                        {
+                            $resultStatus['Failure'][$listingId] = array('listingId' => $listingId, 'Status' => 'Failure', 'Msg' => array('Can not find eBay Listing detail values!'),);
+                            continue;
+                        }
+
+                        //set price update rule
                         if(isset($params['update_rules']['price']) && !empty($params['update_rules']['price']))
                         {
                             switch($params['update_rules']['price']['action'])
                             {
                                 case 'Set':
-                                    if($params['update_rules']['price']['type'] == 'amount')
-                                        $temp['StartPrice'] = $params['update_rules']['price']['value'];
+                                    if($params['update_rules']['price']['type'] == 'amount') $input['StartPrice'] = $params['update_rules']['price']['value'];
                                     else
-                                        $temp['StartPrice'] = $Variation['StartPrice']["Value"] * $params['update_rules']['price']['value'] / 100;
+                                        $input['StartPrice'] = $StartPrice * $params['update_rules']['price']['value'] / 100;
                                     break;
                                 case 'plus':
-                                    if($params['update_rules']['price']['type'] == 'amount')
-                                        $temp['StartPrice'] = $Variation['StartPrice']["Value"] + $params['update_rules']['price']['value'];
+                                    if($params['update_rules']['price']['type'] == 'amount') $input['StartPrice'] = $StartPrice + $params['update_rules']['price']['value'];
                                     else
-                                        $temp['StartPrice'] = $Variation['StartPrice']["Value"] * (100 + $params['update_rules']['price']['value']) / 100;
+                                        $input['StartPrice'] = $StartPrice * (100 + $params['update_rules']['price']['value']) / 100;
                                     break;
                                 case 'minus':
-                                    if($params['update_rules']['price']['type'] == 'amount')
-                                        $temp['StartPrice'] = $Variation['StartPrice']["Value"] - $params['update_rules']['price']['value'];
+                                    if($params['update_rules']['price']['type'] == 'amount') $input['StartPrice'] = $StartPrice - $params['update_rules']['price']['value'];
                                     else
-                                        $temp['StartPrice'] = $Variation['StartPrice']["Value"] * (100 - $params['update_rules']['price']['value']) / 100;
+                                        $input['StartPrice'] = $StartPrice * (100 - $params['update_rules']['price']['value']) / 100;
                                     break;
                                 case 'times':
-                                    if($params['update_rules']['price']['type'] == 'amount')
-                                        $temp['StartPrice'] = $Variation['StartPrice']["Value"] * $params['update_rules']['price']['value'];
+                                    if($params['update_rules']['price']['type'] == 'amount') $input['StartPrice'] = $StartPrice * $params['update_rules']['price']['value'];
                                     else
-                                        $temp['StartPrice'] = $Variation['StartPrice']["Value"] * $params['update_rules']['price']['value'] / 100;
+                                        $input['StartPrice'] = $StartPrice * $params['update_rules']['price']['value'] / 100;
                                     break;
                                 case 'divide':
-                                    if($params['update_rules']['price']['type'] == 'amount')
-                                        $temp['StartPrice'] = $Variation['StartPrice']["Value"] / $params['update_rules']['price']['value'];
+                                    if($params['update_rules']['price']['type'] == 'amount') $input['StartPrice'] = $StartPrice / $params['update_rules']['price']['value'];
                                     else
-                                        $temp['StartPrice'] = $Variation['StartPrice']["Value"] / $params['update_rules']['price']['value'] / 100;
+                                        $input['StartPrice'] = $StartPrice / $params['update_rules']['price']['value'] / 100;
                                     break;
                             }
                         }
 
-                        $input['Variations'][] = $temp;
+                        //set quantity update rule
+                        if(isset($params['update_rules']['quantity']) && !empty($params['update_rules']['quantity']))
+                        {
+                            $input['Quantity'] = $params['update_rules']['quantity'];
+                        }
+
+                        $result = eBayTradingAPI::ReviseItem($eBayListing, $input, $VerifyOnly);
+                        $resultStatus[$result['Status']][$listingId] = $result;
                     }
-                    $result = eBayTradingAPI::ReviseFixedPriceItem($eBayListing, $input, $VerifyOnly);
-                    $resultStatus[$result['Status']][$listingId] = $result;
                 }
                 else
                 {
-                    $StartPrice = null;
-                    if(isset($params['update_rules']['price']['reference']))
-                        $StartPrice = $params['update_rules']['price']['reference'];
+                    if(isset($Variations) && !empty($Variations))
+                    {
+                        $result = eBayTradingAPI::ReviseFixedPriceItem($eBayListing, $input, $VerifyOnly);
+                        $resultStatus[$result['Status']][$listingId] = $result;
+                    }
                     else
-                        $StartPrice = $eBayListing->getEntityAttributeValue('StartPrice->Value');
-
-                    if(!isset($StartPrice))
                     {
-                        $resultStatus['Failure'][$listingId]=array(
-                            'listingId'=>$listingId,
-                            'Status'=>'Failure',
-                            'Msg'=>array('Can not find eBay Listing detail values!'),
-                        );
-                        continue;
+                        $result = eBayTradingAPI::ReviseItem($eBayListing, $input, $VerifyOnly);
+                        $resultStatus[$result['Status']][$listingId] = $result;
                     }
-
-                    //set price update rule
-                    if(isset($params['update_rules']['price']) && !empty($params['update_rules']['price']))
-                    {
-                        switch($params['update_rules']['price']['action'])
-                        {
-                            case 'Set':
-                                if($params['update_rules']['price']['type'] == 'amount')
-                                    $input['StartPrice'] = $params['update_rules']['price']['value'];
-                                else
-                                    $input['StartPrice'] = $StartPrice * $params['update_rules']['price']['value'] / 100;
-                                break;
-                            case 'plus':
-                                if($params['update_rules']['price']['type'] == 'amount')
-                                    $input['StartPrice'] = $StartPrice + $params['update_rules']['price']['value'];
-                                else
-                                    $input['StartPrice'] = $StartPrice * (100 + $params['update_rules']['price']['value']) / 100;
-                                break;
-                            case 'minus':
-                                if($params['update_rules']['price']['type'] == 'amount')
-                                    $input['StartPrice'] = $StartPrice - $params['update_rules']['price']['value'];
-                                else
-                                    $input['StartPrice'] = $StartPrice * (100 - $params['update_rules']['price']['value']) / 100;
-                                break;
-                            case 'times':
-                                if($params['update_rules']['price']['type'] == 'amount')
-                                    $input['StartPrice'] = $StartPrice * $params['update_rules']['price']['value'];
-                                else
-                                    $input['StartPrice'] = $StartPrice * $params['update_rules']['price']['value'] / 100;
-                                break;
-                            case 'divide':
-                                if($params['update_rules']['price']['type'] == 'amount')
-                                    $input['StartPrice'] = $StartPrice / $params['update_rules']['price']['value'];
-                                else
-                                    $input['StartPrice'] = $StartPrice / $params['update_rules']['price']['value'] / 100;
-                                break;
-                        }
-                    }
-
-                    //set quantity update rule
-                    if(isset($params['update_rules']['quantity']) && !empty($params['update_rules']['quantity']))
-                    {
-                        $input['Quantity'] = $params['update_rules']['quantity'];
-                    }
-
-                    $result = eBayTradingAPI::ReviseItem($eBayListing, $input, $VerifyOnly);
-                    $resultStatus[$result['Status']][$listingId] = $result;
                 }
             }
             catch(Exception $ex)
@@ -1126,7 +1127,7 @@ class eBayTradingAPI
         $params['VerifyOnly'] = $verifyOnly;
 
         $eBayService = new eBayService();
-        $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "ReviseFixedPriceItem").self::ReviseFixedPriceItemXML($params).$eBayService->getRequestAuthFoot("ReviseFixedPriceItem");
+        $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "ReviseFixedPriceItem").self::ReviseFixedPriceItemXML($params, $eBayListing).$eBayService->getRequestAuthFoot("ReviseFixedPriceItem");
         $eBayService->api_url = $eBayListing->Store->eBayApiKey->api_url;
         $eBayService->createHTTPHead($eBayListing->site_id, $eBayListing->Store->eBayApiKey->compatibility_level, $eBayListing->Store->eBayApiKey->dev_id, $eBayListing->Store->eBayApiKey->app_id, $eBayListing->Store->eBayApiKey->cert_id, "ReviseFixedPriceItem");
 
@@ -1209,20 +1210,23 @@ class eBayTradingAPI
         return $msg;
     }
 
-    protected static function ReviseFixedPriceItemXML($params=array())
+    protected static function ReviseFixedPriceItemXML($params=array(), $eBayListing=null)
     {
         if(empty($params)) return false;
         $xml = "";
         $xml .= eBayService::createXMLElement('ItemID',$params['ItemID']);
         $VariationXML = "";
-        foreach($params['Variations'] as $variation)
+        if(isset($params['Variations']))
         {
-            $temp = eBayService::createXMLElement('SKU',$variation['SKU']);
-            if(isset($variation['StartPrice'])) $temp .= eBayService::createXMLElement('StartPrice',$variation['StartPrice']);
-            if(isset($variation['Quantity'])) $temp .= eBayService::createXMLElement('Quantity',$variation['Quantity']);
-            $VariationXML .= eBayService::createXMLElement('Variation',$temp);
+            foreach($params['Variations'] as $variation)
+            {
+                $temp = eBayService::createXMLElement('SKU', $variation['SKU']);
+                if(isset($variation['StartPrice'])) $temp .= eBayService::createXMLElement('StartPrice', $variation['StartPrice']);
+                if(isset($variation['Quantity'])) $temp .= eBayService::createXMLElement('Quantity', $variation['Quantity']);
+                $VariationXML .= eBayService::createXMLElement('Variation', $temp);
+            }
+            $xml .= eBayService::createXMLElement('Variations', $VariationXML);
         }
-        $xml .= eBayService::createXMLElement('Variations',$VariationXML);
         if(isset($params['Description']) && isset($params['DescriptionReviseMode']))
         {
             $xml .= eBayService::createXMLElement('Description', "<![CDATA[".$params['Description']."]]>");
@@ -1230,14 +1234,17 @@ class eBayTradingAPI
         }
         if(isset($params['ExcludeShipToLocation']))
         {
-            $temp = "";
-            foreach($params['ExcludeShipToLocation'] as $exclude)
-                $temp .= eBayService::createXMLElement('ExcludeShipToLocation', $exclude);
-            if($temp)
+            if(!isset($eBayListing) || empty($eBayListing))
+                $eBayListing = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id", array(":ebay_listing_id"=>$params['ItemID']));
+            if(isset($eBayListing) && !empty($eBayListing))
             {
-                $temp .= eBayService::createXMLElement('SellerExcludeShipToLocationsPreference', 'false');
+                $ShippingDetails = $eBayListing->getEntityAttributeValueByCodeWithAllChildren("ShippingDetails");
+                if(!empty($ShippingDetails))
+                {
+                    $ShippingDetails['ExcludeShipToLocation'] = $params['ExcludeShipToLocation'];
+                    $xml .= self::createXMLElementByValueRC("", "ShippingDetails", $ShippingDetails);
+                }
             }
-            $xml .= eBayService::createXMLElement('ShippingDetails', $temp);
         }
 
         $xml = eBayService::createXMLElement('Item',$xml);
@@ -1254,7 +1261,7 @@ class eBayTradingAPI
         $params['VerifyOnly'] = $verifyOnly;
 
         $eBayService = new eBayService();
-        $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "ReviseItem").self::ReviseItemXML($params).$eBayService->getRequestAuthFoot("ReviseItem");
+        $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "ReviseItem").self::ReviseItemXML($params, $eBayListing).$eBayService->getRequestAuthFoot("ReviseItem");
         $eBayService->api_url = $eBayListing->Store->eBayApiKey->api_url;
         $eBayService->createHTTPHead($eBayListing->site_id, $eBayListing->Store->eBayApiKey->compatibility_level, $eBayListing->Store->eBayApiKey->dev_id, $eBayListing->Store->eBayApiKey->app_id, $eBayListing->Store->eBayApiKey->cert_id, "ReviseItem");
 
@@ -1337,7 +1344,7 @@ class eBayTradingAPI
         return $msg;
     }
 
-    protected static function ReviseItemXML($params=array())
+    protected static function ReviseItemXML($params=array(), $eBayListing=null)
     {
         if(empty($params)) return false;
         $xml = "";
@@ -1351,20 +1358,60 @@ class eBayTradingAPI
         }
         if(isset($params['ExcludeShipToLocation']))
         {
-            $temp = "";
-            foreach($params['ExcludeShipToLocation'] as $exclude)
-                $temp .= eBayService::createXMLElement('ExcludeShipToLocation', $exclude);
-            if($temp)
+            if(!isset($eBayListing) || empty($eBayListing))
+                $eBayListing = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id", array(":ebay_listing_id"=>$params['ItemID']));
+            if(isset($eBayListing) && !empty($eBayListing))
             {
-                $temp .= eBayService::createXMLElement('SellerExcludeShipToLocationsPreference', 'false');
+                $ShippingDetails = $eBayListing->getEntityAttributeValueByCodeWithAllChildren("ShippingDetails");
+                if(!empty($ShippingDetails))
+                {
+                    $ShippingDetails['ExcludeShipToLocation'] = $params['ExcludeShipToLocation'];
+                    $xml .= self::createXMLElementByValueRC("", "ShippingDetails", $ShippingDetails);
+                }
             }
-            $xml .= eBayService::createXMLElement('ShippingDetails', $temp);
         }
         $xml = eBayService::createXMLElement('Item',$xml);
 
         $xml .= eBayService::createXMLElement('VerifyOnly',$params['VerifyOnly'] ? 'true' : 'false');
         $xml .= eBayService::createXMLElement('ErrorLanguage',eBayErrorLanguageType::en_US);
         $xml .= eBayService::createXMLElement('WarningLevel',eBayWarningLevelCodeType::High);
+
+        return $xml;
+    }
+
+    protected static function createXMLElementByValueRC($xml, $key, $value)
+    {
+        if(is_array($value) && array_key_exists("currencyID", $value))
+        {
+            $xml .= "<$key currencyID=\"" . $value['currencyID'] . "\">" . sprintf("%1\$.2f", $value['Value']) . "</$key>";
+        }
+        else if(is_array($value) && (array_key_exists("measurementSystem", $value) || array_key_exists("unit", $value)))
+        {
+            $xml .= "<$key ".(array_key_exists("measurementSystem", $value) ? "measurementSystem=\"".$value['measurementSystem']."\"" : '')." ".(array_key_exists("unit", $value) ? "unit=\"".$value['unit']."\"" : '').">" . $value['Value'] . "</$key>";
+        }
+        else if(is_array($value) && count(array_intersect_key($value,range(0,count($value)-1))) == count($value))
+        {
+            foreach($value as $val)
+            {
+                $xml = self::createXMLElementByValueRC($xml, $key, $val);
+            }
+        }
+        else
+        {
+            $xml .= "<" . $key . ">";
+            if(is_array($value))
+            {
+                foreach($value as $index => $val)
+                {
+                    $xml = self::createXMLElementByValueRC($xml, $index, $val);
+                }
+            }
+            else
+            {
+                $xml .= $value;
+            }
+            $xml .= "</" . $key . ">";
+        }
 
         return $xml;
     }
@@ -2551,5 +2598,176 @@ class eBayTradingAPI
         $xml .= eBayService::createXMLElement('HideVariations','false');
 
         return $xml;
+    }
+
+    public static function GetMyeBaySellingV2($storeId=null, $param=array(
+            'ActiveList'=>array(
+                'Include'=>true,
+                'IncludeNotes'=>false,
+                'Pagination'=>array('EntriesPerPage'=>100, 'PageNumber'=>1),
+            ),
+            /*'BidList'=>array(
+                'Include'=>true,
+                'Pagination'=>array('EntriesPerPage'=>100, 'PageNumber'=>1),
+            ),*/
+            'SellingSummary'=>array('Include'=>true),
+        )
+    )
+    {
+        if(!isset($storeId) || $storeId < 1)
+        {
+            return false;
+        }
+
+        $store = Store::model()->findByPk($storeId);
+        if(empty($store) || $store->is_active != Store::ACTIVE_YES || empty($store->ebay_token))
+        {
+            echo "store does not found or disactive!\n";
+            return false;
+        }
+
+        $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
+        if(empty($eBayEntityType)) { echo "invalid ebay entity!\n"; return false;}
+        $eBayAttributeSet = eBayAttributeSet::model()->find(
+            'entity_type_id=:entity_type_id and is_active=:is_active',
+            array(
+                ':entity_type_id'=>$eBayEntityType->id,
+                ':is_active'=>true,
+            )
+        );
+        if(empty($eBayAttributeSet)) { echo "invalid ebay attribute set.\n"; return false;}
+
+        $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
+        $select = "select t.ebay_listing_id
+                    from lt_ebay_listing t
+                    left join lt_ebay_entity_varchar eev on eev.ebay_entity_id = t.id and eev.ebay_entity_attribute_id = :ebay_entity_attribute_id
+                    left join lt_store s on s.id = t.store_id
+                    where eev.value = :listingStatus and s.id = :store_id; ";
+        $command = Yii::app()->db->createCommand($select);
+        $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
+        $command->bindValue(":listingStatus", eBayListingStatusCodeType::Active, PDO::PARAM_STR);
+        $command->bindValue(":store_id", $store->id, PDO::PARAM_INT);
+        $result = $command->queryAll();
+        $activeLists = array();
+        if(!empty($result)) foreach($result as $val) $activeLists[] = $val['ebay_listing_id'];
+
+        $updateLists = array();
+        $eBayService = new eBayService();
+        $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").self::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
+        $eBayService->api_url = $store->eBayApiKey->api_url;
+        $eBayService->createHTTPHead($store->ebay_site_code, 893, $store->eBayApiKey->dev_id, $store->eBayApiKey->app_id, $store->eBayApiKey->cert_id, "GetMyeBaySelling");
+        echo "start to get ebay selling for store id: ".$store->id.", site id: ".$store->ebay_site_code."\n";
+
+        try
+        {
+            $response = $eBayService->request();
+
+            if(empty($response) || !$response)
+            {
+                echo "eBay service call failed!\n";
+                return false;
+            }
+
+            if((string)$response->Ack===eBayAckCodeType::Success)
+            {
+                //process ebay active items
+                if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))
+                {
+                    foreach($response->ActiveList->ItemArray->Item as $item)
+                    {
+                        $listing = eBayListing::model()->find("store_id=:store_id and ebay_listing_id=:ebay_listing_id", array(":store_id"=>$store->id, ":ebay_listing_id"=>(string)$item->ItemID));
+                        if(empty($listing))
+                        {
+                            $listing = new eBayListing();
+                            $listing->store_id = $store->id;
+                            $listing->company_id = $store->company_id;
+                            $listing->ebay_listing_id = (string)$item->ItemID;
+                            $listing->site_id = (int)eBaySiteName::geteBaySiteNameCode((string)$item->Site);
+                            $listing->ebay_entity_type_id = $eBayEntityType->id;
+                            $listing->ebay_attribute_set_id = $eBayAttributeSet->id;
+                            $listing->is_active = true;
+                            if(!$listing->save(false))
+                            {
+                                echo("insert eBay item ".(string)$item->ItemID." failed!\n");
+                                continue;
+                            }
+                        }
+                        eBayTradingAPI::GetItem($listing);
+                        $updateLists[] = (string)$item->ItemID;
+                        echo (string)$item->ItemID." updated!\n";
+                    }
+                }
+
+                while(isset($response->ActiveList) && (int)$response->ActiveList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
+                {
+                    $param['ActiveList']['Pagination']['PageNumber']++;
+                    echo "\nprocess page: ".$param['ActiveList']['Pagination']['PageNumber'].".\n";
+                    $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").eBayTradingAPI::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
+                    $response = $eBayService->request();
+                    if(empty($response))
+                    {
+                        echo "service call failed with no return.\n";
+                        break;
+                    }
+
+                    if((string)$response->Ack===eBayAckCodeType::Success)
+                    {
+                        if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))
+                        {
+                            foreach($response->ActiveList->ItemArray->Item as $item)
+                            {
+                                $listing = eBayListing::model()->find("store_id=:store_id and ebay_listing_id=:ebay_listing_id", array(":store_id"=>$store->id, ":ebay_listing_id"=>(string)$item->ItemID));
+                                if(empty($listing))
+                                {
+                                    $listing = new eBayListing();
+                                    $listing->store_id = $store->id;
+                                    $listing->company_id = $store->company_id;
+                                    $listing->ebay_listing_id = (string)$item->ItemID;
+                                    $listing->site_id = (int)eBaySiteName::geteBaySiteNameCode((string)$item->Site);
+                                    $listing->ebay_entity_type_id = $eBayEntityType->id;
+                                    $listing->ebay_attribute_set_id = $eBayAttributeSet->id;
+                                    $listing->is_active = true;
+                                    if(!$listing->save(false))
+                                    {
+                                        echo("insert eBay item ".(string)$item->ItemID." failed!\n");
+                                        continue;
+                                    }
+                                }
+                                eBayTradingAPI::GetItem($listing);
+                                $updateLists[] = (string)$item->ItemID;
+                                echo (string)$item->ItemID." updated!\n";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var_dump($response);
+                        break;
+                    }
+                }
+                echo "\nupdate ebay selling finished.\n";
+
+                echo "\nstart to update offline product\n";
+                $offlineLists = array_diff($activeLists, $updateLists);
+                foreach($offlineLists as $item)
+                {
+                    $list = eBayListing::model()->find("ebay_list_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$item, ":store_id"=>$store->id));
+                    if(!empty($list)) eBayTradingAPI::GetItem($list);
+                    echo (string)$item->ItemID." updated!\n";
+                }
+            }
+            else
+            {
+                var_dump($response);
+                return false;
+            }
+        }
+        catch(Exception $ex)
+        {
+            echo "Exception detected, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
+            return false;
+        }
+
+        return true;
     }
 } 

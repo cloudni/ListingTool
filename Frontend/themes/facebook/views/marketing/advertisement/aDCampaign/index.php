@@ -138,9 +138,9 @@ $this->menu=array(
 
         $("#campaignAll").click(function(){
             if($("#campaignAll").prop('checked'))
-                $("input[id^='campaignID']").prop('checked', true);
+                $("input[id^='campaignID'][disabled!='disabled']").prop('checked', true);
             else
-                $("input[id^='campaignID']").removeAttr('checked');
+                $("input[id^='campaignID'][disabled!='disabled']").removeAttr('checked');
         });
 
         $("#cusFromDate").datepicker({
@@ -237,8 +237,8 @@ $this->menu=array(
         for(var i=0;i<data.length;i++)
         {
             var line = "<tr>"+
-                "<td align='left'><input id='campaignID[]' name='campaignID[]' type='checkbox' value='"+data[i]['id']+"' /><input id='campaign_"+data[i]['id']+"_status' type='hidden' value='"+data[i]['status']+"' /></td>"+
-            "<td align='center'><img id='campaign_"+data[i]['id']+"_img' src='"+getStatusImg(data[i]['status'])+"' border='0' /></td>"+
+                "<td align='left'><input id='campaignID[]' name='campaignID[]' type='checkbox' "+(data[i]['status'] == '<?php echo ADCampaign::Status_Pending;?>' ? "disabled='disabled'" : '')+" value='"+data[i]['id']+"' /><input id='campaign_"+data[i]['id']+"_status' type='hidden' value='"+data[i]['status']+"' /></td>"+
+            "<td align='center'><img id='campaign_"+data[i]['id']+"_img' src='"+getStatusImg(data[i]['status'])+"' border='0' "+(data[i]['status'] == '<?php echo ADCampaign::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
             "<td align='right'><a href='"+url.replace('replace_id', data[i]['id'])+"'>"+data[i]['name']+"</a></td>"+
             "<td align='right'>"+"$"+parseFloat(data[i]['budget']).toFixed(2)+"</td>"+
             "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? data[i]['clicks'] : 0)+"</td>"+
@@ -275,7 +275,7 @@ $this->menu=array(
             case '<?php echo ADCampaign::Status_Paused;?>':
                 return "/themes/facebook/images/pause.gif";
             case '<?php echo ADCampaign::Status_Pending;?>':
-                return "/themes/facebook/images/pause.gif";
+                return "/images/waiting.png";
             case '<?php echo ADCampaign::Status_Suspended;?>':
                 return "/themes/facebook/images/pause.gif";
             case '<?php echo ADCampaign::Status_LimitedByBudget;?>':

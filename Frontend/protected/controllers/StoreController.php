@@ -260,11 +260,13 @@ class StoreController extends Controller
                                             $scheduleJob->platform = Store::PLATFORM_WISH;
                                             $scheduleJob->action = ScheduleJob::ACTION_WISHGETALLPRODUCTS;
                                             $scheduleJob->params = $model->id;
-                                            $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
+                                            $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_NO_OCCURRED;
                                             $scheduleJob->create_time_utc = time();
                                             $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
                                             $scheduleJob->crontab = "1 */6 * * *";
                                             $scheduleJob->next_execute_time_utc = 0;
+                                            $scheduleJob->last_execute_time_utc = 0;
+                                            $scheduleJob->last_finish_time_utc = 0;
                                             $scheduleJob->type = ScheduleJob::TYPE_REPEAT;
                                             $scheduleJob->save(false);
                                         }

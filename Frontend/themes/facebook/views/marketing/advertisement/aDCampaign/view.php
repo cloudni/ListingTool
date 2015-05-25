@@ -328,6 +328,13 @@ $this->menu=array(
         $( "ul[id^='menu_']" ).menu();
         $( "ul[id^='menu_']" ).hide();
 
+        $("#groupAll").click(function(){
+            if($("#groupAll").prop('checked'))
+                $("input[id^='adGroupID'][disabled!='disabled']").prop('checked', true);
+            else
+                $("input[id^='adGroupID'][disabled!='disabled']").removeAttr('checked');
+        });
+
         $("#dataPoint1").change(updatePerformanceChart);
         $("#dataPoint2").change(updatePerformanceChart);
         $("#adGroupId").change(updatePerformanceChart);
@@ -665,8 +672,9 @@ $this->menu=array(
         {
             case '<?php echo ADGroup::Status_Enabled;?>':
                 return "/themes/facebook/images/enabled.png";
-            case '<?php echo ADGroup::Status_Paused;?>':
             case '<?php echo ADGroup::Status_Pending;?>':
+                return "/images/waiting.png";
+            case '<?php echo ADGroup::Status_Paused;?>':
                 return "/themes/facebook/images/pause.gif";
             case '<?php echo ADGroup::Status_Removed;?>':
                 return "/themes/facebook/images/removed.png";
@@ -684,9 +692,9 @@ $this->menu=array(
         for(var i=0;i<group.length;i++)
         {
             var line = "<tr>"+
-                        "<td align='left'><input id='adGroupID[]' name='adGroupID[]' type='checkbox' value='"+group[i]['id']+"' /><input id='group_"+group[i]['id']+"_status' type='hidden' value='"+group[i]['status']+"' /></td>"+
+                        "<td align='left'><input id='adGroupID[]' name='adGroupID[]' type='checkbox' value='"+group[i]['id']+"' "+(group[i]['status'] == '<?php echo ADGroup::Status_Pending;?>' ? "disabled='disabled'" : '')+" /><input id='group_"+group[i]['id']+"_status' type='hidden' value='"+group[i]['status']+"' /></td>"+
                         "<td align='left'><a href='"+url.replace('replace_id', group[i]['id'])+"'>"+group[i]['name']+"</a></td>"+
-                        "<td align='right'><img id='group_"+group[i]['id']+"_img' src='"+getStatusImg(group[i]['status'])+"' border='0' /></td>"+
+                        "<td align='right'><img id='group_"+group[i]['id']+"_img' src='"+getStatusImg(group[i]['status'])+"' border='0' "+(group[i]['status'] == '<?php echo ADGroup::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
                         "<td align='left'>"+group[i]['default_bid']+"</td>"+
                         "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? group[i]['clicks'] : 0)+"</td>"+
                         "<td align='right'>"+(parseInt(group[i]['impr']) > 0 ? group[i]['impr'] : 0)+"</td>"+

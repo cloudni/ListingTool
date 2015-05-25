@@ -524,7 +524,7 @@ $this->breadcrumbs=array(
         {
             var line = "<tr>"+
                 "<td align='right'><a href='"+url.replace('replace_id', data[i]['id'])+"'>"+data[i]['name']+"</a></td>"+
-                "<td align='center'><img id='campaign_"+data[i]['id']+"_img' src='"+getCampaignStatusImg(data[i]['status'])+"' border='0' /></td>"+
+                "<td align='center'><img id='campaign_"+data[i]['id']+"_img' src='"+getCampaignStatusImg(data[i]['status'])+"' border='0' "+(data[i]['status'] == '<?php echo ADCampaign::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
                 "<td align='right'>"+"$"+parseFloat(data[i]['budget']).toFixed(2)+"</td>"+
                 "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? data[i]['clicks'] : 0)+"</td>"+
                 "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? data[i]['impr'] : 0)+"</td>"+
@@ -562,7 +562,7 @@ $this->breadcrumbs=array(
         {
             var line = "<tr>"+
                 "<td align='left'><a href='"+url.replace('replace_id', group[i]['id'])+"'>"+group[i]['name']+"</a></td>"+
-                "<td align='right'><img id='group_"+group[i]['id']+"_img' src='"+getGroupStatusImg(group[i]['status'])+"' border='0' /></td>"+
+                "<td align='right'><img id='group_"+group[i]['id']+"_img' src='"+getGroupStatusImg(group[i]['status'])+"' border='0' "+(group[i]['status'] == '<?php echo ADGroup::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
                 "<td align='left'>"+group[i]['default_bid']+"</td>"+
                 "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? group[i]['clicks'] : 0)+"</td>"+
                 "<td align='right'>"+(parseInt(group[i]['impr']) > 0 ? group[i]['impr'] : 0)+"</td>"+
@@ -596,7 +596,7 @@ $this->breadcrumbs=array(
             case '<?php echo ADCampaign::Status_Paused;?>':
                 return "/themes/facebook/images/pause.gif";
             case '<?php echo ADCampaign::Status_Pending;?>':
-                return "/themes/facebook/images/pause.gif";
+                return "/images/waiting.png";
             case '<?php echo ADCampaign::Status_Suspended;?>':
                 return "/themes/facebook/images/pause.gif";
             case '<?php echo ADCampaign::Status_LimitedByBudget;?>':
@@ -615,7 +615,7 @@ $this->breadcrumbs=array(
             case '<?php echo ADGroup::Status_Enabled;?>':
                 return "/themes/facebook/images/enabled.png";
             case '<?php echo ADGroup::Status_Pending;?>':
-                return "/themes/facebook/images/pause.gif";
+                return "/images/waiting.png";
             case '<?php echo ADGroup::Status_Paused;?>':
                 return "/themes/facebook/images/pause.gif";
             case '<?php echo ADGroup::Status_Removed;?>':

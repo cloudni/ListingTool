@@ -288,9 +288,9 @@ $this->menu=array(
 
         $("#adVariationAll").click(function(){
             if($("#adVariationAll").prop('checked'))
-                $("input[id^='ad_variation_id']").prop('checked', true);
+                $("input[id^='ad_variation_id'][disabled!='disabled']").prop('checked', true);
             else
-                $("input[id^='ad_variation_id']").removeAttr('checked');
+                $("input[id^='ad_variation_id'][disabled!='disabled']").removeAttr('checked');
         });
 
         $("#performanceDateRange").change(function(){
@@ -610,8 +610,8 @@ $this->menu=array(
         for(var i=0;i<data.length;i++)
         {
             var line = "<tr>"+
-                "<td align='left'><input type='checkbox' id='ad_variation_id[]' name='ad_variation_id[]' value='"+ data[i]['id']+"' /><input id='variation_"+ data[i]['id']+"_status' type='hidden' value='"+ data[i]['status']+"' /></td>"+
-                "<td align='left'><img id='variation_"+ data[i]['id']+"_img' src='"+getStatusImg(data[i]['status'])+"' border='0' /></td>"+
+                "<td align='left'><input type='checkbox' id='ad_variation_id[]' name='ad_variation_id[]' value='"+ data[i]['id']+"' "+(data[i]['status'] == '<?php echo ADAdvertiseVariation::Status_Pending;?>' ? "disabled='disabled'" : '')+" /><input id='variation_"+ data[i]['id']+"_status' type='hidden' value='"+ data[i]['status']+"' /></td>"+
+                "<td align='left'><img id='variation_"+ data[i]['id']+"_img' src='"+getStatusImg(data[i]['status'])+"' border='0' "+(data[i]['status'] == '<?php echo ADAdvertiseVariation::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
                 "<td align='left'>"+ data[i]['width']+" x "+ data[i]['height']+"("+ codeName[data[i]['code']]+")</td>"+
                 "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? data[i]['clicks'] : 0)+"</td>"+
                 "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? data[i]['impr'] : 0)+"</td>"+
@@ -642,8 +642,9 @@ $this->menu=array(
         {
             case '<?php echo ADAdvertiseVariation::Status_Enabled;?>':
                 return "/themes/facebook/images/enabled.png";
-            case '<?php echo ADAdvertiseVariation::Status_Paused;?>':
             case '<?php echo ADAdvertiseVariation::Status_Pending;?>':
+                return "/images/waiting.png";
+            case '<?php echo ADAdvertiseVariation::Status_Paused;?>':
                 return "/themes/facebook/images/pause.gif";
             case '<?php echo ADAdvertiseVariation::Status_Removed;?>':
                 return "/themes/facebook/images/removed.png";

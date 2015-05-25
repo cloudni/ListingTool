@@ -178,9 +178,9 @@ $this->menu=array(
 
         $("#groupAll").click(function(){
             if($("#groupAll").prop('checked'))
-                $("input[id^='adGroupID']").prop('checked', true);
+                $("input[id^='adGroupID'][disabled!='disabled']").prop('checked', true);
             else
-                $("input[id^='adGroupID']").removeAttr('checked');
+                $("input[id^='adGroupID'][disabled!='disabled']").removeAttr('checked');
         });
 
         $("#page").click(function(){
@@ -278,8 +278,8 @@ $this->menu=array(
         for(var i=0;i<data.length;i++)
         {
             var line = "<tr>"+
-                "<td align='left'><input id='adGroupID[]' name='adGroupID[]' type='checkbox' value='"+data[i]['id']+"' /><input id='group_"+data[i]['id']+"_status' type='hidden' value='"+data[i]['status']+"' /></td>"+
-                "<td align='center'><img id='group_"+data[i]['id']+"_img' src='"+getStatusImg(data[i]['status'])+"' border='0' /></td>"+
+                "<td align='left'><input id='adGroupID[]' name='adGroupID[]' type='checkbox' value='"+data[i]['id']+"' "+(data[i]['status'] == '<?php echo ADGroup::Status_Pending;?>' ? "disabled='disabled'" : '')+" /><input id='group_"+data[i]['id']+"_status' type='hidden' value='"+data[i]['status']+"' /></td>"+
+                "<td align='center'><img id='group_"+data[i]['id']+"_img' src='"+getStatusImg(data[i]['status'])+"' border='0' "+(data[i]['status'] == '<?php echo ADGroup::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
                 "<td align='right'><a href='"+url.replace('replace_id', data[i]['id'])+"'>"+data[i]['name']+"</a></td>"+
                 "<td align='right'>"+"$"+parseFloat(data[i]['default_bid']).toFixed(2)+"</td>"+
                 "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? data[i]['clicks'] : 0)+"</td>"+
@@ -313,8 +313,9 @@ $this->menu=array(
         {
             case '<?php echo ADGroup::Status_Enabled;?>':
                 return "/themes/facebook/images/enabled.png";
-            case '<?php echo ADGroup::Status_Paused;?>':
             case '<?php echo ADGroup::Status_Pending;?>':
+                return "/images/waiting.png";
+            case '<?php echo ADGroup::Status_Paused;?>':
                 return "/themes/facebook/images/pause.gif";
             case '<?php echo ADGroup::Status_Removed;?>':
                 return "/themes/facebook/images/removed.png";

@@ -24,5 +24,6 @@ UNLOCK TABLES;
 
 /*start 2015-05-27*/
 LOCK TABLES `lt_resource_string` WRITE;
-update lt_resource_string set message = '¿Û¿î' where `key`='payment_transaction_type_deduaction';
+update lt_resource_string set message = '¿Û¿î' where `key`='payment_transaction_type_deduaction' and `language`='1';
+update lt_resource_string set message = 'Deduaction' where `key`='payment_transaction_type_deduaction' and `language`='2';
 /*end 2015-05-27*/

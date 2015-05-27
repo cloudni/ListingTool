@@ -26,4 +26,10 @@ UNLOCK TABLES;
 LOCK TABLES `lt_resource_string` WRITE;
 update lt_resource_string set message = '扣款' where `key`='payment_transaction_type_deduaction' and `language`='1';
 update lt_resource_string set message = 'Deduaction' where `key`='payment_transaction_type_deduaction' and `language`='2';
+update lt_resource_string set message = '账户余额' where `key`='account_alance' and `language`='1';
+update lt_resource_string set message = 'Account Balance' where `key`='account_alance' and `language`='2';
+
+update lt_resource_string set message = '冻结金额' where `key`='company_authorize_amount' and `language`='1';
+update lt_resource_string set message = 'Frozen Amount' where `key`='company_authorize_amount' and `language`='2';
+UNLOCK TABLES;
 /*end 2015-05-27*/

@@ -21,3 +21,8 @@ INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`crea
 INSERT INTO `lt_resource_string` (`key`,`language`,`environment`,`message`,`create_time_utc`,`create_admin_id`,`update_time_utc`,`update_admin_id`) VALUES ('wish_api_key',2,0,'Wish API Key',1431786470,1,1431786470,1);
 UNLOCK TABLES;
 /*end 2015-05-16*/
+
+/*start 2015-05-27*/
+LOCK TABLES `lt_resource_string` WRITE;
+update lt_resource_string set message = '¿Û¿î' where `key`='payment_transaction_type_deduaction';
+/*end 2015-05-27*/

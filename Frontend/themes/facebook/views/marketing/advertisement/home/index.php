@@ -529,7 +529,7 @@ $this->breadcrumbs=array(
                 "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? data[i]['clicks'] : 0)+"</td>"+
                 "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? data[i]['impr'] : 0)+"</td>"+
                 "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? (data[i]['clicks']/data[i]['impr']*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
-                "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? "$"+parseFloat(data[i]['clicks']/data[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
+                "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? "$"+parseFloat(data[i]['cost']/data[i]['clicks']).toFixed(2) : '&nbsp;')+"</td>"+
                 "<td align='right'>"+(parseFloat(data[i]['cost']) > 0 ? "$"+parseFloat(data[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
                 "</tr>";
             totalClicks += data[i]['clicks'] != null ? parseInt(data[i]['clicks']) : 0;
@@ -567,7 +567,7 @@ $this->breadcrumbs=array(
                 "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? group[i]['clicks'] : 0)+"</td>"+
                 "<td align='right'>"+(parseInt(group[i]['impr']) > 0 ? group[i]['impr'] : 0)+"</td>"+
                 "<td align='right'>"+(parseInt(group[i]['impr']) > 0 ? (group[i]['clicks']/group[i]['impr']*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
-                "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? "$"+parseFloat(group[i]['clicks']/group[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
+                "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? "$"+parseFloat(group[i]['cost']/group[i]['clicks']).toFixed(2) : '&nbsp;')+"</td>"+
                 "<td align='right'>"+(parseFloat(group[i]['cost']) > 0 ? "$"+parseFloat(group[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
                 "</tr>";
             totalClicks += group[i]['clicks'] != null ? parseInt(group[i]['clicks']) : 0;
@@ -581,8 +581,8 @@ $this->breadcrumbs=array(
         "<td align='right' class='boldFont'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'total');?></td>"+
         "<td align='right' class='boldFont'>"+totalClicks+"</td>"+
         "<td align='right' class='boldFont'>"+totalImpr+"</td>"+
-        "<td align='right' class='boldFont'>"+(totalImpr > 0 ? (totalClicks/totalImpr*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
-        "<td align='right' class='boldFont'>"+(totalClicks > 0 ? '$'+(totalCost/totalClicks).toFixed(2) : '&nbsp;')+"</td>"+
+        "<td align='right' class='boldFont'>"+(totalImpr > 0 ? parseFloat(totalClicks/totalImpr*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
+        "<td align='right' class='boldFont'>"+(totalClicks > 0 ? '$'+parseFloat(totalCost/totalClicks).toFixed(2) : '&nbsp;')+"</td>"+
         "<td align='right' class='boldFont'>"+(totalCost > 0 ? '$'+parseFloat(totalCost).toFixed(2) : '&nbsp;')+"</td>"+
         "</tr>");
     }

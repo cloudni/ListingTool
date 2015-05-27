@@ -699,7 +699,7 @@ $this->menu=array(
                         "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? group[i]['clicks'] : 0)+"</td>"+
                         "<td align='right'>"+(parseInt(group[i]['impr']) > 0 ? group[i]['impr'] : 0)+"</td>"+
                         "<td align='right'>"+(parseInt(group[i]['impr']) > 0 ? (group[i]['clicks']/group[i]['impr']*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
-                        "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? "$"+parseFloat(group[i]['clicks']/group[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
+                        "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? "$"+parseFloat(group[i]['cost']/group[i]['clicks']).toFixed(2) : '&nbsp;')+"</td>"+
                         "<td align='right'>"+(parseFloat(group[i]['cost']) > 0 ? "$"+parseFloat(group[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
                         "</tr>";
             totalClicks += group[i]['clicks'] != null ? parseInt(group[i]['clicks']) : 0;

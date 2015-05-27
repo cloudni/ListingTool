@@ -563,7 +563,7 @@ $this->breadcrumbs=array(
             var line = "<tr>"+
                 "<td align='left'><a href='"+url.replace('replace_id', group[i]['id'])+"'>"+group[i]['name']+"</a></td>"+
                 "<td align='right'><img id='group_"+group[i]['id']+"_img' src='"+getGroupStatusImg(group[i]['status'])+"' border='0' "+(group[i]['status'] == '<?php echo ADGroup::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
-                "<td align='left'>"+group[i]['default_bid']+"</td>"+
+                "<td align='left'>"+"$"+parseFloat(group[i]['default_bid']).toFixed(2)+"</td>"+
                 "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? group[i]['clicks'] : 0)+"</td>"+
                 "<td align='right'>"+(parseInt(group[i]['impr']) > 0 ? group[i]['impr'] : 0)+"</td>"+
                 "<td align='right'>"+(parseInt(group[i]['impr']) > 0 ? (group[i]['clicks']/group[i]['impr']*100).toFixed(2)+'%' : '&nbsp')+"</td>"+

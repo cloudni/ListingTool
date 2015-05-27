@@ -36,3 +36,20 @@ ALTER TABLE `lt_store` ADD COLUMN `wish_token` VARCHAR(500) NULL AFTER `ebay_sit
 /*start 2015-05-14*/
 ALTER TABLE `lt_ad_advertise_feed` CHANGE COLUMN `item_type` `item_type` INT NOT NULL DEFAULT 1 ;
 /*end 2015-05-14*/
+
+/*start 2015-05-28*/
+DROP TABLE IF EXISTS `lt_ebay_lms_log`;
+CREATE TABLE `lt_ebay_lms_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(4) NOT NULL COMMENT '类型：1、插入pixel',
+  `cmd_date` varchar(20) NOT NULL COMMENT '执行时间，代表某个批次，如：20150527124354',
+  `company_id` int(11) NOT NULL COMMENT '所属企业',
+  `store_id` int(11) NOT NULL COMMENT '所属门店',
+  `site_id` int(11) NOT NULL COMMENT '所属站点',
+  `interface_name` varchar(100) NOT NULL COMMENT '对应ebaytrade api接口名称，如"ReviseItem“',
+  `item_id` varchar(50) DEFAULT NULL,
+  `ack` varchar(20) NOT NULL COMMENT '状态：如成功、失败、终止',
+  `short_message` varchar(1000) DEFAULT NULL COMMENT '原因',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-05-28*/

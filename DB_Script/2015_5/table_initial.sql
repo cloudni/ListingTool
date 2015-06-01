@@ -52,4 +52,20 @@ CREATE TABLE `lt_ebay_lms_log` (
   `short_message` varchar(1000) DEFAULT NULL COMMENT '‘≠“Ú',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+alter table lt_ad_google_adwords_report_ad drop COLUMN pk_id;
+alter table lt_ad_google_adwords_report_ad_group drop COLUMN pk_id;
+alter table lt_ad_google_adwords_report_automatic_placements drop COLUMN pk_id;
+alter table lt_ad_google_adwords_report_campaign drop COLUMN id;
+alter table lt_ad_google_adwords_report_destination_url drop COLUMN pk_id;
+alter table lt_ad_google_adwords_report_geo drop COLUMN pk_id;
+
+alter table lt_ad_google_adwords_report_ad MODIFY is_charged tinyint(1) DEFAULT 0;
+alter table lt_ad_google_adwords_report_ad_group MODIFY is_charged tinyint(1) DEFAULT 0;
+alter table lt_ad_google_adwords_report_automatic_placements MODIFY is_charged tinyint(1) DEFAULT 0;
+alter table lt_ad_google_adwords_report_campaign MODIFY is_charged tinyint(1) DEFAULT 0;
+alter table lt_ad_google_adwords_report_destination_url MODIFY is_charged tinyint(1) DEFAULT 0;
+alter table lt_ad_google_adwords_report_geo MODIFY is_charged tinyint(1) DEFAULT 0;
+
+DROP TABLE IF EXISTS lt_ad_google_adwords_report_campaign_temp;
 /*end 2015-05-28*/

@@ -33,3 +33,16 @@ update lt_resource_string set message = '冻结金额' where `key`='company_authoriz
 update lt_resource_string set message = 'Frozen Amount' where `key`='company_authorize_amount' and `language`='2';
 UNLOCK TABLES;
 /*end 2015-05-27*/
+
+/*start 2015-05-28*/
+LOCK TABLES `lt_resource_string` WRITE;
+insert into lt_resource_string (`key`, `language`, `environment`, `message`)
+values ('transaction_relation', 2, 0, 'Campaign'), ('transaction_relation', 1, 0, '广告系列');
+
+insert into lt_resource_string (`key`, `language`, `environment`, `message`)
+values ('transaction_finance_view', 2, 0, 'Detail'), ('transaction_finance_view', 1, 0, '详情');
+
+insert into lt_resource_string (`key`, `language`, `environment`, `message`)
+values ('button_back', 2, 0, 'back'), ('button_back', 1, 0, '返回');
+UNLOCK TABLES;
+/*end 2015-05-28*/

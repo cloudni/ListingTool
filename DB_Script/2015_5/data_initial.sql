@@ -44,5 +44,7 @@ values ('transaction_finance_view', 2, 0, 'Detail'), ('transaction_finance_view'
 
 insert into lt_resource_string (`key`, `language`, `environment`, `message`)
 values ('button_back', 2, 0, 'back'), ('button_back', 1, 0, '返回');
+
+update lt_resource_string t set t.message='金额' where t.message='充值金额';
 UNLOCK TABLES;
 /*end 2015-05-28*/

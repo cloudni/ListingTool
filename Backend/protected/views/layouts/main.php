@@ -62,6 +62,7 @@
                     'visible'=>!Yii::app()->user->isGuest,
                     'items'=>array(
                         array('label'=>'Manage API Keys', 'url'=>array('/eBay/eBayApiKey')),
+                        array('label'=>'Manage eBay Listings', 'url'=>array('/eBay/eBayListing')),
                         array(
                             'label'=>'Manage Attribute',
                             'itemOptions'=>array('class'=>'dir'),

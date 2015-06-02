@@ -8,7 +8,7 @@ class eBayListingController extends Controller
         $store_id = isset($_POST['store_select']) && $_POST['store_select'] ? (int)$_POST['store_select'] : null;
         $listingStatus = isset($_POST['listing_status_select']) && $_POST['listing_status_select'] ? (string)$_POST['listing_status_select'] : null;
         $listingType = isset($_POST['listing_type_select']) && $_POST['listing_type_select'] ? (string)$_POST['listing_type_select'] : null;
-        $siteId = isset($_POST['ebay_site_select']) ? (int)$_POST['ebay_site_select'] : null;
+        $siteId = isset($_POST['ebay_site_select']) ? (int)$_POST['ebay_site_select'] : 'all';
         $searchKeyword = isset($_POST['search_keyword']) && $_POST['search_keyword'] ? (int)$_POST['search_keyword'] : null;
         $id_page = isset($_POST['id_page']) && $_POST['id_page'] ? (int)$_POST['id_page'] : 1;
 
@@ -45,7 +45,7 @@ class eBayListingController extends Controller
             $where .= " and eevls.`value`= '$listingStatus' ";
         if($listingType)
             $where .= " and eevlt.`value` = '$listingType' ";
-        if(isset($siteId))
+        if($siteId != 'all')
             $where .= " and el.site_id = ".(int)$siteId." ";
         if($store_id)
             $where .= " and el.store_id = ".(int)$store_id." ";

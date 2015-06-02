@@ -69,3 +69,8 @@ alter table lt_ad_google_adwords_report_geo MODIFY is_charged tinyint(1) DEFAULT
 
 DROP TABLE IF EXISTS lt_ad_google_adwords_report_campaign_temp;
 /*end 2015-05-28*/
+
+/*start 2015-06-02*/
+ALTER TABLE lt_transaction add COLUMN ref_date VARCHAR(20);
+ALTER TABLE lt_transaction_detail add COLUMN ref_date VARCHAR(20);
+/*end 2015-06-02*/

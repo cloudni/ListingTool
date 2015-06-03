@@ -5,7 +5,7 @@
 /* @var $store_id int */
 /* @var $listingStatus string */
 /* @var $listingType string */
-/* @var $siteId int */
+/* @var $siteId string */
 /* @var $searchKeyword string */
 /* @var $id_page int */
 

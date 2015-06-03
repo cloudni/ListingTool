@@ -57,6 +57,23 @@
 				array('label'=>'Home', 'url'=>array('/site/index')),
                 array('label'=>'User', 'visible'=>!Yii::app()->user->isGuest, 'url'=>array('/company')),
                 array(
+                    'label'=>'Marketing',
+                    'itemOptions'=>array('class'=>'dir'),
+                    'visible'=>!Yii::app()->user->isGuest,
+                    'items'=>array(
+                        array(
+                            'label'=>'Advertisement',
+                            'itemOptions'=>array('class'=>'dir'),
+                            'url'=>array('/marketing/advertisement/home'),
+                            'items'=>array(
+                                array('label'=>'AD Campaign', 'url'=>array('/marketing/advertisement/adcampaign')),
+                                array('label'=>'AD Group', 'url'=>array('/marketing/advertisement/adgroup')),
+                                array('label'=>'ADs', 'url'=>array('/marketing/advertisement/ad')),
+                            ),
+                        ),
+                    ),
+                ),
+                array(
                     'label'=>'eBay',
                     'itemOptions'=>array('class'=>'dir'),
                     'visible'=>!Yii::app()->user->isGuest,

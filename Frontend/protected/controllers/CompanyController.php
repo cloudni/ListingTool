@@ -33,7 +33,7 @@ class CompanyController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('update', 'finance'),
+				'actions'=>array('update', 'finance', 'payPalResponse'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -51,6 +51,11 @@ class CompanyController extends Controller
         $this->render('finance',array(
             'model'=>$this->loadModel(),
         ));
+    }
+
+    public function actionPayPalResponse()
+    {
+        var_dump($_POST);
     }
 
 	/**

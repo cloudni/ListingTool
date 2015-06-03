@@ -107,11 +107,10 @@ $this->menu=array(
 <div id="deposit_tab" style="clear: both; width: 100%; position: relative; top: -5px; display: none;">
     <div class="borderBlock">
         <div>
-            <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
                 <input type='hidden' name='cmd' value='_xclick'>
-                <input type='hidden' name='business' value='cghbs22-facilitator@gmail.com'>
+                <input type='hidden' name='business' value='cloud.liuzj@gmail.com'>
                 <input type="hidden" name="item_name" value="2015060375768">
-                <input type="hidden" name="amount" value="1">
                 <input type="hidden" name="currency_code" value="USD">
                 <input type="hidden" name="return" value="http://www.itemtool.com/index.php/respond.php?code=paypal">
                 <input type="hidden" name="invoice" value="20">
@@ -129,7 +128,7 @@ $this->menu=array(
                     </select>
                 </div>
                 <div class="row" style="padding-top: 5px;">
-                    <span style="padding: 0px 5px 0px 5px;">$</span><input type="text" size="20" />
+                    <span style="padding: 0px 5px 0px 5px;">$</span><input type="text" name="amount" size="20" />
                 </div>
                 <?php echo CHtml::submitButton('submit', array('class'=>'greenButton')); ?>
             </div>

@@ -107,14 +107,33 @@ $this->menu=array(
 <div id="deposit_tab" style="clear: both; width: 100%; position: relative; top: -5px; display: none;">
     <div class="borderBlock">
         <div>
+            <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+                <input type='hidden' name='cmd' value='_xclick'>
+                <input type='hidden' name='business' value='cghbs22-facilitator@gmail.com'>
+                <input type="hidden" name="item_name" value="2015060375768">
+                <input type="hidden" name="amount" value="1">
+                <input type="hidden" name="currency_code" value="USD">
+                <input type="hidden" name="return" value="http://www.itemtool.com/index.php/respond.php?code=paypal">
+                <input type="hidden" name="invoice" value="20">
+                <input type="hidden" name="charset" value="utf-8">
+                <input type="hidden" name="no_shipping" value="1">
+                <input type="hidden" name="no_note" value="">
+                <input type="hidden" name="notify_url" value="http://www.itemtool.com/index.php/respond.php?code=paypal">
+                <input type="hidden" name="rm" value="2">
+                <input type="hidden" name="cancel_return" value="http://www.itemtool.com/">
             <div style="display: block; padding: 5px;">
-                <select>
-                    <option>PayPal</option>
-                    <option>Credit Card</option>
-                </select>
-                <span style="padding: 0px 5px 0px 5px;">$</span><input type="text" size="60" />
+                <div class="row">
+                    <span>Choose payment method: </span>
+                    <select>
+                        <option>PayPal</option>
+                    </select>
+                </div>
+                <div class="row" style="padding-top: 5px;">
+                    <span style="padding: 0px 5px 0px 5px;">$</span><input type="text" size="20" />
+                </div>
                 <?php echo CHtml::submitButton('submit', array('class'=>'greenButton')); ?>
             </div>
+            </form>
         </div>
     </div>
 </div>

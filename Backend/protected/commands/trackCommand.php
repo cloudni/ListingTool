@@ -30,7 +30,7 @@ class trackCommand extends CConsoleCommand
                             where t.company_id=3 and (t.store_id = 25 or t.store_id = 26)
                             and sstatus.value = '".eBayListingStatusCodeType::Active."' ; ";
         $command = Yii::app()->db->createCommand($select);
-        $listings = $command->queryAll();var_dump(count($listings));die();
+        $listings = $command->queryAll();
 
         $ij = InstantJob::model()->findByPk(13);
 

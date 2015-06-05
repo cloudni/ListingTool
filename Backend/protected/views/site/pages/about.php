@@ -24,10 +24,10 @@ by updating the file <code><?php echo __FILE__; ?></code>.</p>
     var google_remarketing_only = true;
     /* ]]> */
 </script>
-<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js"></script>
-<!--<script type="text/javascript">
+<!--<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js"></script>-->
+<script type="text/javascript">
     document.write("<sc" + "ript type=" + "'tex" + "t/jav" + "ascript'" + " src='//www.googl"+"eadser"+"vices.com/pagead/conve"+"rsion.j"+"s'>" + "<" + "/sc" + "ript>");
-</script>-->
+</script>
 <noscript>
     <div style="display:inline;">
         <img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/947969982/?value=0&amp;guid=ON&amp;script=0"/>

@@ -84,8 +84,8 @@ class trackCommand extends CConsoleCommand
             $result = eBayTradingAPI::ReviseListing($params, false);
 
             $resultStr = "";
-            $resultStr .= "Bulk update items ended!\n";
-            $resultStr .=  "Total processed: {$result['Total']}, Successed: ".count($result['Success']).", Warning: ".count($result['Warning']).", Failed: ".count($result['Failure']).", Unknow status: ".count($result['UnknownStatus'])."\n";
+            //$resultStr .= "Bulk update items ended!\n";
+            //$resultStr .=  "Total processed: {$result['Total']}, Successed: ".count($result['Success']).", Warning: ".count($result['Warning']).", Failed: ".count($result['Failure']).", Unknow status: ".count($result['UnknownStatus'])."\n";
             if(!empty($result['Success']))
             {
                 $resultStr .=  "Successed: ";

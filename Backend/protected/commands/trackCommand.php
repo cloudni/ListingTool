@@ -27,7 +27,7 @@ class trackCommand extends CConsoleCommand
         $select = "SELECT t.*
                             FROM `lt_ebay_listing` `t`
                             left join lt_ebay_entity_varchar as sstatus on sstatus.ebay_entity_id = t.id and sstatus.ebay_entity_attribute_id = {$listingStatusAttribute->id}
-                            where t.company_id=3 and (t.store_id = 25 or t.store_id = 26)
+                            where t.company_id=3 and (t.store_id = 25 or t.store_id = 26) and t.ebay_listing_id <> '221732316982'
                             and sstatus.value = '".eBayListingStatusCodeType::Active."' ; ";
         $command = Yii::app()->db->createCommand($select);
         $listings = $command->queryAll();
@@ -131,7 +131,7 @@ class trackCommand extends CConsoleCommand
                 $resultStr .=  "\n";
             }
 
-            echo $resultStr;die();
+            echo $resultStr;
         }
     }
 }

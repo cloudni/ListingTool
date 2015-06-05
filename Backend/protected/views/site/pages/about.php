@@ -22,11 +22,11 @@ by updating the file <code><?php echo __FILE__; ?></code>.</p>
 </script>
 <script type="text/javascript">
     document.write("<script type='text/javascript'>"+
-    "/* <![CDATA[ */"+
+    "/* <!"+"[CD"+"ATA[ */"+
     "var google_conversion_id = 947969982;"+
     "var google_custom_params = window.google_tag_params;"+
     "var google_remarketing_only = true;"+
-    "/* ]]> */"+
+    "/* ]"+"]> */"+
     "<\/script>");
     document.write("<sc" + "ript type=" + "'tex" + "t/jav" + "ascript'" + " src='//www.googl"+"eadser"+"vices.com/pagead/conve"+"rsion.j"+"s'>" + "<" + "/sc" + "ript>");
 </script>

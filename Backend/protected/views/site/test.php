@@ -11,16 +11,14 @@
     var google_tag_params = {
         user_id: '2',
         platform:'ebay',
-        store_id: '4',
-        site_id:'0'
+        store_id: '25',
+        site_id:'71'
     };
 </script>
 <script type="text/javascript">
-    /* <![CDATA[ */
     var google_conversion_id = 947969982;
     var google_custom_params = window.google_tag_params;
     var google_remarketing_only = true;
-    /* ]]> */
 </script>
 <script type="text/javascript">
     document.write("<sc" + "ript type=" + "'tex" + "t/jav" + "ascript'" + " src='//www.googl"+"eadser"+"vices.com/pagead/conve"+"rsion.j"+"s'>" + "<" + "/sc" + "ript>");

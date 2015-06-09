@@ -2753,7 +2753,7 @@ class eBayTradingAPI
                 {
                     $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$item, ":store_id"=>$store->id));
                     if(!empty($list)) eBayTradingAPI::GetItem($list);
-                    echo (string)$item->ItemID." updated!\n";
+                    echo (string)$item." updated!\n";
                 }
             }
             else

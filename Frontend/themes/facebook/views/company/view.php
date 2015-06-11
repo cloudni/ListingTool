@@ -14,7 +14,8 @@ $this->menu=array(
 	array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'company_update_menu'), 'url'=>array('update'/*, 'id'=>$model->id*/)),
 	/*array('label'=>'Delete Company', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
 	array('label'=>'Manage Company', 'url'=>array('admin')),*/
-    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'company_financa'), 'url'=>'http://local.java.it.net/portal-lt-frontend/company/transaction/list.shtml'),
+    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'company_financa'), 'url'=>array('finance'/*, 'id'=>$model->id*/)),
+    //array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'company_financa'), 'url'=>'http://local.java.it.net/portal-lt-frontend/company/transaction/list.shtml'),
 );
 ?>
 

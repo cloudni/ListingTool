@@ -2658,14 +2658,18 @@ class eBayTradingAPI
         $eBayService->createHTTPHead($store->ebay_site_code, 893, $store->eBayApiKey->dev_id, $store->eBayApiKey->app_id, $store->eBayApiKey->cert_id, "GetMyeBaySelling");
         echo "start to get ebay selling for store id: ".$store->id.", site id: ".$store->ebay_site_code."\n";
 
+        $maxTry = 10;
         try
         {
             $response = $eBayService->request();
 
-            if(empty($response) || !$response)
+            $try = 0;
+            while(empty($response) || !$response)
             {
-                echo "eBay service call failed!\n";
-                return false;
+                $try++;
+                echo "eBay service call failed! try $try time.\n";
+                $response = $eBayService->request();
+                if($try >= $maxTry) return false;
             }
 
             if((string)$response->Ack===eBayAckCodeType::Success)
@@ -2704,11 +2708,15 @@ class eBayTradingAPI
                     echo "\nprocess page: ".$param['ActiveList']['Pagination']['PageNumber'].".\n";
                     $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").eBayTradingAPI::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
                     $response = $eBayService->request();
-                    if(empty($response))
+                    $try = 0;
+                    while(empty($response) || !$response)
                     {
-                        echo "service call failed with no return.\n";
-                        break;
+                        $try++;
+                        echo "eBay service call failed! try $try time on page {$param['ActiveList']['Pagination']['PageNumber']}.\n";
+                        $response = $eBayService->request();
+                        if($try >= $maxTry) break;
                     }
+                    if($try >= $maxTry) break;
 
                     if((string)$response->Ack===eBayAckCodeType::Success)
                     {
@@ -2751,9 +2759,9 @@ class eBayTradingAPI
                 $offlineLists = array_diff($activeLists, $updateLists);
                 foreach($offlineLists as $item)
                 {
-                    $list = eBayListing::model()->find("ebay_list_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$item, ":store_id"=>$store->id));
+                    $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$item, ":store_id"=>$store->id));
                     if(!empty($list)) eBayTradingAPI::GetItem($list);
-                    echo (string)$item->ItemID." updated!\n";
+                    echo (string)$item." updated!\n";
                 }
             }
             else

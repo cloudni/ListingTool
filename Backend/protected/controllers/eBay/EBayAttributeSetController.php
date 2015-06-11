@@ -46,7 +46,75 @@ class EBayAttributeSetController extends Controller
 
     public function actionTestGetSellerList()
     {
-        eBayTradingAPI::GetMyeBaySellingV2(3);
+        $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
+        $eBayAttributeSet = eBayAttributeSet::model()->find(
+            'entity_type_id=:entity_type_id',
+            array(
+                ':entity_type_id'=>$eBayEntityType->id,
+            )
+        );
+
+        $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
+
+        $select = "SELECT t.*
+                            FROM `lt_ebay_listing` `t`
+                            left join lt_ebay_entity_varchar as sstatus on sstatus.ebay_entity_id = t.id and sstatus.ebay_entity_attribute_id = {$listingStatusAttribute->id}
+                            where
+                            sstatus.value = '".eBayListingStatusCodeType::Active."' ; ";
+        $command = Yii::app()->db->createCommand($select);
+        $listings = $command->queryAll();
+
+        $ij = InstantJob::model()->findByPk(13);
+
+        foreach($listings as $listing)
+        {
+            if(!isset($listing["site_id"])) continue;
+            $replace = $ij->params;
+            $replace = str_replace("ebay_listing_id", $listing["ebay_listing_id"], $replace);
+            $replace = str_replace("ebay_user_id", 3, $replace);
+            $replace = str_replace("ebay_store_id", $listing["store_id"], $replace);
+            $replace = str_replace("ebay_site_id", $listing["site_id"], $replace);
+            $inputs = json_decode($replace);
+            if(!isset($inputs->applied_listings))
+            {
+                echo "find error in parameters, exit\n";
+                return false;
+            }
+            if(!isset($inputs->company_id))
+            {
+                echo "find error in parameters, exit\n";
+                return false;
+            }
+            $params['applied_listings'] = $inputs->applied_listings;
+            $params['company_id'] = $inputs->company_id;
+            $params['update_rules'] = array();
+            if(isset($inputs->update_rules->quantity))
+                $params['update_rules']['quantity'] = $inputs->update_rules->quantity;
+            if(isset($inputs->update_rules->price))
+            {
+                $params['update_rules']['price'] = array(
+                    'action'=>$inputs->update_rules->price->action,
+                    'value'=>$inputs->update_rules->price->value,
+                    'type'=>$inputs->update_rules->price->type,
+                );
+            }
+            if(isset($inputs->update_rules->description))
+            {
+                $params['update_rules']['description'] = array(
+                    'action'=>$inputs->update_rules->description->action,
+                    'tag'=>$inputs->update_rules->description->tag,
+                    'value'=>$inputs->update_rules->description->value,
+                    'position'=>$inputs->update_rules->description->position,
+                );
+            }
+            if(isset($inputs->update_rules->excludeShipLocation))
+            {
+                $params['update_rules']['excludeShipLocation'] = $inputs->update_rules->excludeShipLocation;
+            }
+
+            var_dump($params);
+            //$result = eBayTradingAPI::ReviseListing($params, false);
+        }
         //echo 'dd';eBayTradingAPI::GetItem(eBayListing::model()->findByPk(2118));
         /*$params=array('CategorySiteID'=>203, 'CategoryParent'=>'', 'LevelLimit'=>4, 'ViewAllNodes'=>true, 'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll);
         eBayTradingAPI::GetCategories($params);*/

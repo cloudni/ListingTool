@@ -9,8 +9,8 @@ class WishListingController extends Controller
 {
     public function actionTest()
     {
-        WishAPI::GetAllProducts(31);
-        //WishAPI::GetProductById("54b777a64ecb0615580c5151");
+        //WishAPI::GetAllProducts(31);
+        WishAPI::GetProductById("55376b73b80aa50c14115e40");WishAPI::GetProductById("55359f3da398a6222e43deae");
         //$wishProd = WishListing::model()->find("wish_id=:wish_id", array(":wish_id"=>"5550643f3420cb310010c744"));
         //$client = new WishClient("JHBia2RmMiQxMDAkZlM4bHhKaHpUb25SV3N2NVgudTlOdyRWVzFieGI5Y3BpR2taMS5zcnQ2QS5wQTBVSjQ=", null, WishClient::Session_Type_SandBox);
         //var_dump($client->getProductById("5550643f3420cb310010c744"));die();

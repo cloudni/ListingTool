@@ -50,17 +50,7 @@ class EBayListingController extends Controller
 
     public function actionTestGetItem()
     {
-        eBayTradingAPI::GetMyeBaySelling(3);
-        /*$list = new eBayListing();
-        $list->company_id = 1;
-        $list->store_id = 3;
-        $list->ebay_listing_id = "161456835775";
-        $list->site_id = 0;
-        $list->ebay_entity_type_id = 1;
-        $list->ebay_attribute_set_id = 1;
-        $list->is_active = 1;
-        $list->save();*/
-        //$list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id", array(":ebay_listing_id"=>"161456835775"));
+        
         //eBayTradingAPI::GetItem($list);
         //var_dump($list->getEntityAttributeValueByCodeWithAllChildren("ShippingDetails"));
         //eBayTradingAPI::ReviseFixedPriceItem($list, array("ItemID"=>"271824209129", "ExcludeShipToLocation"=>array("PO Box", "CN")));

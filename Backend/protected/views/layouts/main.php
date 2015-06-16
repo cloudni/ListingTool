@@ -68,13 +68,13 @@
                     'items'=>array(
                         array(
                             'label'=>'Advertisement',
-                            'itemOptions'=>array('class'=>'dir'),
                             'url'=>array('/marketing/advertisement/home'),
+                            /*'itemOptions'=>array('class'=>'dir'),
                             'items'=>array(
                                 array('label'=>'AD Campaign', 'url'=>array('/marketing/advertisement/adcampaign')),
                                 array('label'=>'AD Group', 'url'=>array('/marketing/advertisement/adgroup')),
                                 array('label'=>'ADs', 'url'=>array('/marketing/advertisement/ad')),
-                            ),
+                            ),*/
                         ),
                     ),
                 ),

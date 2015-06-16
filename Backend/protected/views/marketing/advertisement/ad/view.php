@@ -2,19 +2,15 @@
 /**
  * Created by PhpStorm.
  * User: cloud
- * Date: 2015/5/26
- * Time: 14:07
+ * Date: 2015/6/16
+ * Time: 15:43
  */
-/* @var $this AdcampaignController */
-/* @var $model ADCampaign */
-$this->breadcrumbs=array(
-    'AD Campaign',
-);
 
-$this->menu=array(
-    array('label'=>"AD Campaign List", 'url'=>array('marketing/advertisement/adcampaign/index')),
-    array('label'=>"Update AD Campaign", 'url'=>array('marketing/advertisement/adcampaign/update', 'id'=>$model->id)),
-    array('label'=>'Delete AD Campaign', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
+/* @var $this AdController */
+/* @var $model ADAdvertise */
+
+$this->breadcrumbs=array(
+    'Advertisement',
 );
 ?>
 
@@ -63,93 +59,69 @@ $this->menu=array(
     }
 </style>
 
-<h1>AD Campaign: <?php echo $model->name;?></h1>
+<h1>Advertise: <?php echo $model->name;?></h1>
 
-<?php
-$criteria = "";
-$setting = $model->criteria;
-if(isset($setting['language']))
-{
-    if(!empty($setting['language']))
-        $criteria .= "Language: ".$setting['language']."<br />";
-    else
-        $criteria .= "Language: All Languages."."<br />";
-}
-else
-{
-    $criteria .= "Language: All Languages."."<br />";
-}
-if(isset($setting['location']))
-{
-    if(!empty($setting['location']))
-        $criteria .= "Location: ".str_replace(',', ', ', $setting['location'])."<br />";
-    else
-        $criteria .= "Location: All Countries and Regions."."<br />";
-}
-else
-{
-    $criteria .= "Location: All Countries and Regions."."<br />";
-}
-$schedule = "";
-if(isset($setting['schedule']) && !empty($setting['schedule']))
-{
-    foreach($setting['schedule'] as $period)
-    {
-        $period = (array)$period;
-        $schedule .= $period['day'].' From: '.$period['from_hour'].':'.$period['from_minute'].' To: '.$period['to_hour'].':'.$period['to_minute']."<br />";
-    }
-}
-?>
 <?php $this->widget('zii.widgets.CDetailView', array(
     'data'=>$model,
     'attributes'=>array(
         array(
-            'label'=>"Name",
+            'label'=>'Name',
             'value'=>$model->name,
         ),
         array(
-            'name'=>"Status",
-            'value'=>ADCampaign::getStatusText($model->status),
-        ),
-        array(
-            'label'=>"Budget",
-            'value'=>sprintf("$%1\$.2f", $model->budget)
-        ),
-        array(
-            'label'=>"Start Date",
-            'value'=>date('Y-m-d', $model->start_datetime),
-        ),
-        array(
-            'label'=>"End Date",
-            'value'=>isset($model->end_datetime) ? date('Y-m-d', $model->start_datetime) : null,
-        ),
-        array(
-            'label'=>"Criteria",
-            'value'=>"<div style=\"word-break: break-all; width: 100%;\">".$criteria."</div>",
-            'type'=>'html',
-        ),
-        array(
-            'label'=>"Timezone",
-            'value'=>isset($setting['timezone']) ? $setting['timezone'] : "",
-        ),
-        array(
-            'label'=>"Schedule",
-            'value'=>!empty($schedule) ? $schedule : 'All Time.',
-            'type'=>'html',
-        ),
-        array(
-            'label'=>"Note",
+            'label'=>'Note',
             'value'=>$model->note,
-        )
+        ),
     ),
 )); ?>
 
-<div style="clear: both; width: 100%; position: relative; top: 10px;">
+<div style="clear: both; width: 100%; position: relative; top: 15px;">
     <div class="borderBlock">
         <div>
-            <div style="background: #fff; border-bottom: 1px solid #e9eaed; font-size: 12px;">
+            <div style="border-bottom: 1px solid #e9eaed; font-size: 12px; clear: both; width: 100%;">
+                <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
+                    <h1 style="color: #4e5665; font-weight: 700; line-height: 38px; position: relative;">Promote Products</h1>
+                </div>
+            </div>
+            <div style="display: block;">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <thead>
+                    <th align="left">Platform</th>
+                    <th align="left">ID</th>
+                    <th align="right">Title</th>
+                    </thead>
+                    <tbody>
+                    <?php foreach($model->adAdvertiseFeeds as $feed):?>
+                        <tr>
+                            <td><?php echo Store::getPlatformTextStatic($feed->item_type);?></td>
+                            <td><a href="
+                                <?php switch($feed->item_type)
+                                {
+                                    case Store::PLATFORM_EBAY:
+                                        echo sprintf("http://www.ebay.com/itm/%s", $feed->item_id);
+                                        break;
+                                    case Store::PLATFORM_WISH:
+                                        echo sprintf("http://www.wish.com/c/%s", $feed->item_id);
+                                        break;
+                                }
+                                ?>
+                            " target="_blank" ><?php echo $feed->item_id;?></a></td>
+                            <td><?php echo $feed->item_headline;?></td>
+                        </tr>
+                    <?php endforeach;?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="clear: both; width: 100%; position: relative; top: 15px;">
+    <div class="borderBlock">
+        <div>
+            <div style="border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="position: relative; float: right;">
-                    <select id="performanceDateRange" name="performanceDateRange" style="height: 24px; position: relative; top: 7px; margin-right: 7px; display: block;">
+                    <select id="performanceDateRange" name="performanceDateRange" style="position: relative; top: 7px; margin-right: 7px; display: block; height: 24px;">
                         <option value="custom">Custom</option>
                         <option value="this_week">This Week</option>
                         <option value="last_7_days">Last 7 Days</option>
@@ -173,11 +145,13 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
             <div>
                 <div style="height: 36px; color: #000; font-weight: normal;">
                     <div class="clearfix">
-                        <div class="sumDiv">Clicks</div>
-                        <div class="sumDiv sumDivBorderLeft">Impressions</div>
-                        <div class="sumDiv sumDivBorderLeft">CTR %</div>
-                        <div class="sumDiv sumDivBorderLeft">Avg. CPC</div>
-                        <div class="sumDiv sumDivBorderLeft">Cost</div>
+                        <div class="clearfix">
+                            <div class="sumDiv">Clicks</div>
+                            <div class="sumDiv sumDivBorderLeft">Impressions</div>
+                            <div class="sumDiv sumDivBorderLeft">CTR %</div>
+                            <div class="sumDiv sumDivBorderLeft">Avg. CPC</div>
+                            <div class="sumDiv sumDivBorderLeft">Cost</div>
+                        </div>
                     </div>
                     <div class="clearfix" id="performance_all">
                         <div class="sumDiv sumDivFontBold" id="clicks">&nbsp;</div>
@@ -192,12 +166,15 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
     </div>
 </div>
 
-<div style="clear: both; width: 100%; position: relative; top: 10px;">
+<div style="clear: both; width: 100%; position: relative; top: 15px;">
     <div class="borderBlock">
         <div>
-            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; padding: 12px 12px 0px 12px;">
+            <div style="border-bottom: 1px solid #e9eaed; font-size: 12px; padding: 12px 12px 0px 12px;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <?php echo CHtml::dropDownList('adGroupId', '', CHtml::listData(ADGroup::model()->findAll("campaign_id=:campaign_id and company_id=:company_id" ,array(':campaign_id'=>$model->id, ':company_id' =>$model->company_id)), 'id', 'name'), array('empty'=>'All enabled AD Groups', 'style'=>'height: 24px;'));?>
+                    <?php $variations = ADAdvertiseVariation::model()->findAll("ad_advertise_id=:ad_id and company_id=:company_id" ,array(':ad_id'=>$model->id, ':company_id' =>$model->company_id));
+                    $variationList = array();
+                    foreach($variations as $variation) $variationList[] = array('id'=>$variation->id, 'name'=>$variation->width.' x '.$variation->height.' ('.ADAdvertiseVariation::getCodeText($variation['code']).')');
+                    echo CHtml::dropDownList('advariationId', '', CHtml::listData($variationList, 'id', 'name'), array('empty'=>'All advertisement variations', 'style'=>'height: 24px;'));?>
                     <div style="display: inline-block; width: 10px; height: 10px; background-color: #058dc7; position: relative; left: 100px; z-index: 1;"></div>
                     <select id="dataPoint1" name="dataPoint1" style="width: 120px; height: 24px;">
                         <option value="clicks">Clicks</option>
@@ -225,58 +202,19 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
     </div>
 </div>
 
-<div style="clear: both; width: 100%; position: relative; top: 10px;">
-    <div class="borderBlock" style="border: none;">
-        <div>
-            <div style="border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="height: 26px; color: #9197a3; font-weight: normal;">
-                    <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
-                    <ul id="menu_segment_action" class="ui-menu" >
-                        <li value="All_Campaigns">None</li>
-                        <li value="All_enabled_Campaigns">
-                            Time
-                            <ul>
-                                <li>Day</li>
-                                <li>Week</li>
-                                <li>Month</li>
-                                <li>Quarter</li>
-                                <li>Year</li>
-                            </ul>
-                        </li>
-                        <li value="All_but_removed_Campaigns">Click Type</li>
-                        <li value="All_but_removed_Campaigns">Device</li>
-                    </ul>
-                    <input id="menu_dimensions_action_button" type="button" value="Dimension Report ▼" class="menuButton" onclick="showMenu('menu_dimensions_action');" style="width: 142px;" />
-                    <ul id="menu_dimensions_action" class="ui-menu" >
-                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/automaticPlacementReport", array('id'=>$model->id));?>';">Automatic placement</li>
-                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/geoGraphicReport", array('id'=>$model->id));?>';">Geo graphic</li>
-                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/destinationURLReport", array('id'=>$model->id));?>';">Destination URL</li>
-                    </ul>
-                </div>
-            </div>
-            <div>
-
-            </div>
-        </div>
-    </div>
-</div>
-
 <div style="clear: both; width: 100%; position: relative; top: 15px;">
     <div class="borderBlock">
         <div>
-            <div style="border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="position: relative; float: right;">
-                </div>
+            <div style="border-bottom: 1px solid #e9eaed; font-size: 12px; clear: both; width: 100%;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
-                    <h1 style="color: #4e5665; font-weight: 700; line-height: 38px; position: relative;">AD Group</h1>
+                    <h1 style="color: #4e5665; font-weight: 700; line-height: 38px; position: relative;">Advertisement Variations</h1>
                 </div>
             </div>
             <div style="display: block;">
-                <table cellpadding="0" cellspacing="0" border="0" width="100%" id="group_performance">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%" id="ad_variation_performance">
                     <thead>
-                    <th align="left">AD Group</th>
-                    <th align="left">Status</th>
-                    <th align="right">Default Max. CPC</th>
+                    <th align="left"><img src="/images/facebook/disabled.png" border="0" /></th>
+                    <th align="left">Variation</th>
                     <th align="right">Clicks</th>
                     <th align="right">Impressions</th>
                     <th align="right">CTR</th>
@@ -284,6 +222,7 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
                     <th align="right">Cost</th>
                     </thead>
                     <tbody>
+
                     </tbody>
                 </table>
             </div>
@@ -293,12 +232,10 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
 
 <script>
     $(function() {
-        $("ul[id^='menu_']").menu();
-        $("ul[id^='menu_']").hide();
-
-        $("#page").click(function(){
-            $( "ul[id^='menu_']" ).hide();
-        });
+        $("#dataPoint1").change(updatePerformanceChart);
+        $("#dataPoint2").change(updatePerformanceChart);
+        $("#groupBy").change(updatePerformanceChart);
+        $("#advariationId").change(updatePerformanceChart);
 
         $("#cusFromDate").datepicker({
             dateFormat: "yy-mm-dd",
@@ -354,50 +291,31 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
             }
         });
 
-        $("#dataPoint1").change(updatePerformanceChart);
-        $("#dataPoint2").change(updatePerformanceChart);
-        $("#adGroupId").change(updatePerformanceChart);
-
         updatePerformanceStatistic();
     });
-
-    function showMenu(id)
-    {
-        $( "ul[id^='menu_']" ).hide();
-        var position = $("#"+id+"_button").position();
-        $( "#"+id).css("left", position.left);
-        $( "#"+id ).show();
-        event.stopPropagation();
-    }
 
     function updatePerformanceStatistic(startDate, endDate)
     {
         $("#ajaxloading").css("display", "block");
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/getPerformanceStatistic");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/getPerformanceStatistic");?>',
             data: {
                 start: startDate,
                 end: endDate,
-                adcampaignid: <?php echo $model->id;?>,
-                adgroupid: $("#adGroupId").val()
+                advertisementid: <?php echo $model->id;?>,
+                advariationid: $("#advariationId").val()
             },
             dataType: "JSON",
             success: function (data, status, xhr) {
                 $("#ajaxloading").css("display", "none");
-
-                if(data['status']=='success') {
-                    updatePerformanceAll(data['all']);
-                    updatePerformanceChartV2(data['chart']);
-                    updatePerformanceGroup(data['group']);
-                }
-                else {
-                    alert("Faile to load performance data.\nPlease try again later.");
-                }
+                updatePerformanceAll(data['all']);
+                updatePerformanceChartV2(data['chart']);
+                updatePerformanceADVariation(data['advariation']);
             },
             error: function (data, status, xhr) {
                 $("#ajaxloading").css("display", "none");
-                alert("Faile to load performance data.\nPlease try again later.");
+                alert("Faile to load performance data.\nPlease try again later.")
             }
         });
     }
@@ -430,46 +348,48 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
     {
         switch(status)
         {
-            case '<?php echo ADGroup::Status_Enabled;?>':
+            case '<?php echo ADAdvertiseVariation::Status_Enabled;?>':
                 return "/images/facebook/enabled.png";
-            case '<?php echo ADGroup::Status_Pending;?>':
+            case '<?php echo ADAdvertiseVariation::Status_Pending;?>':
                 return "/images/waiting.png";
-            case '<?php echo ADGroup::Status_Paused;?>':
+            case '<?php echo ADAdvertiseVariation::Status_Paused;?>':
                 return "/images/facebook/pause.gif";
-            case '<?php echo ADGroup::Status_Removed;?>':
+            case '<?php echo ADAdvertiseVariation::Status_Removed;?>':
                 return "/images/facebook/removed.png";
+            default:
+                return "/images/facebook/disabled.png";
+                break;
         }
     }
 
-    function updatePerformanceGroup(group)
+    function updatePerformanceADVariation(data)
     {
         var totalClicks = 0;
         var totalImpr = 0;
         var totalCost = 0;
-        var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/view", array('id'=>'replace_id'));?>';
+        var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/view", array('id'=>'replace_id'));?>';
+        var codeName = {<?php echo ADAdvertiseVariation::Code_Flash;?>:"<?php echo ADAdvertiseVariation::getCodeText(ADAdvertiseVariation::Code_Flash);?>", <?php echo ADAdvertiseVariation::Code_Html5;?>:"<?php echo ADAdvertiseVariation::getCodeText(ADAdvertiseVariation::Code_Html5);?>"};
 
-        $("#group_performance tr:gt(0)").remove();
-        for(var i=0;i<group.length;i++)
+        $("#ad_variation_performance tr:gt(0)").remove();
+        for(var i=0;i<data.length;i++)
         {
             var line = "<tr>"+
-                "<td align='left'><a target='_blank' href='"+url.replace('replace_id', group[i]['id'])+"'>"+group[i]['name']+"</a></td>"+
-                "<td align='right'><img id='group_"+group[i]['id']+"_img' src='"+getStatusImg(group[i]['status'])+"' border='0' "+(group[i]['status'] == '<?php echo ADGroup::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
-                "<td align='left'>"+"$"+parseFloat(group[i]['default_bid']).toFixed(2)+"</td>"+
-                "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? group[i]['clicks'] : 0)+"</td>"+
-                "<td align='right'>"+(parseInt(group[i]['impr']) > 0 ? group[i]['impr'] : 0)+"</td>"+
-                "<td align='right'>"+(parseInt(group[i]['impr']) > 0 ? (group[i]['clicks']/group[i]['impr']*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
-                "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? "$"+parseFloat(group[i]['cost']/group[i]['clicks']).toFixed(2) : '&nbsp;')+"</td>"+
-                "<td align='right'>"+(parseFloat(group[i]['cost']) > 0 ? "$"+parseFloat(group[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
+                "<td align='left'><img id='variation_"+ data[i]['id']+"_img' src='"+getStatusImg(data[i]['status'])+"' border='0' "+(data[i]['status'] == '<?php echo ADAdvertiseVariation::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
+                "<td align='left'>"+ data[i]['width']+" x "+ data[i]['height']+"("+ codeName[data[i]['code']]+")</td>"+
+                "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? data[i]['clicks'] : 0)+"</td>"+
+                "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? data[i]['impr'] : 0)+"</td>"+
+                "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? (data[i]['clicks']/data[i]['impr']*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
+                "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? "$"+parseFloat(data[i]['cost']/data[i]['clicks']).toFixed(2) : '&nbsp;')+"</td>"+
+                "<td align='right'>"+(parseFloat(data[i]['cost']) > 0 ? "$"+parseFloat(data[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
                 "</tr>";
-            totalClicks += group[i]['clicks'] != null ? parseInt(group[i]['clicks']) : 0;
-            totalImpr += group[i]['impr'] != null ? parseInt(group[i]['impr']) : 0;
-            totalCost += group[i]['cost'] != null ? parseFloat(group[i]['cost']) : 0;
-            $("#group_performance").append(line);
+            totalClicks += data[i]['clicks'] != null ? parseInt(data[i]['clicks']) : 0;
+            totalImpr += data[i]['impr'] != null ? parseInt(data[i]['impr']) : 0;
+            totalCost += data[i]['cost'] != null ? parseFloat(data[i]['cost']) : 0;
+            $("#ad_variation_performance").append(line);
         }
-        $("#group_performance").append("<tr>"+
-        "<td align='left'>&nbsp;</td>"+
-        "<td align='left'>&nbsp;</td>"+
+        $("#ad_variation_performance").append("<tr>"+
         "<td align='right' class='boldFont' style='font-weight: bold;'>Total</td>"+
+        "<td align='left'>&nbsp;</td>"+
         "<td align='right' class='boldFont' style='font-weight: bold;'>"+totalClicks+"</td>"+
         "<td align='right' class='boldFont' style='font-weight: bold;'>"+totalImpr+"</td>"+
         "<td align='right' class='boldFont' style='font-weight: bold;'>"+(totalImpr > 0 ? (totalClicks/totalImpr*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
@@ -745,19 +665,17 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
             endDate = moment().format("YYYY-MM-DD");
         }
 
-        $("#ajaxloading").css("display", "block");
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/getPerformanceData");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/getPerformanceData");?>',
             data: {
                 start: startDate,
                 end: endDate,
-                adcampaignid: <?php echo $model->id;?>,
-                adgroupid: $("#adGroupId").val()
+                advertisementid: <?php echo $model->id;?>,
+                advariationid: $("#advariationId").val()
             },
             dataType: "JSON",
             success: function (data, status, xhr) {
-                $("#ajaxloading").css("display", "none");
                 var chartCategories = [];
                 var series = new Array;
                 var dataPoint1Format = '';
@@ -972,11 +890,8 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
                 }
             },
             error: function (data, status, xhr) {
-                $("#ajaxloading").css("display", "none");
                 alert("Faile to load performance data.\nPlease try again later.")
             }
         });
     }
-
 </script>
-

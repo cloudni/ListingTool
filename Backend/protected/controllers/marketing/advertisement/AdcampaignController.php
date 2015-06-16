@@ -179,6 +179,24 @@ class AdcampaignController extends Controller
         exit();
     }
 
+    public function actionAutomaticPlacementReport($id)
+    {
+        $model = $this->loadModel($id);
+
+        $placementSQL = "SELECT t.domain, t.clicks, t.impressions as impr, t.charge_amount as cost
+                            FROM lt_ad_google_adwords_report_automatic_placements t
+                            left join lt_google_adwords_campaign gaag on gaag.id = t.campaign_id
+                            left join lt_ad_campaign ag on ag.id = gaag.lt_ad_campaign_id
+                            where ag.id = :campaign_id";
+        $command = Yii::app()->db->createCommand($placementSQL);
+        $command->bindValue(":campaign_id", $id, PDO::PARAM_INT);
+        $placements = $command->queryAll();
+
+        $this->render("automaticPlacement", array(
+            'model'=>$model,
+            'placements'=>$placements,
+        ));
+    }
 
     /**
      * Returns the data model based on the primary key given in the GET variable.

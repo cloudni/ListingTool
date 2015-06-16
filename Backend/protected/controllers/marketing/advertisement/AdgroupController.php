@@ -151,6 +151,25 @@ class AdgroupController extends Controller
         exit();
     }
 
+    public function actionAutomaticPlacementReport($id)
+    {
+        $model = $this->loadModel($id);
+
+        $placementSQL = "SELECT t.domain, t.clicks, t.impressions as impr, t.charge_amount as cost
+                            FROM lt_ad_google_adwords_report_automatic_placements t
+                            left join lt_google_adwords_ad_group gaag on gaag.id = t.ad_group_id
+                            left join lt_ad_group ag on ag.id = gaag.lt_ad_group_id
+                            where ag.id = :group_id";
+        $command = Yii::app()->db->createCommand($placementSQL);
+        $command->bindValue(":group_id", $id, PDO::PARAM_INT);
+        $placements = $command->queryAll();
+
+        $this->render("automaticPlacement", array(
+            'model'=>$model,
+            'placements'=>$placements,
+        ));
+    }
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.

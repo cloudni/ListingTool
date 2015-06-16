@@ -183,6 +183,47 @@ $this->menu=array(
 </div>
 
 <div style="clear: both; width: 100%; position: relative; top: -5px;">
+    <div class="borderBlock">
+        <div>
+            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; clear: both; width: 100%;">
+                <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
+                    <h1 style="color: #4e5665; padding-left: 14px; font-weight: 700; line-height: 38px; position: relative;">Promote Products</h1>
+                </div>
+            </div>
+            <div style="display: block;">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <thead>
+                    <th align="left">Platform</th>
+                    <th align="left">ID</th>
+                    <th align="right">Title</th>
+                    </thead>
+                    <tbody>
+                    <?php foreach($model->adAdvertiseFeeds as $feed):?>
+                        <tr>
+                            <td><?php echo Store::getPlatformTextStatic($feed->item_type);?></td>
+                            <td><a href="
+                                <?php switch($feed->item_type)
+                                {
+                                    case Store::PLATFORM_EBAY:
+                                        echo sprintf("http://www.ebay.com/itm/%s", $feed->item_id);
+                                        break;
+                                    case Store::PLATFORM_WISH:
+                                        echo sprintf("http://www.wish.com/c/%s", $feed->item_id);
+                                        break;
+                                }
+                                ?>
+                            " target="_blank" ><?php echo $feed->item_id;?></a></td>
+                            <td><?php echo $feed->item_headline;?></td>
+                        </tr>
+                    <?php endforeach;?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="clear: both; width: 100%; position: relative; top: -5px;">
     <div class="borderBlock" style="border: none;">
         <div>
             <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">

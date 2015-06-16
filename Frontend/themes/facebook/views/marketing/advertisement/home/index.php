@@ -24,19 +24,6 @@ $this->breadcrumbs=array(
     .sumDivFontBold{
         font-size: 14px; font-weight: bold;
     }
-
-    .redButton {
-        -webkit-border-radius: 2px;
-        font-size: 14px;
-        height: 26px;
-        background-color: #DD4B3B;
-        color: #FFF;
-        font-weight: bold;
-        background: -webkit-linear-gradient(#DD4B3B, #DD4B3B);
-        -webkit-box-shadow: inset 0 1px 1px #DD4B3B;
-        position: relative;
-        top: 1px;
-    }
 </style>
 
 <div style="clear: both; width: 100%; position: relative; top: -5px;">

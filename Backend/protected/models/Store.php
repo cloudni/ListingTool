@@ -172,9 +172,9 @@ class Store extends NIActiveRecord
     {
         return array(
             self::PLATFORM_EBAY=>'eBay.com',
+            self::PLATFORM_WISH=>'Wish.com',
             /*self::PLATFORM_AMAZON=>'Amazon.com',
             self::PLATFORM_ALIEXPRESS=>'AliExpress.com',
-            self::PLATFORM_WISH=>'Wish.com',
             self::PLATFORM_ECSHOP=>'Ecshop sites',
             self::PLATFORM_MAGENTO=>'Magento sites',*/
         );

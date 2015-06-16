@@ -246,7 +246,7 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
                         <li value="All_but_removed_Campaigns">Click Type</li>
                         <li value="All_but_removed_Campaigns">Device</li>
                     </ul>
-                    <input id="menu_dimensions_action_button" type="button" value="Dimension ¨‹" class="menuButton" onclick="showMenu('menu_dimensions_action');" style="width: 142px;" />
+                    <input id="menu_dimensions_action_button" type="button" value="Dimension Report ¨‹" class="menuButton" onclick="showMenu('menu_dimensions_action');" style="width: 142px;" />
                     <ul id="menu_dimensions_action" class="ui-menu" >
                         <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/automaticPlacementReport", array('id'=>$model->id));?>';">Automatic placement</li>
                         <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/geoGraphicReport", array('id'=>$model->id));?>';">Geo graphic</li>
@@ -452,7 +452,7 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
         for(var i=0;i<group.length;i++)
         {
             var line = "<tr>"+
-                "<td align='left'><a href='"+url.replace('replace_id', group[i]['id'])+"'>"+group[i]['name']+"</a></td>"+
+                "<td align='left'><a target='_blank' href='"+url.replace('replace_id', group[i]['id'])+"'>"+group[i]['name']+"</a></td>"+
                 "<td align='right'><img id='group_"+group[i]['id']+"_img' src='"+getStatusImg(group[i]['status'])+"' border='0' "+(group[i]['status'] == '<?php echo ADGroup::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
                 "<td align='left'>"+"$"+parseFloat(group[i]['default_bid']).toFixed(2)+"</td>"+
                 "<td align='right'>"+(parseInt(group[i]['clicks']) > 0 ? group[i]['clicks'] : 0)+"</td>"+

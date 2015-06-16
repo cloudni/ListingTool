@@ -2,27 +2,15 @@
 /**
  * Created by PhpStorm.
  * User: cloud
- * Date: 2015/4/18
- * Time: 21:05
+ * Date: 2015/6/16
+ * Time: 15:43
  */
 
-/* @var $this ADController */
+/* @var $this AdController */
 /* @var $model ADAdvertise */
 
 $this->breadcrumbs=array(
-    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_marketing')=>array("/marketing/home"),
-    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'display_advertisement')=>array("/marketing/advertisement/home"),
-    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_campaign')=>array('/marketing/advertisement/ADCampaign/index'),
-    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_group')=>array('/marketing/advertisement/aDGroup/index'),
-    ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement')=> array('index'),
-    $model->name,
-);
-
-$this->menu=array(
-    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_index'), 'url'=>array('index')),
-    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_create'), 'url'=>array('create')),
-    array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_update'), 'url'=>array('update', 'id'=>$model->id)),
-    //array('label'=>'AD Delete', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>Yii::t('models/ADAdvertisement','Are you sure you want to delete this Advertisement?'))),
+    'Advertisement',
 );
 ?>
 
@@ -71,123 +59,28 @@ $this->menu=array(
     }
 </style>
 
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
-    <div class="borderBlock">
-        <div>
-            <div style="background: #fff; border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="position: relative; float: right;">
-                    <select id="performanceDateRange" name="performanceDateRange" style="position: relative; top: 7px; margin-right: 7px; display: block;">
-                        <option value="custom"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'custom');?></option>
-                        <option value="this_week"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'this_week');?></option>
-                        <option value="last_7_days"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_7_days');?></option>
-                        <option value="last_week"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_week');?></option>
-                        <option value="last_14_days" selected><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_14_days');?></option>
-                        <option value="this_month"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'this_month');?></option>
-                        <option value="last_30_days"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_30_days');?></option>
-                        <option value="last_month"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'last_month');?></option>
-                    </select>
-                    <div id="customPerformanceDateRange" style="position: relative; top: 7px; margin-right: 7px; display: none;">
-                        <span><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'custom');?>&nbsp;</span>
-                        <input id="cusFromDate" name="cusFromDate" type="text" size="8" readonly >
-                        <span>&nbsp;-&nbsp;</span>
-                        <input id="cusEndDate" name="cusEndDate" type="text" size="8" readonly >
-                    </div>
-                </div>
-                <div style="height: 36px; color: #9197a3; font-weight: normal; width: 40%">
-                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo sprintf(ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_recently_performance'), $model->name);?></h1>
-                </div>
-            </div>
-            <div>
-                <div style="height: 36px; color: #000; font-weight: normal;">
-                    <div class="clearfix">
-                        <div class="sumDiv"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></div>
-                        <div class="sumDiv sumDivBorderLeft"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></div>
-                        <div class="sumDiv sumDivBorderLeft"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?></div>
-                        <div class="sumDiv sumDivBorderLeft"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?></div>
-                        <div class="sumDiv sumDivBorderLeft"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></div>
-                    </div>
-                    <div class="clearfix" id="performance_all">
-                        <div class="sumDiv sumDivFontBold" id="clicks">&nbsp;</div>
-                        <div class="sumDiv sumDivBorderLeft sumDivFontBold" id="impressions">&nbsp;</div>
-                        <div class="sumDiv sumDivBorderLeft sumDivFontBold" id="ctr">&nbsp;</div>
-                        <div class="sumDiv sumDivBorderLeft sumDivFontBold" id="cpc">&nbsp;</div>
-                        <div class="sumDiv sumDivBorderLeft sumDivFontBold" id="cost">&nbsp;</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<h1>Advertise: <?php echo $model->name;?></h1>
 
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
-    <div class="borderBlock">
-        <div>
-            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; padding: 12px 12px 0px 12px;">
-                <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <?php $variations = ADAdvertiseVariation::model()->findAll("ad_advertise_id=:ad_id and company_id=:company_id" ,array(':ad_id'=>$model->id, ':company_id' => Yii::app()->session['user']->company_id));
-                    $variationList = array();
-                    foreach($variations as $variation) $variationList[] = array('id'=>$variation->id, 'name'=>$variation->width.' x '.$variation->height.' ('.ADAdvertiseVariation::getCodeText($variation['code']).')');
-                    echo CHtml::dropDownList('advariationId', '', CHtml::listData($variationList, 'id', 'name'), array('empty'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_all'), 'style'=>''));?>
-                    <div style="display: inline-block; width: 10px; height: 10px; background-color: #058dc7; position: relative; left: 100px; z-index: 1;"></div>
-                    <select id="dataPoint1" name="dataPoint1" style="width: 120px;">
-                        <option value="clicks"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></option>
-                        <option value="impr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></option>
-                        <option value="ctr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?></option>
-                        <option value="cpc"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?></option>
-                        <option value="cost"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></option>
-                    </select>
-                    <span>VS.</span>
-                    <select id="dataPoint2" name="dataPoint2" style="width: 120px;">
-                        <option value="none"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'none');?></option>
-                        <option value="clicks"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></option>
-                        <option value="impr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></option>
-                        <option value="ctr"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?></option>
-                        <option value="cpc"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?></option>
-                        <option value="cost"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></option>
-                    </select>
-                    <div style="display: inline-block; width: 10px; height: 10px; background-color: #ed7e17; position: relative; left: -37px; z-index: 1;"></div>
-                </div>
-            </div>
-            <div>
-                <div id="chartContainer" style="min-width:700px;height:400px; width: 100%;"></div>
-            </div>
-        </div>
-    </div>
-</div>
+<?php $this->widget('zii.widgets.CDetailView', array(
+    'data'=>$model,
+    'attributes'=>array(
+        array(
+            'label'=>'Name',
+            'value'=>$model->name,
+        ),
+        array(
+            'label'=>'Note',
+            'value'=>$model->note,
+        ),
+    ),
+)); ?>
 
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
+<div style="clear: both; width: 100%; position: relative; top: 15px;">
     <div class="borderBlock">
         <div>
-            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement');?>: <?php echo $model->name; ?></h1>
-                </div>
-            </div>
-            <div style="display: block;">
-                <?php $this->widget('zii.widgets.CDetailView', array(
-                    'data'=>$model,
-                    'attributes'=>array(
-                        array(
-                            'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'name'),
-                            'value'=>$model->name,
-                        ),
-                        array(
-                            'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'note'),
-                            'value'=>$model->note,
-                        ),
-                    ),
-                )); ?>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
-    <div class="borderBlock">
-        <div>
-            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; clear: both; width: 100%;">
+            <div style="border-bottom: 1px solid #e9eaed; font-size: 12px; clear: both; width: 100%;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
-                    <h1 style="color: #4e5665; padding-left: 14px; font-weight: 700; line-height: 38px; position: relative;">Promote Products</h1>
+                    <h1 style="color: #4e5665; font-weight: 700; line-height: 38px; position: relative;">Promote Products</h1>
                 </div>
             </div>
             <div style="display: block;">
@@ -223,67 +116,110 @@ $this->menu=array(
     </div>
 </div>
 
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
-    <div class="borderBlock" style="border: none;">
+<div style="clear: both; width: 100%; position: relative; top: 15px;">
+    <div class="borderBlock">
         <div>
-            <div style="background: #e9eaed; border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="height: 26px; color: #9197a3; font-weight: normal;">
-                    <input type="button" class="boldFont greenButton redButton" value="+ <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement');?>" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/create", array('adcampaignid'=>$model->ad_campaign_id, 'adgroupid'=>$model->ad_group_id)); ?>'; " />
-                    <input id="menu_edit_action_button" type="button" value="<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'edit');?> ▼" class="menuButton" onclick="showMenu('menu_edit_action');" />
-                    <?php if(!empty($adVariationPerformance)):?>
-                    <ul id="menu_edit_action" class="ui-menu" >
-                        <li onclick="if(confirm('Are you sure to Enable selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Enabled;?>);"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'enable');?></li>
-                        <li onclick="if(confirm('Are you sure to Pause selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Paused;?>);"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'pause');?></li>
-                        <li onclick="if(confirm('Are you sure to Remove selected AD Variation(s)?')) updateADVariationStatus(<?php echo ADAdvertiseVariation::Status_Removed;?>);"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'remove');?></li>
-                        <li class="ui-state-disabled"><hr /></li>
-                        <li value="All_but_removed_Campaigns" onclick=" window.location = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/update", array('id'=>$model->id)); ?>'; " >Update Advertisement</li>
-                        <li value="All_but_removed_Campaigns"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'download_report');?></li>
-                    </ul>
-                    <input id="menu_segment_action_button" type="button" value="Segment ▼" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
-                    <ul id="menu_segment_action" class="ui-menu" >
-                        <li value="All_Campaigns">None</li>
-                        <li value="All_enabled_Campaigns">
-                            Time
-                            <ul>
-                                <li>Day</li>
-                                <li>Week</li>
-                                <li>Month</li>
-                                <li>Quarter</li>
-                                <li>Year</li>
-                            </ul>
-                        </li>
-                        <li value="All_but_removed_Campaigns">Click Type</li>
-                        <li value="All_but_removed_Campaigns">Device</li>
-                    </ul>
-                    <?php endif;?>
+            <div style="border-bottom: 1px solid #e9eaed; font-size: 12px;">
+                <div style="position: relative; float: right;">
+                    <select id="performanceDateRange" name="performanceDateRange" style="position: relative; top: 7px; margin-right: 7px; display: block; height: 24px;">
+                        <option value="custom">Custom</option>
+                        <option value="this_week">This Week</option>
+                        <option value="last_7_days">Last 7 Days</option>
+                        <option value="last_week">Last Week</option>
+                        <option value="last_14_days" selected>Last 14 days</option>
+                        <option value="this_month">This Month</option>
+                        <option value="last_30_days">Last 30 Days</option>
+                        <option value="last_month">Last Month</option>
+                    </select>
+                    <div id="customPerformanceDateRange" style="position: relative; top: 7px; margin-right: 7px; display: none;">
+                        <span>Custom&nbsp;</span>
+                        <input id="cusFromDate" name="cusFromDate" type="text" size="8" readonly >
+                        <span>&nbsp;-&nbsp;</span>
+                        <input id="cusEndDate" name="cusEndDate" type="text" size="8" readonly >
+                    </div>
+                </div>
+                <div style="height: 36px; color: #9197a3; font-weight: normal; width: 40%">
+                    <h1 style="color: #4e5665; font-weight: 700; line-height: 38px; position: relative;">Performance</h1>
                 </div>
             </div>
             <div>
-
+                <div style="height: 36px; color: #000; font-weight: normal;">
+                    <div class="clearfix">
+                        <div class="clearfix">
+                            <div class="sumDiv">Clicks</div>
+                            <div class="sumDiv sumDivBorderLeft">Impressions</div>
+                            <div class="sumDiv sumDivBorderLeft">CTR %</div>
+                            <div class="sumDiv sumDivBorderLeft">Avg. CPC</div>
+                            <div class="sumDiv sumDivBorderLeft">Cost</div>
+                        </div>
+                    </div>
+                    <div class="clearfix" id="performance_all">
+                        <div class="sumDiv sumDivFontBold" id="clicks">&nbsp;</div>
+                        <div class="sumDiv sumDivBorderLeft sumDivFontBold" id="impressions">&nbsp;</div>
+                        <div class="sumDiv sumDivBorderLeft sumDivFontBold" id="ctr">&nbsp;</div>
+                        <div class="sumDiv sumDivBorderLeft sumDivFontBold" id="cpc">&nbsp;</div>
+                        <div class="sumDiv sumDivBorderLeft sumDivFontBold" id="cost">&nbsp;</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
+<div style="clear: both; width: 100%; position: relative; top: 15px;">
     <div class="borderBlock">
         <div>
-            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px; clear: both; width: 100%;">
+            <div style="border-bottom: 1px solid #e9eaed; font-size: 12px; padding: 12px 12px 0px 12px;">
+                <div style="height: 36px; color: #9197a3; font-weight: normal;">
+                    <?php $variations = ADAdvertiseVariation::model()->findAll("ad_advertise_id=:ad_id and company_id=:company_id" ,array(':ad_id'=>$model->id, ':company_id' =>$model->company_id));
+                    $variationList = array();
+                    foreach($variations as $variation) $variationList[] = array('id'=>$variation->id, 'name'=>$variation->width.' x '.$variation->height.' ('.ADAdvertiseVariation::getCodeText($variation['code']).')');
+                    echo CHtml::dropDownList('advariationId', '', CHtml::listData($variationList, 'id', 'name'), array('empty'=>'All advertisement variations', 'style'=>'height: 24px;'));?>
+                    <div style="display: inline-block; width: 10px; height: 10px; background-color: #058dc7; position: relative; left: 100px; z-index: 1;"></div>
+                    <select id="dataPoint1" name="dataPoint1" style="width: 120px; height: 24px;">
+                        <option value="clicks">Clicks</option>
+                        <option value="impr">Impressions</option>
+                        <option value="ctr">CTR</option>
+                        <option value="cpc">Avg. CPC</option>
+                        <option value="cost">Cost</option>
+                    </select>
+                    <span>VS.</span>
+                    <select id="dataPoint2" name="dataPoint2" style="width: 120px; height: 24px;">
+                        <option value="none">None</option>
+                        <option value="clicks">Clicks</option>
+                        <option value="impr">Impressions</option>
+                        <option value="ctr">CTR</option>
+                        <option value="cpc">Avg. CPC</option>
+                        <option value="cost">Cost</option>
+                    </select>
+                    <div style="display: inline-block; width: 10px; height: 10px; background-color: #ed7e17; position: relative; left: -37px; z-index: 1;"></div>
+                </div>
+            </div>
+            <div>
+                <div id="chartContainer" style="min-width:700px;height:400px; width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="clear: both; width: 100%; position: relative; top: 15px;">
+    <div class="borderBlock">
+        <div>
+            <div style="border-bottom: 1px solid #e9eaed; font-size: 12px; clear: both; width: 100%;">
                 <div style="height: 36px; color: #9197a3; font-weight: normal; width: 60%;">
-                    <h1 style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_variation');?></h1>
+                    <h1 style="color: #4e5665; font-weight: 700; line-height: 38px; position: relative;">Advertisement Variations</h1>
                 </div>
             </div>
             <div style="display: block;">
                 <table cellpadding="0" cellspacing="0" border="0" width="100%" id="ad_variation_performance">
                     <thead>
-                    <th align="left"><input id="adVariationAll" type="checkbox" /></th>
-                    <th align="left"><img src="/themes/facebook/images/disabled.png" border="0" /></th>
-                    <th align="left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ad_advertisement_variation');?></th>
-                    <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?></th>
-                    <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?></th>
-                    <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?></th>
-                    <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?></th>
-                    <th align="right"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?></th>
+                    <th align="left"><img src="/images/facebook/disabled.png" border="0" /></th>
+                    <th align="left">Variation</th>
+                    <th align="right">Clicks</th>
+                    <th align="right">Impressions</th>
+                    <th align="right">CTR</th>
+                    <th align="right">Avg. CPC</th>
+                    <th align="right">Cost</th>
                     </thead>
                     <tbody>
 
@@ -295,11 +231,7 @@ $this->menu=array(
 </div>
 
 <script>
-
     $(function() {
-        $( "ul[id^='menu_']" ).menu();
-        $( "ul[id^='menu_']" ).hide();
-
         $("#dataPoint1").change(updatePerformanceChart);
         $("#dataPoint2").change(updatePerformanceChart);
         $("#groupBy").change(updatePerformanceChart);
@@ -321,17 +253,6 @@ $this->menu=array(
                 if($("#cusFromDate").val().length> 0 && $("#cusEndDate").val().length> 0)
                     updatePerformanceStatistic($("#cusFromDate").val(), $("#cusEndDate").val());
             }
-        });
-
-        $("#page").click(function(){
-            $( "ul[id^='menu_']" ).hide();
-        });
-
-        $("#adVariationAll").click(function(){
-            if($("#adVariationAll").prop('checked'))
-                $("input[id^='ad_variation_id'][disabled!='disabled']").prop('checked', true);
-            else
-                $("input[id^='ad_variation_id'][disabled!='disabled']").removeAttr('checked');
         });
 
         $("#performanceDateRange").change(function(){
@@ -423,6 +344,60 @@ $this->menu=array(
             $("#performance_all div[id='cost']").html('&nbsp;');
     }
 
+    function getStatusImg(status)
+    {
+        switch(status)
+        {
+            case '<?php echo ADAdvertiseVariation::Status_Enabled;?>':
+                return "/images/facebook/enabled.png";
+            case '<?php echo ADAdvertiseVariation::Status_Pending;?>':
+                return "/images/waiting.png";
+            case '<?php echo ADAdvertiseVariation::Status_Paused;?>':
+                return "/images/facebook/pause.gif";
+            case '<?php echo ADAdvertiseVariation::Status_Removed;?>':
+                return "/images/facebook/removed.png";
+            default:
+                return "/images/facebook/disabled.png";
+                break;
+        }
+    }
+
+    function updatePerformanceADVariation(data)
+    {
+        var totalClicks = 0;
+        var totalImpr = 0;
+        var totalCost = 0;
+        var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/view", array('id'=>'replace_id'));?>';
+        var codeName = {<?php echo ADAdvertiseVariation::Code_Flash;?>:"<?php echo ADAdvertiseVariation::getCodeText(ADAdvertiseVariation::Code_Flash);?>", <?php echo ADAdvertiseVariation::Code_Html5;?>:"<?php echo ADAdvertiseVariation::getCodeText(ADAdvertiseVariation::Code_Html5);?>"};
+
+        $("#ad_variation_performance tr:gt(0)").remove();
+        for(var i=0;i<data.length;i++)
+        {
+            var line = "<tr>"+
+                "<td align='left'><img id='variation_"+ data[i]['id']+"_img' src='"+getStatusImg(data[i]['status'])+"' border='0' "+(data[i]['status'] == '<?php echo ADAdvertiseVariation::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
+                "<td align='left'>"+ data[i]['width']+" x "+ data[i]['height']+"("+ codeName[data[i]['code']]+")</td>"+
+                "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? data[i]['clicks'] : 0)+"</td>"+
+                "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? data[i]['impr'] : 0)+"</td>"+
+                "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? (data[i]['clicks']/data[i]['impr']*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
+                "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? "$"+parseFloat(data[i]['cost']/data[i]['clicks']).toFixed(2) : '&nbsp;')+"</td>"+
+                "<td align='right'>"+(parseFloat(data[i]['cost']) > 0 ? "$"+parseFloat(data[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
+                "</tr>";
+            totalClicks += data[i]['clicks'] != null ? parseInt(data[i]['clicks']) : 0;
+            totalImpr += data[i]['impr'] != null ? parseInt(data[i]['impr']) : 0;
+            totalCost += data[i]['cost'] != null ? parseFloat(data[i]['cost']) : 0;
+            $("#ad_variation_performance").append(line);
+        }
+        $("#ad_variation_performance").append("<tr>"+
+        "<td align='right' class='boldFont' style='font-weight: bold;'>Total</td>"+
+        "<td align='left'>&nbsp;</td>"+
+        "<td align='right' class='boldFont' style='font-weight: bold;'>"+totalClicks+"</td>"+
+        "<td align='right' class='boldFont' style='font-weight: bold;'>"+totalImpr+"</td>"+
+        "<td align='right' class='boldFont' style='font-weight: bold;'>"+(totalImpr > 0 ? (totalClicks/totalImpr*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
+        "<td align='right' class='boldFont' style='font-weight: bold;'>"+(totalClicks > 0 ? '$'+(totalCost/totalClicks).toFixed(2) : '&nbsp;')+"</td>"+
+        "<td align='right' class='boldFont' style='font-weight: bold;'>"+(totalCost > 0 ? '$'+parseFloat(totalCost).toFixed(2) : '&nbsp;')+"</td>"+
+        "</tr>");
+    }
+
     function updatePerformanceChartV2(chart)
     {
         var chartCategories = [];
@@ -457,31 +432,31 @@ $this->menu=array(
         {
             case 'clicks':
                 dataPoint1Format = '{value}';
-                dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?>';
+                dataPoint1Text = 'Clicks';
                 dataPoint1Prefix = '';
                 dataPoint1Suffix = '';
                 break;
             case 'impr':
                 dataPoint1Format = '{value}';
-                dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?>';
+                dataPoint1Text = 'Impressions';
                 dataPoint1Prefix = '';
                 dataPoint1Suffix = '';
                 break;
             case 'ctr':
                 dataPoint1Format = '{value}%';
-                dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?>';
+                dataPoint1Text = 'CTR';
                 dataPoint1Prefix = '';
                 dataPoint1Suffix = '%';
                 break;
             case 'cpc':
                 dataPoint1Format = '${value}';
-                dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?>';
+                dataPoint1Text = 'Avg. CPC';
                 dataPoint1Prefix = '$';
                 dataPoint1Suffix = '';
                 break;
             case 'cost':
                 dataPoint1Format = '${value}';
-                dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?>';
+                dataPoint1Text = 'Cost';
                 dataPoint1Prefix = '$';
                 dataPoint1Suffix = '';
                 break;
@@ -491,31 +466,31 @@ $this->menu=array(
         {
             case 'clicks':
                 dataPoint2Format = '{value}';
-                dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?>';
+                dataPoint2Text = 'Clicks';
                 dataPoint2Prefix = '';
                 dataPoint2Suffix = '';
                 break;
             case 'impr':
                 dataPoint2Format = '{value}';
-                dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?>';
+                dataPoint2Text = 'Impressions';
                 dataPoint2Prefix = '';
                 dataPoint2Suffix = '';
                 break;
             case 'ctr':
                 dataPoint2Format = '{value}%';
-                dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?>';
+                dataPoint2Text = 'CTR';
                 dataPoint2Prefix = '';
                 dataPoint2Suffix = '%';
                 break;
             case 'cpc':
                 dataPoint2Format = '${value}';
-                dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?>';
+                dataPoint2Text = 'Avg. CPC';
                 dataPoint2Prefix = '$';
                 dataPoint2Suffix = '';
                 break;
             case 'cost':
                 dataPoint2Format = '${value}';
-                dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?>';
+                dataPoint2Text = 'Cost';
                 dataPoint2Prefix = '$';
                 dataPoint2Suffix = '';
                 break;
@@ -639,71 +614,6 @@ $this->menu=array(
         }
     }
 
-    function updatePerformanceADVariation(data)
-    {
-        var totalClicks = 0;
-        var totalImpr = 0;
-        var totalCost = 0;
-        var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/view", array('id'=>'replace_id'));?>';
-        var codeName = {<?php echo ADAdvertiseVariation::Code_Flash;?>:"<?php echo ADAdvertiseVariation::getCodeText(ADAdvertiseVariation::Code_Flash);?>", <?php echo ADAdvertiseVariation::Code_Html5;?>:"<?php echo ADAdvertiseVariation::getCodeText(ADAdvertiseVariation::Code_Html5);?>"};
-
-        $("#ad_variation_performance tr:gt(0)").remove();
-        for(var i=0;i<data.length;i++)
-        {
-            var line = "<tr>"+
-                "<td align='left'><input type='checkbox' id='ad_variation_id[]' name='ad_variation_id[]' value='"+ data[i]['id']+"' "+(data[i]['status'] == '<?php echo ADAdvertiseVariation::Status_Pending;?>' ? "disabled='disabled'" : '')+" /><input id='variation_"+ data[i]['id']+"_status' type='hidden' value='"+ data[i]['status']+"' /></td>"+
-                "<td align='left'><img id='variation_"+ data[i]['id']+"_img' src='"+getStatusImg(data[i]['status'])+"' border='0' "+(data[i]['status'] == '<?php echo ADAdvertiseVariation::Status_Pending;?>' ? "style='width: 14px; position: relative; left: -3px;'" : '')+" /></td>"+
-                "<td align='left'>"+ data[i]['width']+" x "+ data[i]['height']+"("+ codeName[data[i]['code']]+")</td>"+
-                "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? data[i]['clicks'] : 0)+"</td>"+
-                "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? data[i]['impr'] : 0)+"</td>"+
-                "<td align='right'>"+(parseInt(data[i]['impr']) > 0 ? (data[i]['clicks']/data[i]['impr']*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
-                "<td align='right'>"+(parseInt(data[i]['clicks']) > 0 ? "$"+parseFloat(data[i]['cost']/data[i]['clicks']).toFixed(2) : '&nbsp;')+"</td>"+
-                "<td align='right'>"+(parseFloat(data[i]['cost']) > 0 ? "$"+parseFloat(data[i]['cost']).toFixed(2) : '&nbsp;')+"</td>"+
-                "</tr>";
-            totalClicks += data[i]['clicks'] != null ? parseInt(data[i]['clicks']) : 0;
-            totalImpr += data[i]['impr'] != null ? parseInt(data[i]['impr']) : 0;
-            totalCost += data[i]['cost'] != null ? parseFloat(data[i]['cost']) : 0;
-            $("#ad_variation_performance").append(line);
-        }
-        $("#ad_variation_performance").append("<tr>"+
-        "<td align='left'>&nbsp;</td>"+
-        "<td align='right' class='boldFont'><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'total');?></td>"+
-        "<td align='left'>&nbsp;</td>"+
-        "<td align='right' class='boldFont'>"+totalClicks+"</td>"+
-        "<td align='right' class='boldFont'>"+totalImpr+"</td>"+
-        "<td align='right' class='boldFont'>"+(totalImpr > 0 ? (totalClicks/totalImpr*100).toFixed(2)+'%' : '&nbsp')+"</td>"+
-        "<td align='right' class='boldFont'>"+(totalClicks > 0 ? '$'+(totalCost/totalClicks).toFixed(2) : '&nbsp;')+"</td>"+
-        "<td align='right' class='boldFont'>"+(totalCost > 0 ? '$'+parseFloat(totalCost).toFixed(2) : '&nbsp;')+"</td>"+
-        "</tr>");
-    }
-
-    function getStatusImg(status)
-    {
-        switch(status)
-        {
-            case '<?php echo ADAdvertiseVariation::Status_Enabled;?>':
-                return "/themes/facebook/images/enabled.png";
-            case '<?php echo ADAdvertiseVariation::Status_Pending;?>':
-                return "/images/waiting.png";
-            case '<?php echo ADAdvertiseVariation::Status_Paused;?>':
-                return "/themes/facebook/images/pause.gif";
-            case '<?php echo ADAdvertiseVariation::Status_Removed;?>':
-                return "/themes/facebook/images/removed.png";
-            default:
-                return "/themes/facebook/images/disabled.png";
-                break;
-        }
-    }
-
-    function showMenu(id)
-    {
-        $( "ul[id^='menu_']" ).hide();
-        var position = $("#"+id+"_button").position();
-        $( "#"+id).css("left", position.left);
-        $( "#"+id ).show();
-        event.stopPropagation();
-    }
-
     function updatePerformanceChart()
     {
         var today = moment();
@@ -798,31 +708,31 @@ $this->menu=array(
                 {
                     case 'clicks':
                         dataPoint1Format = '{value}';
-                        dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?>';
+                        dataPoint1Text = 'Clicks';
                         dataPoint1Prefix = '';
                         dataPoint1Suffix = '';
                         break;
                     case 'impr':
                         dataPoint1Format = '{value}';
-                        dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?>';
+                        dataPoint1Text = 'Impressions';
                         dataPoint1Prefix = '';
                         dataPoint1Suffix = '';
                         break;
                     case 'ctr':
                         dataPoint1Format = '{value}%';
-                        dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?>';
+                        dataPoint1Text = 'CTR';
                         dataPoint1Prefix = '';
                         dataPoint1Suffix = '%';
                         break;
                     case 'cpc':
                         dataPoint1Format = '${value}';
-                        dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?>';
+                        dataPoint1Text = 'Avg. CPC';
                         dataPoint1Prefix = '$';
                         dataPoint1Suffix = '';
                         break;
                     case 'cost':
                         dataPoint1Format = '${value}';
-                        dataPoint1Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?>';
+                        dataPoint1Text = 'Cost';
                         dataPoint1Prefix = '$';
                         dataPoint1Suffix = '';
                         break;
@@ -832,31 +742,31 @@ $this->menu=array(
                 {
                     case 'clicks':
                         dataPoint2Format = '{value}';
-                        dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'clicks');?>';
+                        dataPoint2Text = 'Clicks';
                         dataPoint2Prefix = '';
                         dataPoint2Suffix = '';
                         break;
                     case 'impr':
                         dataPoint2Format = '{value}';
-                        dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'impressions');?>';
+                        dataPoint2Text = 'Impressions';
                         dataPoint2Prefix = '';
                         dataPoint2Suffix = '';
                         break;
                     case 'ctr':
                         dataPoint2Format = '{value}%';
-                        dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'click_through_rate');?>';
+                        dataPoint2Text = 'CTR';
                         dataPoint2Prefix = '';
                         dataPoint2Suffix = '%';
                         break;
                     case 'cpc':
                         dataPoint2Format = '${value}';
-                        dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'average_cost_per_click');?>';
+                        dataPoint2Text = 'Avg. CPC';
                         dataPoint2Prefix = '$';
                         dataPoint2Suffix = '';
                         break;
                     case 'cost':
                         dataPoint2Format = '${value}';
-                        dataPoint2Text = '<?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'cost');?>';
+                        dataPoint2Text = 'Cost';
                         dataPoint2Prefix = '$';
                         dataPoint2Suffix = '';
                         break;
@@ -981,56 +891,6 @@ $this->menu=array(
             },
             error: function (data, status, xhr) {
                 alert("Faile to load performance data.\nPlease try again later.")
-            }
-        });
-    }
-
-    function updateADVariationStatus(statusCode) {
-        if ($("input[id^='ad_variation_id']:checked").length <= 0) return false;
-
-        var updateIDList = [];
-        for (var i = 0; i < $("input[id^='ad_variation_id']:checked").length; i++) {
-            if ($("#group_" + $($("input[id^='ad_variation_id']:checked")[i]).val() + "_status").val() != statusCode) {
-                updateIDList.push($($("input[id^='ad_variation_id']:checked")[i]).val());
-            }
-        }
-        if (updateIDList.length <= 0) return false;
-
-        $("#ajaxloading").css("display", "block");
-
-        $.ajax({
-            type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/updateVariationStatus");?>',
-            data: {
-                status: statusCode,
-                idList: updateIDList
-            },
-            dataType: "JSON",
-            success: function (data, status, xhr) {
-                $("#ajaxloading").css("display", "none");
-                if (data['status'] == 'success') {
-                    for (var i = 0; i < data['data'].length; i++) {
-                        $("#variation_" + data['data'][i] + "_status").val(statusCode);
-                        switch (statusCode) {
-                            case <?php echo ADCampaign::Status_Eligible;?>:
-                                $("#variation_" + data['data'][i] + "_img").prop('src', '/themes/facebook/images/enabled.png');
-                                break;
-                            case <?php echo ADCampaign::Status_Paused;?>:
-                                $("#variation_" + data['data'][i] + "_img").prop('src', '/themes/facebook/images/pause.gif');
-                                break;
-                            case <?php echo ADCampaign::Status_Removed;?>:
-                                $("#variation_" + data['data'][i] + "_img").prop('src', '/themes/facebook/images/removed.png');
-                                break;
-                        }
-                    }
-                }
-                else {
-                    alert("Update Status Failed!\n" + data['msg'] + "\nPlease try again.");
-                }
-            },
-            error: function (data, status, xhr) {
-                $("#ajaxloading").css("display", "none");
-                alert("Search Listing Failed!\nPlease try again.");
             }
         });
     }

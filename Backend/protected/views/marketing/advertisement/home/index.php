@@ -136,7 +136,7 @@ $this->breadcrumbs=array(
         </div>
     </div>
 
-    <div style="clear: both; width: 100%; position: relative; top: -12px;">
+    <div style="clear: both; width: 100%; position: relative; top: 10px;">
         <div class="borderBlock">
             <div>
                 <div style="border-bottom: 1px solid #e9eaed; font-size: 12px;">

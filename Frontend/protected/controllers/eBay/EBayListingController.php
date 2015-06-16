@@ -50,7 +50,34 @@ class EBayListingController extends Controller
 
     public function actionTestGetItem()
     {
-        
+        //eBayTradingAPI::GetCategories(array('CategorySiteID'=>eBaySiteIdCodeType::eBayMotors, 'CategoryParent'=>'', 'LevelLimit'=>4, 'ViewAllNodes'=>true, 'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll));
+
+        $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
+        $eBayAttributeSet = eBayAttributeSet::model()->find(
+            'entity_type_id=:entity_type_id',
+            array(
+                ':entity_type_id'=>$eBayEntityType->id,
+            )
+        );
+
+        $primaryCategoryAttribute = $eBayAttributeSet->getEntityAttribute("PrimaryCategory->CategoryID");
+        $secondaryCategoryAttribute = $eBayAttributeSet->getEntityAttribute("SecondaryCategory->CategoryID");
+        $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
+        $siteStatusAttribute = $eBayAttributeSet->getEntityAttribute("Site");
+        $select = "SELECT t.*, pc.value as primarycate, sc.value as secondarycate,
+                            ".Store::PLATFORM_EBAY." as platform, site.value as site
+                            FROM `lt_ebay_listing` `t`
+                            left join lt_ebay_entity_varchar as pc on pc.ebay_entity_id = t.id and pc.ebay_entity_attribute_id = {$primaryCategoryAttribute->id}
+                            left join lt_ebay_entity_varchar as sc on sc.ebay_entity_id = t.id and sc.ebay_entity_attribute_id = {$secondaryCategoryAttribute->id}
+                            left join lt_ebay_entity_varchar as sstatus on sstatus.ebay_entity_id = t.id and sstatus.ebay_entity_attribute_id = {$listingStatusAttribute->id}
+                            left join lt_ebay_entity_varchar as site on site.ebay_entity_id = t.id and site.ebay_entity_attribute_id = {$siteStatusAttribute->id}
+                            where t.store_id = 3 and
+                            sstatus.value = '".eBayListingStatusCodeType::Active."'
+                            order by id asc; ";var_dump($select);
+        $command = Yii::app()->db->createCommand($select);
+        $row = $command->queryRow();var_dump($row, eBaySiteName::geteBaySiteNameCode($row['site']));
+        $cate = eBayCategory::model()->find("CategorySiteID=:CategorySiteID and CategoryID:=CategoryID", array('CategorySiteID'=>eBaySiteName::geteBaySiteNameCode($row['site']), 'CategoryID'=>$row['primarycate']));
+        var_dump($cate);
         //eBayTradingAPI::GetItem($list);
         //var_dump($list->getEntityAttributeValueByCodeWithAllChildren("ShippingDetails"));
         //eBayTradingAPI::ReviseFixedPriceItem($list, array("ItemID"=>"271824209129", "ExcludeShipToLocation"=>array("PO Box", "CN")));

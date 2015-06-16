@@ -22,6 +22,7 @@ class HomeController extends Controller
                             left join lt_google_adwords_campaign gac on gac.lt_ad_campaign_id = t.id
                             inner join lt_ad_google_adwords_report_campaign gara on gara.campaign_id = gac.id and gara.date >= :startdate and gara.date <= :enddate
                             where t.company_id = :company_id
+                            $whereSQL
                             group by gara.date";
         $command = Yii::app()->db->createCommand($performanceSQL);
         $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);

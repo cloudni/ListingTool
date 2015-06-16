@@ -798,11 +798,11 @@ class eBayTradingAPI
         $eBayService = new eBayService();
         $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetCategories").eBayTradingAPI::GetCategoriesXML($params).$eBayService->getRequestAuthFoot("GetCategories");
         $eBayService->api_url = $store->eBayApiKey->api_url;
-        $eBayService->createHTTPHead(($params['CategorySiteID'] == eBaySiteIdCodeType::eBayMotors ? 0 : $params['CategorySiteID']), $store->eBayApiKey->compatibility_level, $store->eBayApiKey->dev_id, $store->eBayApiKey->app_id, $store->eBayApiKey->cert_id, "GetCategories");
+        $eBayService->createHTTPHead(($params['CategorySiteID'] == eBaySiteIdCodeType::eBayMotors ? eBaySiteIdCodeType::US : $params['CategorySiteID']), $store->eBayApiKey->compatibility_level, $store->eBayApiKey->dev_id, $store->eBayApiKey->app_id, $store->eBayApiKey->cert_id, "GetCategories");
         echo "start to fetch eBay categories for site: {$params['CategorySiteID']}.\n";
         try
         {
-            $result = $eBayService->request();
+            $result = $eBayService->request();var_dump($result);
             if(empty($result) || !$result)
             {
                 echo "fail to call eBay API, result is false.\n";

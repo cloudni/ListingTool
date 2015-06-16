@@ -161,4 +161,9 @@ class eBayCategory extends NIActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    public static function getParentCategory($level=2)
+    {
+
+    }
 }

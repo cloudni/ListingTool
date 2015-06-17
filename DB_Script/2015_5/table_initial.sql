@@ -105,6 +105,38 @@ CREATE TABLE `lt_google_adwords_audience` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*end 2015-06-08*/
 
+/*start 2015-06-02*/
+ALTER TABLE lt_transaction add COLUMN ref_date VARCHAR(20);
+ALTER TABLE lt_transaction_detail add COLUMN ref_date VARCHAR(20);
+/*end 2015-06-02*/
+
+/*start 2015-06-15*/
+CREATE getCategoryIdLevel1 (category_id VARCHAR(20),
+	site_id INTEGER)
+ RETURNS varchar(60)
+BEGIN
+	DECLARE temp_category_id VARCHAR(20);
+	DECLARE temp_level INTEGER;
+
+	SET temp_category_id = category_id;
+	
+	SELECT CategoryLevel INTO temp_level
+		FROM lt_ebay_category 
+		where CategoryID = temp_category_id 
+		and CategorySiteID = site_id;
+
+	WHILE temp_level > 1 DO
+			SELECT CategoryParentID, CategoryLevel 
+				INTO temp_category_id, temp_level
+				FROM lt_ebay_category 
+				where CategoryID = temp_category_id 
+				and CategorySiteID = site_id;
+	END WHILE; 
+	RETURN temp_category_id;
+
+END;
+/*end 2015-06-15*/
+
 /*start 2015-06-17*/
 DROP TABLE IF EXISTS `lt_google_adwords_report_keywords`;
 CREATE TABLE `lt_google_adwords_report_keywords` (
@@ -209,4 +241,12 @@ CREATE TABLE `lt_google_adwords_report_keywords` (
 	week	varchar(256) DEFAULT NULL,
 	year	bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE lt_ad_google_adwords_report_keywords LIKE lt_google_adwords_report_keywords;
+  
+ALTER TABLE lt_ad_google_adwords_report_keywords ADD COLUMN markup_type tinyint(4);
+ALTER TABLE lt_ad_google_adwords_report_keywords ADD COLUMN markup_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_keywords ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_google_adwords_report_keywords ADD COLUMN lt_ad_group_id int(11);
+ALTER TABLE lt_ad_google_adwords_report_keywords ADD COLUMN is_charged tinyint(1) default '0';
 /*end 2015-06-17*/

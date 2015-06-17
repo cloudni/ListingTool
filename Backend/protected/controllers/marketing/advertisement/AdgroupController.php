@@ -170,6 +170,30 @@ class AdgroupController extends Controller
         ));
     }
 
+    public function actionGeoGraphicReport($id, $start='', $end='')
+    {
+        $model = $this->loadModel($id);
+
+        if(!$end) $end = date("Y-m-d");
+        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 7);
+
+        $sql="SELECT sum(garg.clicks) as clicks, sum(garg.impressions) as impressions, sum(garg.charge_amount) as cost, garg.location_type,
+                garg.date, garg.month, garg.year,
+                garg.city_criteria_id, garg.region_criteria_id, garg.country_criteria_id
+                from lt_ad_group t
+                left join lt_google_adwords_ad_group gac on gac.lt_ad_group_id = t.id
+                left join lt_ad_google_adwords_report_geo garg on garg.ad_group_id = gac.id
+                where t.id = $id and garg.date >= '$start' and garg.date <= '$end'
+                group by garg.date, garg.city_criteria_id";
+        $command = Yii::app()->db->createCommand($sql);
+        $geos = $command->queryAll();
+
+        $this->render("geoGraphicReport", array(
+            'model'=>$model,
+            'geos'=>$geos,
+        ));
+    }
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.

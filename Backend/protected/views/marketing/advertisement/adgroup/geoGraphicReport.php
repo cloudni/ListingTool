@@ -137,7 +137,7 @@ $this->breadcrumbs=array(
                     break;
             }
 
-            var URL  = "<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/geoGraphicReport", array('id'=>$model->id, 'start'=>'starttime', 'end'=>'endtime'));?>";
+            var URL  = "<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/geoGraphicReport", array('id'=>$model->id, 'start'=>'starttime', 'end'=>'endtime'));?>";
             window.location = URL.replace('starttime', start).replace('endtime', end);
         });
     });

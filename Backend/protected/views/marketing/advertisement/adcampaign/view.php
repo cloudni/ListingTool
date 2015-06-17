@@ -230,7 +230,7 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
         <div>
             <div style="border-bottom: 1px solid #e9eaed; font-size: 12px;">
                 <div style="height: 26px; color: #9197a3; font-weight: normal;">
-                    <input id="menu_segment_action_button" type="button" value="Segment ¨‹" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
+                    <input id="menu_segment_action_button" type="button" value="Segment" disabled class="menuButton" onclick="showMenu('menu_segment_action');" style="width: 92px;" />
                     <ul id="menu_segment_action" class="ui-menu" >
                         <li value="All_Campaigns">None</li>
                         <li value="All_enabled_Campaigns">
@@ -246,11 +246,11 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
                         <li value="All_but_removed_Campaigns">Click Type</li>
                         <li value="All_but_removed_Campaigns">Device</li>
                     </ul>
-                    <input id="menu_dimensions_action_button" type="button" value="Dimension Report ¨‹" class="menuButton" onclick="showMenu('menu_dimensions_action');" style="width: 142px;" />
+                    <input id="menu_dimensions_action_button" type="button" value="Dimension Report" class="menuButton" onclick="showMenu('menu_dimensions_action');" style="width: 142px;" />
                     <ul id="menu_dimensions_action" class="ui-menu" >
-                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/automaticPlacementReport", array('id'=>$model->id));?>';">Automatic placement</li>
-                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/geoGraphicReport", array('id'=>$model->id));?>';">Geo graphic</li>
-                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/destinationURLReport", array('id'=>$model->id));?>';">Destination URL</li>
+                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/automaticPlacementReport", array('id'=>$model->id));?>';">Automatic placement</li>
+                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/geoGraphicReport", array('id'=>$model->id));?>';">Geo graphic</li>
+                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/destinationURLReport", array('id'=>$model->id));?>';">Destination URL</li>
                     </ul>
                 </div>
             </div>
@@ -375,7 +375,7 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
         $("#ajaxloading").css("display", "block");
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/getPerformanceStatistic");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/getPerformanceStatistic");?>',
             data: {
                 start: startDate,
                 end: endDate,
@@ -446,7 +446,7 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
         var totalClicks = 0;
         var totalImpr = 0;
         var totalCost = 0;
-        var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/view", array('id'=>'replace_id'));?>';
+        var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/view", array('id'=>'replace_id'));?>';
 
         $("#group_performance tr:gt(0)").remove();
         for(var i=0;i<group.length;i++)
@@ -748,7 +748,7 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
         $("#ajaxloading").css("display", "block");
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/getPerformanceData");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/getPerformanceData");?>',
             data: {
                 start: startDate,
                 end: endDate,

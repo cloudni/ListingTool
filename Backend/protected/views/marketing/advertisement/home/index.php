@@ -311,7 +311,7 @@ $this->breadcrumbs=array(
             var totalClicks = 0;
             var totalImpr = 0;
             var totalCost = 0;
-            var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADCampaign/view", array('id'=>'replace_id'));?>';
+            var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/view", array('id'=>'replace_id'));?>';
 
             $("#campaign_performance tr:gt(0)").remove();
             for(var i=0;i<data.length;i++)

@@ -74,3 +74,33 @@ DROP TABLE IF EXISTS lt_ad_google_adwords_report_campaign_temp;
 ALTER TABLE lt_transaction add COLUMN ref_date VARCHAR(20);
 ALTER TABLE lt_transaction_detail add COLUMN ref_date VARCHAR(20);
 /*end 2015-06-02*/
+
+/** 2015-06-08*/
+DROP TABLE IF EXISTS `lt_google_adwords_userlist`;
+DROP TABLE IF EXISTS `lt_google_adwords_audience`;
+CREATE TABLE `lt_google_adwords_audience` (
+  `pk_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) DEFAULT NULL,
+  `is_read_only` bit(1) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `description` varchar(1024) DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  `integration_code` varchar(32) DEFAULT NULL,
+  `access_reason` varchar(20) DEFAULT NULL,
+  `account_user_list_status` varchar(20) DEFAULT NULL,
+  `membership_life_span` bigint(20) DEFAULT NULL,
+  `size` bigint(20) DEFAULT NULL,
+  `size_range` varchar(64) DEFAULT NULL,
+  `size_for_search` bigint(20) DEFAULT NULL,
+  `size_range_for_search` varchar(64) DEFAULT NULL,
+  `list_type` varchar(32) DEFAULT NULL,
+  `user_list_type` varchar(32) DEFAULT NULL,
+  `rule` text,
+  `is_run`  bit(1) DEFAULT false,
+  `create_time_utc` int(11) DEFAULT '0',
+  `create_user_id` int(11) DEFAULT '0',
+  `update_time_utc` int(11) DEFAULT '0',
+  `update_user_id` int(11) DEFAULT '0',
+  PRIMARY KEY (`pk_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-06-08*/

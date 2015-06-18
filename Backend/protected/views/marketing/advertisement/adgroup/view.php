@@ -203,7 +203,7 @@ $setting = (array)json_decode($model->criteria);
                     <ul id="menu_dimensions_action" class="ui-menu" >
                         <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/automaticPlacementReport", array('id'=>$model->id));?>';">Automatic placement</li>
                         <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/geoGraphicReport", array('id'=>$model->id));?>';">Geo graphic</li>
-                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/destinationURLReport", array('id'=>$model->id));?>';">Destination URL</li>
+                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adgroup/keywordsReport", array('id'=>$model->id));?>';">Keywords</li>
                     </ul>
                 </div>
             </div>

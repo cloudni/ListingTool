@@ -250,7 +250,7 @@ if(isset($setting['schedule']) && !empty($setting['schedule']))
                     <ul id="menu_dimensions_action" class="ui-menu" >
                         <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/automaticPlacementReport", array('id'=>$model->id));?>';">Automatic placement</li>
                         <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/geoGraphicReport", array('id'=>$model->id));?>';">Geo graphic</li>
-                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/destinationURLReport", array('id'=>$model->id));?>';">Destination URL</li>
+                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/adcampaign/keywordsReport", array('id'=>$model->id));?>';">Keywords</li>
                     </ul>
                 </div>
             </div>

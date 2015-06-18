@@ -205,7 +205,7 @@ class AdgroupController extends Controller
                 left join lt_google_adwords_ad_group gac on gac.lt_ad_group_id = t.id
                 left join lt_ad_google_adwords_report_keywords garg on garg.ad_group_id = gac.id
                 where t.id = $id
-                group by garg.date, garg.keyword_text";
+                group by garg.keyword_text";
         $command = Yii::app()->db->createCommand($sql);
         $result = $command->queryAll();
 

@@ -233,7 +233,7 @@ class AdcampaignController extends Controller
                 left join lt_google_adwords_campaign gac on gac.lt_ad_campaign_id = t.id
                 left join lt_ad_google_adwords_report_keywords garg on garg.campaign_id = gac.id
                 where t.id = $id
-                group by garg.date, garg.keyword_text";
+                group by garg.keyword_text";
         $command = Yii::app()->db->createCommand($sql);
         $result = $command->queryAll();
 

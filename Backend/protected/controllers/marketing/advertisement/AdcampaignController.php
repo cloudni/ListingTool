@@ -222,6 +222,27 @@ class AdcampaignController extends Controller
         ));
     }
 
+    public function actionKeywordsReport($id)
+    {
+        $model = $this->loadModel($id);
+
+        $sql = "SELECT sum(garg.clicks) as clicks, sum(garg.impressions) as impressions, sum(garg.charge_amount) as cost, garg.keyword_text,
+                garg.date, garg.month, garg.year,
+                garg.status
+                from lt_ad_campaign t
+                left join lt_google_adwords_campaign gac on gac.lt_ad_campaign_id = t.id
+                left join lt_ad_google_adwords_report_keywords garg on garg.campaign_id = gac.id
+                where t.id = $id
+                group by garg.date, garg.keyword_text";
+        $command = Yii::app()->db->createCommand($sql);
+        $result = $command->queryAll();
+
+        $this->render("keywordsReport", array(
+            'model'=>$model,
+            'keywords'=>$result,
+        ));
+    }
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.

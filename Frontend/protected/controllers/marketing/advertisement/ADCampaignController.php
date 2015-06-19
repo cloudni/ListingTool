@@ -370,23 +370,25 @@ class ADCampaignController extends Controller
         ));
     }
 
-    public function actionDestinationURLReport($id)
+    public function actionKeywordsReport($id)
     {
         $this->layout='//layouts/column2';
         $model = $this->loadModel($id);
 
-        $performanceSQL = "SELECT t.click_type, t.criteria_parameters, t.device, t.effective_destination_url,
-                            t.clicks, t.impressions as impr, t.charge_amount as cost
-                            FROM lt_ad_google_adwords_report_destination_url t
-                            left join lt_google_adwords_campaign gaag on gaag.id = t.campaign_id
-                            left join lt_ad_campaign ag on ag.id = gaag.lt_ad_campaign_id
-                            where ag.company_id = :company_id and ag.id = :campaign_id";
-        $command = Yii::app()->db->createCommand($performanceSQL);
+        $sql = "SELECT sum(garg.clicks) as clicks, sum(garg.impressions) as impr, sum(garg.charge_amount) as cost, garg.keyword_text,
+                garg.date, garg.month, garg.year,
+                garg.status
+                from lt_ad_campaign t
+                left join lt_google_adwords_campaign gac on gac.lt_ad_campaign_id = t.id
+                left join lt_ad_google_adwords_report_keywords garg on garg.campaign_id = gac.id
+                where t.id = :campaign_id and t.company_id = :company_id
+                group by garg.keyword_text";
+        $command = Yii::app()->db->createCommand($sql);
         $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
         $command->bindValue(":campaign_id", $id, PDO::PARAM_INT);
         $performances = $command->queryAll();
 
-        $this->render("destinationURLReport", array(
+        $this->render("keywordsReport", array(
             'model'=>$model,
             'performances'=>$performances,
         ));
@@ -501,7 +503,7 @@ class ADCampaignController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index', 'create', 'view', 'update', 'getPerformanceData', 'updateCampaignStatus', 'automaticPlacementReport', 'geoGraphicReport', 'destinationURLReport', 'getPerformanceStatistic', 'getIndexPerformance'),
+                'actions'=>array('index', 'create', 'view', 'update', 'getPerformanceData', 'updateCampaignStatus', 'automaticPlacementReport', 'geoGraphicReport', 'keywordsReport', 'getPerformanceStatistic', 'getIndexPerformance'),
                 'users'=>array('@'),
             ),
             array('deny',  // deny all users

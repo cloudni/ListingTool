@@ -305,7 +305,18 @@ class ADGroupController extends Controller
         $this->layout='//layouts/column2';
         $model = $this->loadModel($id);
 
-        $performances = array();
+        $sql="SELECT sum(garg.clicks) as clicks, sum(garg.impressions) as impr, sum(garg.charge_amount) as cost, garg.location_type,
+                garg.date, garg.month, garg.year,
+                garg.city_criteria_id, garg.region_criteria_id, garg.country_criteria_id
+                from lt_ad_group t
+                left join lt_google_adwords_ad_group gac on gac.lt_ad_group_id = t.id
+                left join lt_ad_google_adwords_report_geo garg on garg.ad_group_id = gac.id
+                where t.id = :group_id and t.company_id = :company_id
+                group by garg.date, garg.city_criteria_id";
+        $command = Yii::app()->db->createCommand($sql);
+        $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+        $command->bindValue(":group_id", $id, PDO::PARAM_INT);
+        $performances = $command->queryAll();
 
         $this->render("geoGraphic", array(
             'model'=>$model,

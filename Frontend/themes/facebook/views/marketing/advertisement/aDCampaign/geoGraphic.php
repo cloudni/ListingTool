@@ -35,7 +35,8 @@ $this->menu=array(
             <div>
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <thead>
-                    <th align="left" style="padding-left: 12px; "><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'geo_country_or_territory');?></th>
+                    <th align="left" style="padding-left: 12px; ">City</th>
+                    <th align="left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'geo_country_or_territory');?></th>
                     <th align="left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'geo_state_or_province');?></th>
                     <th align="left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'geo_location_type');?></th>
                     <th align="left"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'device');?></th>
@@ -49,9 +50,10 @@ $this->menu=array(
                     <?php if(isset($performances) && !empty($performances)):?>
                         <?php foreach($performances as $performance):?>
                             <tr>
-                                <td align="left" style="padding-left: 12px; " width="20%"><span title="<?php echo $performance['effective_destination_url'];?>"><?php echo strlen($performance['effective_destination_url']) > 20 ? substr($performance['effective_destination_url'], 0, 20).'...' : $performance['effective_destination_url'];?></span></td>
-                                <td align="left"><?php echo $performance['click_type'];?></td>
-                                <td align="left"><?php echo $performance['device'];?></td>
+                                <td align="left" style="padding-left: 12px; "><?php echo (int)$performance["city_criteria_id"] ? GoogleAdWordsGeographicalTargeting::getByCriteriaId($performance["city_criteria_id"])->name : $performance["city_criteria_id"];?></td>
+                                <td align="left"><?php echo (int)$performance["region_criteria_id"] ? GoogleAdWordsGeographicalTargeting::getByCriteriaId($performance["region_criteria_id"])->name : $performance["region_criteria_id"];?></td>
+                                <td align="left"><?php echo (int)$performance["country_criteria_id"] ? GoogleAdWordsGeographicalTargeting::getByCriteriaId($performance["country_criteria_id"])->name : $performance["country_criteria_id"];?></td>
+                                <td align="left"><?php echo $performance['location_type'];?></td>
                                 <td align="right"><?php echo $performance['clicks'];?></td>
                                 <td align="right"><?php echo $performance['impr'];?></td>
                                 <td align="right"><?php echo $performance['impr'] ? sprintf("%1\$.2f%%", $performance['clicks'] / $performance['impr'] * 100) : "&nbsp;";?></td>

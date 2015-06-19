@@ -167,7 +167,6 @@ $this->menu=array(
                 <?php $this->widget('zii.widgets.CDetailView', array(
                     'data'=>$model,
                     'attributes'=>array(
-                        'name',
                         array(
                             'label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'name'),
                             'value'=>$model->name
@@ -228,7 +227,7 @@ $this->menu=array(
                     <ul id="menu_dimensions_action" class="ui-menu" >
                         <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/automaticPlacementReport", array('id'=>$model->id));?>';"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'automatic_placement_report');?></li>
                         <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/geoGraphicReport", array('id'=>$model->id));?>';"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'geo_graphic_report');?></li>
-                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/destinationURLReport", array('id'=>$model->id));?>';"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'destination_url_report');?></li>
+                        <li onclick="window.location='<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ADGroup/keywordsReport", array('id'=>$model->id));?>';">Keywords Report</li>
                     </ul>
                 </div>
             </div>

@@ -362,7 +362,7 @@ class ADCampaignController extends Controller
         $command = Yii::app()->db->createCommand($sql);
         $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
         $command->bindValue(":campaign_id", $id, PDO::PARAM_INT);
-        $performances = $command->queryAll();var_dump($sql, $performances);die();
+        $performances = $command->queryAll();
 
         $this->render("geoGraphic", array(
             'model'=>$model,

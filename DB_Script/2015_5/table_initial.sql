@@ -210,3 +210,7 @@ ALTER TABLE lt_ad_google_adwords_report_keywords ADD COLUMN charge_amount DECIMA
 ALTER TABLE lt_ad_google_adwords_report_keywords ADD COLUMN lt_ad_group_id int(11);
 ALTER TABLE lt_ad_google_adwords_report_keywords ADD COLUMN is_charged tinyint(1) default '0';
 /*end 2015-06-17*/
+
+/*start 2015-06-24*/
+ALTER TABLE lt_ebay_detail ADD COLUMN site_name varchar(36) DEFAULT NULL;
+/*end 2015-06-24*/

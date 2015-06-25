@@ -52,7 +52,7 @@ require_once("reference.php");
     <div id="platform_<?php echo Store::PLATFORM_EBAY;?>" class="platform">
         <div class="container">
             <div class="row left span-4">
-                <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_store') ?>
+                <?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_site_store') ?>
             </div>
             <div class="row left">
                 <?php echo $form->dropDownList($model,'ebay_site_code', eBaySiteIdCodeType::getSiteIdCodeTypeOptions()); ?>

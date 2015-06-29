@@ -299,7 +299,7 @@ $this->breadcrumbs=array(
         $("#ajaxloading").css("display", "block");
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/getPerformanceStatistic");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/getPerformanceStatistic");?>',
             data: {
                 start: startDate,
                 end: endDate,
@@ -367,7 +367,7 @@ $this->breadcrumbs=array(
         var totalClicks = 0;
         var totalImpr = 0;
         var totalCost = 0;
-        var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/view", array('id'=>'replace_id'));?>';
+        var url = '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/view", array('id'=>'replace_id'));?>';
         var codeName = {<?php echo ADAdvertiseVariation::Code_Flash;?>:"<?php echo ADAdvertiseVariation::getCodeText(ADAdvertiseVariation::Code_Flash);?>", <?php echo ADAdvertiseVariation::Code_Html5;?>:"<?php echo ADAdvertiseVariation::getCodeText(ADAdvertiseVariation::Code_Html5);?>"};
 
         $("#ad_variation_performance tr:gt(0)").remove();
@@ -667,7 +667,7 @@ $this->breadcrumbs=array(
 
         $.ajax({
             type: "POST",
-            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/AD/getPerformanceData");?>',
+            url: '<?php echo Yii::app()->createAbsoluteUrl("marketing/advertisement/ad/getPerformanceData");?>',
             data: {
                 start: startDate,
                 end: endDate,

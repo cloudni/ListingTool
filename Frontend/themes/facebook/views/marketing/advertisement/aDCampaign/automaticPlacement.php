@@ -47,7 +47,7 @@ $this->menu=array(
                     <?php if(isset($placements) && !empty($placements)):?>
                         <?php foreach($placements as $placement):?>
                             <tr>
-                                <td align="left" style="padding-left: 12px; " width="20%"><span title="<?php echo $placement['domain'];?>"><?php echo strlen($placement['domain']) > 20 ? substr($placement['domain'], 0, 20).'...' : $placement['domain'];?></span></td>
+                                <td align="left" style="padding-left: 12px; " width="20%"><a href="//<?php echo $placement['display_name'];?>" title="<?php echo $placement['display_name'];?>" target="_blank"><?php echo strlen($placement['display_name']) > 50 ? substr($placement['display_name'], 0, 50).'...' : $placement['display_name'];?></a></td>
                                 <td align="left"><span title="<?php echo $placement['domain'];?>"><?php echo strlen($placement['domain']) > 20 ? substr($placement['domain'], 0, 20).'...' : $placement['domain'];?></span></td>
                                 <td align="right"><?php echo $placement['clicks'];?></td>
                                 <td align="right"><?php echo $placement['impr'];?></td>

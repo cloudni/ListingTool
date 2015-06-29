@@ -328,11 +328,10 @@ class ADCampaignController extends Controller
 
     public function actionAutomaticPlacementReport($id)
     {
-        $this->layout='//layouts/column2';
         $model = $this->loadModel($id);
 
-        $placementSQL = "SELECT t.domain, t.clicks, t.impressions as impr, t.charge_amount as cost
-                            FROM lt_ad_google_adwords_report_automatic_placements t
+        $placementSQL = "SELECT t.domain, t.display_name, t.clicks, t.impressions as impr, t.charge_amount as cost
+                            FROM lt_ad_google_adwords_report_url t
                             left join lt_google_adwords_campaign gaag on gaag.id = t.campaign_id
                             left join lt_ad_campaign ag on ag.id = gaag.lt_ad_campaign_id
                             where ag.company_id = :company_id and ag.id = :campaign_id";
@@ -349,7 +348,6 @@ class ADCampaignController extends Controller
 
     public function actionGeoGraphicReport($id)
     {
-        $this->layout='//layouts/column2';
         $model = $this->loadModel($id);
 
         $sql="SELECT sum(garg.clicks) as clicks, sum(garg.impressions) as impr, sum(garg.charge_amount) as cost, garg.location_type,
@@ -372,7 +370,6 @@ class ADCampaignController extends Controller
 
     public function actionKeywordsReport($id)
     {
-        $this->layout='//layouts/column2';
         $model = $this->loadModel($id);
 
         $sql = "SELECT sum(garg.clicks) as clicks, sum(garg.impressions) as impr, sum(garg.charge_amount) as cost, garg.keyword_text,

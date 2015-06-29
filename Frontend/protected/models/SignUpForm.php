@@ -86,7 +86,7 @@ class SignUpForm extends CFormModel
     {
         $transaction= Yii::app()->db->beginTransaction();
         try
-        {
+        {var_dump($this);die();
             //create company first
             $company = new Company();
             $company->name = $this->name;

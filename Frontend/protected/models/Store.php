@@ -159,10 +159,10 @@ class Store extends NIActiveRecord
     public function getPlatformOptions()
     {
         return array(
-            self::PLATFORM_EBAY=>'eBay.com',
-            self::PLATFORM_WISH=>'Wish.com',
-            /*self::PLATFORM_AMAZON=>'Amazon.com',
-            self::PLATFORM_ALIEXPRESS=>'AliExpress.com',
+            self::PLATFORM_EBAY=>'eBay',
+            self::PLATFORM_WISH=>'Wish',
+            /*self::PLATFORM_AMAZON=>'Amazon',
+            self::PLATFORM_ALIEXPRESS=>'AliExpress',
             self::PLATFORM_ECSHOP=>'Ecshop sites',
             self::PLATFORM_MAGENTO=>'Magento sites',*/
         );

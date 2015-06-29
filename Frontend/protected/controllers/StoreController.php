@@ -84,7 +84,7 @@ class StoreController extends Controller
             $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
             $scheduleJob->create_time_utc = time();
             $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
-            $scheduleJob->crontab = "1 */6 * * *";
+            $scheduleJob->crontab = "1 */12 * * *";
             $scheduleJob->next_execute_time_utc = 0;
             $scheduleJob->type = ScheduleJob::TYPE_REPEAT;
             $scheduleJob->save(false);
@@ -263,7 +263,7 @@ class StoreController extends Controller
                                             $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_NO_OCCURRED;
                                             $scheduleJob->create_time_utc = time();
                                             $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
-                                            $scheduleJob->crontab = "1 */6 * * *";
+                                            $scheduleJob->crontab = "1 */12 * * *";
                                             $scheduleJob->next_execute_time_utc = 0;
                                             $scheduleJob->last_execute_time_utc = 0;
                                             $scheduleJob->last_finish_time_utc = 0;
@@ -336,7 +336,7 @@ class StoreController extends Controller
                             $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
                             $scheduleJob->create_time_utc = time();
                             $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
-                            $scheduleJob->crontab = "1 */6 * * *";
+                            $scheduleJob->crontab = "1 */12 * * *";
                             $scheduleJob->next_execute_time_utc = 0;
                             $scheduleJob->type = ScheduleJob::TYPE_REPEAT;
                             $scheduleJob->save(false);

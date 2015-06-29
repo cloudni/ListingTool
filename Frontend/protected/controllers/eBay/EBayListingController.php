@@ -73,7 +73,7 @@ class EBayListingController extends Controller
                             left join lt_ebay_entity_varchar as site on site.ebay_entity_id = t.id and site.ebay_entity_attribute_id = {$siteStatusAttribute->id}
                             where t.store_id = 3 and
                             sstatus.value = '".eBayListingStatusCodeType::Active."'
-                            order by id asc; ";var_dump($select);
+                            order by id asc; ";var_dump($select);die();
         $command = Yii::app()->db->createCommand($select);
         $row = $command->queryRow();var_dump($row, eBaySiteName::geteBaySiteNameCode($row['site']));
         $cate = eBayCategory::model()->find("CategorySiteID=:CategorySiteID and CategoryID:=CategoryID", array('CategorySiteID'=>eBaySiteName::geteBaySiteNameCode($row['site']), 'CategoryID'=>$row['primarycate']));

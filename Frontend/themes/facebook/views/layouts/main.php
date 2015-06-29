@@ -181,6 +181,7 @@
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_manage_department'), 'url'=>array('/department')),
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'store_manage_menu'), 'url'=>array('/Store')),
                         array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'menu_manage_company'), 'url'=>array('/Company')),
+                        array('label'=>ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'company_financa'), 'url'=>array('/Company/finance')),
                     ),
                 ),
                 array(

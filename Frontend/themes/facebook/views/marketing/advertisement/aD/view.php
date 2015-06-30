@@ -201,18 +201,7 @@ $this->menu=array(
                     <?php foreach($model->adAdvertiseFeeds as $feed):?>
                         <tr>
                             <td><?php echo Store::getPlatformTextStatic($feed->item_type);?></td>
-                            <td><a href="
-                                <?php switch($feed->item_type)
-                                {
-                                    case Store::PLATFORM_EBAY:
-                                        echo sprintf("http://www.ebay.com/itm/%s", $feed->item_id);
-                                        break;
-                                    case Store::PLATFORM_WISH:
-                                        echo sprintf("http://www.wish.com/c/%s", $feed->item_id);
-                                        break;
-                                }
-                                ?>
-                            " target="_blank" ><?php echo $feed->item_id;?></a></td>
+                            <td><a href="<?php echo $feed->remarketing_url; ?>" target="_blank" ><?php echo $feed->item_id;?></a></td>
                             <td><?php echo $feed->item_headline;?></td>
                         </tr>
                     <?php endforeach;?>

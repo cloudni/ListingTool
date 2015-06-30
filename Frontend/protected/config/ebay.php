@@ -12,7 +12,7 @@ return array(
     'logPath'=>dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR./*"..".DIRECTORY_SEPARATOR.*/'log'.DIRECTORY_SEPARATOR.'ebay',
     'echoAttributeDetail'=>false,
     'defaultAPIId'=>1,
-    'maxAuthNum'=>5,
+    'maxAuthNum'=>1,
     'productSignInURL'=>'https://signin.ebay.com/ws/eBayISAPI.dll?Signin&RuName=%s&SessID=%s&ruparams=%s',
     'sandboxSignInURL'=>'https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?Signin&RuName=%s&SessID=%s&ruparams=%s',
     'feedbackViewURL'=>'http://feedback.ebay.com/ws/eBayISAPI.dll?ViewFeedback2&userid=%s&ftab=AllFeedback',

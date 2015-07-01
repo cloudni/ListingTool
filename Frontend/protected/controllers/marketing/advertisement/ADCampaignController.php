@@ -326,24 +326,86 @@ class ADCampaignController extends Controller
         exit();
     }
 
-    public function actionAutomaticPlacementReport($id)
+    public function actionAutomaticPlacementReport($id, $start='', $end='')
     {
         $model = $this->loadModel($id);
 
-        $placementSQL = "SELECT t.domain, t.display_name, t.clicks, t.impressions as impr, t.charge_amount as cost
+        if(!$end) $end = date("Y-m-d");
+        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 14);
+
+        if(isset($_POST['cusFromDate'])) $start = $_POST['cusFromDate'];
+        if(isset($_POST['cusEndDate'])) $end = $_POST['cusEndDate'];
+
+        $placementSQL = "SELECT t.domain, t.display_name, t.clicks as clicks, t.impressions as impr, t.charge_amount as cost, aep.id as campaign_exclude_id
                             FROM lt_ad_google_adwords_report_url t
                             left join lt_google_adwords_campaign gaag on gaag.id = t.campaign_id
                             left join lt_ad_campaign ag on ag.id = gaag.lt_ad_campaign_id
-                            where ag.company_id = :company_id and ag.id = :campaign_id";
+                            left join lt_ad_campaign_exclude_placement aep on aep.ad_campaign_id = ag.id and aep.domain = t.domain
+                            where ag.company_id = :company_id and ag.id = :campaign_id and t.date >= :startdate and t.date <= :enddate
+                            ";
         $command = Yii::app()->db->createCommand($placementSQL);
         $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
         $command->bindValue(":campaign_id", $id, PDO::PARAM_INT);
+        $command->bindValue(":startdate", $start, PDO::PARAM_STR);
+        $command->bindValue(":enddate", $end, PDO::PARAM_STR);
         $placements = $command->queryAll();
 
         $this->render("automaticPlacement", array(
             'model'=>$model,
             'placements'=>$placements,
         ));
+    }
+
+    public function actionUpdateDomainSetting()
+    {
+        $domain = isset($_POST['domain']) ? (string)$_POST['domain'] : '';
+        $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
+        $ad_campaign_id = isset($_POST['ad_campaign_id']) ? (int)$_POST['ad_campaign_id'] : 0;
+        if(!$domain || !$action || !$ad_campaign_id){
+            $result = array('status'=>'fail');
+            echo json_encode($result); exit();
+        }
+
+        $sql = "";
+        if($action == 'include')
+        {
+            $sql = "delete from lt_ad_campaign_exclude_placement where company_id=:company_id and domain=:domain and ad_campaign_id=:ad_campaign_id;";
+        }
+        else if($action == 'exclude')
+        {
+            $sql = "insert into lt_ad_campaign_exclude_placement (`company_id`,
+                        `ad_campaign_id`,
+                        `domain`,
+                        `create_time_utc`,
+                        `create_user_id`,
+                        `update_time_utc`,
+                        `update_user_id`)
+                        VALUES
+                        (:company_id,
+                        :ad_campaign_id,
+                        :domain,
+                        ".time().",
+                        ".Yii::app()->session['user']->id.",
+                        ".time().",
+                        ".Yii::app()->session['user']->id.");";
+        }
+        else
+        {
+            $result = array('status'=>'fail');
+            echo json_encode($result); exit();
+        }
+        $command = Yii::app()->db->createCommand($sql);
+        $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+        $command->bindValue(":ad_campaign_id", $ad_campaign_id, PDO::PARAM_INT);
+        $command->bindValue(":domain", $domain, PDO::PARAM_STR);
+        if(!$command->execute())
+        {
+            $result = array('status'=>'fail');
+            echo json_encode($result); exit();
+        }
+
+        $result = array('status'=>'success');
+        echo json_encode($result);exit();
     }
 
     public function actionGeoGraphicReport($id)
@@ -368,27 +430,88 @@ class ADCampaignController extends Controller
         ));
     }
 
-    public function actionKeywordsReport($id)
+    public function actionKeywordsReport($id, $start='', $end='')
     {
         $model = $this->loadModel($id);
 
+        if(!$end) $end = date("Y-m-d");
+        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 14);
+
+        if(isset($_POST['cusFromDate'])) $start = $_POST['cusFromDate'];
+        if(isset($_POST['cusEndDate'])) $end = $_POST['cusEndDate'];
+
         $sql = "SELECT sum(garg.clicks) as clicks, sum(garg.impressions) as impr, sum(garg.charge_amount) as cost, garg.keyword_text,
                 garg.date, garg.month, garg.year,
-                garg.status
+                garg.status, aek.id as campaign_exclude_id
                 from lt_ad_campaign t
                 left join lt_google_adwords_campaign gac on gac.lt_ad_campaign_id = t.id
-                left join lt_ad_google_adwords_report_keywords garg on garg.campaign_id = gac.id
+                left join lt_ad_google_adwords_report_keywords garg on garg.campaign_id = gac.id and garg.date >= :startdate and garg.date <= :enddate
+                left join lt_ad_campaign_exclude_keyword aek on aek.ad_campaign_id = t.id and aek.keyword = garg.keyword_text
                 where t.id = :campaign_id and t.company_id = :company_id
                 group by garg.keyword_text";
         $command = Yii::app()->db->createCommand($sql);
         $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
         $command->bindValue(":campaign_id", $id, PDO::PARAM_INT);
+        $command->bindValue(":startdate", $start, PDO::PARAM_STR);
+        $command->bindValue(":enddate", $end, PDO::PARAM_STR);
         $performances = $command->queryAll();
 
         $this->render("keywordsReport", array(
             'model'=>$model,
             'performances'=>$performances,
         ));
+    }
+
+    public function actionUpdateKeywordSetting()
+    {
+        $keyword = isset($_POST['keyword']) ? (string)$_POST['keyword'] : '';
+        $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
+        $ad_campaign_id = isset($_POST['ad_campaign_id']) ? (int)$_POST['ad_campaign_id'] : 0;
+        if(!$keyword || !$action || !$ad_campaign_id){
+            $result = array('status'=>'fail');
+            echo json_encode($result); exit();
+        }
+
+        $sql = "";
+        if($action == 'include')
+        {
+            $sql = "delete from lt_ad_campaign_exclude_keyword where company_id=:company_id and keyword=:keyword and ad_campaign_id=:ad_campaign_id;";
+        }
+        else if($action == 'exclude')
+        {
+            $sql = "insert into lt_ad_campaign_exclude_keyword (`company_id`,
+                        `ad_campaign_id`,
+                        `keyword`,
+                        `create_time_utc`,
+                        `create_user_id`,
+                        `update_time_utc`,
+                        `update_user_id`)
+                        VALUES
+                        (:company_id,
+                        :ad_campaign_id,
+                        :keyword,
+                        ".time().",
+                        ".Yii::app()->session['user']->id.",
+                        ".time().",
+                        ".Yii::app()->session['user']->id.");";
+        }
+        else
+        {
+            $result = array('status'=>'fail');
+            echo json_encode($result); exit();
+        }
+        $command = Yii::app()->db->createCommand($sql);
+        $command->bindValue(":company_id", Yii::app()->session['user']->company_id, PDO::PARAM_INT);
+        $command->bindValue(":ad_campaign_id", $ad_campaign_id, PDO::PARAM_INT);
+        $command->bindValue(":keyword", $keyword, PDO::PARAM_STR);
+        if(!$command->execute())
+        {
+            $result = array('status'=>'fail');
+            echo json_encode($result); exit();
+        }
+
+        $result = array('status'=>'success');
+        echo json_encode($result);exit();
     }
 
     public function actionGetPerformanceStatistic($adcampaignid=null, $adgroupid=null, $start='', $end='')
@@ -487,7 +610,7 @@ class ADCampaignController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + delete, getPerformanceData, updateCampaignStatus, getPerformanceStatistic, getIndexPerformance', // we only allow deletion via POST request
+            'postOnly + delete, getPerformanceData, updateCampaignStatus, getPerformanceStatistic, getIndexPerformance, updateDomainSetting, updateKeywordSetting', // we only allow deletion via POST request
         );
     }
 
@@ -500,7 +623,7 @@ class ADCampaignController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index', 'create', 'view', 'update', 'getPerformanceData', 'updateCampaignStatus', 'automaticPlacementReport', 'geoGraphicReport', 'keywordsReport', 'getPerformanceStatistic', 'getIndexPerformance'),
+                'actions'=>array('index', 'create', 'view', 'update', 'getPerformanceData', 'updateCampaignStatus', 'automaticPlacementReport', 'geoGraphicReport', 'keywordsReport', 'getPerformanceStatistic', 'getIndexPerformance', 'updateDomainSetting', 'updateKeywordSetting'),
                 'users'=>array('@'),
             ),
             array('deny',  // deny all users

@@ -110,6 +110,8 @@ class SiteController extends Controller
         if(isset($_POST['SignUpForm']))
         {
             $model->attributes=$_POST['SignUpForm'];
+            $model->phone = (string)$_POST['SignUpForm']['phone'];
+            $model->country = (string)$_POST['SignUpForm']['country'];
 
             $signInForm = new SignInForm();
             $signInForm->username = $model->username;

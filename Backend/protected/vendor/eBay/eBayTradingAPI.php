@@ -2696,7 +2696,7 @@ class eBayTradingAPI
                                 continue;
                             }
                         }
-                        eBayTradingAPI::GetItem($listing);
+                        //eBayTradingAPI::GetItem($listing);
                         $updateLists[] = (string)$item->ItemID;
                         echo (string)$item->ItemID." updated!\n";
                     }
@@ -2741,7 +2741,7 @@ class eBayTradingAPI
                                         continue;
                                     }
                                 }
-                                eBayTradingAPI::GetItem($listing);
+                                //eBayTradingAPI::GetItem($listing);
                                 $updateLists[] = (string)$item->ItemID;
                                 echo (string)$item->ItemID." updated!\n";
                             }
@@ -2760,7 +2760,7 @@ class eBayTradingAPI
                 foreach($offlineLists as $item)
                 {
                     $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$item, ":store_id"=>$store->id));
-                    if(!empty($list)) eBayTradingAPI::GetItem($list);
+                    //if(!empty($list)) eBayTradingAPI::GetItem($list);
                     echo (string)$item." updated!\n";
                 }
             }

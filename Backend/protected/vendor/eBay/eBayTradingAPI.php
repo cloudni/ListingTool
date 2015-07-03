@@ -2696,6 +2696,15 @@ class eBayTradingAPI
                                 continue;
                             }
                         }
+
+                        $transaction= Yii::app()->db->beginTransaction();
+                        //start to process attribute by attribute
+                        echo("start to process eBay item ".(string)$item->ItemID." attribute:\n");
+                        eBayTradingAPI::processeBayEntityAttributesRC($listing, $eBayAttributeSet, $item);
+                        $transaction->commit();
+
+                        echo("eBay item: ".(string)$item->ItemID." attribute process finished!\n".date("Y-m-d H:i:s", time())."item process finished\n\n");
+
                         //eBayTradingAPI::GetItem($listing);
                         $updateLists[] = (string)$item->ItemID;
                         echo (string)$item->ItemID." updated!\n";
@@ -2741,6 +2750,13 @@ class eBayTradingAPI
                                         continue;
                                     }
                                 }
+
+                                $transaction= Yii::app()->db->beginTransaction();
+                                //start to process attribute by attribute
+                                echo("start to process eBay item ".(string)$item->ItemID." attribute:\n");
+                                eBayTradingAPI::processeBayEntityAttributesRC($listing, $eBayAttributeSet, $item);
+                                $transaction->commit();
+
                                 //eBayTradingAPI::GetItem($listing);
                                 $updateLists[] = (string)$item->ItemID;
                                 echo (string)$item->ItemID." updated!\n";

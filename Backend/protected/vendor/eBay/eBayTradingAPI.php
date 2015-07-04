@@ -2664,8 +2664,9 @@ class eBayTradingAPI
             $response = $eBayService->request();
 
             $try = 0;
-            while(empty($response) || !$response)
+            while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
             {
+                var_dump($response);
                 $try++;
                 echo "eBay service call failed! try $try time.\n";
                 $response = $eBayService->request();
@@ -2718,8 +2719,9 @@ class eBayTradingAPI
                     $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").eBayTradingAPI::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
                     $response = $eBayService->request();
                     $try = 0;
-                    while(empty($response) || !$response)
+                    while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
                     {
+                        var_dump($response);
                         $try++;
                         echo "eBay service call failed! try $try time on page {$param['ActiveList']['Pagination']['PageNumber']}.\n";
                         $response = $eBayService->request();

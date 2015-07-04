@@ -50,7 +50,7 @@ class eBayTradingAPI
             'IncludeVariations'=>true,
             'IncludeWatchCount'=>true,
             'MotorsDealerUsers'=>array(),
-            'Pagination'=>array('EntriesPerPage'=>50, 'PageNumber'=>1),
+            'Pagination'=>array('EntriesPerPage'=>200, 'PageNumber'=>1),
             'SKUArray'=>array(),
             'Sort'=>0,
             'StartTimeFrom'=>'',

@@ -189,7 +189,7 @@ class schedulejobCommand extends CConsoleCommand
     protected function eBayGetSellerList($scheduleJob)
     {
         $logFile = new LogFile(Yii::app()->params['ebay']['logPath'], 'GetSellerList.'.date("Ymd.his", time()).'.log');
-        $logFile->saveOutputToFile();
+        //$logFile->saveOutputToFile();
 
         echo "start schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n";
 

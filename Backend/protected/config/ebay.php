@@ -13,6 +13,7 @@ return array(
     'echoAttributeDetail'=>false,
     'defaultAPIId'=>1,
     'maxAuthNum'=>5,
+    'maxRetry'=>10,
     'productSignInURL'=>'https://signin.ebay.com/ws/eBayISAPI.dll?Signin&RuName=%s&SessID=%s&ruparams=%s',
     'sandboxSignInURL'=>'https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?Signin&RuName=%s&SessID=%s&ruparams=%s',
     'SiteID'=>array(

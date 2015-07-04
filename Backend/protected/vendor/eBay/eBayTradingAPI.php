@@ -83,10 +83,13 @@ class eBayTradingAPI
         {
             $result = $eBayService->request();
 
-            if(empty($result))
+            $try = 1;
+            while(empty($result) || !$result || (string)$result->Ack!==eBayAckCodeType::Success)
             {
-                echo "service call failed with no return.\n";
-                return false;
+                var_dump($result);
+                $try++; if($try > Yii::app()->params['ebay']['maxRetry']) return false;
+                echo "eBay service call failed! try $try time.\n";
+                $result = $eBayService->request();
             }
 
             if((string)$result->Ack===eBayAckCodeType::Success)
@@ -151,10 +154,14 @@ class eBayTradingAPI
                     echo "current process page: {$params['Pagination']['PageNumber']}\n\n";
                     $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetSellerList").eBayTradingAPI::GetSellerListXML($params).$eBayService->getRequestAuthFoot("GetSellerList");
                     $result = $eBayService->request();
-                    if(empty($result))
+
+                    $try = 1;
+                    while(empty($result) || !$result || (string)$result->Ack!==eBayAckCodeType::Success)
                     {
-                        echo "service call failed with no return.\n";
-                        return false;
+                        var_dump($result);
+                        $try++; if($try > Yii::app()->params['ebay']['maxRetry']) return false;
+                        echo "eBay service call failed! try $try time.\n";
+                        $result = $eBayService->request();
                     }
 
                     if(!empty($result->Ack) && (string)$result->Ack===eBayAckCodeType::Success)

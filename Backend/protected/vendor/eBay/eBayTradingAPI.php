@@ -138,11 +138,13 @@ class eBayTradingAPI
                         {
                             foreach($itemList['Item'] as $key=>$item)
                             {
-                                eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
+                                if((string)$item->SellingStatus->ListingStatus == eBayListingStatusCodeType::Active)
+                                    eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
                             }
                         }
                         else
                         {
+                            if((string)$itemList['Item']->SellingStatus->ListingStatus == eBayListingStatusCodeType::Active)
                             eBayTradingAPI::processeBayListingV2($store, $itemList['Item'], $eBayEntityType);
                         }
                     }
@@ -176,12 +178,14 @@ class eBayTradingAPI
                                 {
                                     foreach($itemList['Item'] as $key=>$item)
                                     {
-                                        eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
+                                        if((string)$item->SellingStatus->ListingStatus == eBayListingStatusCodeType::Active)
+                                            eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
                                     }
                                 }
                                 else
                                 {
-                                    eBayTradingAPI::processeBayListingV2($store, $itemList['Item'], $eBayEntityType);
+                                    if((string)$itemList['Item']->SellingStatus->ListingStatus == eBayListingStatusCodeType::Active)
+                                        eBayTradingAPI::processeBayListingV2($store, $itemList['Item'], $eBayEntityType);
                                 }
                             }
                         }
@@ -488,7 +492,7 @@ class eBayTradingAPI
     protected static function SaveAttributeValue($eBayEntity, $eBayEntityAttribute, $field, $parentEntityAttribute=null, $parentValueId=0)
     {
         if($eBayEntityAttribute->id == 322 && !$parentEntityAttribute)
-            echo "process site field for listing: ".$eBayEntity->ebay_listing_id."\n";
+            echo "process site field for listing: ".$eBayEntity->ebay_listing_id.", value: ".(string)$field."\n";
         //get attribute value type
         switch($eBayEntityAttribute->eBayAttribute->backend_type)
         {

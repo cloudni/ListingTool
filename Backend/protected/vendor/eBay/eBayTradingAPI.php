@@ -487,6 +487,8 @@ class eBayTradingAPI
      */
     protected static function SaveAttributeValue($eBayEntity, $eBayEntityAttribute, $field, $parentEntityAttribute=null, $parentValueId=0)
     {
+        if($eBayEntityAttribute->id == 322 && !$parentEntityAttribute)
+            echo "process site field for listing: ".$eBayEntity->ebay_listing_id."\n";
         //get attribute value type
         switch($eBayEntityAttribute->eBayAttribute->backend_type)
         {
@@ -2687,31 +2689,7 @@ class eBayTradingAPI
                 {
                     foreach($response->ActiveList->ItemArray->Item as $item)
                     {
-                        $listing = eBayListing::model()->find("store_id=:store_id and ebay_listing_id=:ebay_listing_id", array(":store_id"=>$store->id, ":ebay_listing_id"=>(string)$item->ItemID));
-                        if(empty($listing))
-                        {
-                            $listing = new eBayListing();
-                            $listing->store_id = $store->id;
-                            $listing->company_id = $store->company_id;
-                            $listing->ebay_listing_id = (string)$item->ItemID;
-                            $listing->site_id = (int)eBaySiteName::geteBaySiteNameCode((string)$item->Site);
-                            $listing->ebay_entity_type_id = $eBayEntityType->id;
-                            $listing->ebay_attribute_set_id = $eBayAttributeSet->id;
-                            $listing->is_active = true;
-                            if(!$listing->save(false))
-                            {
-                                echo("insert eBay item ".(string)$item->ItemID." failed!\n");
-                                continue;
-                            }
-                        }
-
-                        $transaction= Yii::app()->db->beginTransaction();
-                        //start to process attribute by attribute
-                        echo("start to process eBay item ".(string)$item->ItemID." attribute:\n");
-                        eBayTradingAPI::processeBayEntityAttributesRC($listing, $eBayAttributeSet, $item);
-                        $transaction->commit();
-
-                        echo("eBay item: ".(string)$item->ItemID." attribute process finished!\n".date("Y-m-d H:i:s", time())."item process finished\n\n");
+                        eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
 
                         //eBayTradingAPI::GetItem($listing);
                         $updateLists[] = (string)$item->ItemID;
@@ -2742,29 +2720,7 @@ class eBayTradingAPI
                         {
                             foreach($response->ActiveList->ItemArray->Item as $item)
                             {
-                                $listing = eBayListing::model()->find("store_id=:store_id and ebay_listing_id=:ebay_listing_id", array(":store_id"=>$store->id, ":ebay_listing_id"=>(string)$item->ItemID));
-                                if(empty($listing))
-                                {
-                                    $listing = new eBayListing();
-                                    $listing->store_id = $store->id;
-                                    $listing->company_id = $store->company_id;
-                                    $listing->ebay_listing_id = (string)$item->ItemID;
-                                    $listing->site_id = (int)eBaySiteName::geteBaySiteNameCode((string)$item->Site);
-                                    $listing->ebay_entity_type_id = $eBayEntityType->id;
-                                    $listing->ebay_attribute_set_id = $eBayAttributeSet->id;
-                                    $listing->is_active = true;
-                                    if(!$listing->save(false))
-                                    {
-                                        echo("insert eBay item ".(string)$item->ItemID." failed!\n");
-                                        continue;
-                                    }
-                                }
-
-                                $transaction= Yii::app()->db->beginTransaction();
-                                //start to process attribute by attribute
-                                echo("start to process eBay item ".(string)$item->ItemID." attribute:\n");
-                                eBayTradingAPI::processeBayEntityAttributesRC($listing, $eBayAttributeSet, $item);
-                                $transaction->commit();
+                                eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
 
                                 //eBayTradingAPI::GetItem($listing);
                                 $updateLists[] = (string)$item->ItemID;

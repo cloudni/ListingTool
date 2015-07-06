@@ -179,23 +179,86 @@ class AdcampaignController extends Controller
         exit();
     }
 
-    public function actionAutomaticPlacementReport($id)
+    public function actionAutomaticPlacementReport($id, $start='', $end='')
     {
         $model = $this->loadModel($id);
 
-        $placementSQL = "SELECT t.domain, t.clicks, t.impressions as impr, t.charge_amount as cost
-                            FROM lt_ad_google_adwords_report_automatic_placements t
+        if(!$end) $end = date("Y-m-d");
+        if(!$start) $start = date("Y-m-d", strtotime(date("Y-m-d")) - 60 * 60 * 24 * 14);
+
+        if(isset($_POST['cusFromDate'])) $start = $_POST['cusFromDate'];
+        if(isset($_POST['cusEndDate'])) $end = $_POST['cusEndDate'];
+
+        $placementSQL = "SELECT t.domain, t.display_name, t.clicks, t.impressions as impr, t.charge_amount as cost, aep.id as campaign_exclude_id
+                            FROM lt_ad_google_adwords_report_url t
                             left join lt_google_adwords_campaign gaag on gaag.id = t.campaign_id
                             left join lt_ad_campaign ag on ag.id = gaag.lt_ad_campaign_id
-                            where ag.id = :campaign_id";
+                            left join lt_ad_campaign_exclude_placement aep on aep.ad_campaign_id = ag.id and aep.domain = t.domain
+                            where ag.id = :campaign_id and t.date >= :startdate and t.date <= :enddate ; ";
         $command = Yii::app()->db->createCommand($placementSQL);
         $command->bindValue(":campaign_id", $id, PDO::PARAM_INT);
+        $command->bindValue(":startdate", $start, PDO::PARAM_STR);
+        $command->bindValue(":enddate", $end, PDO::PARAM_STR);
         $placements = $command->queryAll();
 
         $this->render("automaticPlacement", array(
             'model'=>$model,
             'placements'=>$placements,
         ));
+    }
+
+    public function actionUpdateDomainSetting()
+    {
+        $domain = isset($_POST['domain']) ? (string)$_POST['domain'] : '';
+        $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
+        $ad_campaign_id = isset($_POST['ad_campaign_id']) ? (int)$_POST['ad_campaign_id'] : 0;
+        if(!$domain || !$action || !$ad_campaign_id){
+            $result = array('status'=>'fail');
+            echo json_encode($result); exit();
+        }
+
+        $model = $this->loadModel($ad_campaign_id);
+
+        $sql = "";
+        if($action == 'include')
+        {
+            $sql = "delete from lt_ad_campaign_exclude_placement where company_id=:company_id and domain=:domain and ad_campaign_id=:ad_campaign_id;";
+        }
+        else if($action == 'exclude')
+        {
+            $sql = "insert into lt_ad_campaign_exclude_placement (`company_id`,
+                        `ad_campaign_id`,
+                        `domain`,
+                        `create_time_utc`,
+                        `create_user_id`,
+                        `update_time_utc`,
+                        `update_user_id`)
+                        VALUES
+                        (:company_id,
+                        :ad_campaign_id,
+                        :domain,
+                        ".time().",
+                        ".Yii::app()->session['user']->id.",
+                        ".time().",
+                        ".Yii::app()->session['user']->id.");";
+        }
+        else
+        {
+            $result = array('status'=>'fail');
+            echo json_encode($result); exit();
+        }
+        $command = Yii::app()->db->createCommand($sql);
+        $command->bindValue(":company_id", $model->company_id, PDO::PARAM_INT);
+        $command->bindValue(":ad_campaign_id", $ad_campaign_id, PDO::PARAM_INT);
+        $command->bindValue(":domain", $domain, PDO::PARAM_STR);
+        if(!$command->execute())
+        {
+            $result = array('status'=>'fail');
+            echo json_encode($result); exit();
+        }
+
+        $result = array('status'=>'success');
+        echo json_encode($result);exit();
     }
 
     public function actionGeoGraphicReport($id, $start='', $end='')

@@ -43,7 +43,7 @@ $setting = (array)json_decode($model->criteria);
                 <div style="clear: both; width: 100%; padding-top: 12px;">
                     <div style="float: left; width: 20%; text-align: right;"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'default_max_cpc');?>: </div>
                     <div style="float: left; width: auto; text-align: left; padding-left: 12px;">
-                        <input type="text" id="adgroup_default_bid" name="adgroup[default_bid]" size="11" maxlength="10" style="text-align: right;" onkeyup="CheckInputFloat(this);" value="<?php echo sprintf("%1\$.0f", $model->default_bid);?>" />
+                        <input type="text" id="adgroup_default_bid" name="adgroup[default_bid]" size="11" maxlength="10" style="text-align: right;" onkeyup="CheckInputFloat(this);" value="<?php echo sprintf("%1\$.2f", $model->default_bid);?>" />
                         <span class="adCampaignBudgetCurrency">$</span>
                     </div>
                 </div>

@@ -2693,11 +2693,11 @@ class eBayTradingAPI
                 {
                     foreach($response->ActiveList->ItemArray->Item as $item)
                     {
-                        eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
-
-                        //eBayTradingAPI::GetItem($listing);
-                        $updateLists[] = (string)$item->ItemID;
-                        echo (string)$item->ItemID." updated!\n";
+                        if(isset($item->ItemID) && $item->ItemID)
+                        {
+                            $updateLists[] = (string)$item->ItemID;
+                            echo (string)$item->ItemID . " added to queue!\n";
+                        }
                     }
                 }
 
@@ -2724,11 +2724,11 @@ class eBayTradingAPI
                         {
                             foreach($response->ActiveList->ItemArray->Item as $item)
                             {
-                                eBayTradingAPI::processeBayListingV2($store, $item, $eBayEntityType);
-
-                                //eBayTradingAPI::GetItem($listing);
-                                $updateLists[] = (string)$item->ItemID;
-                                echo (string)$item->ItemID." updated!\n";
+                                if(isset($item->ItemID) && $item->ItemID)
+                                {
+                                    $updateLists[] = (string)$item->ItemID;
+                                    echo (string)$item->ItemID . " added to queue!\n";
+                                }
                             }
                         }
                     }
@@ -2740,12 +2740,12 @@ class eBayTradingAPI
                 }
                 echo "\nupdate ebay selling finished.\n";
 
-                echo "\nstart to update offline product\n";
-                $offlineLists = array_diff($activeLists, $updateLists);
-                foreach($offlineLists as $item)
+                echo "\nstart to update queue products\n";
+                $updateLists = array_merge($activeLists, $updateLists);
+                foreach($updateLists as $item)
                 {
                     $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$item, ":store_id"=>$store->id));
-                    //if(!empty($list)) eBayTradingAPI::GetItem($list);
+                    if(!empty($list)) eBayTradingAPI::GetItem($list);
                     echo (string)$item." updated!\n";
                 }
             }

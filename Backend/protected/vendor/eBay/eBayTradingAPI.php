@@ -2671,7 +2671,7 @@ class eBayTradingAPI
         $eBayService->createHTTPHead($store->ebay_site_code, 893, $store->eBayApiKey->dev_id, $store->eBayApiKey->app_id, $store->eBayApiKey->cert_id, "GetMyeBaySelling");
         echo "start to get ebay selling for store id: ".$store->id.", site id: ".$store->ebay_site_code."\n";
 
-        $maxTry = 10;
+        $maxTry = 15;
         try
         {
             $response = $eBayService->request();

@@ -269,3 +269,17 @@ CREATE TABLE `lt_google_adwords_report_url` (
   `year` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*end 2015-06-24*/
+
+/*start 2015-07-09*/
+DROP TABLE IF EXISTS `lt_google_analytics_report_audience_overview`;
+CREATE TABLE `lt_google_analytics_report_audience_overview` (
+  `date` date NOT NULL,
+  `sessions` int(11) DEFAULT NULL,
+  `users` int(11) DEFAULT NULL,
+  `pageviews` int(11) DEFAULT NULL,
+  `pageviews_per_session` decimal(20,4) DEFAULT NULL,
+  `avg_session_duration` decimal(20,4) DEFAULT NULL,
+  `bounce_rate` decimal(20,4) DEFAULT NULL,
+  `percent_new_sessions` decimal(20,4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-07-09*/

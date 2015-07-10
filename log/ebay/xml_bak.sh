@@ -1,4 +1,3 @@
-#!/bin/sh
 tar -czf /home/html/it/log/ebay/ebay_xml_`date \-d "1 day ago" +\%Y_\%m_\%d`.01.tar.gz /home/html/it/log/ebay/xml/*.`date \-d "1 day ago" +\%Y\%m\%d`.01*;
 tar -czf /home/html/it/log/ebay/ebay_xml_`date \-d "1 day ago" +\%Y_\%m_\%d`.02.tar.gz /home/html/it/log/ebay/xml/*.`date \-d "1 day ago" +\%Y\%m\%d`.02*;
 tar -czf /home/html/it/log/ebay/ebay_xml_`date \-d "1 day ago" +\%Y_\%m_\%d`.03.tar.gz /home/html/it/log/ebay/xml/*.`date \-d "1 day ago" +\%Y\%m\%d`.03*;

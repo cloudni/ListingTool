@@ -2745,7 +2745,14 @@ class eBayTradingAPI
                 foreach($updateLists as $item)
                 {
                     $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$item, ":store_id"=>$store->id));
-                    if(!empty($list)) eBayTradingAPI::GetItem($list);
+                    if(empty($list))
+                    {
+                        $list = new eBayListing();
+                        $list->store_id = $storeId;
+                        $list->ebay_listing_id = (string)$item;
+                        $list->company_id = $store->company_id;
+                    }
+                    eBayTradingAPI::GetItem($list);
                     echo (string)$item." updated!\n";
                 }
             }

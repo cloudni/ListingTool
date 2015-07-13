@@ -2861,7 +2861,7 @@ class eBayTradingAPI
                         }
                     }
                     $activeLists = array_diff($activeLists, $updateLists);
-                    $getItemWork = new GetItemWork("Thread for page 1", $store->id, $updateLists);
+                    $getItemWork = new GetItemWork("Thread for page 1", $store->id, $store->company_id, $updateLists);
                     $pool[] = $getItemWork;
                     $getItemWork->start();
                 }
@@ -2898,7 +2898,7 @@ class eBayTradingAPI
                             }
                             $activeLists = array_diff($activeLists, $updateLists);
                             $name = "getItemWork_".$param['ActiveList']['Pagination']['PageNumber'];
-                            $$name = new GetItemWork("Thread for page {$param['ActiveList']['Pagination']['PageNumber']}", $store->id, $updateLists);
+                            $$name = new GetItemWork("Thread for page {$param['ActiveList']['Pagination']['PageNumber']}", $store->id, $store->company_id, $updateLists);
                             $pool[] = $$name;
                             $$name->start();
                         }
@@ -2911,7 +2911,7 @@ class eBayTradingAPI
                 }
 
                 echo "\nstart to update off line products\n";
-                $getofflineItemWork = new GetItemWork("Thread for off line listing", $store->id, $activeLists);
+                $getofflineItemWork = new GetItemWork("Thread for off line listing", $store->id, $store->company_id, $activeLists);
                 $pool[] = $getofflineItemWork;
                 $getofflineItemWork->start();
             }
@@ -2932,13 +2932,12 @@ class eBayTradingAPI
             $allDone = true;
             foreach ($pool as $key => $thread) {
                 if($thread->running) {
-                    echo "waiting all thread finish\n";
+                    echo "waiting thread: {$thread->name} finish\n";
                     $allDone = false;
-                    break;
                 }
             }
             if($allDone) break;
-            sleep(600);
+            sleep(300);
         }
 
         echo "finish to get ebay selling for store id: ".$store->id."\n";
@@ -2949,13 +2948,15 @@ class eBayTradingAPI
 class GetItemWork extends Thread {
     public $name = '';
     public $store_id = 0;
+    public $company_id = 0;
     public $param = array();
     public $running = false;
 
-    public function __construct($name, $store_id, $param) {
+    public function __construct($name, $store_id, $company_id, $param) {
         $this->param  = $param;
         $this->name   = $name;
         $this->store_id = $store_id;
+        $this->company_id = $company_id;
         $this->running = true;
     }
 
@@ -2967,12 +2968,15 @@ class GetItemWork extends Thread {
             $this->running = false;
             return false;
         }
-        $store = Store::model()->findByPk($this->store_id);
-        if(empty($store)) {
-            echo "Thread {$this->name} store not found. Thread ended.\n";
+        echo("store id: ".$this->store_id."\n");
+
+        if(!$this->company_id) {
+            echo "Thread {$this->name} company id is invalid. Thread ended.\n";
             $this->running = false;
             return false;
         }
+        echo("company id: ".$this->company_id."\n");
+
         echo "Thread {$this->name} has ".count($this->param)." items in list.\n";
         foreach($this->param as $param)
         {
@@ -2983,10 +2987,10 @@ class GetItemWork extends Thread {
                 $list = new eBayListing();
                 $list->store_id = $this->store_id;
                 $list->ebay_listing_id = (string)$param;
-                $list->company_id = $store->company_id;
+                $list->company_id = $this->company_id;
             }
             eBayTradingAPI::GetItem($list);
-            echo (string)$param." updated!\n";
+            echo "listing ".(string)$param." updated!\n";
             sleep(2);
         }
         echo "Thread {$this->name} finished, total: ".count($this->param)." items processed.\n";

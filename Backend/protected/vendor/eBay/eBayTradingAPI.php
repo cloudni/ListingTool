@@ -2946,7 +2946,7 @@ class eBayTradingAPI
 
     public static function GetItemThread($store_id, $company_id, $listing_id)
     {
-        $yiic='/usrlocal/yii/framework/yiic.php';
+        $yiic='/usr/local/yii/framework/yiic.php';
         $config='/usr/local/apache2/htdocs/html/it/Backend/protected/config/console.php';
         require_once($yiic);
 

@@ -2770,4 +2770,221 @@ class eBayTradingAPI
 
         return true;
     }
-} 
+
+    public static function GetMyeBaySellingV3Thread(
+        $storeId=null,
+        $param=array(
+            'ActiveList'=>array(
+                'Include'=>true,
+                'IncludeNotes'=>false,
+                'Pagination'=>array('EntriesPerPage'=>200, 'PageNumber'=>1),
+            ),
+            /*'BidList'=>array(
+                'Include'=>true,
+                'Pagination'=>array('EntriesPerPage'=>200, 'PageNumber'=>1),
+            ),*/
+            'SellingSummary'=>array('Include'=>true),
+        )
+    )
+    {
+        if(!isset($storeId) || $storeId < 1)
+        {
+            return false;
+        }
+
+        $store = Store::model()->findByPk($storeId);
+        if(empty($store) || $store->is_active != Store::ACTIVE_YES || empty($store->ebay_token))
+        {
+            echo "store does not found or disactive!\n";
+            return false;
+        }
+
+        $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
+        if(empty($eBayEntityType)) { echo "invalid ebay entity!\n"; return false;}
+        $eBayAttributeSet = eBayAttributeSet::model()->find(
+            'entity_type_id=:entity_type_id and is_active=:is_active',
+            array(
+                ':entity_type_id'=>$eBayEntityType->id,
+                ':is_active'=>true,
+            )
+        );
+        if(empty($eBayAttributeSet)) { echo "invalid ebay attribute set.\n"; return false;}
+
+        $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
+        $select = "select t.ebay_listing_id
+                    from lt_ebay_listing t
+                    left join lt_ebay_entity_varchar eev on eev.ebay_entity_id = t.id and eev.ebay_entity_attribute_id = :ebay_entity_attribute_id
+                    left join lt_store s on s.id = t.store_id
+                    where eev.value = :listingStatus and s.id = :store_id; ";
+        $command = Yii::app()->db->createCommand($select);
+        $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
+        $command->bindValue(":listingStatus", eBayListingStatusCodeType::Active, PDO::PARAM_STR);
+        $command->bindValue(":store_id", $store->id, PDO::PARAM_INT);
+        $result = $command->queryAll();
+        $activeLists = array();
+        if(!empty($result)) foreach($result as $val) $activeLists[] = (string)$val['ebay_listing_id'];
+
+        $updateLists = array();
+        $eBayService = new eBayService();
+        $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").self::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
+        $eBayService->api_url = $store->eBayApiKey->api_url;
+        $eBayService->createHTTPHead($store->ebay_site_code, 893, $store->eBayApiKey->dev_id, $store->eBayApiKey->app_id, $store->eBayApiKey->cert_id, "GetMyeBaySelling");
+        echo "start to get ebay selling for store id: ".$store->id.", site id: ".$store->ebay_site_code."\n";
+
+        $maxTry = 15;
+        $pool = array();
+        try
+        {
+            $response = $eBayService->request();
+
+            $try = 0;
+            while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
+            {
+                var_dump($response);
+                $try++;
+                echo "eBay service call failed! try $try time.\n";
+                $response = $eBayService->request();
+                if($try >= $maxTry) return false;
+            }
+
+            if((string)$response->Ack===eBayAckCodeType::Success)
+            {
+                //process ebay active items
+                if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))
+                {
+                    foreach($response->ActiveList->ItemArray->Item as $item)
+                    {
+                        if(isset($item->ItemID) && $item->ItemID)
+                        {
+                            $updateLists[] = (string)$item->ItemID;
+                            echo (string)$item->ItemID . " added to queue for thread page 1.!\n";
+                        }
+                    }
+                    $activeLists = array_diff($activeLists, $updateLists);
+                    $getItemWork = new GetItemWork("Thread for page 1", $store->id, $updateLists);
+                    $pool[] = $getItemWork;
+                    $getItemWork->start();
+                }
+
+                while(isset($response->ActiveList) && (int)$response->ActiveList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
+                {
+                    $updateLists = array();
+                    $param['ActiveList']['Pagination']['PageNumber']++;
+                    echo "\nprocess page: ".$param['ActiveList']['Pagination']['PageNumber'].".\n";
+                    $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").eBayTradingAPI::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
+                    $response = $eBayService->request();
+                    $try = 0;
+                    while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
+                    {
+                        var_dump($response);
+                        $try++;
+                        echo "eBay service call failed! try $try time on page {$param['ActiveList']['Pagination']['PageNumber']}.\n";
+                        $response = $eBayService->request();
+                        if($try >= $maxTry) break;
+                    }
+                    if($try >= $maxTry) break;
+
+                    if((string)$response->Ack===eBayAckCodeType::Success)
+                    {
+                        if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))
+                        {
+                            foreach($response->ActiveList->ItemArray->Item as $item)
+                            {
+                                if(isset($item->ItemID) && $item->ItemID)
+                                {
+                                    $updateLists[] = (string)$item->ItemID;
+                                    echo (string)$item->ItemID . " added to queue for thread page {$param['ActiveList']['Pagination']['PageNumber']}!\n";
+                                }
+                            }
+                            $activeLists = array_diff($activeLists, $updateLists);
+                            $name = "getItemWork_".$param['ActiveList']['Pagination']['PageNumber'];
+                            $$name = new GetItemWork("Thread for page {$param['ActiveList']['Pagination']['PageNumber']}", $store->id, $updateLists);
+                            $pool[] = $$name;
+                            $$name->start();
+                        }
+                    }
+                    else
+                    {
+                        var_dump($response);
+                        break;
+                    }
+                }
+
+                echo "\nstart to update off line products\n";
+                $getofflineItemWork = new GetItemWork("Thread for off line listing", $store->id, $activeLists);
+                $pool[] = $getofflineItemWork;
+                $getofflineItemWork->start();
+            }
+            else
+            {
+                var_dump($response);
+                return false;
+            }
+        }
+        catch(Exception $ex)
+        {
+            echo "Exception detected, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
+            return false;
+        }
+
+        while(true)
+        {
+            $allDone = true;
+            foreach ($pool as $key => $thread) {
+                if($thread->running) {
+                    echo "waiting all thread finish\n";
+                    $allDone = false;
+                    break;
+                }
+            }
+            if($allDone) break;
+            sleep(600);
+        }
+
+        echo "finish to get ebay selling for store id: ".$store->id."\n";
+        return true;
+    }
+}
+
+class GetItemWork extends Thread {
+    public $name = '';
+    public $store_id = 0;
+    public $param = array();
+    public $running = false;
+
+    public function __construct($name, $store_id, $param) {
+        $this->param  = $param;
+        $this->name   = $name;
+        $this->running = true;
+    }
+
+    public function run()
+    {
+        echo "Thread {$this->name} start, : ".count($this->param)." items in queue.\n";
+        if(!$this->store_id) {
+            $this->running = false;
+            return false;
+        }
+        $store = Store::model()->findByPk($this->store_id);
+        if(empty($store)) {
+            $this->running = false;
+            return false;
+        }
+        foreach($this->param as $param)
+        {
+            $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$param, ":store_id"=>$this->store_id));
+            if(empty($list))
+            {
+                $list = new eBayListing();
+                $list->store_id = $this->store_id;
+                $list->ebay_listing_id = (string)$param;
+                $list->company_id = $store->company_id;
+            }
+            eBayTradingAPI::GetItem($list);
+            echo (string)$param." updated!\n";
+            sleep(2);
+        }
+        echo "Thread {$this->name} finished, total: ".count($this->param)." items processed.\n";
+        $this->running = false;
+    }
+}

@@ -2943,6 +2943,20 @@ class eBayTradingAPI
         echo "finish to get ebay selling for store id: ".$store->id."\n";
         return true;
     }
+
+    public static function GetItemThread($store_id, $company_id, $listing_id)
+    {
+        $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$listing_id, ":store_id"=>$store_id));
+        if(empty($list))
+        {
+            echo "not found listing for $listing_id, create new one.\n";
+            $list = new eBayListing();
+            $list->store_id = $store_id;
+            $list->ebay_listing_id = (string)$listing_id;
+            $list->company_id = $company_id;
+        }
+        return eBayTradingAPI::GetItem($list);
+    }
 }
 
 class GetItemWork extends Thread {
@@ -2980,16 +2994,7 @@ class GetItemWork extends Thread {
         echo "Thread {$this->name} has ".count($this->param)." items in list.\n";
         foreach($this->param as $param)
         {
-            $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$param, ":store_id"=>$this->store_id));
-            if(empty($list))
-            {
-                echo "not found listing for $param, create new one.\n";
-                $list = new eBayListing();
-                $list->store_id = $this->store_id;
-                $list->ebay_listing_id = (string)$param;
-                $list->company_id = $this->company_id;
-            }
-            eBayTradingAPI::GetItem($list);
+            echo eBayTradingAPI::GetItemThread($this->store_id, $this->company_id, $param)."\n";
             echo "listing ".(string)$param." updated!\n";
             sleep(2);
         }

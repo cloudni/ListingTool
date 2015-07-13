@@ -2946,6 +2946,7 @@ class eBayTradingAPI
 
     public static function GetItemThread($store_id, $company_id, $listing_id)
     {
+        require_once("eBayListing.php");
         $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$listing_id, ":store_id"=>$store_id));
         if(empty($list))
         {

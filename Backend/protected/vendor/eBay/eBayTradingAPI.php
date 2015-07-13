@@ -2955,6 +2955,7 @@ class GetItemWork extends Thread {
     public function __construct($name, $store_id, $param) {
         $this->param  = $param;
         $this->name   = $name;
+        $this->store_id = $store_id;
         $this->running = true;
     }
 
@@ -2962,19 +2963,23 @@ class GetItemWork extends Thread {
     {
         echo "Thread {$this->name} start, : ".count($this->param)." items in queue.\n";
         if(!$this->store_id) {
+            echo "Thread {$this->name} store id is invalid. Thread ended.\n";
             $this->running = false;
             return false;
         }
         $store = Store::model()->findByPk($this->store_id);
         if(empty($store)) {
+            echo "Thread {$this->name} store not found. Thread ended.\n";
             $this->running = false;
             return false;
         }
+        echo "Thread {$this->name} has ".count($this->param)." items in list.\n";
         foreach($this->param as $param)
         {
             $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$param, ":store_id"=>$this->store_id));
             if(empty($list))
             {
+                echo "not found listing for $param, create new one.\n";
                 $list = new eBayListing();
                 $list->store_id = $this->store_id;
                 $list->ebay_listing_id = (string)$param;

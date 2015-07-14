@@ -2983,8 +2983,8 @@ class GetItemWork extends Thread {
             echo "start process listing $param.\n";
             try
             {
-                $result = $client->eBayGetItem($param, $this->store_id, $this->company_id);
                 $this->processed++;
+                $result = $client->eBayGetItem($param, $this->store_id, $this->company_id);
                 if($result['status'] == 'success')
                 {
                     echo "Thread {$this->name} listing " . (string)$param . " updated successful!\n";

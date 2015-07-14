@@ -1518,6 +1518,8 @@ class eBayTradingAPI
             echo "Exception detected, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
             return false;
         }
+
+        return true;
     }
 
     protected static function GetItemXML($params=array())
@@ -2943,25 +2945,6 @@ class eBayTradingAPI
         echo "finish to get ebay selling for store id: ".$store->id."\n";
         return true;
     }
-
-    public static function GetItemThread($store_id, $company_id, $listing_id)
-    {
-        $yiic='/usr/local/yii/framework/yiic.php';
-        $config='/usr/local/apache2/htdocs/html/it/Backend/protected/config/console.php';
-        require_once($yiic);
-        require_once('/usr/local/apache2/htdocs/html/it/Backend/protected/models/eBayListing.php');
-
-        $list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id", array(":ebay_listing_id"=>$listing_id, ":store_id"=>$store_id));
-        if(empty($list))
-        {
-            echo "not found listing for $listing_id, create new one.\n";
-            $list = new eBayListing();
-            $list->store_id = $store_id;
-            $list->ebay_listing_id = (string)$listing_id;
-            $list->company_id = $company_id;
-        }
-        return eBayTradingAPI::GetItem($list);
-    }
 }
 
 class GetItemWork extends Thread {
@@ -2981,29 +2964,19 @@ class GetItemWork extends Thread {
 
     public function run()
     {
-        echo "Thread {$this->name} start, : ".count($this->param)." items in queue.\n";
-        if(!$this->store_id) {
-            echo "Thread {$this->name} store id is invalid. Thread ended.\n";
-            $this->running = false;
-            return false;
-        }
-        echo("store id: ".$this->store_id."\n");
-
-        if(!$this->company_id) {
-            echo "Thread {$this->name} company id is invalid. Thread ended.\n";
-            $this->running = false;
-            return false;
-        }
-        echo("company id: ".$this->company_id."\n");
-
         echo "Thread {$this->name} has ".count($this->param)." items in list.\n";
         foreach($this->param as $param)
         {
-            echo eBayTradingAPI::GetItemThread($this->store_id, $this->company_id, $param)."\n";
-            echo "listing ".(string)$param." updated!\n";
+            $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote');
+            $result = $client->eBayGetItem($param, $this->store_id, $this->company_id);
+            if($result['status'] == 'success')
+                echo "Thread {$this->name} listing ".(string)$param." updated successful!\n";
+            else
+                echo "Thread {$this->name} listing ".(string)$param." updated fail!\n";
             sleep(2);
         }
         echo "Thread {$this->name} finished, total: ".count($this->param)." items processed.\n";
         $this->running = false;
+        return;
     }
 }

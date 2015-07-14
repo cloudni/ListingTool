@@ -2784,7 +2784,7 @@ class eBayTradingAPI
             'ActiveList'=>array(
                 'Include'=>true,
                 'IncludeNotes'=>false,
-                'Pagination'=>array('EntriesPerPage'=>100, 'PageNumber'=>1),
+                'Pagination'=>array('EntriesPerPage'=>50, 'PageNumber'=>1),
             ),
             /*'BidList'=>array(
                 'Include'=>true,

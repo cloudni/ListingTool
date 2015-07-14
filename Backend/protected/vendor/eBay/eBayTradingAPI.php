@@ -2943,6 +2943,9 @@ class eBayTradingAPI
                     echo "waiting thread: {$thread->name} to finish, current processed: {$thread->processed}, succeeded: ".count($thread->succeed).", failed: ".count($thread->failed)."\n";
                     $allDone = false;
                 }
+                else {
+                    echo "Thread {$thread->name} finished, processed: {$thread->processed}, succeeded: ".count($thread->succeed).", failed: ".count($thread->failed)."\n";
+                }
             }
             if($allDone) break;
             sleep(300);

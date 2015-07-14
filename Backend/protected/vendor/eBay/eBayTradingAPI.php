@@ -2977,7 +2977,7 @@ class GetItemWork extends Thread {
     public function run()
     {
         echo "Thread {$this->name} has ".count($this->param)." items in list.\n";
-        $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote');
+        $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote', array("trace" => true, "connection_timeout" => 900));
         foreach($this->param as $param)
         {
             echo "start process listing $param.\n";

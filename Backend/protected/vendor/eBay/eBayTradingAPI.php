@@ -1452,7 +1452,7 @@ class eBayTradingAPI
         $eBayService = new eBayService();
         $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "GetItem").self::GetItemXML($params).$eBayService->getRequestAuthFoot("GetItem");
         $eBayService->api_url = $eBayListing->Store->eBayApiKey->api_url;
-        $eBayService->createHTTPHead(!$eBayListing->isNewRecord ? $eBayListing->site_id : $store->site_id, $eBayListing->Store->eBayApiKey->compatibility_level, $eBayListing->Store->eBayApiKey->dev_id, $eBayListing->Store->eBayApiKey->app_id, $eBayListing->Store->eBayApiKey->cert_id, "GetItem");
+        $eBayService->createHTTPHead(!$eBayListing->isNewRecord ? $eBayListing->site_id : $store->ebay_site_code, $eBayListing->Store->eBayApiKey->compatibility_level, $eBayListing->Store->eBayApiKey->dev_id, $eBayListing->Store->eBayApiKey->app_id, $eBayListing->Store->eBayApiKey->cert_id, "GetItem");
 
         $maxTry = 15;
         try
@@ -2784,7 +2784,7 @@ class eBayTradingAPI
             'ActiveList'=>array(
                 'Include'=>true,
                 'IncludeNotes'=>false,
-                'Pagination'=>array('EntriesPerPage'=>200, 'PageNumber'=>1),
+                'Pagination'=>array('EntriesPerPage'=>100, 'PageNumber'=>1),
             ),
             /*'BidList'=>array(
                 'Include'=>true,

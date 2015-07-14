@@ -9,35 +9,12 @@
 class threadCommand extends CConsoleCommand {
     public function run($args)
     {
-        $pool = array();
-        echo "thread command\n";
-        $seed = array();
-        for($i=1;$i<=20;$i++) $seed[] = $i;
-        $demo = new demo("Page 1", $seed);
+        $demo = new demo("Page 1", 1);
         $demo->start();
-        $pool[] = $demo;
 
-        sleep(10);
-
-        $seed = array();
-        for($i=21;$i<=40;$i++) $seed[] = $i;
-        $name = "demo1";
-        $$name = new demo("Page 2", $seed);
-        $$name->start();
-        $pool[] = $$name;
-
-        echo "check...\n";
         while(true)
         {
-            $allDone = true;
-            foreach ($pool as $key => $thread) {
-                if($thread->running) {
-                    echo "waiting\n";
-                    $allDone = false;
-                    break;
-                }
-            }
-            if($allDone) break;
+            echo "waiting";
             sleep(5);
         }
 
@@ -58,12 +35,14 @@ class demo extends Thread {
 
     public function run()
     {
-        foreach($this->param as $param)
-        {
-            sleep(2);
-            echo "item $param process finished.\n";
-        }
-        $this->running = false;
-        echo "Thread {$this->name} finished, total: ".count($this->param)." items processed.\n";
+        $yiic='/usr/local/yii/framework/yiic.php';
+        $config='/usr/local/apache2/htdocs/html/it/Backend/protected/config/console.php';
+        require_once($yiic);
+        Yii::createWebApplication($config)->run();
+        require_once('/usr/local/apache2/htdocs/html/it/Backend/protected/models/eBayListing.php');
+
+        var_dump(eBayListing::model()->findByPk(100));
+
+        echo "Thread {$this->name} finished.\n";
     }
 }

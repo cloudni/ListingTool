@@ -2999,6 +2999,7 @@ class GetItemWork extends Thread {
             catch(Exception $ex)
             {
                 $this->failed[] = $param;
+                echo "Exception, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
             }
             echo "finish update listing $param.\n";
         }

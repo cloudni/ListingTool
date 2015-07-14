@@ -1454,14 +1454,19 @@ class eBayTradingAPI
         $eBayService->api_url = $eBayListing->Store->eBayApiKey->api_url;
         $eBayService->createHTTPHead(!$eBayListing->isNewRecord ? $eBayListing->site_id : $store->site_id, $eBayListing->Store->eBayApiKey->compatibility_level, $eBayListing->Store->eBayApiKey->dev_id, $eBayListing->Store->eBayApiKey->app_id, $eBayListing->Store->eBayApiKey->cert_id, "GetItem");
 
+        $maxTry = 15;
         try
         {
             $result = $eBayService->request();
 
-            if(empty($result) || !$result)
+            $try = 0;
+            while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
             {
-                echo "eBay service call failed!\n";
-                return false;
+                var_dump($response);
+                $try++;
+                echo "eBay service call GetItem on {$eBayListing->ebay_listing_id} failed! try $try time.\n";
+                $response = $eBayService->request();
+                if($try >= $maxTry) return false;
             }
 
             if((string)$result->Ack===eBayAckCodeType::Success)
@@ -2683,7 +2688,7 @@ class eBayTradingAPI
             {
                 var_dump($response);
                 $try++;
-                echo "eBay service call failed! try $try time.\n";
+                echo "eBay service call GetMyeBaySelling on store $storeId failed! try $try time.\n";
                 $response = $eBayService->request();
                 if($try >= $maxTry) return false;
             }
@@ -2714,7 +2719,7 @@ class eBayTradingAPI
                     {
                         var_dump($response);
                         $try++;
-                        echo "eBay service call failed! try $try time on page {$param['ActiveList']['Pagination']['PageNumber']}.\n";
+                        echo "eBay service call GetMyeBaySelling on store $storeId failed! try $try time on page {$param['ActiveList']['Pagination']['PageNumber']}.\n";
                         $response = $eBayService->request();
                         if($try >= $maxTry) break;
                     }
@@ -2914,6 +2919,7 @@ class eBayTradingAPI
 
                 echo "\nstart to update off line products\n";
                 $getofflineItemWork = new GetItemWork("Thread for off line listing", $store->id, $store->company_id, $activeLists);
+                foreach($activeLists as $item) echo (string)$item . " added to queue for thread off line listing!\n";
                 $pool[] = $getofflineItemWork;
                 $getofflineItemWork->start();
             }
@@ -2934,7 +2940,7 @@ class eBayTradingAPI
             $allDone = true;
             foreach ($pool as $key => $thread) {
                 if($thread->running) {
-                    echo "waiting thread: {$thread->name} finish\n";
+                    echo "waiting thread: {$thread->name} to finish, current processed: {$thread->processed}, succeeded: ".count($thread->succeed).", failed: ".count($thread->failed)."\n";
                     $allDone = false;
                 }
             }
@@ -2942,6 +2948,9 @@ class eBayTradingAPI
             sleep(300);
         }
 
+        echo "Thread {$thread->name} finished, processed: {$thread->processed}, succeeded: ".count($thread->succeed).", failed: ".count($thread->failed)."\n";
+        foreach($thread->succeed as $item) echo "Thread {$thread->name} succeeded: $item\n";
+        foreach($thread->failed as $item) echo "Thread {$thread->name} failed: $item\n";
         echo "finish to get ebay selling for store id: ".$store->id."\n";
         return true;
     }
@@ -2953,6 +2962,9 @@ class GetItemWork extends Thread {
     public $company_id = 0;
     public $param = array();
     public $running = false;
+    public $succeed = array();
+    public $failed = array();
+    public $processed = 0;
 
     public function __construct($name, $store_id, $company_id, $param) {
         $this->param  = $param;
@@ -2967,13 +2979,20 @@ class GetItemWork extends Thread {
         echo "Thread {$this->name} has ".count($this->param)." items in list.\n";
         foreach($this->param as $param)
         {
+            echo "start process listing $param.\n";
             $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote');
             $result = $client->eBayGetItem($param, $this->store_id, $this->company_id);
+            $this->processed++;
             if($result['status'] == 'success')
+            {
                 echo "Thread {$this->name} listing ".(string)$param." updated successful!\n";
+                $this->succeed[] = $param;
+            }
             else
+            {
                 echo "Thread {$this->name} listing ".(string)$param." updated fail!\n";
-            sleep(2);
+                $this->failed[] = $param;
+            }
         }
         echo "Thread {$this->name} finished, total: ".count($this->param)." items processed.\n";
         $this->running = false;

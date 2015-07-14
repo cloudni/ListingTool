@@ -2977,22 +2977,30 @@ class GetItemWork extends Thread {
     public function run()
     {
         echo "Thread {$this->name} has ".count($this->param)." items in list.\n";
+        $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote');
         foreach($this->param as $param)
         {
             echo "start process listing $param.\n";
-            $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote');
-            $result = $client->eBayGetItem($param, $this->store_id, $this->company_id);
-            $this->processed++;
-            if($result['status'] == 'success')
+            try
             {
-                echo "Thread {$this->name} listing ".(string)$param." updated successful!\n";
-                $this->succeed[] = $param;
+                $result = $client->eBayGetItem($param, $this->store_id, $this->company_id);
+                $this->processed++;
+                if($result['status'] == 'success')
+                {
+                    echo "Thread {$this->name} listing " . (string)$param . " updated successful!\n";
+                    $this->succeed[] = $param;
+                }
+                else
+                {
+                    echo "Thread {$this->name} listing " . (string)$param . " updated fail!\n";
+                    $this->failed[] = $param;
+                }
             }
-            else
+            catch(Exception $ex)
             {
-                echo "Thread {$this->name} listing ".(string)$param." updated fail!\n";
                 $this->failed[] = $param;
             }
+            echo "finish update listing $param.\n";
         }
         echo "Thread {$this->name} finished, total: ".count($this->param)." items processed.\n";
         $this->running = false;

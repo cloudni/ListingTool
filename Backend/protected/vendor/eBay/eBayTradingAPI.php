@@ -2980,13 +2980,14 @@ class GetItemWork extends Thread {
     public function run()
     {
         echo "Thread {$this->name} has ".count($this->param)." items in list.\n";
-        $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote', array("trace" => true, "connection_timeout" => 900));
+
         foreach($this->param as $param)
         {
-            echo "start process listing $param.\n";
             try
             {
                 $this->processed++;
+                echo "start process listing $param, store id: {$this->store_id}, company id: {$this->company_id}.\n";
+                $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote', array("trace" => true, "connection_timeout" => 900));
                 $result = $client->eBayGetItem($param, $this->store_id, $this->company_id);
                 if($result['status'] == 'success')
                 {

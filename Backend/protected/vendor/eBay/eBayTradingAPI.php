@@ -1435,10 +1435,16 @@ class eBayTradingAPI
         $params=array('ItemID'=>$eBayListing->ebay_listing_id, 'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll);
 
         $store = Store::model()->findByPk($eBayListing->store_id);
-        if(empty($store)) return false;
+        if(empty($store)) {
+            echo "store id: {$eBayListing->store_id} is invalid, or store not find.\n";
+            return false;
+        }
 
         $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
-        if(empty($eBayEntityType)) return false;
+        if(empty($eBayEntityType)) {
+            echo "eBay entity type not found.\n";
+            return false;
+        }
 
         $eBayAttributeSet = eBayAttributeSet::model()->find(
             'entity_type_id=:entity_type_id and is_active=:is_active',
@@ -1447,7 +1453,11 @@ class eBayTradingAPI
                 ':is_active'=>eBayAttributeSet::ACTIVE_YES,
             )
         );
-        if(empty($eBayAttributeSet)) return false;
+        if(empty($eBayAttributeSet))
+        {
+            echo "eBay attribute set is not found.\n";
+            return false;
+        }
 
         $eBayService = new eBayService();
         $eBayService->post_data = $eBayService->getRequestAuthHead($eBayListing->Store->ebay_token, "GetItem").self::GetItemXML($params).$eBayService->getRequestAuthFoot("GetItem");
@@ -1466,7 +1476,10 @@ class eBayTradingAPI
                 $try++;
                 echo "eBay service call GetItem on {$eBayListing->ebay_listing_id} failed! try $try time.\n";
                 $response = $eBayService->request();
-                if($try >= $maxTry) return false;
+                if($try >= $maxTry) {
+                    echo "max try exceeded for item {$eBayListing->ebay_listing_id}.\n";
+                    return false;
+                }
             }
 
             if((string)$response->Ack===eBayAckCodeType::Success)
@@ -3008,6 +3021,35 @@ class GetItemWork extends Thread {
                 echo "Exception, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
             }
             echo "finish update listing $param.\n";
+        }
+
+        while(count($this->failed)>0)
+        {
+            echo "Thread {$this->name} has failed listings.\n";
+            foreach($this->failed as $key => $value)
+            {
+                try
+                {
+                    echo "re-process listing $value, store id: {$this->store_id}, company id: {$this->company_id}.\n";
+                    $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote', array("trace" => true, "connection_timeout" => 900));
+                    $result = $client->eBayGetItem($value, $this->store_id, $this->company_id);
+                    if($result['status'] == 'success')
+                    {
+                        unset($this->failed[$key]);
+                        echo "Thread {$this->name} listing " . (string)$value . " updated successful!\n";
+                        $this->succeed[] = $value;
+                    }
+                    else
+                    {
+                        echo "Thread {$this->name} listing " . (string)$value . " updated fail!\n";
+                    }
+                }
+                catch(Exception $ex)
+                {
+                    echo "Exception, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
+                }
+                echo "finish update listing $value.\n";
+            }
         }
         echo "Thread {$this->name} finished, total: ".count($this->param)." items processed.\n";
         $this->running = false;

@@ -2996,6 +2996,8 @@ class GetItemWork extends Thread {
 
     public function run()
     {
+        $local_succeed = array();
+        $local_failed = array();
         echo "Thread {$this->name} has ".count($this->param)." items in list.\n";
 
         foreach($this->param as $param)
@@ -3009,26 +3011,29 @@ class GetItemWork extends Thread {
                 if($result['status'] == 'success')
                 {
                     echo "Thread {$this->name} listing " . (string)$param . " updated successful!\n";
-                    $this->succeed[] = $param;
+                    $local_succeed[] = $param;
                 }
                 else
                 {
                     echo "Thread {$this->name} listing " . (string)$param . " updated fail!\n";
-                    $this->failed[] = $param;
+                    $local_failed[] = $param;
+                    $this->failed = $local_failed;
+                    $this->succeed = $local_succeed;
                 }
             }
             catch(Exception $ex)
             {
-                $this->failed[] = $param;
+                $local_failed[] = $param;
+                $this->failed = $local_failed;
                 echo "Exception, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
             }
             echo "finish update listing $param.\n";
         }
 
-        while(count($this->failed)>0)
+        while(count($local_failed)>0)
         {
             echo "Thread {$this->name} has failed listings.\n";
-            foreach($this->failed as $key => $value)
+            foreach($local_failed as $key => $value)
             {
                 try
                 {
@@ -3037,8 +3042,10 @@ class GetItemWork extends Thread {
                     $result = $client->eBayGetItem($value, $this->store_id, $this->company_id);
                     if($result['status'] == 'success')
                     {
-                        $this->succeed[] = $value;
-                        unset($this->failed[$key]);
+                        $local_succeed[] = $value;
+                        $this->succeed = $local_succeed;
+                        unset($local_failed[$key]);
+                        $this->failed = $local_failed;
                         echo "Thread {$this->name} listing " . (string)$value . " updated successful!\n";
                     }
                     else

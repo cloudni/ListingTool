@@ -1457,7 +1457,7 @@ class eBayTradingAPI
         $maxTry = 15;
         try
         {
-            $result = $eBayService->request();
+            $response = $eBayService->request();
 
             $try = 0;
             while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
@@ -1469,17 +1469,19 @@ class eBayTradingAPI
                 if($try >= $maxTry) return false;
             }
 
-            if((string)$result->Ack===eBayAckCodeType::Success)
+            if((string)$response->Ack===eBayAckCodeType::Success)
             {
                 $transaction = null;
                 try
                 {
-                    $item = $result->Item;
+                    $item = $response->Item;
 
                     $transaction= Yii::app()->db->beginTransaction();
                     $eBayListing->site_id = eBaySiteName::geteBaySiteNameCode((string)$item->Site);
                     if($eBayListing->isNewRecord)
                     {
+                        $eBayListing->ebay_entity_type_id = $eBayEntityType->id;
+                        $eBayListing->ebay_attribute_set_id = $eBayAttributeSet->id;
                         $eBayListing->create_time_utc = time();
                         $eBayListing->update_time_utc = time();
                         $eBayListing->create_user_id = 0;
@@ -1514,7 +1516,7 @@ class eBayTradingAPI
             }
             else
             {
-                var_dump($result);
+                var_dump($response);
                 return false;
             }
         }

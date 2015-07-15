@@ -3035,9 +3035,9 @@ class GetItemWork extends Thread {
                     $result = $client->eBayGetItem($value, $this->store_id, $this->company_id);
                     if($result['status'] == 'success')
                     {
+                        $this->succeed[] = $value;
                         unset($this->failed[$key]);
                         echo "Thread {$this->name} listing " . (string)$value . " updated successful!\n";
-                        $this->succeed[] = $value;
                     }
                     else
                     {

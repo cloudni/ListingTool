@@ -160,7 +160,6 @@ class eBayTradingAPI
                     $try = 1;
                     while(empty($result) || !$result || (string)$result->Ack!==eBayAckCodeType::Success)
                     {
-                        var_dump($result);
                         $try++; if($try > Yii::app()->params['ebay']['maxRetry']) return false;
                         echo "eBay service call failed! try $try time.\n";
                         $result = $eBayService->request();
@@ -1472,7 +1471,6 @@ class eBayTradingAPI
             $try = 0;
             while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
             {
-                var_dump($response);
                 $try++;
                 echo "eBay service call GetItem on {$eBayListing->ebay_listing_id} failed! try $try time.\n";
                 $response = $eBayService->request();
@@ -1565,13 +1563,23 @@ class eBayTradingAPI
         $eBayService->api_url = $eBayAPIKeyId->api_url;
         $eBayService->createHTTPHead(eBaySiteIdCodeType::US, 893, $eBayAPIKeyId->dev_id, $eBayAPIKeyId->app_id, $eBayAPIKeyId->cert_id, "GetSessionID");
 
+        $maxTry = 15;
         try
         {
-            $result = $eBayService->request();
-            if(empty($result)) return false;
-            if((string)$result->Ack===eBayAckCodeType::Success)
+            $response = $eBayService->request();
+            $try = 0;
+            while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
             {
-                return (string)$result->SessionID;
+                $try++;
+                $response = $eBayService->request();
+                if($try >= $maxTry) {
+                    return false;
+                }
+            }
+
+            if((string)$response->Ack===eBayAckCodeType::Success)
+            {
+                return (string)$response->SessionID;
             }
             else
             {
@@ -1604,13 +1612,23 @@ class eBayTradingAPI
         $eBayService->api_url = $store->eBayApiKey->api_url;
         $eBayService->createHTTPHead(eBaySiteIdCodeType::US, 899, $store->eBayApiKey->dev_id, $store->eBayApiKey->app_id, $store->eBayApiKey->cert_id, "FetchToken");
 
+        $maxTry = 15;
         try
         {
-            $result = $eBayService->request();
-            if(empty($result)) return false;
-            if((string)$result->Ack===eBayAckCodeType::Success)
+            $response = $eBayService->request();
+            $try = 0;
+            while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
             {
-                return array('eBayAuthToken'=>(string)$result->eBayAuthToken, 'HardExpirationTime'=>(string)$result->HardExpirationTime);
+                $try++;
+                $response = $eBayService->request();
+                if($try >= $maxTry) {
+                    return false;
+                }
+            }
+
+            if((string)$response->Ack===eBayAckCodeType::Success)
+            {
+                return array('eBayAuthToken'=>(string)$response->eBayAuthToken, 'HardExpirationTime'=>(string)$response->HardExpirationTime);
             }
             else
             {

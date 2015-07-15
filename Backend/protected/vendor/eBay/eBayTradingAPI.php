@@ -3012,13 +3012,13 @@ class GetItemWork extends Thread {
                 {
                     echo "Thread {$this->name} listing " . (string)$param . " updated successful!\n";
                     $local_succeed[] = $param;
+                    $this->succeed = $local_succeed;
                 }
                 else
                 {
                     echo "Thread {$this->name} listing " . (string)$param . " updated fail!\n";
                     $local_failed[] = $param;
                     $this->failed = $local_failed;
-                    $this->succeed = $local_succeed;
                 }
             }
             catch(Exception $ex)

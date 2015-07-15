@@ -2990,6 +2990,8 @@ class GetItemWork extends Thread {
         $this->store_id = $store_id;
         $this->company_id = $company_id;
         $this->running = true;
+        $this->failed = array();
+        $this->succeed = array();
     }
 
     public function run()

@@ -66,25 +66,25 @@ $config = array(
 		'log'=>array(
 			'class'=>'CLogRouter',
 			'routes'=>array(
-                    /*array(
-                        'class'=>'CFileLogRoute',
-                        'levels'=>'error, warning',
-                    ),*/
-                    /*array(
-                        'class'=>'CProfileLogRoute',
-                        'levels'=>'error, warning',
-                    ),*/
-                    // uncomment the following to show log messages on web pages
-                    /*array(
-					    'class'=>'CWebLogRoute',
-                        'levels'=>'trace, info, error, warning',
-                        'categories' => 'system.db.*',
-				    ),*/
                 array(
+                    'class'=>'CFileLogRoute',
+                    'levels'=>'error, warning',
+                ),
+                array(
+                    'class'=>'CProfileLogRoute',
+                    'levels'=>'error, warning',
+                ),
+                // uncomment the following to show log messages on web pages
+                /*array(
+                    'class'=>'CWebLogRoute',
+                    'levels'=>'trace, info, error, warning',
+                    //'categories' => 'system.db.*',
+                ),*/
+                /*array(
                     'class'=>'CDbLogRoute',
                     'logTableName'=>'lt_applog',
                     'connectionID'=>'db',
-                ),
+                ),*/
 			),
 		),
         'session' => array (

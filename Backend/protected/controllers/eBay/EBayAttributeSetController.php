@@ -261,7 +261,7 @@ class EBayAttributeSetController extends Controller
                         $attribute['parent_id'] = 0;
                     }
 
-                    $insert = "update `lt_ebay_entity_attribute` set
+                    $update = "update `lt_ebay_entity_attribute` set
                                    `entity_type_id`=:entity_type_id,
                                    `attribute_set_id`=:attribute_set_id,
                                    `attribute_group_id`=:attribute_group_id,
@@ -275,7 +275,7 @@ class EBayAttributeSetController extends Controller
                                    `update_time_utc`=:update_time_utc,
                                    `update_admin_id`=:update_admin_id
                                where `id`=:id; ";
-                    $command = Yii::app()->db->createCommand($insert);
+                    $command = Yii::app()->db->createCommand($update);
                     $command->bindValue(":entity_type_id", $model->entity_type_id, PDO::PARAM_INT);
                     $command->bindValue(":attribute_set_id", $model->id, PDO::PARAM_INT);
                     $command->bindValue(":attribute_group_id", $eBayAttributeGroup->id, PDO::PARAM_INT);
@@ -290,6 +290,23 @@ class EBayAttributeSetController extends Controller
                     $command->bindValue(":update_admin_id", Yii::app()->user->id, PDO::PARAM_INT);
                     $command->bindValue(":id", $attribute['id'], PDO::PARAM_INT);
                     $command->execute();
+                }
+            }
+
+            //remove deleted attributes
+            $dbEntityAttributes = $model->eBayEntityAttributes;
+            foreach($dbEntityAttributes as $dbEntityAttribute)
+            {
+                $is_found = false;
+                foreach($attributes as $attribute)
+                {
+                    if($dbEntityAttribute->attribute_id == $attribute["attribute_id"] && ($dbEntityAttribute->parent_id == $attribute["parent_id"] || (!$dbEntityAttribute->parent_id && !$attribute["parent_id"]))) {
+                        $is_found = true;
+                        break;
+                    }
+                }
+                if(!$is_found) {
+                    $dbEntityAttribute->delete();
                 }
             }
 

@@ -34,7 +34,7 @@ require_once("reference.php");
             <?php echo $form->labelEx($model,'name'); ?>
         </div>
         <div class="row left">
-            <?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>256)); ?>
+            <?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>100)); ?>
             <?php echo $form->error($model,'name'); ?>
         </div>
     </div>

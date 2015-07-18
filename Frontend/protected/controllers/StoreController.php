@@ -84,7 +84,7 @@ class StoreController extends Controller
             $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
             $scheduleJob->create_time_utc = time();
             $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
-            $scheduleJob->crontab = "1 */12 * * *";
+            $scheduleJob->crontab = sprintf("1 %s,%s * * *", ($model->id % 10), ($model->id % 10 + 12));//"1 */12 * * *";
             $scheduleJob->next_execute_time_utc = 0;
             $scheduleJob->type = ScheduleJob::TYPE_REPEAT;
             $scheduleJob->save(false);
@@ -207,30 +207,6 @@ class StoreController extends Controller
 			$model->attributes=$_POST['Store'];
             $model->company_id = Yii::app()->session['user']->company_id;
             $model->is_active = Store::ACTIVE_NO;
-            if($model->platform == Store::PLATFORM_EBAY)
-            {
-                /*$sql = "select ebay_api_key_id from (SELECT ebay_api_key_id, count(ebay_api_key_id) as total FROM {{store}} t
-                        left join {{ebay_api_key}} eap on t.ebay_api_key_id = eap.id
-                        where t.is_active = ".Store::ACTIVE_YES." and t.platform = ".Store::PLATFORM_EBAY." and (ebay_api_key_id <> 3 and ebay_api_key_id <>4) and eap.type = ".eBayApiKey::TYPE_PROD."
-                        group by ebay_api_key_id
-                        order by count(ebay_api_key_id) desc) temp where total < ".Yii::app()->params['ebay']['maxAuthNum']." limit 0, 1";
-                $command = Yii::app()->db->createCommand($sql);
-                $ebay_api_key_id = $command->queryAll();
-                if(isset($ebay_api_key_id[0]))
-                {
-                    $model->ebay_api_key_id = $ebay_api_key_id[0]['ebay_api_key_id'];
-                }
-                else
-                {
-                    //todo
-                }*/
-                //$model->ebay_api_key_id = Yii::app()->params['ebay']['defaultAPIId'];
-                //$model->ebay_token = "";
-            }
-            else if($model->platform == Store::PLATFORM_WISH)
-            {
-
-            }
 
 			if($model->save())
             {
@@ -263,7 +239,7 @@ class StoreController extends Controller
                                             $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_NO_OCCURRED;
                                             $scheduleJob->create_time_utc = time();
                                             $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
-                                            $scheduleJob->crontab = "1 */12 * * *";
+                                            $scheduleJob->crontab = sprintf("1 %s,%s * * *", ($model->id % 10), ($model->id % 10 + 12));//"1 */12 * * *";
                                             $scheduleJob->next_execute_time_utc = 0;
                                             $scheduleJob->last_execute_time_utc = 0;
                                             $scheduleJob->last_finish_time_utc = 0;
@@ -336,7 +312,7 @@ class StoreController extends Controller
                             $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
                             $scheduleJob->create_time_utc = time();
                             $scheduleJob->is_active = ScheduleJob::ACTIVE_YES;
-                            $scheduleJob->crontab = "1 */12 * * *";
+                            $scheduleJob->crontab = sprintf("1 %s,%s * * *", ($model->id % 10), ($model->id % 10 + 12));//"1 */12 * * *";
                             $scheduleJob->next_execute_time_utc = 0;
                             $scheduleJob->type = ScheduleJob::TYPE_REPEAT;
                             $scheduleJob->save(false);

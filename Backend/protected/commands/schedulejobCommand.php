@@ -14,8 +14,16 @@ require_once 'Wish/WishAPI.php';
 
 class schedulejobCommand extends CConsoleCommand
 {
+    private $maxThreads = 7 + 2;//7 means existing threads
+
     public function run($args)
     {
+        $count = `ps -aef | grep 'yiic.php instantjob run' | wc -l`;
+        if($count >= $this->maxThreads) {
+            echo "Currently there are ".($this->maxThreads - 2)." threads running, waiting for next time\n";
+            exit();
+        }
+
         $transaction = null;
         try
         {

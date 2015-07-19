@@ -69,7 +69,18 @@ class schedulejobCommand extends CConsoleCommand
             $transaction = null;
             try
             {
-                $transaction= Yii::app()->db->beginTransaction();
+                while(!$transaction)
+                {
+                    try
+                    {
+                        $transaction= Yii::app()->db->beginTransaction();
+                    }
+                    catch(Exception $ex)
+                    {
+                        echo "fail to initial transaction, code: {$ex->getCode()}, message: {$ex->getMessage()}.\n";
+                        sleep(5);
+                    }
+                }
                 $scheduleJob->last_execute_status = !$result ? ScheduleJob::LAST_EXECUTE_STATUS_ERROR : ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
                 $scheduleJob->last_finish_time_utc = time();
                 if($scheduleJob->type == ScheduleJob::TYPE_ONCE)

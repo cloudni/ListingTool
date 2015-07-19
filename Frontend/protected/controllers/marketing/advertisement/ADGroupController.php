@@ -108,8 +108,8 @@ class ADGroupController extends Controller
                     $content .= "UpDate AD Group for Company id: " . Yii::app()->session['user']->company->id . ", name: " . Yii::app()->session['user']->company->name . "<br />";
                     $content .= "Group Name: {$model->name}.<br />";
                     if($oldModel->default_bid != $model->default_bid) $content .= "Group Max default CPC From: " . sprintf("$%1\$.2f", $oldModel->default_bid) . ", To: " . sprintf("$%1\$.2f", $model->default_bid) . "<br />";
-                    if($oldCriteria->keywords != $criteria->keywords) $content .= "Group Display Keywords: " . $oldCriteria->keywords . ", To: " . $criteria->keywords . "<br />";
-                    if($oldCriteria->placements != $criteria->placements) $content .= "Group Placements: " . $oldCriteria->placements . ", To: " . $criteria->placements . "<br />";
+                    if($oldCriteria->keywords != $criteria['keywords']) $content .= "Group Display Keywords: " . $oldCriteria->keywords . ", To: " . $criteria['keywords'] . "<br />";
+                    if($oldCriteria->placements != $criteria['placements']) $content .= "Group Placements: " . $oldCriteria->placements . ", To: " . $criteria['placements'] . "<br />";
                     $aDLog->content = $content;
 
                     $transaction->commit();

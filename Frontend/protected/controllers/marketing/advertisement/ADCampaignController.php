@@ -366,6 +366,8 @@ class ADCampaignController extends Controller
             echo json_encode($result); exit();
         }
 
+        $model = $this->loadModel($ad_campaign_id);
+
         $sql = "";
         if($action == 'include')
         {

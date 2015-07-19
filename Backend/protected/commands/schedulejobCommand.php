@@ -69,7 +69,18 @@ class schedulejobCommand extends CConsoleCommand
             $transaction = null;
             try
             {
-                $transaction= Yii::app()->db->beginTransaction();
+                while(!$transaction)
+                {
+                    try
+                    {
+                        $transaction= Yii::app()->db->beginTransaction();
+                    }
+                    catch(Exception $ex)
+                    {
+                        echo "fail to initial transaction, code: {$ex->getCode()}, message: {$ex->getMessage()}.\n";
+                        sleep(5);
+                    }
+                }
                 $scheduleJob->last_execute_status = !$result ? ScheduleJob::LAST_EXECUTE_STATUS_ERROR : ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS;
                 $scheduleJob->last_finish_time_utc = time();
                 if($scheduleJob->type == ScheduleJob::TYPE_ONCE)
@@ -168,7 +179,7 @@ class schedulejobCommand extends CConsoleCommand
     protected function eBayGetMyeBaySelling($scheduleJob)
     {
         $logFile = new LogFile(Yii::app()->params['ebay']['logPath'], 'GetSellerList.'.date("Ymd.his", time()).'.log');
-        $logFile->saveOutputToFile();
+        //$logFile->saveOutputToFile();
 
         echo "start schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n";
 
@@ -180,7 +191,7 @@ class schedulejobCommand extends CConsoleCommand
 
         $store = Store::model()->findByPk((int)$scheduleJob->params);
 
-        eBayTradingAPI::GetMyeBaySellingV2($store->id);
+        eBayTradingAPI::GetMyeBaySellingV3Thread($store->id);
 
         echo "end schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n\n";
         return true;
@@ -189,7 +200,7 @@ class schedulejobCommand extends CConsoleCommand
     protected function eBayGetSellerList($scheduleJob)
     {
         $logFile = new LogFile(Yii::app()->params['ebay']['logPath'], 'GetSellerList.'.date("Ymd.his", time()).'.log');
-        $logFile->saveOutputToFile();
+        //$logFile->saveOutputToFile();
 
         echo "start schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n";
 

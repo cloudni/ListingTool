@@ -56,8 +56,9 @@ class Store extends NIActiveRecord
 		return array(
 			array('name, platform', 'required'),
 			array('platform, is_active, company_id, ebay_api_key_id, ebay_site_code, HardExpirationTime', 'numerical', 'integerOnly'=>true),
-			array('name', 'length', 'max'=>256),
+			array('name', 'length', 'max'=>100),
             array('ebay_token, wish_token', 'safe'),
+            array('name', 'unique'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, name, platform, is_active, company_id, last_listing_sync_time_utc, ebay_api_key_id, ebay_token, ebay_site_code, HardExpirationTime, wish_token, create_time_utc, create_user_id, update_time_utc, update_user_id', 'safe', 'on'=>'search'),

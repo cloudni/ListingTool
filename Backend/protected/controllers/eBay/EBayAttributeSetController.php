@@ -46,75 +46,8 @@ class EBayAttributeSetController extends Controller
 
     public function actionTestGetSellerList()
     {
-        $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
-        $eBayAttributeSet = eBayAttributeSet::model()->find(
-            'entity_type_id=:entity_type_id',
-            array(
-                ':entity_type_id'=>$eBayEntityType->id,
-            )
-        );
-
-        $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
-
-        $select = "SELECT t.*
-                            FROM `lt_ebay_listing` `t`
-                            left join lt_ebay_entity_varchar as sstatus on sstatus.ebay_entity_id = t.id and sstatus.ebay_entity_attribute_id = {$listingStatusAttribute->id}
-                            where
-                            sstatus.value = '".eBayListingStatusCodeType::Active."' ; ";
-        $command = Yii::app()->db->createCommand($select);
-        $listings = $command->queryAll();
-
-        $ij = InstantJob::model()->findByPk(13);
-
-        foreach($listings as $listing)
-        {
-            if(!isset($listing["site_id"])) continue;
-            $replace = $ij->params;
-            $replace = str_replace("ebay_listing_id", $listing["ebay_listing_id"], $replace);
-            $replace = str_replace("ebay_user_id", 3, $replace);
-            $replace = str_replace("ebay_store_id", $listing["store_id"], $replace);
-            $replace = str_replace("ebay_site_id", $listing["site_id"], $replace);
-            $inputs = json_decode($replace);
-            if(!isset($inputs->applied_listings))
-            {
-                echo "find error in parameters, exit\n";
-                return false;
-            }
-            if(!isset($inputs->company_id))
-            {
-                echo "find error in parameters, exit\n";
-                return false;
-            }
-            $params['applied_listings'] = $inputs->applied_listings;
-            $params['company_id'] = $inputs->company_id;
-            $params['update_rules'] = array();
-            if(isset($inputs->update_rules->quantity))
-                $params['update_rules']['quantity'] = $inputs->update_rules->quantity;
-            if(isset($inputs->update_rules->price))
-            {
-                $params['update_rules']['price'] = array(
-                    'action'=>$inputs->update_rules->price->action,
-                    'value'=>$inputs->update_rules->price->value,
-                    'type'=>$inputs->update_rules->price->type,
-                );
-            }
-            if(isset($inputs->update_rules->description))
-            {
-                $params['update_rules']['description'] = array(
-                    'action'=>$inputs->update_rules->description->action,
-                    'tag'=>$inputs->update_rules->description->tag,
-                    'value'=>$inputs->update_rules->description->value,
-                    'position'=>$inputs->update_rules->description->position,
-                );
-            }
-            if(isset($inputs->update_rules->excludeShipLocation))
-            {
-                $params['update_rules']['excludeShipLocation'] = $inputs->update_rules->excludeShipLocation;
-            }
-
-            var_dump($params);
-            //$result = eBayTradingAPI::ReviseListing($params, false);
-        }
+        $store = Store::model()->findByPk(38);
+        eBayTradingAPI::GetSellerList($store->id);
         //echo 'dd';eBayTradingAPI::GetItem(eBayListing::model()->findByPk(2118));
         /*$params=array('CategorySiteID'=>203, 'CategoryParent'=>'', 'LevelLimit'=>4, 'ViewAllNodes'=>true, 'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll);
         eBayTradingAPI::GetCategories($params);*/
@@ -439,7 +372,7 @@ class EBayAttributeSetController extends Controller
                         $attribute['parent_id'] = 0;
                     }
 
-                    $insert = "update `lt_ebay_entity_attribute` set
+                    $update = "update `lt_ebay_entity_attribute` set
                                    `entity_type_id`=:entity_type_id,
                                    `attribute_set_id`=:attribute_set_id,
                                    `attribute_group_id`=:attribute_group_id,
@@ -453,7 +386,7 @@ class EBayAttributeSetController extends Controller
                                    `update_time_utc`=:update_time_utc,
                                    `update_admin_id`=:update_admin_id
                                where `id`=:id; ";
-                    $command = Yii::app()->db->createCommand($insert);
+                    $command = Yii::app()->db->createCommand($update);
                     $command->bindValue(":entity_type_id", $model->entity_type_id, PDO::PARAM_INT);
                     $command->bindValue(":attribute_set_id", $model->id, PDO::PARAM_INT);
                     $command->bindValue(":attribute_group_id", $eBayAttributeGroup->id, PDO::PARAM_INT);
@@ -468,6 +401,25 @@ class EBayAttributeSetController extends Controller
                     $command->bindValue(":update_admin_id", Yii::app()->user->id, PDO::PARAM_INT);
                     $command->bindValue(":id", $attribute['id'], PDO::PARAM_INT);
                     $command->execute();
+                }
+
+
+            }
+
+            //remove deleted attributes
+            $dbEntityAttributes = $model->eBayEntityAttributes;
+            foreach($dbEntityAttributes as $dbEntityAttribute)
+            {
+                $is_found = false;
+                foreach($attributes as $attribute)
+                {
+                    if($dbEntityAttribute->attribute_id == $attribute["attribute_id"] && ($dbEntityAttribute->parent_id == $attribute["parent_id"] || (!$dbEntityAttribute->parent_id && !$attribute["parent_id"]))) {
+                        $is_found = true;
+                        break;
+                    }
+                }
+                if(!$is_found) {
+                    $dbEntityAttribute->delete();
                 }
             }
 

@@ -184,7 +184,7 @@ class schedulejobCommand extends CConsoleCommand
         WishAPI::GetAllProducts($store->id);
 
         $store->last_listing_sync_time_utc = time();
-        $store->uupdate_time_utc = time();
+        $store->update_time_utc = time();
         $store->update_user_id = 0;
         $store->save();
 
@@ -210,7 +210,7 @@ class schedulejobCommand extends CConsoleCommand
         eBayTradingAPI::GetMyeBaySellingV3Thread($store->id);
 
         $store->last_listing_sync_time_utc = time();
-        $store->uupdate_time_utc = time();
+        $store->update_time_utc = time();
         $store->update_user_id = 0;
         $store->save();
 

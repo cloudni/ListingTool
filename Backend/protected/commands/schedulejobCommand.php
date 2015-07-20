@@ -14,7 +14,7 @@ require_once 'Wish/WishAPI.php';
 
 class schedulejobCommand extends CConsoleCommand
 {
-    private $maxThreads = 7 + 2;//7 means existing threads
+    private $maxThreads = 0 + 2;//7 means existing threads
 
     public function run($args)
     {
@@ -23,6 +23,7 @@ class schedulejobCommand extends CConsoleCommand
             echo "Currently there are ".($this->maxThreads - 2)." threads running, waiting for next time\n";
             exit();
         }
+        echo "Current running thread count: $count\n";
 
         $transaction = null;
         try

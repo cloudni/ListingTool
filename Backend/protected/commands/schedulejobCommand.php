@@ -14,7 +14,7 @@ require_once 'Wish/WishAPI.php';
 
 class schedulejobCommand extends CConsoleCommand
 {
-    private $maxThreads = 4 + 2;//7 means existing threads
+    private $maxThreads = 5 + 2;//7 means existing threads
 
     public function run($args)
     {

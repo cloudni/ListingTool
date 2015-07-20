@@ -2951,10 +2951,22 @@ class eBayTradingAPI
                 }
 
                 echo "\nstart to update off line products\n";
-                $getofflineItemWork = new GetItemWork("Thread for off line listing", $store->id, $store->company_id, $activeLists);
-                foreach($activeLists as $item) echo (string)$item . " added to queue for thread off line listing!\n";
-                $pool[] = $getofflineItemWork;
-                $getofflineItemWork->start();
+                while(true)
+                try
+                {
+                    $sql = "update lt_ebay_entity_varchar set value=:value where ebay_entity_attribute_id=:ebay_entity_attribute_id and ebay_entity_id in (" . implode($activeLists, ',') . ")";
+                    $command = Yii::app()->db->createCommand($select);
+                    $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
+                    $command->bindValue(":value", eBayListingStatusCodeType::Ended, PDO::PARAM_STR);
+                    $result = $command->query();
+                    echo "$result offline items updated, including\n";
+                    echo implode($activeLists, "\n");
+                    break;
+                }
+                catch(Exception $ex)
+                {
+                    echo "Update offline items failed, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
+                }
             }
             else
             {

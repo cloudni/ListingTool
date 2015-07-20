@@ -24,7 +24,7 @@ class schedulejobCommand extends CConsoleCommand
             exit();
         }
         echo "Current running threads: \n";
-        echo `ps -aef | grep 'yiic.php instantjob run' | wc -l`;
+        echo `ps -aef | grep 'yiic.php instantjob run' `;
         echo "count: $count\n";
 
         $transaction = null;

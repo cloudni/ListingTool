@@ -18,7 +18,7 @@ class schedulejobCommand extends CConsoleCommand
 
     public function run($args)
     {
-        $count = `ps -aef | grep 'yiic.php instantjob run' | wc -l`;
+        $count = `ps -aef | grep 'yiic.php schedulejob run' | wc -l`;
         if($count >= $this->maxThreads) {
             echo "Currently there are ".($this->maxThreads - 2)." threads running, waiting for next time\n";
             exit();

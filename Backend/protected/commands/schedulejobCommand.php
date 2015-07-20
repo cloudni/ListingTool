@@ -23,7 +23,9 @@ class schedulejobCommand extends CConsoleCommand
             echo "Currently there are ".($this->maxThreads - 2)." threads running, waiting for next time\n";
             exit();
         }
-        echo "Current running thread count: $count\n";
+        echo "Current running threads: \n";
+        echo `ps -aef | grep 'yiic.php instantjob run' | wc -l`;
+        echo "count: $count\n";
 
         $transaction = null;
         try

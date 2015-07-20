@@ -36,7 +36,7 @@ class schedulejobCommand extends CConsoleCommand
                 ':next_execute_time_utc'=>time(),
                 ':is_active'=>ScheduleJob::ACTIVE_YES,
             );
-            $criteria->order="next_execute_time_utc asc";
+            $criteria->order="next_execute_time_utc asc, id desc";
             $scheduleJob = ScheduleJob::model()->find($criteria);
 
             if(empty($scheduleJob))

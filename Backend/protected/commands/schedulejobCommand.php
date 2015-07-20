@@ -183,6 +183,11 @@ class schedulejobCommand extends CConsoleCommand
 
         WishAPI::GetAllProducts($store->id);
 
+        $store->last_listing_sync_time_utc = time();
+        $store->uupdate_time_utc = time();
+        $store->update_user_id = 0;
+        $store->save();
+
         echo "end schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n\n";
         return true;
     }
@@ -203,6 +208,11 @@ class schedulejobCommand extends CConsoleCommand
         $store = Store::model()->findByPk((int)$scheduleJob->params);
 
         eBayTradingAPI::GetMyeBaySellingV3Thread($store->id);
+
+        $store->last_listing_sync_time_utc = time();
+        $store->uupdate_time_utc = time();
+        $store->update_user_id = 0;
+        $store->save();
 
         echo "end schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n\n";
         return true;

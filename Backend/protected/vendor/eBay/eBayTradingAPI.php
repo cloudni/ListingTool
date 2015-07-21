@@ -2961,7 +2961,7 @@ class eBayTradingAPI
                     $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
                     $command->bindValue(":value", eBayListingStatusCodeType::Ended, PDO::PARAM_STR);
                     $result = $command->query();
-                    echo "$result offline items updated, including\n";
+                    echo "offline items updated, including\n";
                     echo implode($activeLists, "\n");
                     break;
                 }

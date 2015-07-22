@@ -14,7 +14,7 @@ require_once 'Wish/WishAPI.php';
 
 class schedulejobCommand extends CConsoleCommand
 {
-    private $maxThreads = 2 + 2;//7 means existing threads
+    private $maxThreads = 4 + 2;//7 means existing threads
 
     public function run($args)
     {
@@ -26,6 +26,21 @@ class schedulejobCommand extends CConsoleCommand
         echo "Current running threads: \n";
         echo `ps -aef | grep 'yiic.php instantjob run' `;
         echo "count: $count\n";
+
+        preg_match("/mysql:host\=([0-9.]+);/i", Yii::app()->db->connectionString, $result);
+        $str = "mysqladmin  -u".Yii::app()->db->username." -p".Yii::app()->db->password." -h".$result[1]." status";
+        echo $thread = `$str`;
+        preg_match("/Threads:\s+([0-9]+)\s+/i", $thread, $result);
+        if(!isset($result[1]) )
+        {
+            echo "can not get database connection thread count, exit\n";
+            exit();
+        }
+        else if($result[1] >= 400)
+        {
+            echo "Database connection thread count {$result[1]} is too large, exit\n";
+            exit();
+        }
 
         $transaction = null;
         try

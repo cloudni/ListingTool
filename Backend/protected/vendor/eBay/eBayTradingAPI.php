@@ -3012,9 +3012,6 @@ class eBayTradingAPI
         try
         {
             echo "\nCall to update tracking code for store: ".$store->id."\n";
-        }
-        catch(Exception $ex)
-        {
             $url = "http://transaction.itemtool.com/portal-lt-backend/trackingTag/syncStore.shtml";
             $post_data = array ("storeId" => $store->id);
 
@@ -3030,6 +3027,10 @@ class eBayTradingAPI
             curl_close($ch);
 
             echo("call result: ".$output."\n");
+        }
+        catch(Exception $ex)
+        {
+            echo "call update tracking code failed.\n";
         }
 
         return true;

@@ -300,11 +300,11 @@ class eBayTradingAPI
             /*if(isset($item->SellingStatus->ListingStatus) && (string)$item->SellingStatus->ListingStatus == eBayListingStatusCodeType::Active)
                 return eBayTradingAPI::GetItem($eBayListing);*/
 
-
+            $transaction= Yii::app()->db->beginTransaction();
             //start to process attribute by attribute
             echo("start to process eBay item ".(string)$item->ItemID." attribute:\n");
             eBayTradingAPI::processeBayEntityAttributesRC($eBayListing, $eBayAttributeSet, $item);
-
+            $transaction->commit();
             echo("eBay item: ".(string)$item->ItemID." attribute process finished!\n".date("Y-m-d H:i:s", time())."item process finished\n\n");
         }
         catch(Exception $ex)
@@ -359,17 +359,7 @@ class eBayTradingAPI
                             echo "Entity Attribute id: ".$currenteBayEntityAttribute->id.". ";
                             echo "\n";
                         }
-                        $transaction= Yii::app()->db->beginTransaction();
-                        try
-                        {
-                            $valueId = eBayTradingAPI::SaveAttributeValue($eBayEntity, $currenteBayEntityAttribute, $subField, $parentEntityAttribute, $parentValueId);
-                            $transaction->commit();
-                        }
-                        catch(Exception $ex)
-                        {
-                            if(isset($transaction)) $transaction->rollback();
-                            throw $ex;
-                        }
+                        $valueId = eBayTradingAPI::SaveAttributeValue($eBayEntity, $currenteBayEntityAttribute, $subField, $parentEntityAttribute, $parentValueId);
                         eBayTradingAPI::processeBayEntityAttributesRC($eBayEntity, $eBayAttributeSet, $subField, $currenteBayEntityAttribute, $valueId, $indentation.'|--');
                     }
                     else
@@ -385,16 +375,7 @@ class eBayTradingAPI
                         echo "Entity Attribute id: ".$currenteBayEntityAttribute->id.". ";
                         echo "\n";
                     }
-                    $transaction= Yii::app()->db->beginTransaction();
-                    try
-                    {
-                        eBayTradingAPI::SaveAttributeValue($eBayEntity, $currenteBayEntityAttribute, $field, $parentEntityAttribute, $parentValueId);
-                    }
-                    catch(Exception $ex)
-                    {
-                        if(isset($transaction)) $transaction->rollback();
-                        throw $ex;
-                    }
+                    eBayTradingAPI::SaveAttributeValue($eBayEntity, $currenteBayEntityAttribute, $field, $parentEntityAttribute, $parentValueId);
                 }
             }
             else
@@ -405,15 +386,7 @@ class eBayTradingAPI
                     echo "Entity Attribute id: ".$currenteBayEntityAttribute->id.". ";
                     echo "\n";
                 }
-                try
-                {
-                    $valueId = eBayTradingAPI::SaveAttributeValue($eBayEntity, $currenteBayEntityAttribute, $field, $parentEntityAttribute, $parentValueId);
-                }
-                catch(Exception $ex)
-                {
-                    if(isset($transaction)) $transaction->rollback();
-                    throw $ex;
-                }
+                $valueId = eBayTradingAPI::SaveAttributeValue($eBayEntity, $currenteBayEntityAttribute, $field, $parentEntityAttribute, $parentValueId);
                 if(gettype($field) == 'object')
                 {
                     eBayTradingAPI::processeBayEntityAttributesRC($eBayEntity, $eBayAttributeSet, $field, $currenteBayEntityAttribute, $valueId, $indentation.'|--');

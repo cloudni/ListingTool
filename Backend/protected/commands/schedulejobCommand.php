@@ -24,7 +24,7 @@ class schedulejobCommand extends CConsoleCommand
             exit();
         }
         echo "Current running threads: \n";
-        echo `ps -aef | grep 'yiic.php instantjob run' `;
+        echo `ps -aef | grep 'yiic.php schedulejob run' `;
         echo "count: $count\n";
 
         preg_match("/mysql:host\=([0-9.]+);/i", Yii::app()->db->connectionString, $result);

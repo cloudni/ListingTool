@@ -540,6 +540,7 @@ class eBayTradingAPI
             //update
             if(isset($cleared[$i]) && $i < $fieldCount)
             {
+                $transaction= Yii::app()->db->beginTransaction();
                 $update = "update {{{$eBayEntity->eBayEntityType->value_table}_{$valueType}}} set
                     `ebay_attribute_id` = :ebay_attribute_id,
                     `ebay_entity_attribute_id` = :ebay_entity_attribute_id,
@@ -592,12 +593,14 @@ class eBayTradingAPI
                 }
                 $command->bindValue(":id", $cleared[$i]['id'], PDO::PARAM_INT);
                 $command->execute();
+                $transaction->commit();
                 //echo(" update entity value type:{$valueType}, id: ".$cleared[$i]['id'].", value: ".(string)(gettype($field) == 'array' ? $field[$i] : $field).". ");
                 if(gettype($field) != 'array') return $cleared[$i]['id'];
             }
             //insert
             elseif(!isset($cleared[$i]) && $i < $fieldCount)
             {
+                $transaction= Yii::app()->db->beginTransaction();
                 $insert = "INSERT INTO {{{$eBayEntity->eBayEntityType->value_table}_{$valueType}}}
                             (`ebay_entity_type_id`, `ebay_attribute_id`, `ebay_entity_attribute_id`, `value`, `ebay_entity_id`, `parent_value_id`, `parent_value_type`, `parent_value_entity_attribute_id`)
                             VALUES
@@ -649,6 +652,7 @@ class eBayTradingAPI
                 }
                 $command->execute();
                 $valueId = Yii::app()->db->getLastInsertID();
+                $transaction->commit();
                 //echo(" insert entity value type:{$valueType}, id: ".$valueId.", value: ".(string)(gettype($field) == 'array' ? $field[$i] : $field).". ");
                 if(gettype($field) != 'array') return $valueId;
             }
@@ -1510,12 +1514,13 @@ class eBayTradingAPI
                     $transaction= Yii::app()->db->beginTransaction();
                     //clear all item's attribute value record
                     self::clearAlleBayEntityAttributeValue($eBayListing);
+                    $transaction->commit();
                     echo "all attribute value have been cleared.\n";
 
                     //start to process attribute by attribute
                     echo("start to process eBay item ".(string)$item->ItemID." attribute:\n");
                     eBayTradingAPI::processeBayEntityAttributesRC($eBayListing, $eBayAttributeSet, $item);
-                    $transaction->commit();
+
                     echo("eBay item: ".(string)$item->ItemID." attribute process finished!\n".date("Y-m-d H:i:s", time())."item process finished\n\n");
                     return true;
                 }

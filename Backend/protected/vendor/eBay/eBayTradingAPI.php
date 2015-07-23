@@ -2879,6 +2879,7 @@ class eBayTradingAPI
 
         $maxTry = 15;
         $pool = array();
+        $threadCount = 0;
         try
         {
             $response = $eBayService->request();
@@ -2895,6 +2896,11 @@ class eBayTradingAPI
 
             if((string)$response->Ack===eBayAckCodeType::Success)
             {
+                $rawData = Yii::app()->cache->get("php_threads_count");
+                if($rawData === false) $rawData = 0;
+                $threadCount = isset($response->ActiveList->PaginationResult->TotalNumberOfPages) ? (int)$response->ActiveList->PaginationResult->TotalNumberOfPages : 0;
+                Yii::app()->cache->set("php_threads_count",$rawData + $threadCount);
+
                 //process ebay active items
                 if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))
                 {
@@ -3031,6 +3037,13 @@ class eBayTradingAPI
         catch(Exception $ex)
         {
             echo "call update tracking code failed.\n";
+        }
+
+        $rawData = Yii::app()->cache->get("php_threads_count");
+        if($rawData !== false) {
+            $rawData = $rawData - $threadCount;
+            if($rawData < 0 ) $rawData = 0;
+            Yii::app()->cache->set("php_threads_count",$rawData);
         }
 
         return true;

@@ -45,7 +45,6 @@ class schedulejobCommand extends CConsoleCommand
         $transaction = null;
         try
         {
-            $transaction= Yii::app()->db->beginTransaction();
             $criteria=new CDbCriteria;
             $criteria->condition = "last_execute_status!=:last_execute_status and next_execute_time_utc<=:next_execute_time_utc and is_active=:is_active";
             $criteria->params=array(
@@ -56,6 +55,21 @@ class schedulejobCommand extends CConsoleCommand
             $criteria->order="next_execute_time_utc asc, id desc";
             $scheduleJob = ScheduleJob::model()->find($criteria);
 
+            if($scheduleJob->platform == Store::PLATFORM_EBAY && $scheduleJob->action == ScheduleJob::ACTION_EBAYGETMYEBAYSELLING)
+            {
+                $rawData = Yii::app()->cache->get("php_threads_count");
+                if($rawData === false)
+                {
+                    $rawData = 0;
+                    Yii::app()->cache->set("php_threads_count",$rawData);
+                }
+                if($rawData >= 200)
+                {
+                    echo "PHP threads is over 250, exit schedule job, waiting for next time.\n";
+                    exit();
+                }
+            }
+
             if(empty($scheduleJob))
             {
                 echo "no schedule job, exit.".date("Y-m-d h:i:sa")."\n";
@@ -63,6 +77,7 @@ class schedulejobCommand extends CConsoleCommand
             }
             echo "schedule job detected, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action).' '.date("Y-m-d h:i:sa")."\n";
 
+            $transaction= Yii::app()->db->beginTransaction();
             $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_EXECUTE;
             $scheduleJob->last_execute_time_utc = time();
             $scheduleJob->update();

@@ -63,6 +63,7 @@ class schedulejobCommand extends CConsoleCommand
                     $rawData = 0;
                     Yii::app()->cache->set("php_threads_count",$rawData);
                 }
+                echo "Current php threads count is $rawData.\n";
                 if($rawData >= 200)
                 {
                     echo "PHP threads is over 250, exit schedule job, waiting for next time.\n";

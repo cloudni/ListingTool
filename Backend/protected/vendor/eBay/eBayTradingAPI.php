@@ -2900,6 +2900,7 @@ class eBayTradingAPI
                 if($rawData === false) $rawData = 0;
                 $threadCount = isset($response->ActiveList->PaginationResult->TotalNumberOfPages) ? (int)$response->ActiveList->PaginationResult->TotalNumberOfPages : 0;
                 Yii::app()->cache->set("php_threads_count",$rawData + $threadCount);
+                echo "Current php threads count updated to ".($rawData + $threadCount).".\n";
 
                 //process ebay active items
                 if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))
@@ -3045,6 +3046,7 @@ class eBayTradingAPI
             if($rawData < 0 ) $rawData = 0;
             Yii::app()->cache->set("php_threads_count",$rawData);
         }
+        echo "Current php threads count updated to ".($rawData + $threadCount).".\n";
 
         return true;
     }

@@ -66,7 +66,7 @@ class schedulejobCommand extends CConsoleCommand
                 echo "Current php threads count is $rawData.\n";
                 if($rawData >= 160)
                 {
-                    echo "PHP threads is over 250, exit schedule job, waiting for next time.\n";
+                    echo "PHP threads is over 160, exit schedule job, waiting for next time.\n";
                     exit();
                 }
             }

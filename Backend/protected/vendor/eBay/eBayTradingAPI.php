@@ -2912,7 +2912,7 @@ class eBayTradingAPI
                     );
                     $scheduleJob->last_execute_status = 4;
                     $scheduleJob->next_execute_time_utc = 0;
-                    $scheduleJob->save();
+                    $scheduleJob->save(false);
                     die();
                 }
                 Yii::app()->cache->set("php_threads_count",$rawData + $threadCount);

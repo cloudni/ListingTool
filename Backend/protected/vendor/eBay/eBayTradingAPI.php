@@ -2899,6 +2899,22 @@ class eBayTradingAPI
                 $rawData = Yii::app()->cache->get("php_threads_count");
                 if($rawData === false) $rawData = 0;
                 $threadCount = isset($response->ActiveList->PaginationResult->TotalNumberOfPages) ? (int)$response->ActiveList->PaginationResult->TotalNumberOfPages : 0;
+                if($rawData + $threadCount > 250)
+                {
+                    echo "Current store has too many products, total page: ".$threadCount.", current threads: ".$rawData." wait for other job end first.\n";
+                    $scheduleJob = ScheduleJob::model()->find(
+                        "platform=:platform and action=:action and params=:params",
+                        array(
+                            ':platform'=>Store::PLATFORM_EBAY,
+                            ':action'=>ScheduleJob::ACTION_EBAYGETMYEBAYSELLING,
+                            ':params'=>$store->id,
+                        )
+                    );
+                    $scheduleJob->last_execute_status = 4;
+                    $scheduleJob->next_execute_time_utc = 0;
+                    $scheduleJob->save();
+                    die();
+                }
                 Yii::app()->cache->set("php_threads_count",$rawData + $threadCount);
                 echo "Current php threads count updated to ".($rawData + $threadCount).".\n";
 

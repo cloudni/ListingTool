@@ -36,7 +36,7 @@ class schedulejobCommand extends CConsoleCommand
             echo "can not get database connection thread count, exit\n";
             exit();
         }
-        else if($result[1] >= 180)
+        else if($result[1] >= 150)
         {
             echo "Database connection thread count {$result[1]} is too large, exit\n";
             exit();
@@ -64,9 +64,9 @@ class schedulejobCommand extends CConsoleCommand
                     Yii::app()->cache->set("php_threads_count",$rawData);
                 }
                 echo "Current php threads count is $rawData.\n";
-                if($rawData >= 170)
+                if($rawData >= 150)
                 {
-                    echo "PHP threads is over 170, exit schedule job, waiting for next time.\n";
+                    echo "PHP threads is over 150, exit schedule job, waiting for next time.\n";
                     exit();
                 }
             }

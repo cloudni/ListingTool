@@ -2907,7 +2907,7 @@ class eBayTradingAPI
                         array(
                             ':platform'=>Store::PLATFORM_EBAY,
                             ':action'=>ScheduleJob::ACTION_EBAYGETMYEBAYSELLING,
-                            ':params'=>$store->id,
+                            ':params'=>$storeId,
                         )
                     );
                     $scheduleJob->last_execute_status = 4;
@@ -2916,7 +2916,7 @@ class eBayTradingAPI
                     die();
                 }
                 Yii::app()->cache->set("php_threads_count",$rawData + $threadCount);
-                echo "Current php threads count updated to ".($rawData + $threadCount).".\n";
+                echo "Current php threads count updated from $rawData to ".($rawData + $threadCount).".\n";
 
                 //process ebay active items
                 if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))

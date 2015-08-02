@@ -14,7 +14,7 @@ require_once 'Wish/WishAPI.php';
 
 class schedulejobCommand extends CConsoleCommand
 {
-    private $maxThreads = 1 + 3;//7 means existing threads
+    private $maxThreads = 2 + 3;//7 means existing threads
 
     public function run($args)
     {
@@ -36,7 +36,7 @@ class schedulejobCommand extends CConsoleCommand
             echo "can not get database connection thread count, exit\n";
             exit();
         }
-        else if($result[1] >= 150)
+        else if($result[1] >= 200)
         {
             echo "Database connection thread count {$result[1]} is too large, exit\n";
             exit();

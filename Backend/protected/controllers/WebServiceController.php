@@ -69,4 +69,25 @@ class WebServiceController extends Controller
         else
             return array('status'=>'fail', 'msg'=>"fail to update $listing_id.");
     }
+
+    public function eBayUpdateItemListingStatus($listing_id, $status, $attribute_id)
+    {
+        try
+        {
+            $sql = "UPDATE lt_ebay_entity_varchar t
+                LEFT JOIN lt_ebay_listing e ON e.id = t.ebay_entity_id
+                SET t.value = :value
+                WHERE t.ebay_entity_attribute_id = :ebay_entity_attribute_id  AND e.ebay_listing_id = :ebay_listing_id; ";
+            $command = Yii::app()->db->createCommand($sql);
+            $command->bindValue(":ebay_entity_attribute_id", $attribute_id, PDO::PARAM_INT);
+            $command->bindValue(":value", $status, PDO::PARAM_STR);
+            $command->bindValue(":ebay_listing_id", $listing_id, PDO::PARAM_STR);
+            $result = $command->query();
+        }
+        catch(Exception $ex)
+        {
+            return array('status'=>'fail', 'msg'=>"Exception, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n");
+        }
+        return array('status'=>'success', 'msg'=>"");
+    }
 }

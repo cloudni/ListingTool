@@ -2996,7 +2996,7 @@ class eBayTradingAPI
                             $result = $command->query();*/
                             foreach($activeLists as $offline)
                             {
-                                $sql = "UPDATE lt_ebay_entity_varchar t
+                                /*$sql = "UPDATE lt_ebay_entity_varchar t
                                     LEFT JOIN lt_ebay_listing e ON e.id = t.ebay_entity_id
                                     SET t.value = :value
                                     WHERE t.ebay_entity_attribute_id = :ebay_entity_attribute_id  AND e.ebay_listing_id = :ebay_listing_id; ";
@@ -3004,8 +3004,18 @@ class eBayTradingAPI
                                 $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
                                 $command->bindValue(":value", eBayListingStatusCodeType::Ended, PDO::PARAM_STR);
                                 $command->bindValue(":ebay_listing_id", $offline, PDO::PARAM_STR);
-                                $result = $command->query();
-                                echo "offline items updated, $offline\n";
+                                $result = $command->query();*/
+                                $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote', array("trace" => true, "connection_timeout" => 900));
+                                $result = $client->eBayGetItem($param, eBayListingStatusCodeType::Ended, $listingStatusAttribute->id);
+                                if($result['status'] == 'success')
+                                {
+                                    echo "offline items updated succeeded, $offline\n";
+                                }
+                                else
+                                {
+                                    echo "offline items updated failed, $offline\n";
+                                }
+
                             }
                             break;
                         }

@@ -3006,7 +3006,7 @@ class eBayTradingAPI
                                 $command->bindValue(":ebay_listing_id", $offline, PDO::PARAM_STR);
                                 $result = $command->query();*/
                                 $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote', array("trace" => true, "connection_timeout" => 900));
-                                $result = $client->eBayGetItem($param, eBayListingStatusCodeType::Ended, $listingStatusAttribute->id);
+                                $result = $client->eBayUpdateItemListingStatus($offline, eBayListingStatusCodeType::Ended, $listingStatusAttribute->id);
                                 if($result['status'] == 'success')
                                 {
                                     echo "offline items updated succeeded, $offline\n";

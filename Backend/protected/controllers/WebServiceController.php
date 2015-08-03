@@ -70,6 +70,13 @@ class WebServiceController extends Controller
             return array('status'=>'fail', 'msg'=>"fail to update $listing_id.");
     }
 
+    /**
+     * @param string eBay listing id
+     * @param string the store id
+     * @param int the attribute id
+     * @return array success or fail with msg
+     * @soap
+     */
     public function eBayUpdateItemListingStatus($listing_id, $status, $attribute_id)
     {
         try

@@ -3090,7 +3090,7 @@ class eBayTradingAPI
             if($rawData < 0 ) $rawData = 0;
             Yii::app()->cache->set("php_threads_count",$rawData);
         }
-        echo "Current php threads count updated to ".($rawData + $threadCount).".\n";
+        echo "Current php threads count updated to ".($rawData).".\n";
 
         return true;
     }

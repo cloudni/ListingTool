@@ -97,4 +97,28 @@ class WebServiceController extends Controller
         }
         return array('status'=>'success', 'msg'=>"");
     }
+
+    /**
+     * @param int the store id
+     * @return array success or fail with msg
+     * @soap
+     */
+    public function updateStoreSyncTime($store_id)
+    {
+        try
+        {
+            $store = Store::model()->findByPk($store_id);
+            if(empty($store))
+                throw new Exception("Store does not exits.\n", 0);
+            $store->last_listing_sync_time_utc = time();
+            $store->update_time_utc = time();
+            $store->update_user_id = 0;
+            $store->save();
+        }
+        catch(Exception $ex)
+        {
+            return array('status'=>'fail', 'msg'=>"Exception, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n");
+        }
+        return array('status'=>'success', 'msg'=>"");
+    }
 }

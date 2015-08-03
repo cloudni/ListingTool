@@ -2981,22 +2981,28 @@ class eBayTradingAPI
 
                 echo "\nstart to update off line products\n";
                 if(count($activeLists)>0)
-                while(true)
-                try
                 {
-                    $sql = "UPDATE lt_ebay_entity_varchar t LEFT JOIN lt_ebay_listing e ON e.id = t.ebay_entity_id SET t.value = :value
-                            WHERE t.ebay_entity_attribute_id = :ebay_entity_attribute_id  AND e.id IN ('" . implode($activeLists, "','") . "')";
-                    $command = Yii::app()->db->createCommand($sql);
-                    $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
-                    $command->bindValue(":value", eBayListingStatusCodeType::Ended, PDO::PARAM_STR);
-                    $result = $command->query();
-                    echo "offline items updated, including\n";
-                    echo implode($activeLists, "\n");
-                    break;
-                }
-                catch(Exception $ex)
-                {
-                    echo "Update offline items failed, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
+                    while(true)
+                    {
+                        try
+                        {
+                            $sql = "UPDATE lt_ebay_entity_varchar t
+                                    LEFT JOIN lt_ebay_listing e ON e.id = t.ebay_entity_id
+                                    SET t.value = :value
+                                    WHERE t.ebay_entity_attribute_id = :ebay_entity_attribute_id  AND e.ebay_listing_id IN ('" . implode($activeLists, "','") . "')";
+                            $command = Yii::app()->db->createCommand($sql);
+                            $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
+                            $command->bindValue(":value", eBayListingStatusCodeType::Ended, PDO::PARAM_STR);
+                            $result = $command->query();
+                            echo "offline items updated, including\n";
+                            echo implode($activeLists, "\n");
+                            break;
+                        }
+                        catch(Exception $ex)
+                        {
+                            echo "Update offline items failed, code: " . $ex->getCode() . ", msg: " . $ex->getMessage() . "\n";
+                        }
+                    }
                 }
             }
             else

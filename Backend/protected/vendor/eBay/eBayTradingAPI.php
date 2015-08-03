@@ -3005,7 +3005,7 @@ class eBayTradingAPI
                                 $command->bindValue(":value", eBayListingStatusCodeType::Ended, PDO::PARAM_STR);
                                 $command->bindValue(":ebay_listing_id", $offline, PDO::PARAM_STR);
                                 $result = $command->query();*/
-                                $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote', array("trace" => true, "connection_timeout" => 900));
+                                $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote?wsdl', array("trace" => true, "connection_timeout" => 900));
                                 $result = $client->eBayUpdateItemListingStatus($offline, eBayListingStatusCodeType::Ended, $listingStatusAttribute->id);
                                 if($result['status'] == 'success')
                                 {
@@ -3128,7 +3128,7 @@ class GetItemWork extends Thread {
             {
                 $this->processed++;
                 echo "start process listing $param, store id: {$this->store_id}, company id: {$this->company_id}.\n";
-                $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote', array("trace" => true, "connection_timeout" => 900));
+                $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote?wsdl', array("trace" => true, "connection_timeout" => 900));
                 $result = $client->eBayGetItem($param, $this->store_id, $this->company_id);
                 if($result['status'] == 'success')
                 {

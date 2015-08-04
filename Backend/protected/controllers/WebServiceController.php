@@ -99,7 +99,7 @@ class WebServiceController extends Controller
     }
 
     /**
-     * @param int the store id
+     * @param int store id
      * @return array success or fail with msg
      * @soap
      */

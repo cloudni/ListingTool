@@ -121,4 +121,31 @@ class WebServiceController extends Controller
         }
         return array('status'=>'success', 'msg'=>"");
     }
+
+    /**
+     * @param int schedule job id
+     * @param int last_execute_status
+     * @return array success or fail with msg
+     * @soap
+     */
+    public function updateScheduleJob($scheduleJob_id, $last_execute_status)
+    {
+        try
+        {
+            $scheduleJob = ScheduleJob::model()->findByPk($scheduleJob_id);
+            if(empty($scheduleJob))
+                throw new Exception("Schedule job does not exits.\n", 0);
+            $scheduleJob->$last_execute_status = $last_execute_status;
+            if($scheduleJob->type == ScheduleJob::TYPE_ONCE)
+                $scheduleJob->is_active = ScheduleJob::ACTIVE_NO;
+            else
+                if($last_execute_status == ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS) $scheduleJob->next_execute_time_utc = $scheduleJob->getNextExecuteTime();
+            $scheduleJob->save();
+        }
+        catch(Exception $ex)
+        {
+            return array('status'=>'fail', 'msg'=>"Exception, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n");
+        }
+        return array('status'=>'success', 'msg'=>"");
+    }
 }

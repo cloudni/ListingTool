@@ -105,10 +105,9 @@ class schedulejobCommand extends CConsoleCommand
                 break;
         }
 
-        $updateJob = false;
-        while(!$updateJob)
+        while(true)
         {
-            $transaction = null;
+            /*$transaction = null;
             try
             {
                 while(!$transaction)
@@ -138,8 +137,20 @@ class schedulejobCommand extends CConsoleCommand
             {
                 if(isset($transaction)) $transaction->rollback();
                 echo "fail to update schedule job status to end, code: {$ex->getCode()}, message: {$ex->getMessage()}.\n";
+            }*/
+            $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote?wsdl', array("trace" => true, "connection_timeout" => 900));
+            $result = $client->updateScheduleJob($scheduleJob->id, !$result ? ScheduleJob::LAST_EXECUTE_STATUS_ERROR : ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS);
+            if($result['status'] == 'success')
+            {
+                echo "Schedule job updated succeeded.\n";
+                break;
+            }
+            else
+            {
+                echo "Schedule job updated failed.\n";
             }
         }
+        return;
     }
 
     protected function processeBayScheduleJob($scheduleJob)

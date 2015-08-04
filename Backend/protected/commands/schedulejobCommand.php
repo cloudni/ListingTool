@@ -240,10 +240,20 @@ class schedulejobCommand extends CConsoleCommand
 
         eBayTradingAPI::GetMyeBaySellingV3Thread($store->id);
 
-        $store->last_listing_sync_time_utc = time();
+        /*$store->last_listing_sync_time_utc = time();
         $store->update_time_utc = time();
         $store->update_user_id = 0;
-        $store->save();
+        $store->save();*/
+        $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote?wsdl', array("trace" => true, "connection_timeout" => 900));
+        $result = $client->updateStoreSyncTime($store->id);
+        if($result['status'] == 'success')
+        {
+            echo "store sync time updated succeeded.\n";
+        }
+        else
+        {
+            echo "store sync time updated failed.\n";
+        }
 
         echo "end schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n\n";
         return true;

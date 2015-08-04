@@ -135,7 +135,7 @@ class WebServiceController extends Controller
             $scheduleJob = ScheduleJob::model()->findByPk($scheduleJob_id);
             if(empty($scheduleJob))
                 throw new Exception("Schedule job does not exits.\n", 0);
-            $scheduleJob->$last_execute_status = $last_execute_status;
+            $scheduleJob->last_execute_status = $last_execute_status;
             if($scheduleJob->type == ScheduleJob::TYPE_ONCE)
                 $scheduleJob->is_active = ScheduleJob::ACTIVE_NO;
             else

@@ -147,7 +147,7 @@ class schedulejobCommand extends CConsoleCommand
             }
             else
             {
-                echo "Schedule job updated failed.\n";
+                echo "Schedule job updated failed. ".$result['msg']."\n";
             }
         }
         return;

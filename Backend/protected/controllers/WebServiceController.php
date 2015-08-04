@@ -136,11 +136,12 @@ class WebServiceController extends Controller
             if(empty($scheduleJob))
                 throw new Exception("Schedule job does not exits.\n", 0);
             $scheduleJob->last_execute_status = $last_execute_status;
+            $scheduleJob->last_finish_time_utc = time();
             if($scheduleJob->type == ScheduleJob::TYPE_ONCE)
                 $scheduleJob->is_active = ScheduleJob::ACTIVE_NO;
             else
                 if($last_execute_status == ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS) $scheduleJob->next_execute_time_utc = $scheduleJob->getNextExecuteTime();
-            $scheduleJob->save();
+            $scheduleJob->save(false);
         }
         catch(Exception $ex)
         {

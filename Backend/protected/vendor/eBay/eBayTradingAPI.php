@@ -1635,6 +1635,8 @@ class eBayTradingAPI
                             $result = eBayTradingAPI::ReviseListing($params, false, false);
                             var_dump("\n", $result);
                         }
+                        else
+                            echo "all codes are detected, no need to update, exit.\n";
                     }
 
                     return true;

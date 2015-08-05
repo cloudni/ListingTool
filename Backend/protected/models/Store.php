@@ -15,6 +15,7 @@
  * @property integer $HardExpirationTime
  * @property integer $ebay_site_code
  * @property string $wish_token
+ * @property string $ga_track_id
  * @property integer $create_time_utc
  * @property integer $create_user_id
  * @property integer $update_time_utc
@@ -57,7 +58,8 @@ class Store extends NIActiveRecord
 			array('name, platform', 'required'),
 			array('platform, is_active, company_id, ebay_api_key_id, ebay_site_code, HardExpirationTime', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>100),
-            array('ebay_token, wish_token', 'safe'),
+            array('ga_track_id', 'length', 'max'=>50),
+            array('ebay_token, wish_token, ga_track_id', 'safe'),
             array('name', 'unique'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.

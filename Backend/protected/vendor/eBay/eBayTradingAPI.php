@@ -948,7 +948,7 @@ class eBayTradingAPI
         return $xml;
     }
 
-    public static function ReviseListing($params=array('applied_listings'=>array(), 'update_rules'=>array()), $VerifyOnly=true)
+    public static function ReviseListing($params=array('applied_listings'=>array(), 'update_rules'=>array()), $VerifyOnly=true, $updateItem=true)
     {
         if(empty($params) || empty($params['applied_listings']) || empty($params['update_rules']))
             throw new Exception(ExceptionError::getExceptionErrorText(ExceptionError::NonInputErrorCode), ExceptionError::NonInputErrorCode);
@@ -983,16 +983,16 @@ class eBayTradingAPI
                 if(!empty($params['update_rules']['description']))
                 {
                     //update item description if needed
-                    eBayTradingAPI::GetItem($eBayListing);
+                    if($updateItem) eBayTradingAPI::GetItem($eBayListing);
 
                     if($params['update_rules']['description']['action'] == 'add')
                     {
-                        $input['Description'] = eBayService::createXMLElement($params['update_rules']['description']['tag'],$params['update_rules']['description']['value']);
+                        $input['Description'] = $params['update_rules']['description']['tag'] ? eBayService::createXMLElement($params['update_rules']['description']['tag'],$params['update_rules']['description']['value']) : $params['update_rules']['description']['value'];
                         $input['DescriptionReviseMode'] = $params['update_rules']['description']['position'] == 'prepend' ? eBayDescriptionReviseMode::Prepend : eBayDescriptionReviseMode::Append;
                     }
                     else
                     {
-                        $input['Description'] = preg_replace("/<{$params['update_rules']['description']['tag']}(.*?)>(.*?)<\/{$params['update_rules']['description']['tag']}>/msi", "", $eBayListing->getEntityAttributeValue('Description'));
+                        $input['Description'] = $params['update_rules']['description']['tag'] ? preg_replace("/<{$params['update_rules']['description']['tag']}(.*?)>(.*?)<\/{$params['update_rules']['description']['tag']}>/msi", "", $eBayListing->getEntityAttributeValue('Description')) : $params['update_rules']['description']['value'];
                         $input['DescriptionReviseMode'] = eBayDescriptionReviseMode::Replace;
                     }
                 }
@@ -1433,7 +1433,7 @@ class eBayTradingAPI
         return $xml;
     }
 
-    public static function GetItem($eBayListing=null)
+    public static function GetItem($eBayListing=null, $updateDesc=false)
     {
         if(!isset($eBayListing) || empty($eBayListing)) return false;
         $params=array('ItemID'=>$eBayListing->ebay_listing_id, 'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll);
@@ -1522,6 +1522,116 @@ class eBayTradingAPI
                     eBayTradingAPI::processeBayEntityAttributesRC($eBayListing, $eBayAttributeSet, $item);
 
                     echo("eBay item: ".(string)$item->ItemID." attribute process finished!\n".date("Y-m-d H:i:s", time())."item process finished\n\n");
+
+                    if($updateDesc)
+                    {
+                        $replace = false;
+                        $append = "";
+                        $description = (string)$item->Description;
+                        $site_id = eBaySiteName::geteBaySiteNameCode((string)$item->Site);
+                        $primaryCategoryID = (string)$item->PrimaryCategory->CategoryID;
+                        $secodnaryCategoryID = isset($item->SecondaryCategory->CategoryID) ? (string)$item->SecondaryCategory->CategoryID : '';
+                        $codeGA = "<itemtool><script type=\"text/javascript\">document.write(\"<sc\" + \"ript type=\" + \"'tex\" + \"t/jav\" + \"ascript'\" + \" src='//transaction.itemtool.com/portal-lt-backend/js/ga.min.j\" + \"s?ga_track_id=%s'>\" + \"<\" + \"/sc\" + \"ript>\")</script></itemtool>";
+                        $codeAdWords = "<itemtool><script type=\"text/javascript\">document.write(\"<sc\" + \"ript type=\" + \"'tex\" + \"t/jav\" + \"ascript'\" + \" src='//transaction.itemtool.com/portal-lt-backend/js/itemtool.min.j\" + \"s?platform=%s&site_id=%s&category_id=%s&secondary_category_id=%s&company_id=%s&store_id=%s'>\" + \"<\" + \"/sc\" + \"ript>\")</script></itemtool>";
+
+                        //remove old google tag
+                        preg_match_all("/(<googletag>[\s\S]*?<\/googletag>)/im", $description, $matches);
+                        if(isset($matches[1]) && count($matches[1]) > 0 ){
+                            echo "found old googletag.\n";
+                            foreach($matches[1] as $match) $description = str_replace($match, '', $description);
+                            $replace = true;
+                        }
+
+                        preg_match_all("/(<itemtool>[\s\S]*?<\/itemtool>)/im", $description, $matches);
+                        if(isset($matches[1]) && count($matches[1]) > 0 )
+                        {
+                            echo "Found itemtool tag ".count($matches[1])." times.\n\n";
+                            $gaTrack = false;
+                            $adwordsTrack = false;
+                            foreach($matches[1] as $match)
+                            {
+                                echo "found itemtool tag: \n".$match."\n";
+                                //check GA
+                                if($store->ga_track_id)
+                                {
+                                    if(preg_match("/transaction.itemtool.com\/portal-lt-backend\/js\/ga.min.j/i", $match))
+                                    {
+                                        echo "GA code detected.\n";
+                                        if(!preg_match(sprintf("/ga_track_id=%s/i", $store->ga_track_id), $match))
+                                        {
+                                            echo "GA code is not match. update code.\n";
+                                            $replace = true;
+                                            echo $code = sprintf($codeGA, $store->ga_track_id);
+                                            $description = str_replace($match, $code, $description);
+                                        }
+                                        else
+                                            echo "GA code is the same.\n";
+                                        $gaTrack = true;
+                                    }
+                                }
+
+                                //check AdWords
+                                if(preg_match("/transaction.itemtool.com\/portal-lt-backend\/js\/itemtool.min.j/i", $match))
+                                {
+                                    echo "AdWrods code detected.\n";
+                                    if(!preg_match(sprintf("/platform=%s&site_id=%s&category_id=%s&secondary_category_id=%s&company_id=%s&store_id=%s/i", Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id), $match))
+                                    {
+                                        echo "AdWords code is not match. update code.\n";
+                                        $replace = true;
+                                        echo $code = sprintf($codeAdWords, Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id);
+                                        $description = str_replace($match, $code, $description);
+                                    }
+                                    else
+                                        echo "AdWords code is the same.\n";
+                                    $adwordsTrack = true;
+                                }
+                                echo "\n\n";
+                            }
+
+                            if($store->ga_track_id)
+                            {
+                                if(!$gaTrack)
+                                {
+                                    if($replace)
+                                        $description .= sprintf($codeGA, $store->ga_track_id);
+                                    else
+                                        $append .= sprintf($codeGA, $store->ga_track_id);
+                                }
+                            }
+
+                            if(!$adwordsTrack) {
+                                if($replace)
+                                    $description .= sprintf($codeAdWords, Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id);
+                                else
+                                    $append .= sprintf($codeAdWords, Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id);
+                            }
+                        }
+                        else {
+                            echo "No itemtool tag was found.\n";
+                            if($replace) {
+                                if($store->ga_track_id) $description .= sprintf($codeGA, $store->ga_track_id);
+                                $description .= sprintf($codeAdWords, Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id);
+                            }
+                            else {
+                                if($store->ga_track_id) $append .= sprintf($codeGA, $store->ga_track_id);
+                                $append .= sprintf($codeAdWords, Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id);
+                            }
+                        }
+
+                        var_dump($replace, $append, "\n", $description, "\n", $item->Description, "\n");
+                        //update item if needed
+                        $params=array('applied_listings'=>array((string)$item->ItemID), 'update_rules'=>array(
+                            'description'=>array(
+                                'action'=>(!$replace ? 'add' : 'replace'),
+                                'value'=>$description,
+                                'tag'=>'',
+                                'position'=>'append',
+                            )
+                        ));
+                        $result = eBayTradingAPI::ReviseListing($params, false, false);
+                        var_dump("\n", $result);
+                    }
+
                     return true;
                 }
                 catch(Exception $ex)

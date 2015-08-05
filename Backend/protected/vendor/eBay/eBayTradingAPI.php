@@ -1628,11 +1628,10 @@ class eBayTradingAPI
                             )
                         ));
 
-                        var_dump($replace, $append, $description, "\n\n");
-                        if(!$replace && !empty($append)) {
 
-                        }
-                        else {
+                        if($replace || $append)
+                        {
+                            var_dump($replace, $append, $description, "\n\n");
                             $result = eBayTradingAPI::ReviseListing($params, false, false);
                             var_dump("\n", $result);
                         }

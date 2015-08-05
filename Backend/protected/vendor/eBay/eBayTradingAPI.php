@@ -1627,8 +1627,15 @@ class eBayTradingAPI
                                 'position'=>'append',
                             )
                         ));
-                        $result = eBayTradingAPI::ReviseListing($params, false, false);
-                        var_dump("\n", $result);
+
+                        var_dump($replace, $append, $description, "\n\n");
+                        if(!$replace && !empty($append)) {
+
+                        }
+                        else {
+                            $result = eBayTradingAPI::ReviseListing($params, false, false);
+                            var_dump("\n", $result);
+                        }
                     }
 
                     return true;

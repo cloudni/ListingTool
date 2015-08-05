@@ -1618,7 +1618,6 @@ class eBayTradingAPI
                             }
                         }
 
-                        var_dump($replace, $append, "\n", $description, "\n", $item->Description, "\n");
                         //update item if needed
                         $params=array('applied_listings'=>array((string)$item->ItemID), 'company_id'=>$store->company_id, 'update_rules'=>array(
                             'description'=>array(

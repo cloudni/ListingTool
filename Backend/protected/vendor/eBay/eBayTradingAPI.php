@@ -1635,11 +1635,10 @@ class eBayTradingAPI
                             if(!array_key_exists((string)$item->ItemID, $result["Success"]))
                             {
                                 echo "item description updated failed.\n";
-				var_dump($result);
                                 return false;
                             }
-			    else
-			    	echo "item description updated succeeded.\n";
+                            else
+                                echo "item description updated succeeded.\n";
                         }
                         else
                             echo "all codes are detected, no need to update, exit.\n";

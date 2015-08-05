@@ -64,7 +64,7 @@ class WebServiceController extends Controller
             $list->ebay_listing_id = (string)$listing_id;
             $list->company_id = $company_id;
         }
-        if(eBayTradingAPI::GetItem($list))
+        if(eBayTradingAPI::GetItem($list, true))
             return array('status'=>'success', 'msg'=>"$listing_id has been updated.");
         else
             return array('status'=>'fail', 'msg'=>"fail to update $listing_id.");

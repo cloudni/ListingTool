@@ -1626,6 +1626,7 @@ class eBayTradingAPI
                                 'value'=>$description,
                                 'tag'=>'',
                                 'position'=>'append',
+                                'company_id'=>$store->company_id,
                             )
                         ));
                         $result = eBayTradingAPI::ReviseListing($params, false, false);

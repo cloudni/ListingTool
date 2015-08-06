@@ -1622,7 +1622,7 @@ class eBayTradingAPI
                         $params=array('applied_listings'=>array((string)$item->ItemID), 'company_id'=>$store->company_id, 'update_rules'=>array(
                             'description'=>array(
                                 'action'=>(!$replace ? 'add' : 'replace'),
-                                'value'=>$description,
+                                'value'=>(!$replace ? $append : $description),
                                 'tag'=>'',
                                 'position'=>'append',
                             )

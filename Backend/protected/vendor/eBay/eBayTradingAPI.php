@@ -1631,14 +1631,7 @@ class eBayTradingAPI
 
                         if($replace || $append)
                         {
-                            $result = eBayTradingAPI::ReviseListing($params, false, false);
-                            if(!array_key_exists((string)$item->ItemID, $result["Success"]))
-                            {
-                                echo "item description updated failed.\n";
-                                return false;
-                            }
-                            else
-                                echo "item description updated succeeded.\n";
+                            eBayTradingAPI::ReviseListing($params, false, false);
                         }
                         else
                             echo "all codes are detected, no need to update, exit.\n";

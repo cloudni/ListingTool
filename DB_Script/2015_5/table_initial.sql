@@ -283,3 +283,21 @@ CREATE TABLE `lt_google_analytics_report_audience_overview` (
   `percent_new_sessions` decimal(20,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*end 2015-07-09*/
+
+/*start 2015-08-07*/
+DROP TABLE IF EXISTS `lt_google_analytics_report_page_path`;
+CREATE TABLE `lt_google_analytics_report_page_path` (
+  `date` date NOT NULL,
+  `page` varchar(512) NOT NULL,
+  `sessions` int(11) DEFAULT NULL,
+  `bounce_rate` decimal(20,4) DEFAULT NULL,
+  `session_duration` decimal(20,4) DEFAULT NULL,
+  `pageviews_per_session` decimal(20,4) DEFAULT NULL,
+  `avg_time_on_page` decimal(20,4) DEFAULT NULL,
+  `unique_pageviews` int(11) DEFAULT NULL,
+  `entrances` int(11) DEFAULT NULL,
+  `pageviews` int(11) DEFAULT NULL,
+  `exits` int(11) DEFAULT NULL,
+  `avg_session_duration` decimal(20,4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-08-07*/

@@ -3014,9 +3014,9 @@ class eBayTradingAPI
                 $rawData = Yii::app()->cache->get("php_threads_count");
                 if($rawData === false) $rawData = 0;
                 $threadCount = isset($response->ActiveList->PaginationResult->TotalNumberOfPages) ? (int)$response->ActiveList->PaginationResult->TotalNumberOfPages : 0;
-                if($rawData + $threadCount > 200)
+                if($rawData + $threadCount > 300)
                 {
-                    echo "Current store has too many products over 200, total page: ".$threadCount.", current threads: ".$rawData." wait for other job end first.\n";
+                    echo "Current store has too many products over 300, total page: ".$threadCount.", current threads: ".$rawData." wait for other job end first.\n";
                     $scheduleJob = ScheduleJob::model()->find(
                         "platform=:platform and action=:action and params=:params",
                         array(

@@ -3170,34 +3170,7 @@ class eBayTradingAPI
             sleep(300);
         }
 
-        echo "Thread {$thread->name} finished, processed: {$thread->processed}, succeeded: ".count($thread->succeed).", failed: ".count($thread->failed)."\n";
-        foreach($thread->succeed as $item) echo "Thread {$thread->name} succeeded: $item\n";
-        foreach($thread->failed as $item) echo "Thread {$thread->name} failed: $item\n";
         echo "finish to get ebay selling for store id: ".$store->id."\n";
-
-        try
-        {
-            echo "\nCall to update tracking code for store: ".$store->id."\n";
-            $url = "http://transaction.itemtool.com/portal-lt-backend/trackingTag/syncStore.shtml";
-            $post_data = array ("storeId" => $store->id);
-
-            $ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 60*1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-
-            $output = curl_exec($ch);
-            curl_close($ch);
-
-            echo("call result: ".$output."\n");
-        }
-        catch(Exception $ex)
-        {
-            echo "call update tracking code failed.\n";
-        }
 
         $rawData = Yii::app()->cache->get("php_threads_count");
         if($rawData !== false) {

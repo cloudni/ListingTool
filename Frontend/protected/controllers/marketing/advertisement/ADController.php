@@ -102,10 +102,10 @@ class ADController extends Controller
                         $feed->item_id = $listing['ebay_listing_id'];
                         $feed->item_type = $platform;
                         $feed->item_keywords = '';
-                        $feed->item_headline = $listing['title'];
+                        $feed->item_headline = isset($listing['title']) ? $listing['title'] : '';
                         $feed->item_sub_headline = isset($listing['subtitle']) ? $listing['subtitle'] : '';
-                        $feed->item_description = $listing['title'];
-                        $feed->item_address = $listing['location'];
+                        $feed->item_description = isset($listing['title']) ? $listing['title'] : '';
+                        $feed->item_address = isset($listing['location']) ? $listing['location'] : '';
                         $feed->price = isset($listing['startprice']) ? $listing['startprice'] : 0;
                         $feed->image_url = isset($listing['picture']) ? $listing['picture'] : '';
                         $feed->sale_price = isset($listing['startprice']) ? $listing['startprice'] : 0;

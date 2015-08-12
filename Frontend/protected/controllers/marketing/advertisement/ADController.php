@@ -64,7 +64,7 @@ class ADController extends Controller
                     $titleAttribute = $eBayAttributeSet->getEntityAttribute("Title");
                     $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
                     $viewUrlAttribute = $eBayAttributeSet->getEntityAttribute("ListingDetails->ViewItemURL");
-                    $locationAttribute = $eBayAttributeSet->getEntityAttribute("Location");
+                    //$locationAttribute = $eBayAttributeSet->getEntityAttribute("Location");
                     $pictureURLAttribute = $eBayAttributeSet->getEntityAttribute("PictureDetails->PictureURL");
                     $subTitleAttribute = $eBayAttributeSet->getEntityAttribute("SubTitle");
                     $startPriceAttribute = $eBayAttributeSet->getEntityAttribute("StartPrice->Value");
@@ -74,7 +74,7 @@ class ADController extends Controller
                         $select = "SELECT t.*,
                             title.value as title,
                             vurl.value as viewurl,
-                            location.value as location,
+                            /*location.value as location,*/ '' as location,
                             subtitle.value as subtitle,
                             startprice.value as startprice,
                             picture.value as picture
@@ -82,7 +82,7 @@ class ADController extends Controller
                             left join lt_ebay_entity_varchar as title on title.ebay_entity_id = t.id and title.ebay_entity_attribute_id = {$titleAttribute->id}
                             left join lt_ebay_entity_varchar as sstatus on sstatus.ebay_entity_id = t.id and sstatus.ebay_entity_attribute_id = {$listingStatusAttribute->id}
                             left join lt_ebay_entity_varchar as vurl on vurl.ebay_entity_id = t.id and vurl.ebay_entity_attribute_id = {$viewUrlAttribute->id}
-                            left join lt_ebay_entity_varchar as location on location.ebay_entity_id = t.id and location.ebay_entity_attribute_id = {$locationAttribute->id}
+                            /*left join lt_ebay_entity_varchar as location on location.ebay_entity_id = t.id and location.ebay_entity_attribute_id = {$locationAttribute->id}*/
                             left join lt_ebay_entity_varchar as subtitle on subtitle.ebay_entity_id = t.id and subtitle.ebay_entity_attribute_id = {$subTitleAttribute->id}
                             left join lt_ebay_entity_varchar as startprice on startprice.ebay_entity_id = t.id and startprice.ebay_entity_attribute_id = {$startPriceAttribute->id}
                             left join lt_ebay_entity_varchar as picture on picture.ebay_entity_id = t.id and picture.ebay_entity_attribute_id = {$pictureURLAttribute->id}

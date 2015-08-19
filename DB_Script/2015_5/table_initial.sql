@@ -301,3 +301,52 @@ CREATE TABLE `lt_google_analytics_report_page_path` (
   `avg_session_duration` decimal(20,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*end 2015-08-07*/
+
+/*start 2015-08-14*/
+DROP TABLE IF EXISTS `lt_facebook_report_ad_set`;
+CREATE TABLE `lt_facebook_report_ad_set` (
+  `date` date NOT NULL,
+  `ad_set_id` decimal(20,4) DEFAULT NULL,
+  `ad_set_name` decimal(20,4) DEFAULT NULL,
+  `placement` decimal(20,4) DEFAULT NULL,
+  `impressions` decimal(20,4) DEFAULT NULL,
+  `cpm` int(11) DEFAULT NULL,
+  `clicks` int(11) DEFAULT NULL,
+  `ctr` int(11) DEFAULT NULL,
+  `cpc` int(11) DEFAULT NULL,
+  `cost` decimal(20,4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `lt_facebook_report_campaign`;
+CREATE TABLE `lt_facebook_report_ad_set` (
+  `date` date NOT NULL,
+  `ad_set_id` decimal(20,4) DEFAULT NULL,
+  `ad_set_name` decimal(20,4) DEFAULT NULL,
+  `campaign_id` varchar(512) NOT NULL,
+  `campaign_name` int(11) DEFAULT NULL,
+  `placement` decimal(20,4) DEFAULT NULL,
+  `impressions` decimal(20,4) DEFAULT NULL,
+  `cpm` int(11) DEFAULT NULL,
+  `clicks` int(11) DEFAULT NULL,
+  `ctr` int(11) DEFAULT NULL,
+  `cpc` int(11) DEFAULT NULL,
+  `cost` decimal(20,4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `lt_facebook_report_ad`;
+CREATE TABLE `lt_facebook_report_ad_set` (
+  `date` date NOT NULL,
+  `ad_set_id` decimal(20,4) DEFAULT NULL,
+  `ad_set_name` decimal(20,4) DEFAULT NULL,
+  `campaign_id` varchar(512) NOT NULL,
+  `campaign_name` int(11) DEFAULT NULL,
+  `ad_id` decimal(20,4) DEFAULT NULL,
+  `placement` decimal(20,4) DEFAULT NULL,
+  `impressions` decimal(20,4) DEFAULT NULL,
+  `cpm` int(11) DEFAULT NULL,
+  `clicks` int(11) DEFAULT NULL,
+  `ctr` int(11) DEFAULT NULL,
+  `cpc` int(11) DEFAULT NULL,
+  `cost` decimal(20,4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-08-14*/

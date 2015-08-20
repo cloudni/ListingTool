@@ -1531,18 +1531,26 @@ class eBayTradingAPI
                         $site_id = eBaySiteName::geteBaySiteNameCode((string)$item->Site);
                         $primaryCategoryID = (string)$item->PrimaryCategory->CategoryID;
                         $secodnaryCategoryID = isset($item->SecondaryCategory->CategoryID) ? (string)$item->SecondaryCategory->CategoryID : '';
-                        $codeGA = "<itemtool><script type=\"text/javascript\">document.write(\"<sc\" + \"ript type=\" + \"'tex\" + \"t/jav\" + \"ascript'\" + \" src='//transaction.itemtool.com/portal-lt-backend/js/ga.min.j\" + \"s?ga_track_id=%s'>\" + \"<\" + \"/sc\" + \"ript>\")</script></itemtool>";
-                        $codeAdWords = "<itemtool><script type=\"text/javascript\">document.write(\"<sc\" + \"ript type=\" + \"'tex\" + \"t/jav\" + \"ascript'\" + \" src='//transaction.itemtool.com/portal-lt-backend/js/itemtool.min.j\" + \"s?platform=%s&site_id=%s&category_id=%s&secondary_category_id=%s&company_id=%s&store_id=%s'>\" + \"<\" + \"/sc\" + \"ript>\")</script></itemtool>";
+                        $codeGA = "<itemtool><script type=\"text/javascript\">document.write(\"<sc\" + \"ript type=\" + \"'tex\" + \"t/jav\" + \"ascript'\" + \" src='//track.itemtool.com/js/ga.min.j\" + \"s?ga_track_id=%s'>\" + \"<\" + \"/sc\" + \"ript>\")</script></itemtool>";
+                        $codeAdWords = "<itemtool><script type=\"text/javascript\">document.write(\"<sc\" + \"ript type=\" + \"'tex\" + \"t/jav\" + \"ascript'\" + \" src='//track.itemtool.com/js/itemtool.j\" + \"s?platform=%s&site_id=%s&category_id=%s&secondary_category_id=%s&company_id=%s&store_id=%s'>\" + \"<\" + \"/sc\" + \"ript>\")</script></itemtool>";
 
                         //remove old google tag
                         preg_match_all("/(<googletag>[\s\S]*?<\/googletag>)/im", $description, $matches);
                         if(isset($matches[1]) && count($matches[1]) > 0 ){
-                            echo "found old googletag.\n";
+                            echo "found old google tag.\n";
                             foreach($matches[1] as $match) $description = str_replace($match, '', $description);
                             $replace = true;
                         }
 
                         preg_match_all("/(<itemtool>[\s\S]*?<\/itemtool>)/im", $description, $matches);
+                        //reset all tracking code
+                        if(isset($matches[1]) && count($matches[1]) > 0 ){
+                            echo "found old item tool tag.\n";
+                            foreach($matches[1] as $match) $description = str_replace($match, '', $description);
+                            $replace = true;
+                        }
+
+                        $matches = array();
                         if(isset($matches[1]) && count($matches[1]) > 0 )
                         {
                             echo "Found itemtool tag ".count($matches[1])." times.\n\n";
@@ -1554,7 +1562,7 @@ class eBayTradingAPI
                                 //check GA
                                 if($store->ga_track_id)
                                 {
-                                    if(preg_match("/transaction.itemtool.com\/portal-lt-backend\/js\/ga.min.j/i", $match))
+                                    if(preg_match("/track.itemtool.com\/js\/ga.min.j/i", $match))
                                     {
                                         echo "GA code detected.\n";
                                         if(!preg_match(sprintf("/ga_track_id=%s/i", $store->ga_track_id), $match))
@@ -1571,7 +1579,7 @@ class eBayTradingAPI
                                 }
 
                                 //check AdWords
-                                if(preg_match("/transaction.itemtool.com\/portal-lt-backend\/js\/itemtool.min.j/i", $match))
+                                if(preg_match("/track.itemtool.com\/js\/itemtool.j/i", $match))
                                 {
                                     echo "AdWrods code detected.\n";
                                     if(!preg_match(sprintf("/platform=%s&site_id=%s&category_id=%s&secondary_category_id=%s&company_id=%s&store_id=%s/i", Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id), $match))

@@ -307,47 +307,45 @@ CREATE TABLE `lt_google_analytics_report_page_path` (
 DROP TABLE IF EXISTS `lt_facebook_report_ad_set`;
 CREATE TABLE `lt_facebook_report_ad_set` (
   `date` date NOT NULL,
-  `ad_set_id` decimal(20,4) DEFAULT NULL,
-  `ad_set_name` decimal(20,4) DEFAULT NULL,
-  `placement` decimal(20,4) DEFAULT NULL,
-  `impressions` decimal(20,4) DEFAULT NULL,
-  `cpm` int(11) DEFAULT NULL,
+  `ad_set_id` varchar(14) DEFAULT NULL,
+  `ad_set_name` varchar(36) DEFAULT NULL,
+  `placement` varchar(256) DEFAULT NULL,
+  `impressions` int(11) DEFAULT NULL,
+  `cpm` decimal(20,4) DEFAULT NULL,
   `clicks` int(11) DEFAULT NULL,
-  `ctr` int(11) DEFAULT NULL,
-  `cpc` int(11) DEFAULT NULL,
+  `ctr` decimal(20,4) DEFAULT NULL,
+  `cpc` decimal(20,4) DEFAULT NULL,
   `cost` decimal(20,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `lt_facebook_report_campaign`;
 CREATE TABLE `lt_facebook_report_campaign` (
-  `date` date NOT NULL,
-  `ad_set_id` decimal(20,4) DEFAULT NULL,
-  `ad_set_name` decimal(20,4) DEFAULT NULL,
-  `campaign_id` varchar(512) NOT NULL,
-  `campaign_name` int(11) DEFAULT NULL,
-  `placement` decimal(20,4) DEFAULT NULL,
-  `impressions` decimal(20,4) DEFAULT NULL,
-  `cpm` int(11) DEFAULT NULL,
+  `ad_set_id` varchar(14) DEFAULT NULL,
+  `ad_set_name` varchar(14) DEFAULT NULL,
+  `campaign_id` varchar(14) NOT NULL,
+  `campaign_name` varchar(36) DEFAULT NULL,
+  `placement` varchar(256) DEFAULT NULL,
+  `impressions` int(11) DEFAULT NULL,
+  `cpm` decimal(20,4) DEFAULT NULL,
   `clicks` int(11) DEFAULT NULL,
-  `ctr` int(11) DEFAULT NULL,
-  `cpc` int(11) DEFAULT NULL,
+  `ctr` decimal(20,4) DEFAULT NULL,
+  `cpc` decimal(20,4) DEFAULT NULL,
   `cost` decimal(20,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `lt_facebook_report_ad`;
 CREATE TABLE `lt_facebook_report_ad` (
-  `date` date NOT NULL,
-  `ad_set_id` decimal(20,4) DEFAULT NULL,
-  `ad_set_name` decimal(20,4) DEFAULT NULL,
-  `campaign_id` varchar(512) NOT NULL,
-  `campaign_name` int(11) DEFAULT NULL,
-  `ad_id` decimal(20,4) DEFAULT NULL,
-  `placement` decimal(20,4) DEFAULT NULL,
-  `impressions` decimal(20,4) DEFAULT NULL,
-  `cpm` int(11) DEFAULT NULL,
+  `ad_set_id` varchar(14) DEFAULT NULL,
+  `ad_set_name` varchar(14) DEFAULT NULL,
+  `campaign_id` varchar(14) NOT NULL,
+  `campaign_name` varchar(36) DEFAULT NULL,
+  `ad_id` varchar(14) DEFAULT NULL,
+  `placement` varchar(256) DEFAULT NULL,
+  `impressions` int(11) DEFAULT NULL,
+  `cpm` decimal(20,4) DEFAULT NULL,
   `clicks` int(11) DEFAULT NULL,
-  `ctr` int(11) DEFAULT NULL,
-  `cpc` int(11) DEFAULT NULL,
+  `ctr` decimal(20,4) DEFAULT NULL,
+  `cpc` decimal(20,4) DEFAULT NULL,
   `cost` decimal(20,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*end 2015-08-14*/

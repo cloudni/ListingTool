@@ -288,6 +288,7 @@ CREATE TABLE `lt_google_analytics_report_audience_overview` (
 DROP TABLE IF EXISTS `lt_google_analytics_report_page_path`;
 CREATE TABLE `lt_google_analytics_report_page_path` (
   `date` date NOT NULL,
+  `property` varchar(64) NOT NULL,
   `page` varchar(512) NOT NULL,
   `sessions` int(11) DEFAULT NULL,
   `bounce_rate` decimal(20,4) DEFAULT NULL,

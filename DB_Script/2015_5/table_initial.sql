@@ -319,7 +319,7 @@ CREATE TABLE `lt_facebook_report_ad_set` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `lt_facebook_report_campaign`;
-CREATE TABLE `lt_facebook_report_ad_set` (
+CREATE TABLE `lt_facebook_report_campaign` (
   `date` date NOT NULL,
   `ad_set_id` decimal(20,4) DEFAULT NULL,
   `ad_set_name` decimal(20,4) DEFAULT NULL,
@@ -335,7 +335,7 @@ CREATE TABLE `lt_facebook_report_ad_set` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `lt_facebook_report_ad`;
-CREATE TABLE `lt_facebook_report_ad_set` (
+CREATE TABLE `lt_facebook_report_ad` (
   `date` date NOT NULL,
   `ad_set_id` decimal(20,4) DEFAULT NULL,
   `ad_set_name` decimal(20,4) DEFAULT NULL,

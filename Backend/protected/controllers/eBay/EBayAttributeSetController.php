@@ -46,9 +46,10 @@ class EBayAttributeSetController extends Controller
 
     public function actionTestGetSellerList()
     {
-        $store = Store::model()->findByPk(38);
-        eBayTradingAPI::GetSellerList($store->id);
-        //echo 'dd';eBayTradingAPI::GetItem(eBayListing::model()->findByPk(2118));
+        eBayTradingAPI::GetItem(eBayListing::model()->findByPk(37738));
+        /*$store = Store::model()->findByPk(38);
+        eBayTradingAPI::GetSellerList($store->id);*/
+
         /*$params=array('CategorySiteID'=>203, 'CategoryParent'=>'', 'LevelLimit'=>4, 'ViewAllNodes'=>true, 'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll);
         eBayTradingAPI::GetCategories($params);*/
         /*eBayTradingAPI::GeteBayDetails(eBaySiteIdCodeType::eBayMotors, 2);die();

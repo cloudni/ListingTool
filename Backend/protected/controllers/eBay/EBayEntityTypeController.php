@@ -28,7 +28,7 @@ class EBayEntityTypeController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view', 'test'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -43,6 +43,30 @@ class EBayEntityTypeController extends Controller
 				'users'=>array('*'),
 			),
 		);
+	}
+
+	public function actionTest()
+	{
+		$listing_id = '221545344981';
+		$store_id = 91;
+		$company_id = 4;
+		if(!$store_id) return array('status'=>'fail', 'msg'=>'store id is invalid.');
+
+		if(!$company_id) return array('status'=>'fail', 'msg'=>'company id is invalid.');
+
+		$list = eBayListing::model()->find("ebay_listing_id=:ebay_listing_id and store_id=:store_id and company_id=:company_id", array(":ebay_listing_id"=>$listing_id, ":store_id"=>$store_id, ":company_id"=>$company_id));
+
+		if(empty($list))
+		{
+			$list = new eBayListing();
+			$list->store_id = $store_id;
+			$list->ebay_listing_id = (string)$listing_id;
+			$list->company_id = $company_id;
+		}
+		if(eBayTradingAPI::GetItem($list))
+			return array('status'=>'success', 'msg'=>"$listing_id has been updated.");
+		else
+			return array('status'=>'fail', 'msg'=>"fail to update $listing_id.");
 	}
 
 	/**

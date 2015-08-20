@@ -14,12 +14,37 @@ require_once 'Wish/WishAPI.php';
 
 class schedulejobCommand extends CConsoleCommand
 {
+    private $maxThreads = 2 + 3;//7 means existing threads
+
     public function run($args)
     {
+        $count = `ps -aef | grep 'yiic.php schedulejob run' | wc -l`;
+        if($count >= $this->maxThreads) {
+            echo "Currently there are ".($this->maxThreads - 3)." threads running, waiting for next time\n";
+            exit();
+        }
+        echo "Current running threads: \n";
+        echo `ps -aef | grep 'yiic.php schedulejob run' `;
+        echo "count: $count\n";
+
+        preg_match("/mysql:host\=([0-9.]+);/i", Yii::app()->db->connectionString, $result);
+        $str = "mysqladmin  -u".Yii::app()->db->username." -p".Yii::app()->db->password." -h".$result[1]." status";
+        echo $thread = `$str`;
+        preg_match("/Threads:\s+([0-9]+)\s+/i", $thread, $result);
+        if(!isset($result[1]) )
+        {
+            echo "can not get database connection thread count, exit\n";
+            exit();
+        }
+        else if($result[1] >= 200)
+        {
+            echo "Database connection thread count {$result[1]} is too large, exit\n";
+            exit();
+        }
+
         $transaction = null;
         try
         {
-            $transaction= Yii::app()->db->beginTransaction();
             $criteria=new CDbCriteria;
             $criteria->condition = "last_execute_status!=:last_execute_status and next_execute_time_utc<=:next_execute_time_utc and is_active=:is_active";
             $criteria->params=array(
@@ -27,8 +52,24 @@ class schedulejobCommand extends CConsoleCommand
                 ':next_execute_time_utc'=>time(),
                 ':is_active'=>ScheduleJob::ACTIVE_YES,
             );
-            $criteria->order="next_execute_time_utc asc";
+            $criteria->order="next_execute_time_utc asc, id desc";
             $scheduleJob = ScheduleJob::model()->find($criteria);
+
+            if($scheduleJob->platform == Store::PLATFORM_EBAY && $scheduleJob->action == ScheduleJob::ACTION_EBAYGETMYEBAYSELLING)
+            {
+                $rawData = Yii::app()->cache->get("php_threads_count");
+                if($rawData === false)
+                {
+                    $rawData = 0;
+                    Yii::app()->cache->set("php_threads_count",$rawData);
+                }
+                echo "Current php threads count is $rawData.\n";
+                if($rawData >= 300)
+                {
+                    echo "PHP threads is over 300, exit schedule job, waiting for next time.\n";
+                    exit();
+                }
+            }
 
             if(empty($scheduleJob))
             {
@@ -37,6 +78,7 @@ class schedulejobCommand extends CConsoleCommand
             }
             echo "schedule job detected, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action).' '.date("Y-m-d h:i:sa")."\n";
 
+            $transaction= Yii::app()->db->beginTransaction();
             $scheduleJob->last_execute_status = ScheduleJob::LAST_EXECUTE_STATUS_EXECUTE;
             $scheduleJob->last_execute_time_utc = time();
             $scheduleJob->update();
@@ -63,10 +105,9 @@ class schedulejobCommand extends CConsoleCommand
                 break;
         }
 
-        $updateJob = false;
-        while(!$updateJob)
+        while(true)
         {
-            $transaction = null;
+            /*$transaction = null;
             try
             {
                 while(!$transaction)
@@ -96,8 +137,20 @@ class schedulejobCommand extends CConsoleCommand
             {
                 if(isset($transaction)) $transaction->rollback();
                 echo "fail to update schedule job status to end, code: {$ex->getCode()}, message: {$ex->getMessage()}.\n";
+            }*/
+            $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote?wsdl', array("trace" => true, "connection_timeout" => 900));
+            $result = $client->updateScheduleJob($scheduleJob->id, !$result ? ScheduleJob::LAST_EXECUTE_STATUS_ERROR : ScheduleJob::LAST_EXECUTE_STATUS_SUCCESS);
+            if($result['status'] == 'success')
+            {
+                echo "Schedule job updated succeeded.\n";
+                break;
+            }
+            else
+            {
+                echo "Schedule job updated failed. ".$result['msg']."\n";
             }
         }
+        return;
     }
 
     protected function processeBayScheduleJob($scheduleJob)
@@ -172,6 +225,11 @@ class schedulejobCommand extends CConsoleCommand
 
         WishAPI::GetAllProducts($store->id);
 
+        $store->last_listing_sync_time_utc = time();
+        $store->update_time_utc = time();
+        $store->update_user_id = 0;
+        $store->save();
+
         echo "end schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n\n";
         return true;
     }
@@ -192,6 +250,21 @@ class schedulejobCommand extends CConsoleCommand
         $store = Store::model()->findByPk((int)$scheduleJob->params);
 
         eBayTradingAPI::GetMyeBaySellingV3Thread($store->id);
+
+        /*$store->last_listing_sync_time_utc = time();
+        $store->update_time_utc = time();
+        $store->update_user_id = 0;
+        $store->save();*/
+        $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote?wsdl', array("trace" => true, "connection_timeout" => 900));
+        $result = $client->updateStoreSyncTime($store->id);
+        if($result['status'] == 'success')
+        {
+            echo "store sync time updated succeeded.\n";
+        }
+        else
+        {
+            echo "store sync time updated failed.\n";
+        }
 
         echo "end schedule job, platform: ".$scheduleJob->getPlatformText($scheduleJob->platform).", action: ".$scheduleJob->getActionText($scheduleJob->action)."\n\n";
         return true;

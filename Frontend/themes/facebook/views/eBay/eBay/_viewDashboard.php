@@ -106,6 +106,7 @@ require_once 'eBay/reference.php';
                     <div style="padding-top: 5px;">
                         <span class="titleColor"><?php echo ResourceStringTool::getSourceStringByKeyAndLanguage(Yii::app()->language,'ebay_store_performance');?>:&nbsp;</span>
                         <span><?php
+                            if(!empty($performances))
                         if(isset($data['sellerdashboardid']))
                         {
                             $sellerDashboard = eBaySellerDashboard::model()->findByPk($data['sellerdashboardid']);

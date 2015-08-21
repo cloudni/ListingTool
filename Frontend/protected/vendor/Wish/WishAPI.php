@@ -78,7 +78,7 @@ class WishAPI {
         if(empty($wishProd)) return false;
 
         $client = new WishClient($wishProd->store->wish_token);
-        $prod = $client->getProductById($id);var_dump($prod);
+        $prod = $client->getProductById($id);
         $wishProd->main_image = isset($prod->main_image) ? (string)$prod->main_image : '';
         $wishProd->description = isset($prod->description) ? (string)$prod->description : '';
         $wishProd->name = isset($prod->name) ? (string)$prod->name : '';
@@ -89,7 +89,7 @@ class WishAPI {
         $wishProd->number_saves = isset($prod->number_saves) ? (int)$prod->number_saves : 0;
         $wishProd->number_sold = isset($prod->number_sold) ? (int)$prod->number_sold : 0;
         $wishProd->parent_sku = isset($prod->parent_sku) ? (string)$prod->parent_sku : '';
-        $wishProd->save(false);
+        $wishProd->save();
         echo "product {$wishProd->wish_id} has been processed.\n";
     }
 }

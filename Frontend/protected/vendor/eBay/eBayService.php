@@ -136,7 +136,7 @@ class eBayService
         curl_setopt($ch, CURLOPT_POST, 1); // POST Method
         curl_setopt($ch, CURLOPT_POSTFIELDS, $this->post_data); //My XML post fild Request
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);     //return as string.
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60*15);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60*20);
 
         $time = date("Ymd.his", time());
         if(Yii::app()->params['ebay']['logRequest'])

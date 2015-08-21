@@ -540,7 +540,8 @@ class eBayTradingAPI
             //update
             if(isset($cleared[$i]) && $i < $fieldCount)
             {
-                $update ="update {{{$eBayEntity->eBayEntityType->value_table}_{$valueType}}} set
+                $transaction= Yii::app()->db->beginTransaction();
+                $update = "update {{{$eBayEntity->eBayEntityType->value_table}_{$valueType}}} set
                     `ebay_attribute_id` = :ebay_attribute_id,
                     `ebay_entity_attribute_id` = :ebay_entity_attribute_id,
                     `parent_value_id` = :parent_value_id,
@@ -572,7 +573,7 @@ class eBayTradingAPI
                         $command->bindValue(":value", '', PDO::PARAM_STR);
                         break;
                     default:
-                        echo "unknown attribute value type:".$eBayEntityAttribute->eBayAttribute->backend_type.". ";
+                        echo "unknown attribute value type:" . $eBayEntityAttribute->eBayAttribute->backend_type . ". ";
                         continue;
                         break;
                 }
@@ -592,12 +593,14 @@ class eBayTradingAPI
                 }
                 $command->bindValue(":id", $cleared[$i]['id'], PDO::PARAM_INT);
                 $command->execute();
+                $transaction->commit();
                 //echo(" update entity value type:{$valueType}, id: ".$cleared[$i]['id'].", value: ".(string)(gettype($field) == 'array' ? $field[$i] : $field).". ");
-                if(gettype($field) != 'array')  return $cleared[$i]['id'];
+                if(gettype($field) != 'array') return $cleared[$i]['id'];
             }
             //insert
             elseif(!isset($cleared[$i]) && $i < $fieldCount)
             {
+                $transaction= Yii::app()->db->beginTransaction();
                 $insert = "INSERT INTO {{{$eBayEntity->eBayEntityType->value_table}_{$valueType}}}
                             (`ebay_entity_type_id`, `ebay_attribute_id`, `ebay_entity_attribute_id`, `value`, `ebay_entity_id`, `parent_value_id`, `parent_value_type`, `parent_value_entity_attribute_id`)
                             VALUES
@@ -631,7 +634,7 @@ class eBayTradingAPI
                         $command->bindValue(":value", '', PDO::PARAM_STR);
                         break;
                     default:
-                        echo "unknown attribute value type:".$eBayEntityAttribute->eBayAttribute->backend_type.". ";
+                        echo "unknown attribute value type:" . $eBayEntityAttribute->eBayAttribute->backend_type . ". ";
                         continue;
                         break;
                 }
@@ -648,14 +651,16 @@ class eBayTradingAPI
                     $command->bindValue(":parent_value_entity_attribute_id", 0, PDO::PARAM_INT);
                 }
                 $command->execute();
-                $valueId=Yii::app()->db->getLastInsertID();
+                $valueId = Yii::app()->db->getLastInsertID();
+                $transaction->commit();
                 //echo(" insert entity value type:{$valueType}, id: ".$valueId.", value: ".(string)(gettype($field) == 'array' ? $field[$i] : $field).". ");
-                if(gettype($field) != 'array')  return $valueId;
+                if(gettype($field) != 'array') return $valueId;
             }
             else
             {
                 break;
             }
+
         }
 
         return 0;
@@ -943,7 +948,7 @@ class eBayTradingAPI
         return $xml;
     }
 
-    public static function ReviseListing($params=array('applied_listings'=>array(), 'update_rules'=>array()), $VerifyOnly=true)
+    public static function ReviseListing($params=array('applied_listings'=>array(), 'update_rules'=>array()), $VerifyOnly=true, $updateItem=true)
     {
         if(empty($params) || empty($params['applied_listings']) || empty($params['update_rules']))
             throw new Exception(ExceptionError::getExceptionErrorText(ExceptionError::NonInputErrorCode), ExceptionError::NonInputErrorCode);
@@ -978,16 +983,16 @@ class eBayTradingAPI
                 if(!empty($params['update_rules']['description']))
                 {
                     //update item description if needed
-                    eBayTradingAPI::GetItem($eBayListing);
+                    if($updateItem) eBayTradingAPI::GetItem($eBayListing);
 
                     if($params['update_rules']['description']['action'] == 'add')
                     {
-                        $input['Description'] = eBayService::createXMLElement($params['update_rules']['description']['tag'],$params['update_rules']['description']['value']);
+                        $input['Description'] = $params['update_rules']['description']['tag'] ? eBayService::createXMLElement($params['update_rules']['description']['tag'],$params['update_rules']['description']['value']) : $params['update_rules']['description']['value'];
                         $input['DescriptionReviseMode'] = $params['update_rules']['description']['position'] == 'prepend' ? eBayDescriptionReviseMode::Prepend : eBayDescriptionReviseMode::Append;
                     }
                     else
                     {
-                        $input['Description'] = preg_replace("/<{$params['update_rules']['description']['tag']}(.*?)>(.*?)<\/{$params['update_rules']['description']['tag']}>/msi", "", $eBayListing->getEntityAttributeValue('Description'));
+                        $input['Description'] = $params['update_rules']['description']['tag'] ? preg_replace("/<{$params['update_rules']['description']['tag']}(.*?)>(.*?)<\/{$params['update_rules']['description']['tag']}>/msi", "", $eBayListing->getEntityAttributeValue('Description')) : $params['update_rules']['description']['value'];
                         $input['DescriptionReviseMode'] = eBayDescriptionReviseMode::Replace;
                     }
                 }
@@ -1428,7 +1433,7 @@ class eBayTradingAPI
         return $xml;
     }
 
-    public static function GetItem($eBayListing=null)
+    public static function GetItem($eBayListing=null, $updateDesc=false)
     {
         if(!isset($eBayListing) || empty($eBayListing)) return false;
         $params=array('ItemID'=>$eBayListing->ebay_listing_id, 'DetailLevel'=>eBayDetailLevelCodeType::ReturnAll);
@@ -1509,13 +1514,137 @@ class eBayTradingAPI
                     $transaction= Yii::app()->db->beginTransaction();
                     //clear all item's attribute value record
                     self::clearAlleBayEntityAttributeValue($eBayListing);
+                    $transaction->commit();
                     echo "all attribute value have been cleared.\n";
 
                     //start to process attribute by attribute
                     echo("start to process eBay item ".(string)$item->ItemID." attribute:\n");
                     eBayTradingAPI::processeBayEntityAttributesRC($eBayListing, $eBayAttributeSet, $item);
-                    $transaction->commit();
+
                     echo("eBay item: ".(string)$item->ItemID." attribute process finished!\n".date("Y-m-d H:i:s", time())."item process finished\n\n");
+
+                    if($updateDesc)
+                    {
+                        $replace = false;
+                        $append = "";
+                        $description = (string)$item->Description;
+                        $site_id = eBaySiteName::geteBaySiteNameCode((string)$item->Site);
+                        $primaryCategoryID = (string)$item->PrimaryCategory->CategoryID;
+                        $secodnaryCategoryID = isset($item->SecondaryCategory->CategoryID) ? (string)$item->SecondaryCategory->CategoryID : '';
+                        $codeGA = "<itemtool><script type=\"text/javascript\">document.write(\"<sc\" + \"ript type=\" + \"'tex\" + \"t/jav\" + \"ascript'\" + \" src='//track.itemtool.com/js/ga.min.j\" + \"s?ga_track_id=%s'>\" + \"<\" + \"/sc\" + \"ript>\")</script></itemtool>";
+                        $codeAdWords = "<itemtool><script type=\"text/javascript\">document.write(\"<sc\" + \"ript type=\" + \"'tex\" + \"t/jav\" + \"ascript'\" + \" src='//track.itemtool.com/js/itemtool.j\" + \"s?platform=%s&site_id=%s&category_id=%s&secondary_category_id=%s&company_id=%s&store_id=%s'>\" + \"<\" + \"/sc\" + \"ript>\")</script></itemtool>";
+
+                        //remove old google tag
+                        preg_match_all("/(<googletag>[\s\S]*?<\/googletag>)/im", $description, $matches);
+                        if(isset($matches[1]) && count($matches[1]) > 0 ){
+                            echo "found old google tag.\n";
+                            foreach($matches[1] as $match) $description = str_replace($match, '', $description);
+                            $replace = true;
+                        }
+
+                        preg_match_all("/(<itemtool>[\s\S]*?<\/itemtool>)/im", $description, $matches);
+                        //reset all tracking code
+                        if(isset($matches[1]) && count($matches[1]) > 0 ){
+                            echo "found old item tool tag.\n";
+                            foreach($matches[1] as $match) $description = str_replace($match, '', $description);
+                            $replace = true;
+                        }
+
+                        $matches = array();
+                        if(isset($matches[1]) && count($matches[1]) > 0 )
+                        {
+                            echo "Found itemtool tag ".count($matches[1])." times.\n\n";
+                            $gaTrack = false;
+                            $adwordsTrack = false;
+                            foreach($matches[1] as $match)
+                            {
+                                echo "found itemtool tag: \n".$match."\n";
+                                //check GA
+                                if($store->ga_track_id)
+                                {
+                                    if(preg_match("/track.itemtool.com\/js\/ga.min.j/i", $match))
+                                    {
+                                        echo "GA code detected.\n";
+                                        if(!preg_match(sprintf("/ga_track_id=%s/i", $store->ga_track_id), $match))
+                                        {
+                                            echo "GA code is not match. update code.\n";
+                                            $replace = true;
+                                            echo $code = sprintf($codeGA, $store->ga_track_id);
+                                            $description = str_replace($match, $code, $description);
+                                        }
+                                        else
+                                            echo "GA code is the same.\n";
+                                        $gaTrack = true;
+                                    }
+                                }
+
+                                //check AdWords
+                                if(preg_match("/track.itemtool.com\/js\/itemtool.j/i", $match))
+                                {
+                                    echo "AdWrods code detected.\n";
+                                    if(!preg_match(sprintf("/platform=%s&site_id=%s&category_id=%s&secondary_category_id=%s&company_id=%s&store_id=%s/i", Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id), $match))
+                                    {
+                                        echo "AdWords code is not match. update code.\n";
+                                        $replace = true;
+                                        echo $code = sprintf($codeAdWords, Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id);
+                                        $description = str_replace($match, $code, $description);
+                                    }
+                                    else
+                                        echo "AdWords code is the same.\n";
+                                    $adwordsTrack = true;
+                                }
+                                echo "\n\n";
+                            }
+
+                            if($store->ga_track_id)
+                            {
+                                if(!$gaTrack)
+                                {
+                                    if($replace)
+                                        $description .= sprintf($codeGA, $store->ga_track_id);
+                                    else
+                                        $append .= sprintf($codeGA, $store->ga_track_id);
+                                }
+                            }
+
+                            if(!$adwordsTrack) {
+                                if($replace)
+                                    $description .= sprintf($codeAdWords, Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id);
+                                else
+                                    $append .= sprintf($codeAdWords, Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id);
+                            }
+                        }
+                        else {
+                            echo "No itemtool tag was found.\n";
+                            if($replace) {
+                                if($store->ga_track_id) $description .= sprintf($codeGA, $store->ga_track_id);
+                                $description .= sprintf($codeAdWords, Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id);
+                            }
+                            else {
+                                if($store->ga_track_id) $append .= sprintf($codeGA, $store->ga_track_id);
+                                $append .= sprintf($codeAdWords, Store::PLATFORM_EBAY, $site_id, $primaryCategoryID, $secodnaryCategoryID, $store->company_id, $store->id);
+                            }
+                        }
+
+                        //update item if needed
+                        $params=array('applied_listings'=>array((string)$item->ItemID), 'company_id'=>$store->company_id, 'update_rules'=>array(
+                            'description'=>array(
+                                'action'=>(!$replace ? 'add' : 'replace'),
+                                'value'=>(!$replace ? $append : $description),
+                                'tag'=>'',
+                                'position'=>'append',
+                            )
+                        ));
+
+
+                        if($replace || $append)
+                        {
+                            eBayTradingAPI::ReviseListing($params, false, false);
+                        }
+                        else
+                            echo "all codes are detected, no need to update, exit.\n";
+                    }
+
                     return true;
                 }
                 catch(Exception $ex)
@@ -2810,4 +2939,344 @@ class eBayTradingAPI
 
         return true;
     }
-} 
+
+    public static function GetMyeBaySellingV3Thread(
+        $storeId=null,
+        $param=array(
+            'ActiveList'=>array(
+                'Include'=>true,
+                'IncludeNotes'=>false,
+                'Pagination'=>array('EntriesPerPage'=>50, 'PageNumber'=>1),
+            ),
+
+            'SellingSummary'=>array('Include'=>true),
+        )
+    )
+    {
+        if(!isset($storeId) || $storeId < 1)
+        {
+            return false;
+        }
+
+        $store = Store::model()->findByPk($storeId);
+        if(empty($store) || $store->is_active != Store::ACTIVE_YES || empty($store->ebay_token))
+        {
+            echo "store does not found or disactive!\n";
+            return false;
+        }
+
+        $eBayEntityType = eBayEntityType::model()->find('entity_model=:entity_model', array(':entity_model'=>'eBayListing'));
+        if(empty($eBayEntityType)) { echo "invalid ebay entity!\n"; return false;}
+        $eBayAttributeSet = eBayAttributeSet::model()->find(
+            'entity_type_id=:entity_type_id and is_active=:is_active',
+            array(
+                ':entity_type_id'=>$eBayEntityType->id,
+                ':is_active'=>true,
+            )
+        );
+        if(empty($eBayAttributeSet)) { echo "invalid ebay attribute set.\n"; return false;}
+
+        $listingStatusAttribute = $eBayAttributeSet->getEntityAttribute("SellingStatus->ListingStatus");
+        $select = "select t.ebay_listing_id
+                    from lt_ebay_listing t
+                    left join lt_ebay_entity_varchar eev on eev.ebay_entity_id = t.id and eev.ebay_entity_attribute_id = :ebay_entity_attribute_id
+                    left join lt_store s on s.id = t.store_id
+                    where eev.value = :listingStatus and s.id = :store_id; ";
+        $command = Yii::app()->db->createCommand($select);
+        $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
+        $command->bindValue(":listingStatus", eBayListingStatusCodeType::Active, PDO::PARAM_STR);
+        $command->bindValue(":store_id", $store->id, PDO::PARAM_INT);
+        $result = $command->queryAll();
+        $activeLists = array();
+        if(!empty($result)) foreach($result as $val) $activeLists[] = (string)$val['ebay_listing_id'];
+
+        $updateLists = array();
+        $eBayService = new eBayService();
+        $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").self::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
+        $eBayService->api_url = $store->eBayApiKey->api_url;
+        $eBayService->createHTTPHead($store->ebay_site_code, 893, $store->eBayApiKey->dev_id, $store->eBayApiKey->app_id, $store->eBayApiKey->cert_id, "GetMyeBaySelling");
+        echo "start to get ebay selling for store id: ".$store->id.", site id: ".$store->ebay_site_code."\n";
+
+        $maxTry = 15;
+        $pool = array();
+        $threadCount = 0;
+        try
+        {
+            $response = $eBayService->request();
+
+            $try = 0;
+            while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
+            {
+                var_dump($response);
+                $try++;
+                echo "eBay service call failed! try $try time.\n";
+                $response = $eBayService->request();
+                if($try >= $maxTry) return false;
+            }
+
+            if((string)$response->Ack===eBayAckCodeType::Success)
+            {
+                $rawData = Yii::app()->cache->get("php_threads_count");
+                if($rawData === false) $rawData = 0;
+                $threadCount = isset($response->ActiveList->PaginationResult->TotalNumberOfPages) ? (int)$response->ActiveList->PaginationResult->TotalNumberOfPages : 0;
+                if($rawData + $threadCount > 300)
+                {
+                    echo "Current store has too many products over 300, total page: ".$threadCount.", current threads: ".$rawData." wait for other job end first.\n";
+                    $scheduleJob = ScheduleJob::model()->find(
+                        "platform=:platform and action=:action and params=:params",
+                        array(
+                            ':platform'=>Store::PLATFORM_EBAY,
+                            ':action'=>ScheduleJob::ACTION_EBAYGETMYEBAYSELLING,
+                            ':params'=>$storeId,
+                        )
+                    );
+                    $scheduleJob->last_execute_status = 4;
+                    $scheduleJob->next_execute_time_utc = 0;
+                    $scheduleJob->save(false);
+                    die();
+                }
+                Yii::app()->cache->set("php_threads_count",$rawData + $threadCount);
+                echo "Current php threads count updated from $rawData to ".($rawData + $threadCount).".\n";
+
+                //process ebay active items
+                if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))
+                {
+                    foreach($response->ActiveList->ItemArray->Item as $item)
+                    {
+                        if(isset($item->ItemID) && $item->ItemID)
+                        {
+                            $updateLists[] = (string)$item->ItemID;
+                            echo (string)$item->ItemID . " added to queue for thread page 1.!\n";
+                        }
+                    }
+                    $activeLists = array_diff($activeLists, $updateLists);
+                    $getItemWork = new GetItemWork("Thread for page 1", $store->id, $store->company_id, $updateLists);
+                    $pool[] = $getItemWork;
+                    $getItemWork->start();
+                }
+
+                while(isset($response->ActiveList) && (int)$response->ActiveList->PaginationResult->TotalNumberOfPages > $param['ActiveList']['Pagination']['PageNumber'])
+                {
+                    $updateLists = array();
+                    $param['ActiveList']['Pagination']['PageNumber']++;
+                    echo "\nprocess page: ".$param['ActiveList']['Pagination']['PageNumber'].".\n";
+                    $eBayService->post_data = $eBayService->getRequestAuthHead($store->ebay_token, "GetMyeBaySelling").eBayTradingAPI::GetMyeBaySellingXML($param).$eBayService->getRequestAuthFoot("GetMyeBaySelling");
+                    $response = $eBayService->request();
+                    $try = 0;
+                    while(empty($response) || !$response || (string)$response->Ack!==eBayAckCodeType::Success)
+                    {
+                        var_dump($response);
+                        $try++;
+                        echo "eBay service call failed! try $try time on page {$param['ActiveList']['Pagination']['PageNumber']}.\n";
+                        $response = $eBayService->request();
+                        if($try >= $maxTry) break;
+                    }
+                    if($try >= $maxTry) break;
+
+                    if((string)$response->Ack===eBayAckCodeType::Success)
+                    {
+                        if(isset($response->ActiveList->ItemArray) && !empty($response->ActiveList->ItemArray))
+                        {
+                            foreach($response->ActiveList->ItemArray->Item as $item)
+                            {
+                                if(isset($item->ItemID) && $item->ItemID)
+                                {
+                                    $updateLists[] = (string)$item->ItemID;
+                                    echo (string)$item->ItemID . " added to queue for thread page {$param['ActiveList']['Pagination']['PageNumber']}!\n";
+                                }
+                            }
+                            $activeLists = array_diff($activeLists, $updateLists);
+                            $name = "getItemWork_".$param['ActiveList']['Pagination']['PageNumber'];
+                            $$name = new GetItemWork("Thread for page {$param['ActiveList']['Pagination']['PageNumber']}", $store->id, $store->company_id, $updateLists);
+                            $pool[] = $$name;
+                            $$name->start();
+                        }
+                    }
+                    else
+                    {
+                        var_dump($response);
+                        break;
+                    }
+                }
+
+                echo "\nstart to update off line products\n";
+                if(count($activeLists)>0)
+                {
+                    while(true)
+                    {
+                        try
+                        {
+                            /*$sql = "UPDATE lt_ebay_entity_varchar t
+                                    LEFT JOIN lt_ebay_listing e ON e.id = t.ebay_entity_id
+                                    SET t.value = :value
+                                    WHERE t.ebay_entity_attribute_id = :ebay_entity_attribute_id  AND e.ebay_listing_id IN ('" . implode($activeLists, "','") . "')";
+                            $command = Yii::app()->db->createCommand($sql);
+                            $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
+                            $command->bindValue(":value", eBayListingStatusCodeType::Ended, PDO::PARAM_STR);
+                            $result = $command->query();*/
+                            foreach($activeLists as $offline)
+                            {
+                                /*$sql = "UPDATE lt_ebay_entity_varchar t
+                                    LEFT JOIN lt_ebay_listing e ON e.id = t.ebay_entity_id
+                                    SET t.value = :value
+                                    WHERE t.ebay_entity_attribute_id = :ebay_entity_attribute_id  AND e.ebay_listing_id = :ebay_listing_id; ";
+                                $command = Yii::app()->db->createCommand($sql);
+                                $command->bindValue(":ebay_entity_attribute_id", $listingStatusAttribute->id, PDO::PARAM_INT);
+                                $command->bindValue(":value", eBayListingStatusCodeType::Ended, PDO::PARAM_STR);
+                                $command->bindValue(":ebay_listing_id", $offline, PDO::PARAM_STR);
+                                $result = $command->query();*/
+                                $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote?wsdl', array("trace" => true, "connection_timeout" => 900));
+                                $result = $client->eBayUpdateItemListingStatus($offline, eBayListingStatusCodeType::Ended, $listingStatusAttribute->id);
+                                if($result['status'] == 'success')
+                                {
+                                    echo "offline items updated succeeded, $offline\n";
+                                }
+                                else
+                                {
+                                    echo "offline items updated failed, $offline\n";
+                                }
+
+                            }
+                            break;
+                        }
+                        catch(Exception $ex)
+                        {
+                            echo "Update offline items failed, code: " . $ex->getCode() . ", msg: " . $ex->getMessage() . "\n";
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var_dump($response);
+                return false;
+            }
+        }
+        catch(Exception $ex)
+        {
+            echo "Exception detected, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
+            return false;
+        }
+
+        while(true)
+        {
+            $allDone = true;
+            foreach ($pool as $key => $thread) {
+                if($thread->running) {
+                    echo "waiting thread: {$thread->name} to finish, total item: ".count($thread->param).", current processed: {$thread->processed}, succeeded: ".count($thread->succeed).", failed: ".count($thread->failed)."\n";
+                    $allDone = false;
+                }
+                else {
+                    echo "Thread {$thread->name} finished, total item: ".count($thread->param).", processed: {$thread->processed}, succeeded: ".count($thread->succeed).", failed: ".count($thread->failed)."\n";
+                }
+            }
+            if($allDone) break;
+            sleep(300);
+        }
+
+        echo "finish to get ebay selling for store id: ".$store->id."\n";
+
+        $rawData = Yii::app()->cache->get("php_threads_count");
+        if($rawData !== false) {
+            $rawData = $rawData - $threadCount;
+            if($rawData < 0 ) $rawData = 0;
+            Yii::app()->cache->set("php_threads_count",$rawData);
+        }
+        echo "Current php threads count updated to ".($rawData).".\n";
+
+        return true;
+    }
+}
+
+class GetItemWork extends Thread {
+    public $name = '';
+    public $store_id = 0;
+    public $company_id = 0;
+    public $param = array();
+    public $running = false;
+    public $succeed = array();
+    public $failed = array();
+    public $processed = 0;
+
+    public function __construct($name, $store_id, $company_id, $param) {
+        $this->param  = $param;
+        $this->name   = $name;
+        $this->store_id = $store_id;
+        $this->company_id = $company_id;
+        $this->running = true;
+        $this->failed = array();
+        $this->succeed = array();
+    }
+
+    public function run()
+    {
+        $local_succeed = array();
+        $local_failed = array();
+        echo "Thread {$this->name} has ".count($this->param)." items in list.\n";
+
+        foreach($this->param as $param)
+        {
+            try
+            {
+                $this->processed++;
+                echo "start process listing $param, store id: {$this->store_id}, company id: {$this->company_id}.\n";
+                $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote?wsdl', array("trace" => true, "connection_timeout" => 900));
+                $result = $client->eBayGetItem($param, $this->store_id, $this->company_id);
+                if($result['status'] == 'success')
+                {
+                    echo "Thread {$this->name} listing " . (string)$param . " updated successful!\n";
+                    $local_succeed[] = $param;
+                    $this->succeed = $local_succeed;
+                }
+                else
+                {
+                    echo "Thread {$this->name} listing " . (string)$param . " updated fail!\n";
+                    $local_failed[] = $param;
+                    $this->failed = $local_failed;
+                }
+            }
+            catch(Exception $ex)
+            {
+                $local_failed[] = $param;
+                $this->failed = $local_failed;
+                echo "Exception, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
+            }
+            echo "finish update listing $param.\n";
+        }
+
+        while(count($local_failed)>0)
+        {
+            echo "Thread {$this->name} has failed listings.\n";
+            foreach($local_failed as $key => $value)
+            {
+                try
+                {
+                    echo "re-process listing $value, store id: {$this->store_id}, company id: {$this->company_id}.\n";
+                    $client=new SoapClient('http://manage.itemtool.com/index.php/WebService/quote', array("trace" => true, "connection_timeout" => 900));
+                    $result = $client->eBayGetItem($value, $this->store_id, $this->company_id);
+                    if($result['status'] == 'success')
+                    {
+                        $local_succeed[] = $value;
+                        $this->succeed = $local_succeed;
+                        unset($local_failed[$key]);
+                        $this->failed = $local_failed;
+                        echo "Thread {$this->name} listing " . (string)$value . " updated successful!\n";
+                    }
+                    else
+                    {
+                        echo "Thread {$this->name} listing " . (string)$value . " updated fail!\n";
+                    }
+                }
+                catch(Exception $ex)
+                {
+                    echo "Exception, code: ".$ex->getCode().", msg: ".$ex->getMessage()."\n";
+                }
+                echo "finish update listing $value.\n";
+            }
+        }
+        echo "Thread {$this->name} finished, total: ".count($this->param)." items processed.\n";
+        $this->running = false;
+        return;
+    }
+}

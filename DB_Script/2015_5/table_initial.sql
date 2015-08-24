@@ -349,3 +349,25 @@ CREATE TABLE `lt_facebook_report_ad` (
   `cost` decimal(20,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*end 2015-08-14*/
+
+/*start 2015-08-21*/
+DROP TABLE IF EXISTS `lt_facebook_ad`;
+CREATE TABLE `lt_facebook_ad` (
+  `id` varchar(14) DEFAULT NULL,
+  `account_id` varchar(14) DEFAULT NULL,
+  `adgroup_review_feedback` varchar(1024) DEFAULT NULL,
+  `adgroup_status` varchar(36) DEFAULT NULL,
+  `bid_amount` int(11) DEFAULT NULL,
+  `bid_info` varchar(512) DEFAULT NULL,
+  `campaign_id` varchar(14) DEFAULT NULL,
+  `campaign_group_id` varchar(14) DEFAULT NULL,
+  `conversion_specs` varchar(512) DEFAULT NULL,
+  `created_time` int(11) DEFAULT NULL,
+  `creative` varchar(1024) DEFAULT NULL,
+  `failed_delivery_checks` varchar(1024) DEFAULT NULL,
+  `name` varchar(128) DEFAULT NULL,
+  `targeting` varchar(1024) DEFAULT NULL,
+  `tracking_specs` varchar(1024) DEFAULT NULL,
+  `updated_time` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*end 2015-08-21*/

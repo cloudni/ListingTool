@@ -354,6 +354,7 @@ CREATE TABLE `lt_facebook_report_ad` (
 DROP TABLE IF EXISTS `lt_facebook_ad`;
 CREATE TABLE `lt_facebook_ad` (
   `id` varchar(14) DEFAULT NULL,
+  `lt_ad_advertise_variation_id` int null,
   `account_id` varchar(14) DEFAULT NULL,
   `adgroup_review_feedback` varchar(1024) DEFAULT NULL,
   `adgroup_status` varchar(36) DEFAULT NULL,

@@ -308,7 +308,7 @@ DROP TABLE IF EXISTS `lt_facebook_report_ad_set`;
 CREATE TABLE `lt_facebook_report_ad_set` (
   `date` date NOT NULL,
   `ad_set_id` varchar(14) DEFAULT NULL,
-  `ad_set_name` varchar(36) DEFAULT NULL,
+  `ad_set_name` varchar(255) DEFAULT NULL,
   `placement` varchar(256) DEFAULT NULL,
   `impressions` int(11) DEFAULT NULL,
   `cpm` decimal(20,4) DEFAULT NULL,
@@ -322,9 +322,9 @@ DROP TABLE IF EXISTS `lt_facebook_report_campaign`;
 CREATE TABLE `lt_facebook_report_campaign` (
   `date` date NOT NULL,
   `ad_set_id` varchar(14) DEFAULT NULL,
-  `ad_set_name` varchar(36) DEFAULT NULL,
+  `ad_set_name` varchar(255) DEFAULT NULL,
   `campaign_id` varchar(14) NOT NULL,
-  `campaign_name` varchar(36) DEFAULT NULL,
+  `campaign_name` varchar(255) DEFAULT NULL,
   `placement` varchar(256) DEFAULT NULL,
   `impressions` int(11) DEFAULT NULL,
   `cpm` decimal(20,4) DEFAULT NULL,
@@ -338,9 +338,9 @@ DROP TABLE IF EXISTS `lt_facebook_report_ad`;
 CREATE TABLE `lt_facebook_report_ad` (
   `date` date NOT NULL,
   `ad_set_id` varchar(14) DEFAULT NULL,
-  `ad_set_name` varchar(36) DEFAULT NULL,
+  `ad_set_name` varchar(255) DEFAULT NULL,
   `campaign_id` varchar(14) NOT NULL,
-  `campaign_name` varchar(36) DEFAULT NULL,
+  `campaign_name` varchar(255) DEFAULT NULL,
   `ad_id` varchar(14) DEFAULT NULL,
   `placement` varchar(256) DEFAULT NULL,
   `impressions` int(11) DEFAULT NULL,

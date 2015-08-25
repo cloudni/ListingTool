@@ -308,7 +308,7 @@ DROP TABLE IF EXISTS `lt_facebook_report_campaign`;
 CREATE TABLE `lt_facebook_report_campaign` (
   `date` date NOT NULL,
   `campaign_id` varchar(14) NOT NULL,
-  `campaign_name` varchar(36) DEFAULT NULL,
+  `campaign_name` varchar(255) DEFAULT NULL,
   `placement` varchar(255) DEFAULT NULL,
   `impressions` int(11) DEFAULT NULL,
   `cpm` decimal(20,4) DEFAULT NULL,

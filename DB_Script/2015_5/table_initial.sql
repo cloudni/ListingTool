@@ -304,12 +304,12 @@ CREATE TABLE `lt_google_analytics_report_page_path` (
 /*end 2015-08-07*/
 
 /*start 2015-08-14*/
-DROP TABLE IF EXISTS `lt_facebook_report_ad_set`;
-CREATE TABLE `lt_facebook_report_ad_set` (
+DROP TABLE IF EXISTS `lt_facebook_report_campaign`;
+CREATE TABLE `lt_facebook_report_campaign` (
   `date` date NOT NULL,
-  `ad_set_id` varchar(14) DEFAULT NULL,
-  `ad_set_name` varchar(255) DEFAULT NULL,
-  `placement` varchar(256) DEFAULT NULL,
+  `campaign_id` varchar(14) NOT NULL,
+  `campaign_name` varchar(36) DEFAULT NULL,
+  `placement` varchar(255) DEFAULT NULL,
   `impressions` int(11) DEFAULT NULL,
   `cpm` decimal(20,4) DEFAULT NULL,
   `clicks` int(11) DEFAULT NULL,
@@ -318,14 +318,14 @@ CREATE TABLE `lt_facebook_report_ad_set` (
   `cost` decimal(20,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `lt_facebook_report_campaign`;
-CREATE TABLE `lt_facebook_report_campaign` (
+DROP TABLE IF EXISTS `lt_facebook_report_ad_set`;
+CREATE TABLE `lt_facebook_report_ad_set` (
   `date` date NOT NULL,
-  `ad_set_id` varchar(14) DEFAULT NULL,
-  `ad_set_name` varchar(255) DEFAULT NULL,
   `campaign_id` varchar(14) NOT NULL,
   `campaign_name` varchar(255) DEFAULT NULL,
-  `placement` varchar(256) DEFAULT NULL,
+  `ad_set_id` varchar(14) DEFAULT NULL,
+  `ad_set_name` varchar(255) DEFAULT NULL,
+  `placement` varchar(255) DEFAULT NULL,
   `impressions` int(11) DEFAULT NULL,
   `cpm` decimal(20,4) DEFAULT NULL,
   `clicks` int(11) DEFAULT NULL,
@@ -337,12 +337,12 @@ CREATE TABLE `lt_facebook_report_campaign` (
 DROP TABLE IF EXISTS `lt_facebook_report_ad`;
 CREATE TABLE `lt_facebook_report_ad` (
   `date` date NOT NULL,
-  `ad_set_id` varchar(14) DEFAULT NULL,
-  `ad_set_name` varchar(255) DEFAULT NULL,
   `campaign_id` varchar(14) NOT NULL,
   `campaign_name` varchar(255) DEFAULT NULL,
+  `ad_set_id` varchar(14) DEFAULT NULL,
+  `ad_set_name` varchar(255) DEFAULT NULL,
   `ad_id` varchar(14) DEFAULT NULL,
-  `placement` varchar(256) DEFAULT NULL,
+  `placement` varchar(255) DEFAULT NULL,
   `impressions` int(11) DEFAULT NULL,
   `cpm` decimal(20,4) DEFAULT NULL,
   `clicks` int(11) DEFAULT NULL,

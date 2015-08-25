@@ -385,21 +385,21 @@ ALTER TABLE lt_ad_facebook_report_ad ADD COLUMN charge_amount DECIMAL(20,4);
 ALTER TABLE lt_ad_facebook_report_ad ADD COLUMN lt_ad_advertise_id int(11);
 ALTER TABLE lt_ad_facebook_report_ad ADD COLUMN is_charged tinyint(1) default '0';
 
-DROP TABLE IF EXISTS lt_ad_facebook_report_campaign;
-CREATE TABLE lt_ad_facebook_report_campaign LIKE lt_facebook_report_campaign;
-  
-ALTER TABLE lt_ad_facebook_report_campaign ADD COLUMN markup_type tinyint(4);
-ALTER TABLE lt_ad_facebook_report_campaign ADD COLUMN markup_amount DECIMAL(20,4);
-ALTER TABLE lt_ad_facebook_report_campaign ADD COLUMN charge_amount DECIMAL(20,4);
-ALTER TABLE lt_ad_facebook_report_campaign ADD COLUMN lt_ad_group_id int(11);
-ALTER TABLE lt_ad_facebook_report_campaign ADD COLUMN is_charged tinyint(1) default '0';
-
 DROP TABLE IF EXISTS lt_ad_facebook_report_ad_set;
 CREATE TABLE lt_ad_facebook_report_ad_set LIKE lt_facebook_report_ad_set;
   
 ALTER TABLE lt_ad_facebook_report_ad_set ADD COLUMN markup_type tinyint(4);
 ALTER TABLE lt_ad_facebook_report_ad_set ADD COLUMN markup_amount DECIMAL(20,4);
 ALTER TABLE lt_ad_facebook_report_ad_set ADD COLUMN charge_amount DECIMAL(20,4);
-ALTER TABLE lt_ad_facebook_report_ad_set ADD COLUMN lt_ad_campaign_id int(11);
+ALTER TABLE lt_ad_facebook_report_ad_set ADD COLUMN lt_ad_group_id int(11);
 ALTER TABLE lt_ad_facebook_report_ad_set ADD COLUMN is_charged tinyint(1) default '0';
+
+DROP TABLE IF EXISTS lt_ad_facebook_report_campaign;
+CREATE TABLE lt_ad_facebook_report_campaign LIKE lt_facebook_report_campaign;
+  
+ALTER TABLE lt_ad_facebook_report_campaign ADD COLUMN markup_type tinyint(4);
+ALTER TABLE lt_ad_facebook_report_campaign ADD COLUMN markup_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_facebook_report_campaign ADD COLUMN charge_amount DECIMAL(20,4);
+ALTER TABLE lt_ad_facebook_report_campaign ADD COLUMN lt_ad_campaign_id int(11);
+ALTER TABLE lt_ad_facebook_report_campaign ADD COLUMN is_charged tinyint(1) default '0';
 /*end 2015-08-24*/

@@ -20,10 +20,10 @@
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-			classpath*:config/springContext.xml
-			classpath*:config/spring_*.xml
-            classpath*:config/spring-quartz.xml
-		</param-value>
+		classpath*:config/springContext.xml
+		classpath*:config/spring_*.xml
+        classpath*:spring-quartz.xml
+	</param-value>
   </context-param>
   <context-param>
     <param-name>spring.profiles.active</param-name>
@@ -38,6 +38,24 @@
   
   
   <!-- 单点登录 -->
+  <!-- 
+  <filter>
+  	<filter-name>login</filter-name>
+  	<filter-class>com.lt.backend.home.filter.LoginFilter</filter-class>
+  	<init-param>
+			<param-name>excludePath</param-name>
+			<param-value>login,plugin,audio</param-value>
+		</init-param>
+		<init-param>
+			<param-name>excludeFile</param-name>
+			<param-value>.png,.gif,.jpg,.bmp,.js,.css</param-value>
+		</init-param>
+  </filter>
+  <filter-mapping>
+		<filter-name>sso</filter-name>
+		<url-pattern>/*</url-pattern>
+  </filter-mapping> 
+   -->
   <filter>
 		<filter-name>sso</filter-name>
 		<filter-class>com.ssoclient.filter.SSOClientFilter</filter-class>
@@ -61,21 +79,29 @@
 			<param-name>excludeFile</param-name>
 			<param-value>.png,.gif,.jpg,.bmp,.js,.css</param-value>
 		</init-param>
-		<init-param>
+		<!-- <init-param>
 			<param-name>ssoURI</param-name>
-			<param-value>http://transaction.itemtool.com/portal-lt-backend/login.shtml</param-value>
+			<param-value>http://local.it.net/portal-lt-backend/login.shtml</param-value>
 		</init-param>
 		<init-param>
 			<param-name>webURI</param-name>
-			<param-value>http://transaction.itemtool.com/portal-lt-backend/index.shtml</param-value>
-		</init-param>
+			<param-value>http://local.java.it.net/portal-lt-backend/index.shtml</param-value>
+		</init-param> -->
+        <init-param>
+            <param-name>ssoURI</param-name>
+            <param-value>http://transaction.itemtool.com/portal-lt-backend/login.shtml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>webURI</param-name>
+            <param-value>http://transaction.itemtool.com/portal-lt-backend/index.shtml</param-value>
+        </init-param>
 		<init-param>
 			<param-name>logoutURI</param-name>
 			<param-value>retain</param-value>
 		</init-param>
 		<init-param>
 			<param-name>excludePath</param-name>
-			<param-value>login</param-value>
+			<param-value>login,plugin,audio,adwords,analytics,trackingTag</param-value>
 		</init-param>
 		<init-param>
 			<param-name>excludeFile</param-name>

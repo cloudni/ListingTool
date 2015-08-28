@@ -22,58 +22,10 @@ public class CompanyServiceImpl implements ICompanyService
 	}
 	
 	@Override
-	public int deleteByPrimaryKey(Company company)
+	public List<Company> selectAll()
 	{
-		// TODO Auto-generated method stub
-		return companyMapper.deleteByPrimaryKey(company);
-	}
-
-	@Override
-	public int insert(Company company)
-	{
-		// TODO Auto-generated method stub
-		return companyMapper.insert(company);
-	}
-
-	@Override
-	public Company selectById(Company company)
-	{
-		// TODO Auto-generated method stub
-		return companyMapper.selectById(company);
-	}
-
-	@Override
-	public int updateByPrimaryKey(Company company)
-	{
-		// TODO Auto-generated method stub
-		return companyMapper.updateByPrimaryKey(company);
-	}
-
-	@Override
-	public List<Company> selectAll(Company company)
-	{
-		// TODO Auto-generated method stub
-		return companyMapper.selectAll(company);
-	}
-
-	@Override
-	public int deleteByPrimaryKey(Integer id)
-	{
-		return deleteByPrimaryKey(id);
-	}
-
-	@Override
-	public int insertSelective(Company company)
-	{
-		// TODO Auto-generated method stub
-		return insertSelective(company);
-	}
-
-	@Override
-	public int updateByPrimaryKeySelective(Company company)
-	{
-		// TODO Auto-generated method stub
-		return updateByPrimaryKeySelective(company);
+		
+		return companyMapper.selectAll();
 	}
 
 }

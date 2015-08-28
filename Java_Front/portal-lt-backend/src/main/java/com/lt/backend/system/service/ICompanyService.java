@@ -6,28 +6,16 @@ import com.lt.dao.model.Company;
 
 public interface ICompanyService
 {
-	
-    int deleteByPrimaryKey(Integer id);
-
-    int insertSelective(Company record);
-
+	/**
+	 * 通过主键查询企业
+	 * @param id
+	 * @return
+	 */
     Company selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(Company record);
-
     /**
-     * List Company  init data
-     * Author devin
-     * @param Company
+     * 全查所有企业
      * @return
      */
-    List<Company> selectAll(Company company);
+    List<Company> selectAll();
     
-    int insert(Company company);
-    
-    int deleteByPrimaryKey(Company company);
-    
-    Company selectById(Company company);
-    
-    int updateByPrimaryKey(Company company);
 }

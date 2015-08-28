@@ -6,6 +6,7 @@
 <head>
 	<%@ include file="/common/meta.jsp"%>
 <title>Item Tool Manage - Admin ResourceString</title>
+<script type="text/javascript" src="${ctxPath}/js/ga.js"></script>
 </head>
 
 <body>

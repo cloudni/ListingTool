@@ -87,6 +87,9 @@
 									<a class="sort-link" href="">tranType</a>
 								</th>
 								<th id="resource-string-grid_c0">
+									<a class="sort-link" href="">paymentType</a>
+								</th>
+								<th id="resource-string-grid_c0">
 									<a class="sort-link" href="">TranId</a>
 								</th>
 								<th id="resource-string-grid_c0">
@@ -109,12 +112,27 @@
 								<tr>
 								    <td>${obj.createTimeStr }</td>
 								    <td>${obj.companyName }</td>
-								    <td>${obj.type }</td>
+								    <td>
+								    	<c:if test="${obj.type == 1}">Paypal</c:if>
+								    	<c:if test="${obj.type == 2}">System</c:if>
+								    </td>
+								    <td>
+								    	<c:if test="${obj.paymentTransactionType == 1}">存款</c:if>
+								    	<c:if test="${obj.paymentTransactionType == 2}">取款</c:if>
+								    	<c:if test="${obj.paymentTransactionType == 3}">冻结</c:if>
+								    	<c:if test="${obj.paymentTransactionType == 4}">解冻</c:if>
+								    	<c:if test="${obj.paymentTransactionType == 5}">扣款</c:if>
+								   </td>
 								    <td>${obj.paymentTransactionId }</td>
-								    <td>${obj.status }</td>
-								    <td>${obj.total }</td>
-									<td>${obj.fee }</td>
-								    <td>${obj.net }</td>
+								    <td>
+								    	<c:if test="${obj.status == 1}">创建</c:if>
+								    	<c:if test="${obj.status == 2}">成功</c:if>
+								    	<c:if test="${obj.status == 3}">取消</c:if>
+								    	<c:if test="${obj.status == 4}">失败</c:if>
+								    </td>
+								    <td><fmt:formatNumber value="${obj.total }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber></td>
+									<td><fmt:formatNumber value="${obj.fee }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber></td>
+								    <td><fmt:formatNumber value="${obj.net }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber></td>
 								    <td><a href="${ctxPath }/company/transaction/view.shtml?id=${obj.id}">view</a>
 								    	<c:if test="${obj.type == 2 && obj.status == 1 }">
 								    		&nbsp;&nbsp;

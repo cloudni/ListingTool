@@ -43,4 +43,63 @@
 <script type="text/javascript" src="${ctxPath}/js/jquery.validate.js"></script>
 
 <!---翻页样式new--->
-<link rel="stylesheet" type="text/css" href="${ctxPath}/css/common.css" />
+<!-- <link rel="stylesheet" type="text/css" href="${ctxPath}/css/common.css" /> -->
+
+<!-- 播放器插件 -->
+<link href="${ctxPath}/plugin/jPlayer-2.9.2/dist/skin/blue.monday/css/jplayer.blue.monday.min.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="${ctxPath}/plugin/jPlayer-2.9.2/dist/jplayer/jquery.jplayer.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#jquery_jplayer_1").jPlayer({
+		ready: function (event) {
+			$(this).jPlayer("setMedia", {
+				mp3: "${ctxPath}/audio/1.mp3"
+			});/*.jPlayer("play");*/
+		},
+		swfPath: "${ctxPath}/plugin/jPlayer-2.9.2/dist/jplayer",
+		supplied: "m4a, oga, mp3",
+		wmode: "window",
+		useStateClassSkin: true,
+		autoBlur: false,
+		smoothPlayBar: true,
+		keyEnabled: true,
+		remainingDuration: true,
+		toggleDuration: true
+	});
+	
+	if("${user.userId}" != "") {
+		initWs();
+	}
+});
+
+var ws = null;
+//创建ws连接
+function initWs() {
+	var target = "/home/messageTip";
+    if (window.location.protocol == 'http:') {
+    	target = 'ws://' + window.location.host + "${ctxPath}" + target + '?userId=${user.userId}';
+    } else {
+    	target = 'wss://' + window.location.host + "${ctxPath}" + target + '?userId=${user.userId}';
+    }
+	if ('WebSocket' in window) {
+	    ws = new WebSocket(target);
+	} else if ('MozWebSocket' in window) {
+	    ws = new MozWebSocket(target);
+	} else {
+	    alert('WebSocket is not supported by this browser.');
+	    return;
+	}
+	ws.onopen = function () {
+	    setConnected(true);
+	    //console.log('Info: WebSocket connection opened.');
+	};
+	ws.onmessage = function (event) {
+		//console.log('Received: ' + event.data);
+	    $("#jquery_jplayer_1").jPlayer( "play" );  
+	};
+	ws.onclose = function (event) {
+	    setConnected(false);
+	   // console.log('Info: WebSocket connection closed, Code: ' + event.code + (event.reason == "" ? "" : ", Reason: " + event.reason));
+	};
+}
+</script>

@@ -114,7 +114,7 @@ public class TransactionController
 	public ModelAndView toAdd() throws Exception{
 		ModelAndView view = new ModelAndView("/system/transaction/addTransaction");
 		
-		List<Company> companyList = companyService.selectAll(new Company());
+		List<Company> companyList = companyService.selectAll();
 		view.addObject("companyList", companyList);
 		
 		return view;
@@ -131,6 +131,7 @@ public class TransactionController
 	public ModelAndView add(HttpServletRequest request,  TransactionPO transaction) throws Exception{
 		Map<String, String> map= new HashMap<String, String>();
 		
+		transaction.setStatus(TransactionPO.STATE_SUCCESS);
 		transaction.setCreateUserId(SessionUtil.getUserId(request));
 		transaction.setUpdateUserId(SessionUtil.getUserId(request));
 		transaction.setCreateTimeUtc(DateFormatUtil.getCurrentIntegerTime());

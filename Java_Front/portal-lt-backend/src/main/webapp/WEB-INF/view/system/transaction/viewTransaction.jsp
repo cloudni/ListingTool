@@ -33,42 +33,36 @@
 				<h1>View transaction</h1>
 
 				<table class="detail-view" id="yw0">
-					<tr class="odd">
-						<th>ID:</th>
-						<td>${transaction.id}</td>
-					</tr>
+					<tr class="odd"><th>交易日期:</th><td>${transaction.createTimeStr}</td></tr>
+					<tr class="even"><th>类型:</th>
+						<td><c:if test="${transaction.paymentTransactionType == 1 }">存款</c:if>
+							<c:if test="${transaction.paymentTransactionType == 2 }">取款</c:if>
+							<c:if test="${transaction.paymentTransactionType == 3 }">冻结</c:if>
+							<c:if test="${transaction.paymentTransactionType == 4 }">解冻</c:if>
+							<c:if test="${transaction.paymentTransactionType == 5 }">扣款</c:if>
+						</td></tr>
+					<tr class="odd"><th>状态:</th>
+						<td><c:if test="${transaction.status == 1}">创建</c:if>
+							<c:if test="${transaction.status == 2}">成功</c:if>
+							<c:if test="${transaction.status == 3}">取消</c:if>
+							<c:if test="${transaction.status == 4}">失败</c:if>
+						</td></tr>
 					<tr class="even">
-						<th>Company:</th>
-						<td>${company.name }</td>
+						<th>备注:</th>
+						<td>${transaction.contents}
+						</td>
 					</tr>
-					<tr class="odd">
-						<th>TranType:</th>
-						<td>${transaction.type}</td>
-					</tr>
-					<tr class="even">
-						<th>TranId:</th>
-						<td>${transaction.paymentTransactionId }</td>
-					</tr>
-					<tr class="odd">
-						<th>CreateTime:</th>
-						<td>${transaction.createTimeStr}</td>
-					</tr>
-					<tr class="even">
-						<th>CompleteTime:</th>
-						<td>${transaction.updateTimeStr}</td>
-					</tr>
-					<tr class="odd">
-						<th>Total:</th>
-						<td>${transaction.total }</td>
-					</tr>
-					<tr class="even">
-						<th>Fee:</th>
-						<td>${transaction.fee }</td>
-					</tr>
-					<tr class="odd">
-						<th>Net:</th>
-						<td>${transaction.net }</td>
-					</tr>
+					<tr class="odd"><th>金额:</th><td>
+						<c:if test="${transaction.paymentTransactionType == 2 || transaction.paymentTransactionType == 3 || transaction.paymentTransactionType == 5 }"><span style="color: red"></c:if>
+							$<fmt:formatNumber value="${transaction.net }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber>
+						<c:if test="${transaction.paymentTransactionType == 2 || transaction.paymentTransactionType == 3 || transaction.paymentTransactionType == 5 }"></span></c:if>
+					</td></tr>
+					<tr class="even"><th>交易扣款:</th><td>$<fmt:formatNumber value="${transaction.fee }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber></td></tr>
+					<tr class="odd"><th>合计:</th><td>
+						<c:if test="${transaction.paymentTransactionType == 2 || transaction.paymentTransactionType == 3 || transaction.paymentTransactionType == 5 }"><span style="color: red"></c:if>
+							$<fmt:formatNumber value="${transaction.total }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber>
+						<c:if test="${transaction.paymentTransactionType == 2 || transaction.paymentTransactionType == 3 || transaction.paymentTransactionType == 5 }"></span></c:if>	
+					</td></tr>
 				</table>
 			</div>
 			<!-- content -->

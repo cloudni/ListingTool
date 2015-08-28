@@ -62,7 +62,7 @@ public class HomeController
 	@RequestMapping("logout")
 	public ModelAndView logout(HttpServletResponse response,HttpServletRequest request) throws Exception
 	{
-		ModelAndView model = new ModelAndView("redirect:http://www.itemtool.com");
+		ModelAndView model = new ModelAndView("redirect:http://transaction.itemtool.com/portal-lt-backend/login.shtml");
 		SSOClientUtil.clearUser(response, request);
 		return model;
 	}

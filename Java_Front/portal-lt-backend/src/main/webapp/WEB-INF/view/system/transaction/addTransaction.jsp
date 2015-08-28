@@ -46,7 +46,7 @@
 						</td>
 					</tr>
 					<tr class="odd">
-						<th>type:<span class="required">*</span></th>
+						<th>TranType:<span class="required">*</span></th>
 						<td>
 							<select name="type" id="type" class="required">
 								<option value="2">system</option>
@@ -54,10 +54,10 @@
 						</td>
 					</tr>
 					<tr class="even">
-						<th>TranType:<span class="required">*</span></th>
+						<th>paymentTransactionType:<span class="required">*</span></th>
 						<td>
-							<select name="transactionType" id="transactionType" class="required">
-								<option value="1">deposit</option>
+							<select name="paymentTransactionType" id="type" class="required">
+								<option value="1">存款</option>
 								<!-- <option value="withdraw">withdraw</option> -->
 							</select>
 						</td>

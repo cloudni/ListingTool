@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lt.dao.mapper.AdFacebookReportAdSetMapper" >
+  <!-- 自定义 -->
+  <insert id="sync" parameterType="com.lt.dao.po.CampaignCostPO">
+  	 insert lt_ad_facebook_report_ad_set (date, campaign_id, campaign_name, 
+      ad_set_id, ad_set_name, placement, 
+      impressions, cpm, clicks, 
+      ctr, cpc, cost, is_charged)
+    select date, campaign_id, campaign_name, 
+      ad_set_id, ad_set_name, placement, 
+      impressions, cpm, clicks, 
+      ctr, cpc, cost, #{isCharged}
+    from lt_facebook_report_ad_set
+    where `date` = #{date}
+  </insert>
+  
+  <!-- 根据数据删除记录 -->
+  <delete id="delete" parameterType="com.lt.dao.po.CampaignCostPO">
+	delete from lt_ad_facebook_report_ad_set where date = #{date} 
+   </delete>
+  
+   <!-- 根据点击数计费 -->
+  <update id="updateByClicks" parameterType="com.lt.dao.po.CampaignCostPO">
+  	UPDATE lt_ad_facebook_report_ad_set t1, lt_google_adwords_ad_group t2, lt_ad_group t3
+ 	set t1.markup_type = #{markupType},
+ 	t1.markup_amount = #{markupAmount},
+ 	t1.charge_amount = t1.cost + #{markupAmount}*t1.clicks,
+ 	<if test="isCharged != null">
+     	t1.is_charged = #{isCharged},
+     </if>
+    t1.lt_ad_group_id = t3.id
+	where t1.ad_set_name = t2.`name`
+	and t2.lt_ad_group_id = t3.id
+	and t1.date = #{date}
+	and t3.company_id = #{companyId}
+  </update>
+  
+  <!-- 根据cost百分比计费 -->
+  <update id="updateByPercentage" parameterType="com.lt.dao.po.CampaignCostPO">
+  	UPDATE lt_ad_facebook_report_ad_set t1, lt_google_adwords_ad_group t2, lt_ad_group t3
+	set t1.markup_type = #{markupType},
+	t1.markup_amount = #{markupAmount},
+	t1.charge_amount = t1.cost * (1 + #{markupAmount}),
+	<if test="isCharged != null">
+    	t1.is_charged = #{isCharged},
+    </if>
+	t1.lt_ad_group_id = t3.id
+	where t1.ad_set_name = t2.`name`
+	and t2.lt_ad_group_id = t3.id
+	and t1.date = #{date}
+	and t3.company_id = #{companyId}
+  </update>
+  
+  <!-- 修改为已处理 -->
+  <update id="updateCharged" parameterType="java.util.Date">
+  	update lt_ad_facebook_report_ad_set
+  	set is_charged = 1
+  	where date = #{date}
+  	and is_charged = 0
+  </update>
+</mapper>

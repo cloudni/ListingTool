@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lt.dao.mapper.AdGoogleAdwordsReportDestinationUrlMapper">
+  
+  <insert id="sync" parameterType="com.lt.dao.po.CampaignCostPO">
+  	insert into lt_ad_google_adwords_report_destination_url (account_currency_code, account_descriptive_name, 
+      account_time_zone_id, active_view_cpm, active_view_impressions, 
+      ad_group_id, ad_group_name, ad_group_status, 
+      ad_network_type1, ad_network_type2, average_cpc, 
+      average_cpm, average_position, campaign_id, 
+      campaign_name, campaign_status, click_conversion_rate, 
+      click_type, clicks, conversion_category_name, 
+      conversion_rate_many_per_click, conversion_tracker_id, 
+      conversion_type_name, conversion_value, conversions_many_per_click, 
+      converted_clicks, cost, cost_per_conversion_many_per_click, 
+      cost_per_converted_click, criteria_destination_url, 
+      criteria_parameters, criteria_status, criteria_type_name, 
+      ctr, customer_descriptive_name, date, 
+      day_of_week, device, effective_destination_url, 
+      external_customer_id, impressions, is_negative, 
+      month, month_of_year, primary_company_name, 
+      quarter, value_per_conversion_many_per_click, 
+      value_per_converted_click, view_through_conversions, 
+      week, year, slot,is_charged
+      )
+     select account_currency_code, account_descriptive_name, 
+      account_time_zone_id, active_view_cpm, active_view_impressions, 
+      ad_group_id, ad_group_name, ad_group_status, 
+      ad_network_type1, ad_network_type2, average_cpc, 
+      average_cpm, average_position, campaign_id, 
+      campaign_name, campaign_status, click_conversion_rate, 
+      click_type, clicks, conversion_category_name, 
+      conversion_rate_many_per_click, conversion_tracker_id, 
+      conversion_type_name, conversion_value, conversions_many_per_click, 
+      converted_clicks, cost, cost_per_conversion_many_per_click, 
+      cost_per_converted_click, criteria_destination_url, 
+      criteria_parameters, criteria_status, criteria_type_name, 
+      ctr, customer_descriptive_name, date, 
+      day_of_week, device, effective_destination_url, 
+      external_customer_id, impressions, is_negative, 
+      month, month_of_year, primary_company_name, 
+      quarter, value_per_conversion_many_per_click, 
+      value_per_converted_click, view_through_conversions, 
+      week, year, slot, #{isCharged}
+     from lt_google_adwords_report_destination_url
+     where `date` = #{date}
+  </insert>
+  
+  <!-- 根据数据删除记录 -->
+  <delete id="delete" parameterType="com.lt.dao.po.CampaignCostPO">
+  		delete from lt_ad_google_adwords_report_destination_url where date = #{date} 
+   </delete>
+  
+   <!-- 根据点击数计费 -->
+  <update id="updateByClicks" parameterType="com.lt.dao.po.CampaignCostPO">
+  	update lt_ad_google_adwords_report_destination_url t1, lt_google_adwords_ad_group t2, lt_ad_group t3
+	set t1.markup_type = #{markupType},
+	t1.markup_amount = #{markupAmount},
+	t1.charge_amount = t1.cost/1000000 + #{markupAmount}*t1.clicks,
+	<if test="isCharged != null">
+    	t1.is_charged = #{isCharged},
+    </if>
+	t1.lt_ad_group_id = t2.lt_ad_group_id
+	where t1.ad_group_id = t2.id
+	and t2.lt_ad_group_id = t3.id
+	and t1.date = #{date}
+	and t3.company_id = #{companyId}
+  </update>
+  
+  <!-- 根据cost百分比计费 -->
+  <update id="updateByPercentage" parameterType="com.lt.dao.po.CampaignCostPO">
+  	update lt_ad_google_adwords_report_destination_url t1, lt_google_adwords_ad_group t2, lt_ad_group t3
+	set t1.markup_type = #{markupType},
+	t1.markup_amount = #{markupAmount},
+	t1.charge_amount = t1.cost/1000000 * (1 + #{markupAmount}),
+	<if test="isCharged != null">
+    	t1.is_charged = #{isCharged},
+    </if>
+	t1.lt_ad_group_id = t2.lt_ad_group_id
+	where t1.ad_group_id = t2.id
+	and t2.lt_ad_group_id = t3.id
+	and t1.date = #{date}
+	and t3.company_id = #{companyId}
+  </update>
+  
+  <!-- 修改为已处理 -->
+  <update id="updateCharged" parameterType="java.util.Date">
+  	update lt_ad_google_adwords_report_destination_url
+  	set is_charged = 1
+  	where date = #{date}
+  	and is_charged = 0
+  </update>
+</mapper>

@@ -52,4 +52,12 @@ public interface TransactionDetailMapper {
      * @mbggenerated Sun Apr 26 15:39:33 CST 2015
      */
     int updateByPrimaryKey(TransactionDetail record);
+    
+    //自定义
+    /**
+     * 根据关联表查询交易详情
+     * @param record
+     * @return
+     */
+	TransactionDetail getDetailByRefObject(TransactionDetail record);
 }

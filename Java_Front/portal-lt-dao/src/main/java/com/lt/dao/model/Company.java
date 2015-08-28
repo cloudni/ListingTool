@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class Company {
 	
-	private BigDecimal freezeAmount;
+	private BigDecimal authorizeAmount;
 	private Integer markupType;
 	private BigDecimal markupAmount;
 	private Integer authorizeDay;
@@ -309,14 +309,14 @@ public class Company {
 		this.balance = balance;
 	}
 
-	public BigDecimal getFreezeAmount()
+	public BigDecimal getAuthorizeAmount()
 	{
-		return freezeAmount;
+		return authorizeAmount;
 	}
 
-	public void setFreezeAmount(BigDecimal freezeAmount)
+	public void setAuthorizeAmount(BigDecimal authorizeAmount)
 	{
-		this.freezeAmount = freezeAmount;
+		this.authorizeAmount = authorizeAmount;
 	}
 
 	public Integer getMarkupType()

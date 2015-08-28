@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.lt.dao.model.AdChangeLog;
+import com.lt.dao.po.AdChangeLogPO;
 @Repository
 public interface AdChangeLogMapper {
     /**
@@ -68,4 +69,18 @@ public interface AdChangeLogMapper {
      * @param list
      */
     void batchInsertSelective(List<AdChangeLog> list);
+    
+    //自定义
+    /**
+     * 根据状态查询变更记录是否有未处理的
+     * @param status
+     */
+    Integer countByStatus(Integer status);
+    
+    /**
+     * 取得AD Change Log记录
+     * @param map
+     * @return
+     */
+    public List<AdChangeLogPO> getAdChangeLog(AdChangeLogPO po);
 }

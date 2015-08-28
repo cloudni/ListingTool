@@ -17,7 +17,7 @@
     <result column="update_time_utc" property="updateTimeUtc" jdbcType="INTEGER" />
     <result column="update_user_id" property="updateUserId" jdbcType="INTEGER" />
     <result column="balance" property="balance" jdbcType="DECIMAL" />
-    <result column="freeze_amount" property="freezeAmount" jdbcType="DECIMAL" />
+    <result column="authorize_amount" property="authorizeAmount" jdbcType="DECIMAL" />
   	<result column="markup_type" property="markupType" jdbcType="BIT" />
   	<result column="markup_amount" property="markupAmount" jdbcType="DECIMAL" />
   	<result column="authorize_day" property="authorizeDay" jdbcType="INTEGER"/>
@@ -30,7 +30,7 @@
       This element was generated on Tue Mar 17 14:35:43 GMT+08:00 2015.
     -->
     id, name, phone, country, owner_id, create_time_utc, create_user_id, update_time_utc, 
-    update_user_id, balance, freeze_amount, markup_type, markup_amount, authorize_day, instant_amount
+    update_user_id, balance, authorize_amount, markup_type, markup_amount, authorize_day, instant_amount
   </sql>
   
   <select id="selectById" resultMap="BaseResultMap" parameterType="com.lt.dao.model.Company" >
@@ -74,12 +74,12 @@
     insert into lt_company (id, name, phone, 
       country, owner_id, create_time_utc, 
       create_user_id, update_time_utc, update_user_id, 
-      balance, freeze_amount, markup_type, markup_amount, authorize_day, instant_amount
+      balance, authorize_amount, markup_type, markup_amount, authorize_day, instant_amount
       )
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{country,jdbcType=VARCHAR}, #{ownerId,jdbcType=INTEGER}, #{createTimeUtc,jdbcType=INTEGER}, 
       #{createUserId,jdbcType=INTEGER}, #{updateTimeUtc,jdbcType=INTEGER}, #{updateUserId,jdbcType=INTEGER},
-      #{balance}, #{freezeAmount}, #{markupType}, #{markupAmount}, #{authorizeDay}, #{instantAmount}
+      #{balance}, #{authorizeAmount}, #{markupType}, #{markupAmount}, #{authorizeDay}, #{instantAmount}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.lt.dao.model.Company" >
@@ -120,8 +120,8 @@
       <if test="balance != null" >
         balance,
       </if>
-      <if test="freezeAmount != null" >
-        freeze_amount,
+      <if test="authorizeAmount != null" >
+        authorize_amount,
       </if>
        <if test="markupType != null" >
         markup_type,
@@ -167,8 +167,8 @@
       <if test="balance != null" >
         balance,
       </if>
-      <if test="freezeAmount != null" >
-        freezeAmount,
+      <if test="authorizeAmount != null" >
+        authorizeAmount,
       </if>
        <if test="markupType != null" >
         markupType,
@@ -216,8 +216,8 @@
        <if test="balance != null" >
         balance = #{balance,jdbcType=DECIMAL},
       </if>
-      <if test="freezeAmount != null" >
-        freeze_amount = #{freezeAmount,jdbcType=DECIMAL},
+      <if test="authorizeAmount != null" >
+        authorize_amount = #{authorizeAmount,jdbcType=DECIMAL},
       </if>
       <if test="markupType != null" >
         markup_type = #{markupType,jdbcType=BIT},
@@ -250,7 +250,7 @@
       update_time_utc = #{updateTimeUtc,jdbcType=INTEGER},
       update_user_id = #{updateUserId,jdbcType=INTEGER},
       balance = #{balance,jdbcType=DECIMAL},
-      freeze_amount = #{freezeAmount,jdbcType=DECIMAL},
+      authorize_amount = #{authorizeAmount,jdbcType=DECIMAL},
       markup_type = #{markupType,jdbcType=BIT},
       markup_amount = #{markupAmount,jdbcType=DECIMAL},
       authorize_day = #{authorizeDay,jdbcType=DECIMAL},
@@ -259,7 +259,7 @@
   </update>
   
   <!-- 查询所有公司 -->
-  <select id="selectAll" resultMap="BaseResultMap" parameterType="com.lt.dao.model.Company">
+  <select id="selectAll" resultMap="BaseResultMap">
     select * from lt_company
   </select>
   
@@ -288,5 +288,12 @@
     select t1.* from lt_company t1, lt_ad_campaign t2
 	where t1.id = t2.company_id and t2.`status` in (0, 3, 6)
 	GROUP BY t1.id
+  </select>
+  
+  <select id="selectSelectiveById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  	select * from lt_company
+  	<if test="id != null">
+  		where id = #{id,jdbcType=INTEGER}
+  	</if>
   </select>
 </mapper>

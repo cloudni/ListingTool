@@ -8,6 +8,7 @@ public class Transaction extends MyBatisSuperModel  implements Cloneable{
 	private String contents;
 	private Integer refId;
 	private String refObject;
+	private String refDate;
 	
 	private Boolean enabled;
     /**
@@ -396,6 +397,16 @@ public class Transaction extends MyBatisSuperModel  implements Cloneable{
 		this.refObject = refObject;
 	}
 	
+	public String getRefDate()
+	{
+		return refDate;
+	}
+
+	public void setRefDate(String refDate)
+	{
+		this.refDate = refDate;
+	}
+
 	@Override
 	public Transaction clone()
 	{

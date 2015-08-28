@@ -74,4 +74,10 @@ public interface TransactionMapper extends MyBatisSuperMapper<Transaction> {
      * @param list
      */
     void batchInsert(List<Transaction> list);
+    /**
+     * 根据关联的对象查询交易历史
+     * @param record
+     * @return
+     */
+    TransactionPO selectByRefObject(TransactionPO record);
 }

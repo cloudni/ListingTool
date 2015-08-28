@@ -3,6 +3,7 @@ package com.lt.dao.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.lt.dao.model.Company;
@@ -56,13 +57,7 @@ public interface CompanyMapper {
      */
     int updateByPrimaryKey(Company company);
     
-    /**
-     * List Company  init data
-     * Author devin
-     * @param Company
-     * @return
-     */
-    List<Company> selectAll(Company company);
+    List<Company> selectAll();
     
     int updateBalanceByTransactionId(Map<String, String> map);
     
@@ -81,4 +76,10 @@ public interface CompanyMapper {
     boolean compareBalance(Map<String, Object> map);
     
     public List<Company> selectAliveActivitiCompaign();
+    /**
+     * 如果id为空，查询所有公司，如果id不为空，查询对应公司
+     * @param id
+     * @return
+     */
+    public List<Company> selectSelectiveById(@Param("id")Integer id);
 }

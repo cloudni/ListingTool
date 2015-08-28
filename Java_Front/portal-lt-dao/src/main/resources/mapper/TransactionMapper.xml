@@ -15,6 +15,7 @@
     <result column="payment_transaction_id" jdbcType="VARCHAR" property="paymentTransactionId" />
     <result column="ref_id" jdbcType="INTEGER" property="refId" />
     <result column="ref_object" jdbcType="VARCHAR" property="refObject" />
+    <result column="ref_date" jdbcType="VARCHAR" property="refDate" />
     <result column="contents" jdbcType="VARCHAR" property="contents" />
     <result column="total" jdbcType="DECIMAL" property="total" />
     <result column="fee" jdbcType="DECIMAL" property="fee" />
@@ -34,7 +35,7 @@
       This element was generated on Wed Mar 25 19:55:16 CST 2015.
     -->
     t1.id as id, t1.company_id as company_id, t1.payment_transaction_type as payment_transaction_type, t1.type as type, 
-    t1.status as status, t1.payment_transaction_id as payment_transaction_id, t1.ref_id as ref_id, t1.ref_object as ref_object, t1.contents as contents, t1.total as total, t1.fee as fee, 
+    t1.status as status, t1.payment_transaction_id as payment_transaction_id, t1.ref_id as ref_id, t1.ref_object as ref_object, t1.ref_date as ref_date, t1.contents as contents, t1.total as total, t1.fee as fee, 
     t1.net as net,t1.enabled as enabled, t1.create_time_utc as create_time_utc, t1.create_user_id as create_user_id, 
     t1.update_time_utc as update_time_utc, t1.update_user_id as update_user_id
   </sql>
@@ -65,12 +66,12 @@
       This element was generated on Wed Mar 25 19:55:16 CST 2015.
     -->
     insert into lt_transaction (id, company_id, payment_transaction_type, 
-      type, status, payment_transaction_id, ref_id, ref_object, contents
+      type, status, payment_transaction_id, ref_id, ref_object, ref_date, contents
       total, fee, net, enabled, create_time_utc, 
       create_user_id, update_time_utc, update_user_id
       )
     values (#{id,jdbcType=INTEGER}, #{companyId,jdbcType=INTEGER}, #{payment_transaction_type,jdbcType=INTEGER}, 
-      #{type,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{paymentTransactionId,jdbcType=VARCHAR}, #{refId,jdbcType=INTEGER}, #{refObject,jdbcType=VARCHAR}, #{contents,jdbcType=VARCHAR},
+      #{type,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{paymentTransactionId,jdbcType=VARCHAR}, #{refId,jdbcType=INTEGER}, #{refObject,jdbcType=VARCHAR}, #{refDate,jdbcType=VARCHAR}, #{contents,jdbcType=VARCHAR},
       #{total,jdbcType=DECIMAL}, #{fee,jdbcType=DECIMAL}, #{net,jdbcType=DECIMAL}, #{enabled,jdbcType=BIT}, #{createTimeUtc,jdbcType=INTEGER}, 
       #{createUserId,jdbcType=INTEGER}, #{updateTimeUtc,jdbcType=INTEGER}, #{updateUserId,jdbcType=INTEGER}
       )
@@ -106,6 +107,9 @@
       </if>
        <if test="refObject != null">
         ref_object,
+      </if>
+       <if test="refDate != null">
+        ref_date,
       </if>
       <if test="contents != null">
         contents,
@@ -159,6 +163,9 @@
       </if>
        <if test="refObject != null">
         #{refObject,jdbcType=VARCHAR},
+      </if>
+      <if test="refDate != null">
+        #{refDate,jdbcType=VARCHAR},
       </if>
       <if test="contents != null">
         #{contents,jdbcType=VARCHAR},
@@ -218,6 +225,9 @@
       <if test="refObject != null">
         ref_object = #{refObject,jdbcType=VARCHAR},
       </if>
+      <if test="refDate != null">
+        ref_date = #{refDate,jdbcType=VARCHAR},
+      </if>
       <if test="contents != null">
         contents = #{contents,jdbcType=VARCHAR},
       </if>
@@ -262,6 +272,7 @@
       payment_transaction_id = #{paymentTransactionId,jdbcType=VARCHAR},
       ref_id = #{refId,jdbcType=INTEGER},
       ref_object = #{refObject,jdbcType=VARCHAR},
+      ref_date = #{refDate,jdbcType=VARCHAR},
       contents = #{contents,jdbcType=VARCHAR},
       total = #{total,jdbcType=DECIMAL},
       fee = #{fee,jdbcType=DECIMAL},
@@ -274,9 +285,14 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
+  <resultMap type="com.lt.dao.po.TransactionPO" id="PoResultMap" extends="BaseResultMap">
+  	<result column="campaignName" jdbcType="VARCHAR" property="campaignName" />
+  </resultMap>
+  
   <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.lt.dao.po.TransactionPO">
     select 
     <include refid="Base_Column_List" />
+    , (CASE t1.ref_object WHEN 'ADCampaign' THEN (select t3.name from lt_ad_campaign t3 where t3.id = t1.ref_id)  ELSE t1.ref_object END) as campaignName
     <if test="isManagerPage == 1">
     	, t2.name as company_name
     </if>
@@ -326,21 +342,25 @@
     order by create_time_utc desc
   </select>
   
-  <select id="selectLastestInsertId" resultType="int">
+  <select id="selectLastestInsertId" resultType="java.lang.Integer">
   	select LAST_INSERT_ID() 
   </select>
   
   <insert id="batchInsert" parameterType="java.util.List">
-    insert into lt_transaction (company_id, type, status, payment_transaction_type, ref_id, ref_object,
+    insert into lt_transaction (company_id, type, status, payment_transaction_type, ref_id, ref_object, ref_date
       total, net, enabled, create_time_utc, 
       create_user_id, update_time_utc, update_user_id
       )
       values
    	<foreach collection="list" item="item" index="index" open="" close="" separator=",">
      (#{item.companyId}, #{item.type}, #{item.status}, #{item.paymentTransactionType}, 
-      #{item.refId}, #{item.refObject}, #{item.total}, 
+      #{item.refId}, #{item.refObject}, #{item.refDate}, #{item.total}, 
       #{item.net}, 1, #{item.createTimeUtc},
       #{item.createUserId}, #{item.updateTimeUtc}, #{item.updateUserId})
     </foreach>
   </insert>
+  
+  <select id="selectByRefObject" parameterType="com.lt.dao.po.TransactionPO" resultMap="BaseResultMap">
+  	select * from lt_transaction where ref_id = #{refId} and ref_object = #{refObject} and ref_date = #{refDate}
+  </select>
 </mapper>

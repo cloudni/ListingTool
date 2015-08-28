@@ -1,11 +1,6 @@
 package com.lt.dao.po;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.lt.dao.model.Transaction;
 import com.lt.platform.util.lang.StringUtil;
@@ -36,6 +31,8 @@ public class TransactionPO extends Transaction
 	private String typeName;
 	private String statusName;
 	private String paymentTransactionTypeName;
+	
+	private String campaignName;//关联的活动名称
 	
 	/**
 	 * 交易渠道
@@ -133,7 +130,7 @@ public class TransactionPO extends Transaction
 	{
 		if(getCreateTimeUtc() != null && getCreateTimeUtc() > 0)
 		{
-			createTimeStr = DateFormatUtil.convertIntegerToString(getCreateTimeUtc());
+			createTimeStr = DateFormatUtil.convertIntegerToString(getCreateTimeUtc(), "yyyy-MM-dd");
 		}
 		return createTimeStr;
 	}
@@ -141,7 +138,7 @@ public class TransactionPO extends Transaction
 	{	
 		if(getUpdateTimeUtc() != null && getUpdateTimeUtc() > 0)
 		{
-			updateTimeStr = DateFormatUtil.convertIntegerToString(getUpdateTimeUtc());
+			updateTimeStr = DateFormatUtil.convertIntegerToString(getUpdateTimeUtc(), "yyyy-MM-dd");
 		}
 		return updateTimeStr;
 	}
@@ -224,5 +221,15 @@ public class TransactionPO extends Transaction
 	public void setPaymentTransactionTypeName(String paymentTransactionTypeName)
 	{
 		this.paymentTransactionTypeName = paymentTransactionTypeName;
+	}
+
+	public String getCampaignName()
+	{
+		return campaignName;
+	}
+
+	public void setCampaignName(String campaignName)
+	{
+		this.campaignName = campaignName;
 	}
 }

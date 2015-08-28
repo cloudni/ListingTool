@@ -10,7 +10,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="company_id" property="companyId" jdbcType="INTEGER" />
-    <result column="status" property="status" jdbcType="BIT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
     <result column="is_delete" property="isDelete" jdbcType="BIT" />
     <result column="budget" property="budget" jdbcType="DECIMAL" />
     <result column="start_datetime" property="startDatetime" jdbcType="INTEGER" />
@@ -80,7 +80,7 @@
       create_user_id, update_time_utc, update_user_id, 
       criteria)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{companyId,jdbcType=INTEGER}, 
-      #{status,jdbcType=BIT}, #{isDelete,jdbcType=BIT}, #{budget,jdbcType=DECIMAL}, #{startDatetime,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER}, #{isDelete,jdbcType=BIT}, #{budget,jdbcType=DECIMAL}, #{startDatetime,jdbcType=INTEGER}, 
       #{endDatetime,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR}, #{createTimeUtc,jdbcType=INTEGER}, 
       #{createUserId,jdbcType=INTEGER}, #{updateTimeUtc,jdbcType=INTEGER}, #{updateUserId,jdbcType=INTEGER}, 
       #{criteria,jdbcType=LONGVARCHAR})
@@ -147,7 +147,7 @@
         #{companyId,jdbcType=INTEGER},
       </if>
       <if test="status != null" >
-        #{status,jdbcType=BIT},
+        #{status,jdbcType=INTEGER},
       </if>
       <if test="isDelete != null" >
         #{isDelete,jdbcType=BIT},
@@ -196,7 +196,7 @@
         company_id = #{companyId,jdbcType=INTEGER},
       </if>
       <if test="status != null" >
-        status = #{status,jdbcType=BIT},
+        status = #{status,jdbcType=INTEGER},
       </if>
       <if test="isDelete != null" >
         is_delete = #{isDelete,jdbcType=BIT},
@@ -240,7 +240,7 @@
     update lt_ad_campaign
     set name = #{name,jdbcType=VARCHAR},
       company_id = #{companyId,jdbcType=INTEGER},
-      status = #{status,jdbcType=BIT},
+      status = #{status,jdbcType=INTEGER},
       is_delete = #{isDelete,jdbcType=BIT},
       budget = #{budget,jdbcType=DECIMAL},
       start_datetime = #{startDatetime,jdbcType=INTEGER},
@@ -262,7 +262,7 @@
     update lt_ad_campaign
     set name = #{name,jdbcType=VARCHAR},
       company_id = #{companyId,jdbcType=INTEGER},
-      status = #{status,jdbcType=BIT},
+      status = #{status,jdbcType=INTEGER},
       is_delete = #{isDelete,jdbcType=BIT},
       budget = #{budget,jdbcType=DECIMAL},
       start_datetime = #{startDatetime,jdbcType=INTEGER},
@@ -277,9 +277,11 @@
   
   <!-- 自定义 -->
   <resultMap id="PoResultMap" type="com.lt.dao.po.AdCampaignPO" extends="BaseResultMap">
-  	<result column="totalCost" property="totalCost" jdbcType="DECIMAL" />
+  	<result column="charge_amount" property="chargeAmount" jdbcType="DECIMAL" />
   	<result column="freezeMoney" property="freezeMoney" jdbcType="DECIMAL" />
   	<result column="transactionAuthorizeId" property="transactionAuthorizeId" jdbcType="DECIMAL" />
+  	<result column="isCharged" property="isCharged"/>
+    <result column="company_name" property="companyName"/>
   </resultMap>
   
   <sql id="Po_Column_List" >
@@ -289,21 +291,49 @@
   </sql>
   
    <select id="selectSelective" resultMap="PoResultMap" parameterType="com.lt.dao.po.AdCampaignPO" >
-    select t4.*, t5.id as transactionAuthorizeId, 
-		if(t5.amount is null,0,t5.amount) as freezeMoney 
-	from (
-		select <include refid="Po_Column_List" />
-			,if(SUM(t3.total_cost) is null,0,SUM(t3.total_cost)) as totalCost from lt_ad_campaign t1
-		LEFT JOIN lt_google_adwords_campaign t2
-		on t1.id = t2.lt_ad_campaign_id
-		LEFT JOIN lt_ad_google_adwords_report_campaign t3
-			on t2.id = t3.campaign_id 
-			and t3.is_charged = 0
-			and t3.date = #{reportDate}
-		GROUP BY t1.id 
-		HAVING t1.company_id = #{companyId}
-			and t1.`status` in (0, 3, 6)
-	) t4 LEFT JOIN lt_transaction_authorize t5
-	on t4.id = t5.ref_id and ref_object = 'AdCampaign'
+	select t1.* 
+	  	, if(SUM(t3.charge_amount) is null,0.0000,SUM(t3.charge_amount)) as charge_amount
+		, t4.id as transactionAuthorizeId
+		, if(t4.amount is null,0.0000,t4.amount) as freezeMoney 
+		, max(is_charged) as isCharged 
+	from lt_ad_campaign t1
+	LEFT JOIN lt_google_adwords_campaign t2 on t1.id = t2.lt_ad_campaign_id 
+	LEFT JOIN lt_ad_google_adwords_report_campaign t3 on t2.id = t3.campaign_id and t3.date = #{reportDate}
+	LEFT JOIN lt_transaction_authorize t4 on t4.ref_id = t1.id and ref_object = 'AdCampaign'
+	GROUP BY t1.id, t1.`status`, t1.company_id
+	HAVING t1.company_id = #{companyId} and t1.`status` in (0, 3, 6)
   </select>
+  
+  <select id="getCampaignList" resultMap="PoResultMap" parameterType="com.lt.dao.po.AdCampaignPO" >
+    select 
+        ac.*,c.name company_name
+    from lt_ad_campaign ac left join lt_company c on ac.company_id=c.id
+    <where>
+      <if test="id != null" >
+        ac.id = #{id,jdbcType=BIGINT}
+       </if>
+      <if test="companyId != null" >
+        and ac.company_id = #{companyId,jdbcType=INTEGER}
+       </if>
+      <if test="name != null" >
+        and ac.name like '%${name,jdbcType=VARCHAR}%'
+       </if>
+    </where> 
+  </select>
+  
+  <select id="checkExist" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select count(1)
+    from lt_ad_campaign
+    where name = #{name}
+        and is_delete=0
+  </select>
+  
+  <select id="logicDelete" resultType="java.lang.Integer" >
+    select last_insert_id()
+  </select>
+  
+  <select id="getLastInsertId" resultType="java.lang.Integer" >
+    select last_insert_id()
+  </select>
+  
 </mapper>

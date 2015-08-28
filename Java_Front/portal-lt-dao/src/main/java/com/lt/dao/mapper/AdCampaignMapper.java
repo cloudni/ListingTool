@@ -2,6 +2,7 @@ package com.lt.dao.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.lt.dao.model.AdCampaign;
@@ -72,4 +73,8 @@ public interface AdCampaignMapper {
      * @mbggenerated Mon Apr 13 18:46:40 CST 2015
      */
     List<AdCampaignPO> selectSelective(AdCampaignPO adCampaignPO);
+    
+    List<AdCampaignPO> getCampaignList(AdCampaignPO po);
+    Integer checkExist(@Param("name")String name);
+    Integer getLastInsertId();
 }

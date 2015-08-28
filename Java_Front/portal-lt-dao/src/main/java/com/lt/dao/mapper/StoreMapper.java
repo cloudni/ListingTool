@@ -1,11 +1,13 @@
 package com.lt.dao.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.lt.dao.model.Store;
+import com.lt.dao.po.StorePO;
 
 @Repository
 public interface StoreMapper {
@@ -73,4 +75,31 @@ public interface StoreMapper {
      */
     Map<String,Object> selectAuthStore(@Param("companyId")String companyId,@Param("storeId")String storeId);
     
+    /**
+     * 查询公司下的门店
+     * @param companyId
+     * @return
+     */
+    List<Store> selectSelective(@Param("companyId")Integer companyId, @Param("storeId")Integer storeId);
+    
+    /**
+     * 查询公司下的门店
+     * @param companyId
+     * @return
+     */
+    List<Store> getPlatforms(Integer storeId);
+    
+    /**
+     * 查询公司下的门店
+     * @param companyId
+     * @return
+     */
+    List<Store> getStores(Store record);
+    
+    /**
+     * 根据门店id 查询门店相关信息及门店绑定的ebay api key
+     * @param id
+     * @return
+     */
+    StorePO getStoreAndApiKey(Integer id);
 }

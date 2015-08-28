@@ -65,4 +65,10 @@ public interface TransactionChangeLogMapper {
     
     //自定义
     void batchInsertSelective(List<TransactionChangeLog> list);
+    
+    /**
+     * 根据状态查询交易变更记录是否有未处理的
+     * @param status
+     */
+    Integer countByStatus(Integer status);
 }

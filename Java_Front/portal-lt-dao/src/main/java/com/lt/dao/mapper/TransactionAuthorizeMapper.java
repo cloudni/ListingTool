@@ -2,6 +2,7 @@ package com.lt.dao.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.lt.dao.model.TransactionAuthorize;
@@ -57,4 +58,11 @@ public interface TransactionAuthorizeMapper {
     
     //自定义
     void updateBatch(List<TransactionAuthorize> list);
+    /**
+     * 根据管理广告系列的对象和id，查询对应冻结款项
+     * @param refId
+     * @param refObject
+     * @return
+     */
+    TransactionAuthorize selectByRefObject(@Param("refId")Integer refId, @Param("refObject")String refObject);
 }

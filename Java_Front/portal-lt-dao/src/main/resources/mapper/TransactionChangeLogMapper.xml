@@ -262,4 +262,10 @@
       #{item.priority}, #{item.content})
      </foreach>
   </insert>
+  
+  <select id="countByStatus" parameterType="int" resultType="int">
+	select count(id) 
+	from lt_transaction_change_log
+	where `status` = #{status}
+  </select>
 </mapper>

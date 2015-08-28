@@ -141,4 +141,11 @@
             where id = #{item.id}
      </foreach>
    </update>
+   
+   <select id="selectByRefObject" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from lt_transaction_authorize
+    where ref_id = #{refId} and ref_object = #{refObject}
+  </select>
 </mapper>

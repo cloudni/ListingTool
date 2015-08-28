@@ -4,15 +4,16 @@ import com.lt.dao.model.AdGoogleAdwordsReportCampaign;
 
 public class AdGoogleAdwordsReportCampaignPO extends AdGoogleAdwordsReportCampaign
 {
-	private Integer adCampaignId;
+	private Integer companyId;
 
-	public Integer getAdCampaignId()
+	public Integer getCompanyId()
 	{
-		return adCampaignId;
+		return companyId;
 	}
 
-	public void setAdCampaignId(Integer adCampaignId)
+	public void setCompanyId(Integer companyId)
 	{
-		this.adCampaignId = adCampaignId;
+		this.companyId = companyId;
 	}
+	
 }

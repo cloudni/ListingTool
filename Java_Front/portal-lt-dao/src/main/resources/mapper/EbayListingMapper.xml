@@ -21,6 +21,9 @@
     <result column="update_time_utc" property="updateTimeUtc" jdbcType="INTEGER" />
     <result column="update_user_id" property="updateUserId" jdbcType="INTEGER" />
   </resultMap>
+  <resultMap id="ExtendMap" type="com.lt.dao.po.EbayListingPO" extends="BaseResultMap">
+    <result column="site_name" property="siteName" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     <!--
       WARNING - @mbggenerated
@@ -225,4 +228,143 @@
       update_user_id = #{updateUserId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <!-- 自定义 -->
+  <resultMap type="com.lt.dao.po.EbayListingPO" id="PoResultMap" extends="BaseResultMap">
+  	<result column="listingDesc" property="listingDesc" jdbcType="VARCHAR" />
+  	<result column="total" property="total" javaType="INTEGER"/>
+  	<result column="primaryLevelTcate" property="primaryLevelTcate"/>
+  	<result column="secondaryLevelTcate" property="secondaryLevelTcate"/>
+  </resultMap>
+  
+  <select id="selectSelectiveByPage" parameterType="com.lt.dao.po.TrackingTagPO" resultMap="PoResultMap">
+  	SELECT
+		t.id, t.ebay_listing_id, t.store_id,
+		t.company_id, pc.`value` AS primarycate, sc.`value` AS secondarycate,
+		getCategoryIdLevel1 (pc.`value`, t.site_id) AS primaryLevelTcate,
+		getCategoryIdLevel1 (sc.`value`, t.site_id) AS secondaryLevelTcate,
+		site.`value` AS site, ed.site_id, eet.`VALUE` AS listingDesc
+	FROM lt_ebay_listing t
+	LEFT JOIN lt_ebay_entity_varchar AS eev ON eev.ebay_entity_id = t.id
+	AND eev.ebay_entity_attribute_id = 247
+	LEFT JOIN lt_ebay_entity_container eec ON eec.ebay_entity_id = t.id
+	AND eec.ebay_entity_attribute_id = 336
+	LEFT JOIN lt_ebay_entity_varchar AS pc ON pc.ebay_entity_id = t.id
+	AND pc.ebay_entity_attribute_id = 105
+	LEFT JOIN lt_ebay_entity_varchar AS sc ON sc.ebay_entity_id = t.id
+	AND sc.ebay_entity_attribute_id = 140
+	LEFT JOIN lt_ebay_entity_varchar AS site ON site.ebay_entity_id = t.id
+	AND site.ebay_entity_attribute_id = 322
+		LEFT JOIN lt_ebay_detail AS ed ON ed.site_name = site.`value`
+	LEFT JOIN lt_ebay_entity_text AS eet ON eet.ebay_entity_id = t.id
+	AND eet.ebay_entity_attribute_id = 23
+	WHERE eev.`VALUE` = 'Active'
+	AND t.is_active = 1
+	<if test="currentCompanyId != null">
+		AND t.company_id = #{currentCompanyId}
+	</if>
+	<if test="currentStoreId != null">
+		AND t.store_id = #{currentStoreId}
+	</if>
+	<if test="variationFlag == 1">
+		AND eec.id is null
+	</if>
+	<if test="variationFlag == 2">
+		AND eec.id is not null
+	</if>
+	<if test="ebaySiteNames != null">
+		AND site.`value` in
+		<foreach item="item" index="index" collection="ebaySiteNames" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>
+	</if>
+	<!-- <if test="selectFlag != null and selectDescFlag == 1">
+		<![CDATA[
+			AND eet.`value` REGEXP #{selectDescRule}
+		]]>
+	</if>
+	<if test="selectFlag != null and selectDescFlag == 0">
+		<![CDATA[
+			AND eet.`value` not REGEXP #{selectDescRule}
+		]]>
+	</if> -->
+	limit #{start}, #{end}
+  </select>
+  
+  <select id="countSelective" parameterType="com.lt.dao.po.TrackingTagPO" resultType="java.lang.Integer">
+  	SELECT count(t.id)
+	FROM lt_ebay_listing t
+	LEFT JOIN lt_ebay_entity_varchar AS eev ON eev.ebay_entity_id = t.id
+	AND eev.ebay_entity_attribute_id = 247
+	LEFT JOIN lt_ebay_entity_container eec on eec.ebay_entity_id = t.id 
+	AND eec.ebay_entity_attribute_id = 336
+	WHERE eev.`VALUE` = 'Active'
+	AND is_active = 1
+	<if test="currentCompanyId != null">
+		AND t.company_id = #{currentCompanyId}
+	</if>
+	<if test="currentStoreId != null">
+		AND t.store_id = #{currentStoreId}
+	</if>
+	<if test="variationFlag == 1">
+		AND eec.id is null
+	</if>
+	<if test="variationFlag == 2">
+		AND eec.id is not null
+	</if>
+	<if test="ebaySiteNames != null">
+		AND site.`value` in
+		<foreach item="item" index="index" collection="ebaySiteNames" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>
+	</if>
+	<!-- <if test="selectFlag != null and selectDescFlag == 1">
+		<![CDATA[
+			AND eet.`value` REGEXP #{selectDescRule}
+		]]>
+	</if>
+	<if test="selectFlag != null and selectDescFlag == 0">
+		<![CDATA[
+			AND eet.`value` not REGEXP #{selectDescRule}
+		]]>
+	</if> -->
+  </select>
+  
+  <select id="selectSiteIdByStore" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  	select site_id from lt_ebay_listing
+	where store_id = #{storeId}
+	and is_active = 1
+	group by site_id
+  </select>
+  
+  <select id="selectSiteByCompanyAndStore" parameterType="com.lt.dao.po.EbayListingPO" resultMap="ExtendMap">
+        
+    SELECT 
+        ed.site_id as site_id,ed.`name` site_name
+	FROM `lt_ebay_listing` `t`
+		left join lt_ebay_entity_varchar as pc on pc.ebay_entity_id = t.id and pc.ebay_entity_attribute_id = 105
+		left join lt_ebay_entity_varchar as sc on sc.ebay_entity_id = t.id and sc.ebay_entity_attribute_id = 140
+		left join lt_ebay_entity_varchar as sstatus on sstatus.ebay_entity_id = t.id and sstatus.ebay_entity_attribute_id = 247
+		left join lt_ebay_entity_varchar as site on site.ebay_entity_id = t.id and site.ebay_entity_attribute_id = 322
+		inner join lt_ebay_detail ed on t.site_id=ed.site_id and site.value=ed.site_name
+	where 
+        sstatus.value = 'Active'
+	   and t.company_id = #{companyId}
+       <if test="storeId != null">
+           and t.store_id = #{storeId}
+       </if>
+    group by site_id,site_name
+    
+  </select>
+  
+  
+  <select id="selectGaTrackingIdByEbayListingId" parameterType="String" resultType="String">
+    SELECT 
+        s.ga_track_id
+    FROM `lt_ebay_listing` `t`
+        inner join lt_store s on t.store_id=s.id
+    where 
+        t.ebay_listing_id = #{ebayListingId}
+  </select>
+  
 </mapper>

@@ -3,14 +3,14 @@
 * @Package com.lt.platform.util.model 
 * @Description: 树模型
 * Copyright: Copyright (c) 2014 
-* Company:wuwh team by iss
-* @author: wuwh   
+* Company:Tik team by iss
+* @author: Tik   
 * @date: 2014年6月4日 上午10:00:45 
 * @version: V1.0
 * update Release(文件修正记录)
 * <pre>
 * author--updateDate--description----------------------Flag————
-* wuwh    2014-5-1    测试codesyle                      #wuwh001
+* Tik    2014-5-1    测试codesyle                      #Tik001
 *
 *
 *

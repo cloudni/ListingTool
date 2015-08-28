@@ -24,7 +24,7 @@ import javax.imageio.ImageIO;
  * 图片处理工具类：<br>
  * 功能：缩放图像、切割图像、图像类型转换、彩色转黑白、文字水印、图片水印等
  * 
- * @author wuwh
+ * @author Tik
  */
 public class ImageUtil {
 

@@ -9,9 +9,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 /**
  * 
  * @ClassName: NumberUtil
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-3-28 下午3:19:28   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-3-28 下午3:19:28   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  数字转换、币值转换

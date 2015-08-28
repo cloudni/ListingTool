@@ -4,9 +4,9 @@ import org.apache.commons.beanutils.PropertyUtils;
 /**
  * 
  * @ClassName: RdpFileException
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-3-28 下午1:40:47   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-3-28 下午1:40:47   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  file creat、update、set、delet Exception

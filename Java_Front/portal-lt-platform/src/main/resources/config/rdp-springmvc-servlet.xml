@@ -5,9 +5,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
-http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<!-- 配置静态资源，直接映射到对应的文件夹，不被DispatcherServlet处理 -->
 	<!-- <resources mapping="/images/**" location="/images/" /> <resources mapping="/css/**" 
@@ -15,22 +15,21 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		mapping="/html/**" location="/html/" /> <resources mapping="/common/**" location="/common/" 
 		/> -->
 
-	<!--自动扫描com.lt.platform.*.controller 包下的@Controller标注的类控制器类 -->
-	<context:component-scan
-		base-package="com.lt.*.*.controller" />
-	<!--启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
-	<annotation-driven></annotation-driven>
+    <!--启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
+    <annotation-driven></annotation-driven>
+    
+	<!--自动扫描com.lt.[module].*.controller 包下的@Controller标注的类控制器类 -->
+	<context:component-scan base-package="com.lt.*.*.controller" />
+	
 	<!--对模型视图名称的解析，在请求时模型视图名称添加前后缀 -->
-	<beans:bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<beans:property name="viewClass"
-			value="org.springframework.web.servlet.view.JstlView" />
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<beans:property name="prefix" value="/WEB-INF/view/" />
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
+	
 	<!-- 上传文件 -->
-	<beans:bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<beans:property name="defaultEncoding" value="utf-8"></beans:property>
 		<beans:property name="maxUploadSize" value="60485760"></beans:property>
 	</beans:bean>
@@ -76,8 +75,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	</beans:bean>
 
 	<!--启动Spring MVC的注解功能,设置编码方式，防止乱码 -->
-	<beans:bean
-		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	<beans:bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<beans:property name="messageConverters">
 			<beans:list>
 				<beans:bean
@@ -92,22 +90,17 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		</beans:property>
 	</beans:bean>
 	<!--完成json自动转换的映射  -->
-	<beans:bean id="mappingJacksonHttpMessageConverter"
-		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+	<beans:bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
 		<beans:property name="supportedMediaTypes" value="application/json" />
 	</beans:bean>
-	<beans:bean id="formHttpMessageConverter"
-		class="org.springframework.http.converter.FormHttpMessageConverter" />
-	<beans:bean id="stringHttpMessageConverter"
-		class="org.springframework.http.converter.StringHttpMessageConverter" />
-	<beans:bean id="marshallerHttpMessageConverter"
-		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+	<beans:bean id="formHttpMessageConverter" class="org.springframework.http.converter.FormHttpMessageConverter" />
+	<beans:bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
+	<beans:bean id="marshallerHttpMessageConverter" class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
 		<beans:property name="marshaller" ref="rdpShaller" />
 		<beans:property name="unmarshaller" ref="rdpShaller" />
 	</beans:bean>
 	
-	<beans:bean
-		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	<beans:bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<beans:property name="messageConverters">
 			<beans:list>
 				<beans:ref bean="mappingJacksonHttpMessageConverter" />
@@ -117,8 +110,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		</beans:property>
 	</beans:bean>
 	<!-- spring rest -->
-	<beans:bean
-		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+	<beans:bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<beans:property name="order" value="1" />
 		<beans:property name="defaultContentType" value="text/html" />
 		<beans:property name="mediaTypes">
@@ -130,8 +122,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		<beans:property name="defaultViews">
 			<beans:list>
 				<!-- for application/json -->
-				<beans:bean
-					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+				<beans:bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
 					<beans:property name="objectMapper" ref="rdpMapper" />
 				</beans:bean>
 				<!-- for application/xml -->

@@ -3,14 +3,14 @@
  * @Package com.lt.platform.security.controller.shiro 
  * @Description: 用户基本信息
  * Copyright: Copyright (c) 2014 
- * Company:wuwh team by iss
+ * Company:Tik team by iss
  * @author: QUINN   
  * @date: 2014年5月19日 上午9:45:49 
  * @version: V1.0
  * update Release(文件修正记录)
  * <pre>
  * author--updateDate--description----------------------Flag————
- * wuwh    2014-5-1    测试codesyle                      #wuwh001
+ * Tik    2014-5-1    测试codesyle                      #Tik001
  *
  *
  *

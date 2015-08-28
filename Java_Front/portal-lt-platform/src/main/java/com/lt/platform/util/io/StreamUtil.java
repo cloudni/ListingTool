@@ -29,7 +29,7 @@ import com.lt.platform.util.resource.NutResource;
 /**
  * 流的工具类
  * 
- * @author wuwh
+ * @author Tik
  */
 public class StreamUtil {
 	private static final int BUF_SIZE = 8192;

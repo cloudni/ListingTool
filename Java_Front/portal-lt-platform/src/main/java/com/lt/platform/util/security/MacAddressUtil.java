@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @ClassName: MacAddressUtil
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-4-2 下午2:43:10   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-4-2 下午2:43:10   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  IP与mac地址的获取

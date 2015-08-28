@@ -11,7 +11,7 @@ import com.lt.platform.util.Constants;
 /**
  * 
  * @ClassName: BaseController
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-4-2 下午4:33:11   
  * @Description:  spring MVC基类控制
  * @version: V1.0

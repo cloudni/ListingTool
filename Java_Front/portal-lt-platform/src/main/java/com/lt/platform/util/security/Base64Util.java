@@ -4,9 +4,9 @@ import org.apache.commons.codec.binary.Base64;
 /**
  * 
  * @ClassName: Base64Util
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-4-2 下午12:58:04   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-4-2 下午12:58:04   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  Base64 加密解密工具类
@@ -17,9 +17,9 @@ public class Base64Util {
 	/**
 	 * 
 	 * @Title: encrypt
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-4-2 下午12:59:58   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-4-2 下午12:59:58   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  base64位加密
@@ -35,9 +35,9 @@ public class Base64Util {
 	/**
 	 * 
 	 * @Title: decrypt
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-4-2 下午12:59:43   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-4-2 下午12:59:43   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  解码

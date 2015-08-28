@@ -19,7 +19,7 @@ import com.google.common.base.Objects;
 /**
  * 
  * @ClassName: RdpHandlerExceptionResolver
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-4-4 下午10:26:48    
  * @UpdateRemark: 说明本次修改内容
  * @Description:  控制层异常处理

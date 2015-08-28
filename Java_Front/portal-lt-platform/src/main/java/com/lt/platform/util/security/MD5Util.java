@@ -11,15 +11,42 @@ import java.security.NoSuchAlgorithmException;
 /**
  * 
  * @ClassName: MD5Util
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-4-2 下午2:43:57   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-4-2 下午2:43:57   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  采用Md5加密解密
  * @version: V1.0
  */
 public class MD5Util {
+    
+    public static void main(String[] args)
+    {
+        System.out.println(md5("1"));
+    }
+
+    public static String md5(String src) {
+        StringBuffer rtnVal = new StringBuffer();
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(src.getBytes("UTF-8"));
+            byte b[] = md.digest();
+            int i;
+            for (int offset = 0; offset < b.length; offset++) {
+                i = b[offset];
+                if (i < 0)
+                    i += 256;
+                if (i < 16)
+                    rtnVal.append("0");
+                rtnVal.append(Integer.toHexString(i));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtnVal.toString();
+    }
+    
 	public static String md5(byte[] plainByte) {
 		StringBuffer rtnVal = new StringBuffer();
 		try {
@@ -44,9 +71,9 @@ public class MD5Util {
 	/**
 	 * 
 	 * @Title: makeMD5ForFile
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-4-2 下午2:44:14   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-4-2 下午2:44:14   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  文件加密
@@ -117,9 +144,9 @@ public class MD5Util {
 	/**
 	 * 
 	 * @Title: getMD5
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-4-2 下午2:45:04   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-4-2 下午2:45:04   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  字符串加密

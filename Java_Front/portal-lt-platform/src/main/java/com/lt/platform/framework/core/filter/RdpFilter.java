@@ -16,7 +16,7 @@ import com.lt.platform.util.lang.StringUtil;
 /**
  * 
  * @ClassName: RdpFilter
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-4-2 下午5:00:16   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  未登陆用户是否有访问权限

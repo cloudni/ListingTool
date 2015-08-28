@@ -8,9 +8,9 @@ import java.util.jar.JarFile;
 /**
  * 
  * @ClassName: JarEntryResource
- * @author: wuwh
+ * @author: Tik
  * @CreateDate: 2014-3-28 下午5:59:50
- * @UpdateUser: wuwh
+ * @UpdateUser: Tik
  * @UpdateDate: 2014-3-28 下午5:59:50
  * @UpdateRemark: 说明本次修改内容
  * @Description: 封装了 jar 内的 Entity

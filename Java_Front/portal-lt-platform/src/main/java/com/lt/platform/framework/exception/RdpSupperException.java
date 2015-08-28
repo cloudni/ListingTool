@@ -4,9 +4,9 @@ import java.io.PrintWriter;
 /**
  * 
  * @ClassName: RdpSupperException
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-3-28 下午2:15:25   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-3-28 下午2:15:25   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  基础异常信息包

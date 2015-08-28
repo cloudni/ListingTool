@@ -11,9 +11,9 @@ import com.lt.platform.framework.exception.RDPException;
  * 数据持久层基础父类
  * 
  * @ClassName: MyBatisSuperMapper
- * @author: wuwh
+ * @author: Tik
  * @CreateDate: 2014-3-27 上午10:43:25
- * @UpdateUser: wuwh
+ * @UpdateUser: Tik
  * @UpdateDate: 2014-3-27 上午10:43:25
  * @UpdateRemark: 说明本次修改内容
  * @Description: 简单描述
@@ -23,7 +23,7 @@ import com.lt.platform.framework.exception.RDPException;
 /** 
 * @ClassName: MyBatisSuperMapper 
 * @description: 大致描述该类的用途，内容简短易懂 
-* @author: wuwh 
+* @author: Tik 
 * @date: 2014年5月12日 下午1:37:16 
 * @version: V1.0
 *
@@ -33,9 +33,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: findEntity
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:45:36   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:45:36   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据实体组合条件信息返回实体
@@ -48,9 +48,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: findEntityById
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:45:53   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:45:53   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据实体主键值以及租户ID返回实体
@@ -167,9 +167,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: findCollection
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:46:03   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:46:03   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据实体组合条件返回非实体集合信息
@@ -182,9 +182,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: findEntityCollection
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:46:31   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:46:31   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据实体组合条件返回实体集合信息
@@ -197,9 +197,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: findEntityCollectionByMap
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:47:18   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:47:18   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据Map组合条件返回实体集合信息
@@ -212,9 +212,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: findCollectionsByMap
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:47:32   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:47:32   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据Map组合条件返回非实体集合信息
@@ -227,9 +227,9 @@ public interface MyBatisSuperMapper<T> {
 	/***
 	 * 
 	 * @Title: findPageEntityCollection
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:47:42   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:47:42   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  获取带有分页数据集合,以实体为结果集
@@ -242,9 +242,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: findPageMapCollection
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:47:51   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:47:51   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  获取带有分页数据集合,以Map对象为结果集
@@ -257,9 +257,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: saveEntity
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:47:59   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:47:59   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  插入实体
@@ -271,9 +271,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: saveEntityByMap
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:48:07   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:48:07   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据map信息插入实体
@@ -303,9 +303,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: updateEntity
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:48:14   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:48:14   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  更新实体
@@ -317,9 +317,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: updateEntityByMap
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:48:23   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:48:23   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据map信息更新实体
@@ -331,9 +331,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: deleteEntity
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:48:30   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:48:30   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据实体信息删除实体
@@ -345,9 +345,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: deleteEntityByMap
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:48:38   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:48:38   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据map集合信息删除数据
@@ -359,9 +359,9 @@ public interface MyBatisSuperMapper<T> {
 	/**
 	 * 
 	 * @Title: deleteEntityByPkId
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-3-28 下午2:48:47   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-3-28 下午2:48:47   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  根据主键删除信息数据

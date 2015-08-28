@@ -7,9 +7,9 @@ import org.apache.commons.collections.ListUtils;
 /**
  * 
  * @ClassName: CollectionUtil
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-3-28 下午10:43:33   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-3-28 下午10:43:33   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  集合工具
@@ -19,7 +19,7 @@ public class CollectionUtil extends ListUtils{
 	/**
 	 * 
 	 * @Title: isEmpty
-	 * @author:  wuwh 
+	 * @author:  Tik 
      *
      * <p>check collection is empty</p>
      *
@@ -36,7 +36,7 @@ public class CollectionUtil extends ListUtils{
 	/**
 	 * 
 	 * @Title: isNotEmpty
-	 * @author:  wuwh 
+	 * @author:  Tik 
      *
      * <p>check collection is empty</p>
      *

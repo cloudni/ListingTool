@@ -5,9 +5,9 @@ import java.util.Iterator;
 /**
  * 
  * @ClassName: RDPException
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-3-28 下午2:09:53   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-3-28 下午2:09:53   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  平台Exception封装后的Exception

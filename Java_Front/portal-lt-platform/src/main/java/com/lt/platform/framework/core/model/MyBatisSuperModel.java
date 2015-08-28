@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 /***
  * 
  * @ClassName: MyBaitsSuperModel
- * @author: wuwh
+ * @author: Tik
  * @CreateDate: 2014-3-27 下午12:48:18
- * @UpdateUser: wuwh
+ * @UpdateUser: Tik
  * @UpdateDate: 2014-3-27 下午12:48:18
  * @UpdateRemark: 说明本次修改内容
  * @Description: 基础的实体类，用了准备公共参数

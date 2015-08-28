@@ -18,4 +18,13 @@ public class Constants {
 	public static final String SUCCESS = "1";
 	/** 失败 */
 	public static final String FAILURE = "0";
+	
+    /** PLATFORM */
+    public static final int PLATFORM_EBAY = 1;
+    public static final int PLATFORM_AMAZON = 2;
+    public static final int PLATFORM_ALIEXPRESS = 3;
+    public static final int PLATFORM_WISH = 4;
+    public static final int PLATFORM_ECSHOP = 5;
+    public static final int PLATFORM_MAGENTO = 6;
+	
 }

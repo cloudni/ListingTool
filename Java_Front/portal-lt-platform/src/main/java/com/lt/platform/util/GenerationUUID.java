@@ -3,9 +3,9 @@ package com.lt.platform.util;
 /**
  * 
  * @ClassName: GenerationUUID
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-4-2 下午4:12:31   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-4-2 下午4:12:31   
  * @UpdateRemark: 说明本次修改内容
  * @Description: 生成36位主键信息

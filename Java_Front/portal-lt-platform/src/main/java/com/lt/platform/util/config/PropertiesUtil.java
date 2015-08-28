@@ -6,15 +6,17 @@ package com.lt.platform.util.config;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * @author wuwh
+ * @author Tik
  * 
  */
 public class PropertiesUtil {
@@ -33,7 +35,6 @@ public class PropertiesUtil {
 	 * @return
 	 * 
 	 */
-
 	public static Properties loadProperties(String path) {
 		Properties prop = new Properties();
 		// String configFilePath = getDestFilePath(path);
@@ -56,12 +57,44 @@ public class PropertiesUtil {
 		return prop;
 	}
 
+    /**
+     * 读取配置文件 <per> ConfigUtil.getConfig("/spring/config.properties") return
+     * Properties prop
+     * 
+     * prop.getProperty("username").trim();
+     * 
+     * @param strfile
+     * @return
+     * 
+     */
+    public static Properties loadJarProperties(String path) {
+        Properties prop = new Properties();
+        // String configFilePath = getDestFilePath(path);
+        InputStream is = null;
+        try {
+            is = PropertiesUtil.class.getResourceAsStream(path);
+            prop.load(is);
+            is.close();
+        } catch (Exception e) {
+            log.info("loadProperties error: " + e.getMessage(), e);
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                    is = null;
+                }
+            } catch (Exception e) {
+            }
+        }
+        return prop;
+    }
+
 	/**
 	 * 
 	 * @Title: getProperty
-	 * @author: wuwh
+	 * @author: Tik
 	 * @CreateDate: 2014-4-2 下午1:54:21
-	 * @UpdateUser: wuwh
+	 * @UpdateUser: Tik
 	 * @UpdateDate: 2014-4-2 下午1:54:21
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description: 根据key获取pop文件中的value
@@ -95,8 +128,8 @@ public class PropertiesUtil {
 	*
 	 */
 	public static Object getContextProperty(String key) {  
-        String default_Path="\\config\\config.properties";
-		return getProperty(key,loadProperties(default_Path));
+        String default_Path = "/config/config.properties";
+		return getProperty(key,loadJarProperties(default_Path));
     } 
 	
 	private InputStream getPropsIS(String propertiesPath) {

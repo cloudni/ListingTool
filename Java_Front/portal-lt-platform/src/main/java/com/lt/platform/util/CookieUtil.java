@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 
  * @ClassName: CookieUtils
- * @author:  [wuwh] 
+ * @author:  [Tik] 
  * @CreateDate: [2013-7-9 下午1:56:03]   
- * @UpdateUser: [wuwh]   
+ * @UpdateUser: [Tik]   
  * @UpdateDate: [2013-7-9 下午1:56:03]   
  * @UpdateRemark: [说明本次修改内容]
  * @Description:  [TODO(Cookie操作工具类)]
@@ -24,9 +24,9 @@ public class CookieUtil {
 	/**
 	 * 
 	 * @Title: [setCookie]
-	 * @author:  [wuwh] 
+	 * @author:  [Tik] 
 	 * @CreateDate: [2013-7-9 下午1:56:34]   
-	 * @UpdateUser: [wuwh]   
+	 * @UpdateUser: [Tik]   
 	 * @UpdateDate: [2013-7-9 下午1:56:34]   
 	 * @UpdateRemark: [说明本次修改内容]
 	 * @Description:  [TODO(设置 Cookie（生成时间为1天）)]
@@ -42,9 +42,9 @@ public class CookieUtil {
 	/**
 	 * 
 	 * @Title: [setCookie]
-	 * @author:  [wuwh] 
+	 * @author:  [Tik] 
 	 * @CreateDate: [2013-7-9 下午1:57:09]   
-	 * @UpdateUser: [wuwh]   
+	 * @UpdateUser: [Tik]   
 	 * @UpdateDate: [2013-7-9 下午1:57:09]   
 	 * @UpdateRemark: [说明本次修改内容]
 	 * @Description:  [TODO(设置Cookie)]
@@ -69,9 +69,9 @@ public class CookieUtil {
 	/**
 	 * 
 	 * @Title: [getCookie]
-	 * @author:  [wuwh] 
+	 * @author:  [Tik] 
 	 * @CreateDate: [2013-7-9 下午1:58:30]   
-	 * @UpdateUser: [wuwh]   
+	 * @UpdateUser: [Tik]   
 	 * @UpdateDate: [2013-7-9 下午1:58:30]   
 	 * @UpdateRemark: [说明本次修改内容]
 	 * @Description:  [TODO(Cookie值获取)]
@@ -87,9 +87,9 @@ public class CookieUtil {
 	/**
 	 * 
 	 * @Title: [getCookie]
-	 * @author:  [wuwh] 
+	 * @author:  [Tik] 
 	 * @CreateDate: [2013-7-9 下午1:59:11]   
-	 * @UpdateUser: [wuwh]   
+	 * @UpdateUser: [Tik]   
 	 * @UpdateDate: [2013-7-9 下午1:59:11]   
 	 * @UpdateRemark: [说明本次修改内容]
 	 * @Description:  [TODO(获取指定的Cookie值，并删除)]
@@ -106,9 +106,9 @@ public class CookieUtil {
 	/**
 	 * 
 	 * @Title: [getCookie]
-	 * @author:  [wuwh] 
+	 * @author:  [Tik] 
 	 * @CreateDate: [2013-7-9 下午2:00:45]   
-	 * @UpdateUser: [wuwh]   
+	 * @UpdateUser: [Tik]   
 	 * @UpdateDate: [2013-7-9 下午2:00:45]   
 	 * @UpdateRemark: [说明本次修改内容]
 	 * @Description:  [TODO(获得指定Cookie的值,根据操作是否移除)]

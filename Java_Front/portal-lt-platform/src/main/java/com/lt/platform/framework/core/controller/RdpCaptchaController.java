@@ -24,7 +24,7 @@ import com.lt.platform.util.Constants;
 *//**
  * 
  * @ClassName: RdpCaptchaController
- * @author: wuwh
+ * @author: Tik
  * @CreateDate: 2014-4-4 下午1:30:50
  * @UpdateRemark: 说明本次修改内容
  * @Description: 验证码生成
@@ -39,7 +39,7 @@ public class RdpCaptchaController extends SpringSuperController {
 	*//**
 	 * 
 	 * @Title: getKaptchaImage
-	 * @author: wuwh
+	 * @author: Tik
 	 * @CreateDate: 2014-4-4 下午1:36:24
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description: 防止Captcha机器人登陆

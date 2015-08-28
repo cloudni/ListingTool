@@ -15,10 +15,6 @@ import com.lt.platform.util.lang.ObjectUtil;
 /**
  * 
  * @ClassName: DateUtil
- * @author:  wuwh 
- * @CreateDate: 2014-3-28 下午4:16:18   
- * @UpdateUser: wuwh   
- * @UpdateDate: 2014-3-28 下午4:16:18   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  应用服务日期covert
  * @version: V1.0
@@ -27,9 +23,9 @@ public class DateFormatUtil extends DateFormatUtils{
     /**
      * 
      * @Title: convertDateToStr
-     * @author:  wuwh 
+     * @author:  Tik 
      * @CreateDate: 2014-3-28 下午4:22:28   
-     * @UpdateUser: wuwh   
+     * @UpdateUser: Tik   
      * @UpdateDate: 2014-3-28 下午4:22:28   
      * @UpdateRemark: 说明本次修改内容
      * @Description:  返回自己所需格式的日期，如2014-12-13 yyyy-MM-dd
@@ -50,10 +46,6 @@ public class DateFormatUtil extends DateFormatUtils{
     /**
      * 
      * @Title: convertStrToDate
-     * @author:  wuwh 
-     * @CreateDate: 2014-3-28 下午5:07:02   
-     * @UpdateUser: wuwh   
-     * @UpdateDate: 2014-3-28 下午5:07:02   
      * @UpdateRemark: 说明本次修改内容
      * @Description:  字符日期转换自己所需格式的日期
      * @version: V1.0
@@ -62,7 +54,7 @@ public class DateFormatUtil extends DateFormatUtils{
      * @return
      * @throws RDPException
      */
-    public static Date convertStrToDate(String date, String pattern) throws RDPException {
+    public static Date convertStrToDate(String date, String pattern) {
         final DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern);
         if(ObjectUtil.isNotNull(date)){
         	 return formatter.parseDateTime(date).toDate();
@@ -73,12 +65,6 @@ public class DateFormatUtil extends DateFormatUtils{
     /**
      * 
      * @Title: getDate
-     * @author:  wuwh 
-     * @CreateDate: 2014-3-28 下午5:12:34   
-     * @UpdateUser: wuwh   
-     * @UpdateDate: 2014-3-28 下午5:12:34   
-     * @UpdateRemark: 说明本次修改内容
-     * @Description:  获取时间信息
      * @version: V1.0
      * @return
      * @throws RDPException
@@ -111,6 +97,35 @@ public class DateFormatUtil extends DateFormatUtils{
 		long date = System.currentTimeMillis()/1000;
 		
 		return (Integer)new Long(date).intValue();
+	}
+	
+	/**
+	 * 获取当前日期的Integer型
+	 * @return
+	 */
+	public static Integer getCurrentIntegerDate() {
+		DateFormat dft = new SimpleDateFormat("yyyy-MM-dd");
+		String str = dft.format(new Date());
+		
+		try
+		{
+			Date d = dft.parse(str);
+			long date = d.getTime()/1000;
+			return (Integer)new Long(date).intValue();
+		} catch (ParseException e)
+		{
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static void main(String[] args)
+	{
+		System.out.println(getCurrentIntegerDate());
+	}
+	
+	public static String getSysdate() {
+	    return convertIntegerToString(getCurrentIntegerTime());
 	}
 	
 	public static String convertIntegerToString(Integer date, String pattern) {

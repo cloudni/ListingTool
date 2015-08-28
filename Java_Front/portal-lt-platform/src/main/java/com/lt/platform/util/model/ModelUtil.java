@@ -10,7 +10,7 @@ import com.lt.platform.framework.exception.RDPException;
  * 
 * @ClassName: ModelUtil 
 * @description: 对象转换
-* @author: wuwh 
+* @author: Tik 
 * @date: 2014年5月28日 上午9:55:27 
 * @version: V1.0
 *

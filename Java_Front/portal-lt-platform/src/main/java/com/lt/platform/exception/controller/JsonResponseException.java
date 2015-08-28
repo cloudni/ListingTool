@@ -2,9 +2,9 @@ package com.lt.platform.exception.controller;
 /**
  * 
  * @ClassName: JsonResponseException
- * @author:  [wuwh] 
+ * @author:  [Tik] 
  * @CreateDate: [2014-3-26 下午4:53:47]   
- * @UpdateUser: [wuwh]   
+ * @UpdateUser: [Tik]   
  * @UpdateDate: [2014-3-26 下午4:53:47]   
  * @UpdateRemark: [说明本次修改内容]
  * @Description:  [TODO(用一句话描述该文件做什么)]

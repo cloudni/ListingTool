@@ -4,9 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * 
  * @ClassName: Lang
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-3-28 下午5:53:15   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-3-28 下午5:53:15   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  封装拦截异常信息

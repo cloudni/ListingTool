@@ -9,9 +9,9 @@ import org.springframework.context.ApplicationContextAware;
 /**
  * 
  * @ClassName: SpringUtil
- * @author: wuwh
+ * @author: Tik
  * @CreateDate: 2014-4-2 下午1:56:20
- * @UpdateUser: wuwh
+ * @UpdateUser: Tik
  * @UpdateDate: 2014-4-2 下午1:56:20
  * @UpdateRemark: 说明本次修改内容
  * @Description: 或者spring容器中的bean

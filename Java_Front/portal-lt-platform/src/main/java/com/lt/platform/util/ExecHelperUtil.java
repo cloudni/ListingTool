@@ -1,6 +1,6 @@
 package com.lt.platform.util;
 /**
- * @author wuwh
+ * @author Tik
  *
  */
 /*
@@ -28,7 +28,7 @@ import java.io.*;
  * More information about this class is available from <a target="_top" href=
  * "http://ostermiller.org/utils/ExecHelperUtil.html">ostermiller.org</a>.
  *
- * @author wuwh
+ * @author Tik
  * 执行exe文件以及批处理文件
  */
 public final class ExecHelperUtil {

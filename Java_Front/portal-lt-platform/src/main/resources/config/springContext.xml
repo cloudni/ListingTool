@@ -14,7 +14,7 @@
 
 	<import resource="classpath*:config/datasource.xml" />
 	<import resource="classpath*:config/mybaits.xml" />
-		<import resource="classpath*:config/springRedis.xml" />
+	<import resource="classpath*:config/springRedis.xml" />
 
 	<bean class="com.lt.platform.util.config.SpringUtil" />
 	<bean class="com.lt.platform.util.config.CusotmizedPropertyUtil">

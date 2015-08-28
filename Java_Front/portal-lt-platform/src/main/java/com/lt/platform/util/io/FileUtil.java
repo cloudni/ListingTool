@@ -23,7 +23,7 @@ import com.lt.platform.util.lang.StringUtil;
 /**
  * 操作文件的工具类
  * 
- * @author wuwh
+ * @author Tik
  * 
  */
 public class FileUtil {

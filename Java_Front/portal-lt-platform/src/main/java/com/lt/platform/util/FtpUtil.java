@@ -16,7 +16,7 @@ import com.lt.platform.util.model.MultiMediaConfigModel;
  * 
  * @ClassName: FtpUtil
  * @description: FTP上传下载帮助类
- * @author: wuwh
+ * @author: Tik
  * @date: 2014年6月12日 下午3:23:28
  * @version: V1.0
  * 

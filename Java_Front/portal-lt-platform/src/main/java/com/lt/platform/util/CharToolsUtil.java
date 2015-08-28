@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
  * Company:
  * </p>
  * 
- * @author:wuwh
+ * @author:Tik
  * @version 1.0
  */
 public class CharToolsUtil {

@@ -8,9 +8,9 @@ public class ConfigUtil {
 	/**
 	 * 
 	 * @Title: getUserResourceAsStream
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-4-2 下午1:42:06   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-4-2 下午1:42:06   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  动态加载xml文件,并且获得流文件
@@ -49,9 +49,9 @@ public class ConfigUtil {
 	/**
 	 * 
 	 * @Title: getUserResourcePath
-	 * @author:  wuwh 
+	 * @author:  Tik 
 	 * @CreateDate: 2014-4-2 下午1:35:24   
-	 * @UpdateUser: wuwh   
+	 * @UpdateUser: Tik   
 	 * @UpdateDate: 2014-4-2 下午1:35:24   
 	 * @UpdateRemark: 说明本次修改内容
 	 * @Description:  动态加载xml文件,并且获得xml绝对文件路径

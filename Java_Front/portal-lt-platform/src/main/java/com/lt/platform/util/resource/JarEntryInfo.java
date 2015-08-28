@@ -2,9 +2,9 @@ package com.lt.platform.util.resource;
 /**
  * 
  * @ClassName: JarEntryInfo
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-3-28 下午6:01:00   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-3-28 下午6:01:00   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  jar 实体封装

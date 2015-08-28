@@ -8,9 +8,9 @@ import com.lt.platform.util.io.StreamUtil;
 /**
  * 
  * @ClassName: NutResource
- * @author:  wuwh 
+ * @author:  Tik 
  * @CreateDate: 2014-3-28 下午5:59:15   
- * @UpdateUser: wuwh   
+ * @UpdateUser: Tik   
  * @UpdateDate: 2014-3-28 下午5:59:15   
  * @UpdateRemark: 说明本次修改内容
  * @Description:  简单描述

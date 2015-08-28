@@ -8,9 +8,9 @@ import java.io.InputStream;
 /**
  * 
  * @ClassName: IOUtil
- * @author: wuwh
+ * @author: Tik
  * @CreateDate: 2014-3-28 下午5:47:43
- * @UpdateUser: wuwh
+ * @UpdateUser: Tik
  * @UpdateDate: 2014-3-28 下午5:47:43
  * @UpdateRemark: 说明本次修改内容
  * @Description: IO输出封装

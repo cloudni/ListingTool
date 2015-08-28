@@ -13,7 +13,7 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 /**
  * 文本处理工具类
  * 
- * @author wuwh
+ * @author Tik
  * 
  */
 public class StringUtil extends StringUtils{
@@ -38,7 +38,7 @@ public class StringUtil extends StringUtils{
 	/**
 	 * 
 	 * @Title: getPingYin
-	 * @author:  wuwh 
+	 * @author:  Tik 
      *
      * <p>传入城市名称,获得城市拼音全拼</p>
      *

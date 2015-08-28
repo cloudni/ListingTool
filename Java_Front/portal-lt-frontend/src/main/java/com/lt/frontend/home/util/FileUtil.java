@@ -3,7 +3,7 @@
  * @Package com.kerrykidz.system.util 
  * @Description: 
  * Copyright: Copyright (c) 2014 
- * Company:wuwh team by iss
+ * Company:Tik team by nivanainfo
  * @author: zhuss   
  * @date: 2014年9月15日 下午5:05:05 
  * @version: V1.0

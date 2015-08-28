@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class CommonController
 {
 
-
 	@RequestMapping("ad")
 	public String ad() throws Exception
 	{

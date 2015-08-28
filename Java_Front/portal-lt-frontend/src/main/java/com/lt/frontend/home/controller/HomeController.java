@@ -35,16 +35,16 @@ public class HomeController
 	}
 
 	@RequestMapping("login")
-	public ModelAndView login(HttpServletResponse response,HttpServletRequest request,String userName,String password,String tid,String ctl00$ContentPlaceHolder1$RandomCode1$txtValidateCode) throws Exception
+	public ModelAndView login(HttpServletResponse response,HttpServletRequest request,String userName,String password) throws Exception
 	{
 		ModelAndView model = new ModelAndView("login");
 		
-		/**妤��������������澶��*/
+		/**验证参数是否有效*/
 		if(StringUtil.isBlank(userName) || StringUtil.isBlank(password)){
 			model.addObject("login_invalid_error", "username or password fail!");
 		}else{
 			
-			/**妤��������������锝��*/
+			/**验证是否输入正确*/
 			boolean isLogin = userService.isLogin(userName, password);
 			if(isLogin){
 				

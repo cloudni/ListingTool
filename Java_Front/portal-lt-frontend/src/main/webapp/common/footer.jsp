@@ -12,8 +12,6 @@
    </ul><br/>
    Copyright &copy; 2015 by Nirvana Info.<br/>
    All Rights Reserved.<br/>
-   Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a>.<br/>
-   SQL executed: 26, Time usage: 0.0098640918731689  
     <div style="padding-top: 15px;">
 	    <span id="siteseal">
 	        <a href="https://seal.godaddy.com/getSeal?sealID=gbXKobng9O3TlVzsMWwwmkQRGkJ3MmywygAxWfYccuQWIqDA59F9srHMQUgQ">

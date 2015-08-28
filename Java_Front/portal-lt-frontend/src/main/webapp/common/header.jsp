@@ -11,6 +11,11 @@
 				<li><a href="${phpPath }/eBay/eBayListing/bulkUpdate">${session.bulk_update_ebay_listing }</a></li>
 				<li><a href="${phpPath }/eBay/eBayTargetAndTrack">${session.target_and_track }</a></li>
 			</ul></li>
+		<li class="dir"><span>营销</span>
+			<ul>
+				<li><a href="${phpPath }/marketing/advertisement/home.html">${session.display_advertisement}</a></li>
+			</ul>
+		</li>
 		<li class="dir"><span>${session.menu_system }</span>
 			<ul>
 				<!-- java
@@ -36,8 +41,3 @@
 </div>
 <!-- mainmenu -->
 <!-- breadcrumbs -->
-
-<!-- 播放器 -->
-<div style="display: none;">
-	<div id="jquery_jplayer_1" class="jp-jplayer"></div>
-</div>

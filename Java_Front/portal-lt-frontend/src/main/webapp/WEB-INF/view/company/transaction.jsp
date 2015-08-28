@@ -6,6 +6,59 @@
 	<%@ include file="/common/meta.jsp"%>
 	<title>Item Tool - Finance Company</title>
 	<script type="text/javascript" src="${ctxPath}/js/tags/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="${ctxPath}/js/bootstrap.min.js"></script> 
+	<style>
+		.alert {
+		  padding: 15px;
+		  margin-bottom: 20px;
+		  border: 1px solid transparent;
+		  border-radius: 4px;
+		}
+		
+		.alert-danger {
+		  color: #a94442;
+		  background-color: #f2dede;
+		  border-color: #ebccd1;
+		}
+		
+		.alert-dismissable,
+		.alert-dismissible {
+		  padding-right: 35px;
+		}
+		.alert-dismissable .close,
+		.alert-dismissible .close {
+		  position: relative;
+		  top: -2px;
+		  right: -21px;
+		  color: inherit;
+		}
+		
+		.close {
+		  float: right;
+		  font-size: 21px;
+		  font-weight: bold;
+		  line-height: 1;
+		  color: #000;
+		  text-shadow: 0 1px 0 #fff;
+		  filter: alpha(opacity=20);
+		  opacity: .2;
+		}
+		.close:hover,
+		.close:focus {
+		  color: #000;
+		  text-decoration: none;
+		  cursor: pointer;
+		  filter: alpha(opacity=50);
+		  opacity: .5;
+		}
+		button.close {
+		  -webkit-appearance: none;
+		  padding: 0;
+		  cursor: pointer;
+		  background: transparent;
+		  border: 0;
+		}
+	</style>
 </head>
 
 <body>
@@ -15,7 +68,11 @@
 	<%@ include file="/common/header.jsp"%>
 	<!-- mainmenu -->
 			<div class="breadcrumbs">
-<a href="${ctxPath}/index.shtml">${session.menu_home }</a> &raquo; <a href="${ctxPath}/company/listCompany.shtml">${session.company_title }</a> &raquo; <a href="${ctxPath}/company/toUpdateCompany.shtml?id=${company.id}">${company.name }</a> &raquo; <span>Finance</span></div><!-- breadcrumbs -->
+				<a href="${phpPath}/site/index.html">${session.menu_home }</a> &raquo; 
+				<a href="${phpPath}/company/view.html">${session.company_title }</a> &raquo; 
+				<a href="${phpPath}/company/update.html">${company.name }</a> &raquo; 
+				<span>${session.company_financa}</span>
+			</div><!-- breadcrumbs -->
     
 	    <div class="span-5 last">
         <div id="sidebar">
@@ -25,8 +82,8 @@
 </div>
 <div class="portlet-content">
 <ul class="operations" id="yw3">
-<li><a href="${ctxPath}/company/toUpdateCompany.shtml?id=${company.id}">${session.company_update_menu }</a></li>
-<li><a href="${ctxPath}/company/listCompany.shtml">${session.company_title }</a></li>
+<li><a href="${phpPath}/company/update.html">${session.company_update_menu }</a></li>
+<li><a href="${phpPath}/company/view.html">${session.company_title }</a></li>
 </ul></div>
 </div>        </div><!-- sidebar -->
     </div>
@@ -50,7 +107,6 @@
         background-position: -28px -50px;
         bottom: -1px;
         height: 9px;
-        left: 50%;
         margin-left: 0px;
         position: absolute;
         width: 17px;
@@ -60,27 +116,49 @@
     	height: 22px;
     }
 </style>
-
-<div style="clear: both; width: 100%; position: relative; top: -5px;">
+<c:if test="${fn:indexOf(msg, 'error') == 0}">
+<div style="clear: both; width: 100%; position: relative; top: 5px; ">
+    <div class="alert alert-danger alert-dismissable" role="alert">
+		<button class="close" type="button" data-dismiss="alert">&times;</button>
+			<c:if test="${msg == 'error_withdraw' }">
+				存款失败，请联系管理员！
+			</c:if>
+			<c:if test="${msg == 'error_deposit' }">
+				取款失败，请联系管理员！
+			</c:if>
+    </div>
+</div>
+</c:if>
+ <div style="clear: both; width: 100%; position: relative; top: -5px;">
     <div class="borderBlock">
-        <div>
-            <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
-                <div style="height: 36px; color: #9197a3; font-weight: normal;">
-                    <div style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative; background-color: #fff; float: left; width: 200px;">
-                        <span class="tabTitle">&nbsp;${company.name }<span id="point_angle" style="left: 13%;"></span></span>
-                    </div>
-                    <div style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative; background-color: #fff; float: left; width: 150px; text-align: center;">
-                        <a id="transaction_detail_link" onclick="updateFinancePanel('transaction_detail');" class="tabTitle">${session.transaction_detail }<span id="transaction_detail_point_angle" class="tabSelected" style="display: block;"></span></a>
-                    </div>
-                    <div style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative; background-color: #fff; float: left; width: 100px; text-align: center;">
-                        <a id="deposit_link" onclick="updateFinancePanel('deposit');" class="tabTitle">${session.deposit }<span id="deposit_point_angle" class="tabSelected" style="left: 49%; display: none;"></span></a>
-                    </div>
-                    <div style="color: #4e5665; font-weight: 700; padding-left: 14px; line-height: 38px; position: relative; background-color: #fff; float: left; width: 100px; text-align: center;">
-                        <a id="withdraw_link" onclick="updateFinancePanel('withdraw');" class="tabTitle">${session.withdraw }<span id="withdraw_point_angle" class="tabSelected" style="left: 49%; display: none;"></span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+         <div style="background: #f6f7f8; border-bottom: 1px solid #e9eaed; font-size: 12px;">
+             <div style="height: 36px; color: #9197a3; font-weight: normal;background-color: #fff;">
+                 <div style="color: #4e5665; font-weight: 700; padding:0 14px; line-height: 38px; position: relative; background-color: #fff; float: left;">
+                     <span style="padding: 0 15px">&nbsp;${company.name }<span id="point_angle" style="left: 13%;"></span></span>
+                 </div>
+                 <div style="line-height: 38px; position: relative; float: left;">
+                 	<span style="border-right: 1px solid #9d9ea0;"></span>
+                 </div>
+                 <div style="color: #4e5665; font-weight: 700; padding:0 14px; line-height: 38px; position: relative; background-color: #fff; float: left; text-align: center;">
+                     <a id="transaction_detail_link" onclick="updateFinancePanel('transaction_detail');">${session.transaction_detail }<span id="transaction_detail_point_angle" class="tabSelected" style="left: 48%;alight: block;"></span></a>
+                 </div>
+                 <div style="line-height: 38px; position: relative; float: left;">
+                 	<span style="border-right: 1px solid #9d9ea0;"></span>
+                 </div>
+                 <div style="color: #4e5665; font-weight: 700; padding:0 14px; line-height: 38px; position: relative; background-color: #fff; float: left; text-align: center;">
+                     <a id="deposit_link" onclick="updateFinancePanel('deposit');">${session.deposit }<span id="deposit_point_angle" class="tabSelected" style="left: 40%; display: none;"></span></a>
+                 </div>
+                 <div style="line-height: 38px; position: relative; float: left;">
+                 	<span style="border-right: 1px solid #9d9ea0;"></span>
+                 </div>
+                 <div style="color: #4e5665; font-weight: 700; padding:0 14px; line-height: 38px; position: relative; background-color: #fff; float: left; text-align: center;">
+                     <a id="withdraw_link" onclick="updateFinancePanel('withdraw');">${session.withdraw }<span id="withdraw_point_angle" class="tabSelected" style="left: 40%; display: none;"></span></a>
+                 </div>
+                 <div style="line-height: 38px; position: relative; float: left;">
+                 	<span style="border-right: 1px solid #9d9ea0;"></span>
+                 </div>
+             </div>
+         </div>
     </div>
 </div>
 
@@ -88,6 +166,7 @@
 	<form id="searchForm" class="validateForm" action="${ctxPath }/company/transaction/list.shtml" method="post">    
     <div class="borderBlock">
         <div>
+        	<div></div>
             <div class="clearfix" style="border-top: 1px solid transparent;">
                 <div id="search_input_panel" style="width: 100%; padding: 5px; margin: 0px;">
                     <div class="container">
@@ -105,9 +184,9 @@
 									name="paymentTransactionId" id="transaction_id" value="${transaction.paymentTransactionId }" maxlength="20"/></div>
 							<div class="selectValue" style="display:none;">
 								<input size="20" type="text" class="searchStyle number" style="text-align:right"
-									name="totalMin" id="transaction_totalMin" value="${transaction.totalMin }" maxlength="10"/>
+									name="totalMin" id="transaction_totalMin" value="<fmt:formatNumber value="${transaction.totalMin }" pattern="##.##" minFractionDigits="2" />" maxlength="10"/>
 								&nbsp;-&nbsp;<input size="20" type="text" class="searchStyle number" style="text-align:right"
-									name="totalMax" id="transaction_totalMax" value="${transaction.totalMax }" maxlength="10"/></div>
+									name="totalMax" id="transaction_totalMax" value="<fmt:formatNumber value="${transaction.totalMax }" pattern="##.##" minFractionDigits="2" />" maxlength="10"/></div>
 	                        <div class="selectValue" style="display:none;">
 	                        	${session.date_from }:<input size="20" type="text" class="searchStyle"
 	                        		name="createDateStart" id="transaction_createDateStart" value="${transaction.createDateStart }" maxlength="20" 
@@ -134,31 +213,44 @@
                 <table width="100%" cellspacing="0" cellpadding="0" style="border-bottom: 1px solid #e5ecf9;" >
                     <thead>
                     <tr>
-                        <th>${session.date }</th>
+                        <th style="width: 110px;">${session.date }</th>
                         <th>${session.type }</th>
-                        <th>${session.transactionId }</th>
+                        <th style="width: 150px;">${session.transaction_relation }</th>
                         <th>${session.status }</th>
-                        <th>${session.total }</th>
-                        <th>${session.fee }</th>
-                        <th>${session.net }</th>
+                        <th style="text-align: right;">${session.total }</th>
+                        <th style="text-align: right;">${session.fee }</th>
+                        <th style="text-align: right;">${session.net }</th>
                         <th>${session.action }</th>
                     </tr>
                     </thead>
                     <tbody>
 	                    <div id="yw0" class="list-view">
 							<div class="items">
-								<span style="font-size: 13px;">${session.account_alance }: $${ company.balance} USD</span>
+									<span style="font-size: 13px;font-weight:bold;">${session.account_alance }: $<fmt:formatNumber value="${ company.balance + company.authorizeAmount}" pattern="##.##" minFractionDigits="2" />&nbsp;(${session.company_authorize_amount }: $<fmt:formatNumber value="${ company.authorizeAmount}" pattern="##.##" minFractionDigits="2" />)
+								</span>
 								<br/><br/>
 								<span class="empty"><c:if test="${empty transactionList}">${session.no_data }</c:if></span>
 								<c:forEach items="${transactionList }" var="obj">
 								<tr>
 								    <td>${obj.createTimeStr }</td>
-								    <td>${obj.typeName }</td>
-								    <td>${obj.paymentTransactionId }</td>
+								    <td>${obj.paymentTransactionTypeName }</td>
+								    <td>${obj.campaignName }</td>
 								    <td>${obj.statusName }</td>
-								    <td style="text-align: right;">${obj.total }</td>
-								    <td style="text-align: right;">${obj.fee }</td>
-								    <td style="text-align: right;">${obj.net }</td>
+								    <td style="text-align: right;">
+								    	<c:if test="${obj.paymentTransactionType == 2 || obj.paymentTransactionType == 3 || obj.paymentTransactionType == 5 }"><span style="color: red"></c:if>
+								    		$<fmt:formatNumber value="${obj.total }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber>
+								    	<c:if test="${obj.paymentTransactionType == 2 || obj.paymentTransactionType == 3 || obj.paymentTransactionType == 5 }"></span></c:if>	
+								    </td>
+								    <td style="text-align: right;">
+									    <c:if test="${obj.fee  > 0}"><span style="color: red"></c:if>
+									    	$<fmt:formatNumber value="${obj.fee }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber>
+								    	<c:if test="${obj.fee  > 0}"></span></c:if>
+								    </td>
+								    <td style="text-align: right;">
+								    	<c:if test="${obj.paymentTransactionType == 2 || obj.paymentTransactionType == 3 || obj.paymentTransactionType == 5 }"><span style="color: red"></c:if>
+								    		$<fmt:formatNumber value="${obj.net }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber>
+								    	<c:if test="${obj.paymentTransactionType == 2 || obj.paymentTransactionType == 3 || obj.paymentTransactionType == 5 }"></span></c:if>			
+								    </td>
 								    <td><a href="${ctxPath }/company/transaction/view.shtml?id=${obj.id}">&nbsp;&nbsp;${session.view }</a></td>
 								</tr>
 								</c:forEach>
@@ -222,7 +314,7 @@
         	<form id="form" onsubmit="return validate();" method="post" action="${ctxPath }/company/transaction/withdraw.shtml">
         	
         		<div><br/>
-                    <span style="font-size: 13px;">${session.account_alance }: $${ company.balance} USD</span>
+                    <span style="font-size: 13px;">${session.account_alance }: $<fmt:formatNumber value="${ company.balance}" pattern="##.##" minFractionDigits="2" /> USD</span>
                 </div>
                 
         	<input type="hidden" id="company_balance" value="${company.balance}"/>
@@ -312,6 +404,7 @@
     }
     
     jQuery(function($) {
+    	
 		var searchType = "${transaction.searchType}";
 		jQuery("#searchType option").each(function(){
 			if(searchType == jQuery(this).val()) {
@@ -378,7 +471,7 @@
 </script>        </div><!-- content -->
     </div>
 
-	<div class="clear" style="height: 20px;%"></div>
+	<div class="clear" style="height: 20px;"></div>
 
     <%@ include file="/common/footer.jsp"%>
 

@@ -61,11 +61,11 @@
 		</init-param>
 		<init-param>
 			<param-name>ssoURI</param-name>
-			<param-value>http://localhost:8080/portal-lt-frontend/login.shtml</param-value>
+			<param-value>http://www.itemtool.com</param-value>
 		</init-param>
 		<init-param>
 			<param-name>webURI</param-name>
-			<param-value>http://localhost:8080/portal-lt-frontend/index.shtml</param-value>
+			<param-value>http://transaction.itemtool.com/portal-lt-frontend/index.shtml</param-value>
 		</init-param>
 		<init-param>
 			<param-name>logoutURI</param-name>
@@ -73,7 +73,7 @@
 		</init-param>
 		<init-param>
 			<param-name>excludePath</param-name>
-			<param-value>login,language,showUpload,upload,preview</param-value><!-- 配置不需要过滤的controll -->
+			<param-value>login,language</param-value><!-- 配置不需要过滤的controll -->
 		</init-param>
 		<init-param>
 			<param-name>excludeFile</param-name>

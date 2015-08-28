@@ -10,8 +10,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -32,13 +30,10 @@ public class TransactionController
 {
 	@Resource
 	private ITransactionService transactionService;
-	
 	@Resource
 	private ICompanyService companyService;
-	
 	@Resource
 	private ITransactionPaypalService transactionPaypalService;
-	
 	
 	@RequestMapping("home")
 	public ModelAndView home(){
@@ -66,28 +61,17 @@ public class TransactionController
 		List<TransactionPO> transactionList = transactionService.selectBySelective(transaction);
 		
 		HttpSession session = request.getSession();
-		
 		@SuppressWarnings("unchecked")
 		Map<String, String> i18nSession = (Map<String, String>) session.getAttribute("session");
 		for(TransactionPO po: transactionList) {
-			String typeKey = I18nKeyConstants.getI18nKey(I18nKeyConstants.key_type, po.getType());
-			String typeName =  StringUtil.trimToEmpty(i18nSession.get(typeKey));
-			po.setTypeName(typeName);
-			
-			String statusKey = I18nKeyConstants.getI18nKey(I18nKeyConstants.key_status, po.getStatus());
-			String statusName = StringUtil.trimToEmpty(i18nSession.get(statusKey));
-			po.setStatusName(statusName);
-			
-			String paymentTransactionType = I18nKeyConstants.getI18nKey(I18nKeyConstants.key_paymentTransactionType, po.getPaymentTransactionType()); 
-			String paymentTransactionName = StringUtil.trimToEmpty(i18nSession.get(paymentTransactionType));
-			po.setPaymentTransactionTypeName(paymentTransactionName);
+			getI18nBean(po, i18nSession);
 		}
-		
 		ModelAndView view = new ModelAndView("/company/transaction");
 		view.addObject("company", company);
 		view.addObject("transaction", transaction);
 		view.addObject("transactionList", transactionList);
 		view.addObject("msg", msg);
+		
 		view.addObject("page", transaction);
 		return view;
 	}
@@ -100,16 +84,38 @@ public class TransactionController
 	@RequestMapping("view")
 	public ModelAndView view(HttpServletRequest request, Integer id){
 		ModelAndView view = new ModelAndView("/company/viewTransaction");
-		if(id == null || id <= 0) {
-			view.addObject("msg", "error");
-		} else {
-			TransactionPO transaction = transactionService.selectByPrimaryKey(id);
-			Company company = companyService.selectByPrimaryKey(transaction.getCompanyId());
-			
-			view.addObject("company", company);
-			view.addObject("transaction", transaction);
-		}
+		
+		TransactionPO transaction = transactionService.selectByPrimaryKey(id);
+		getI18nBean(transaction, request);
+		Company company = companyService.selectByPrimaryKey(transaction.getCompanyId());
+		
+		view.addObject("company", company);
+		view.addObject("transaction", transaction);
+		
 		return view;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void getI18nBean(TransactionPO po, HttpServletRequest request)
+	{
+		HttpSession session = request.getSession();
+		Map<String, String> i18nSession = (Map<String, String>) session.getAttribute("session");
+		getI18nBean(po, i18nSession);
+	}
+	
+	public void getI18nBean(TransactionPO po, Map<String, String> i18nSession)
+	{
+		String typeKey = I18nKeyConstants.getI18nKey(I18nKeyConstants.key_type, po.getType());
+		String typeName =  StringUtil.trimToEmpty(i18nSession.get(typeKey));
+		po.setTypeName(typeName);
+		
+		String statusKey = I18nKeyConstants.getI18nKey(I18nKeyConstants.key_status, po.getStatus());
+		String statusName = StringUtil.trimToEmpty(i18nSession.get(statusKey));
+		po.setStatusName(statusName);
+		
+		String paymentTransactionType = I18nKeyConstants.getI18nKey(I18nKeyConstants.key_paymentTransactionType, po.getPaymentTransactionType()); 
+		String paymentTransactionName = StringUtil.trimToEmpty(i18nSession.get(paymentTransactionType));
+		po.setPaymentTransactionTypeName(paymentTransactionName);
 	}
 	
 	/**
@@ -132,7 +138,7 @@ public class TransactionController
 		
 		if(StringUtil.isBlank(redirect)) {
 			redirect = "list.shtml";
-			map.put("msg", "error_deposit");
+			map.put("msg","error_deposit");
 		}
 		
 		return new ModelAndView(new RedirectView(redirect), map);
@@ -163,14 +169,14 @@ public class TransactionController
 		paraMap.put("companyId", companyId);
 		boolean flag = companyService.compareBalance(paraMap);
 		if(!flag) {
-			map.put("msg", "error_balance");
+			map.put("msg", "error_withdraw");
 		} else {
 			transaction.setCompanyId(SessionUtil.getCompanyId(request));
 			transaction.setCreateUserId(SessionUtil.getUserId(request));
 			transaction.setUpdateUserId(SessionUtil.getUserId(request));
 			
 			transactionPaypalService.withdraw(transaction);
-			map.put("msg", "success_withdraw_quest");
+			map.put("msg", "success_withdraw");
 		}
 		return new ModelAndView(new RedirectView("list.shtml"), map);
 	}

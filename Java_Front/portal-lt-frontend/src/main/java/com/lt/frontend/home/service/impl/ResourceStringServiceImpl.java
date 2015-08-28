@@ -75,7 +75,7 @@ public class ResourceStringServiceImpl implements IResourceStringService {
 	        	RedisCacheUtli.setMap(REDIS_KEY_I18N, resMap);
 	        }
 		} catch(Exception e) {
-			logger.warn(e.getMessage(), e);
+			logger.warn(e.toString());
 		}
 		
 	}
@@ -107,7 +107,7 @@ public class ResourceStringServiceImpl implements IResourceStringService {
 					resChildMap = resMap == null ? null : resMap.get(curLanguageType);
 				} catch (Exception e)
 				{
-					logger.warn(e.getMessage(), e);
+					logger.warn(e.getMessage());
 				}
 				
 				//如果redis取异常，或者没有值，则从数据库取

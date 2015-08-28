@@ -19,11 +19,11 @@
 <div id="content">
 	<!-- mainmenu -->
 	<div class="breadcrumbs">
-		<a href="${ctxPath}/index.shtml">${session.menu_home }</a> &raquo; 
-		<a href="${ctxPath}/company/listCompany.shtml">${session.company_title }</a> &raquo; 
-		<a href="${ctxPath}/company/toUpdateCompany.shtml?id=${company.id}">${company.name }</a> &raquo; 
-		<a href="${ctxPath}/company/transaction/list.shtml">Finance</a> &raquo; 
-		<span>View</span>
+		<a href="${phpPath}/site/index.html">${session.menu_home }</a> &raquo; 
+		<a href="${phpPath}/company/view.html">${session.company_title }</a> &raquo; 
+		<a href="${phpPath}/company/update.html">${company.name }</a> &raquo; 
+		<a href="${ctxPath}/company/transaction/list.shtml">${session.company_financa}</a> &raquo; 
+		<span>${session.transaction_finance_view }</span>
 	</div><!-- breadcrumbs -->
 	 <div class="span-5 last">
         <div id="sidebar">
@@ -33,8 +33,8 @@
 				</div>
 				<div class="portlet-content">
 					<ul class="operations" id="yw3">
-					<li><a href="${ctxPath}/company/listCompany.shtml">${session.company_title }</a></li>
-					<li><a href="${ctxPath}/company/transaction/list.shtml">Finance</a></li>
+					<li><a href="${phpPath}/company/view.html">${session.company_title }</a></li>
+					<li><a href="${ctxPath}/company/transaction/list.shtml">${session.company_financa}</a></li>
 					</ul>
 				</div>
 			</div>        
@@ -54,7 +54,7 @@
     <div>
         <div class="clearfix" style="border-top: 1px solid transparent;" align="center">
             <div id="search_input_panel" style="width: 100%; padding: 5px; margin: 0px; font-weight: bold;" align="center">
-                Transaction ID:${transaction.paymentTransactionId }&nbsp;&nbsp;&nbsp;${transaction.status}
+                ${session.transaction_finance_view }
             </div>
         </div>
     </div>
@@ -70,10 +70,14 @@
 			</div> -->
 			<div style="display: block;">
 				<table class="detail-view" id="yw0">
-					<tr class="odd"><th>tranId:</th><td>${transaction.paymentTransactionId }</td></tr>
-					<tr class="even"><th>tranType:</th><td>${transaction.type }</td></tr>
-					<tr class="odd"><th>CreateTime:</th><td>${transaction.createTimeStr}</td></tr>
-					<tr class="even"><th>CompleteTime:</th><td>${transaction.updateTimeStr}</td></tr>
+					<tr class="odd"><th>${session.date }:</th><td>${transaction.createTimeStr}</td></tr>
+					<tr class="even"><th>${session.type }:</th><td>${transaction.paymentTransactionTypeName }</td></tr>
+					<tr class="odd"><th>${session.status }:</th><td>${transaction.statusName}</td></tr>
+					<tr class="even">
+						<th>${session.transaction_remark}:</th>
+						<td>${transaction.contents}
+						</td>
+					</tr>
 				</table>			
 			</div>
 		</div>
@@ -85,10 +89,17 @@
 		<div>
 			<div style="display: block;">
 				<table class="detail-view" id="yw0">
-					<tr class="odd"><th>Total:</th><td>${transaction.total }</td></tr>
-					<tr class="even"><th>Fee:</th><td>${transaction.fee }</td></tr>
-					<tr class="odd"><th>Net:</th><td>${transaction.net }</td></tr>
-					<tr class="even"><th>Status:</th><td>${transaction.status}</td></tr>
+					<tr class="odd"><th>${session.net }:</th><td>
+						<c:if test="${transaction.paymentTransactionType == 2 || transaction.paymentTransactionType == 3 || transaction.paymentTransactionType == 5 }"><span style="color: red"></c:if>
+							$<fmt:formatNumber value="${transaction.net }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber>
+						<c:if test="${transaction.paymentTransactionType == 2 || transaction.paymentTransactionType == 3 || transaction.paymentTransactionType == 5 }"></span></c:if>
+					</td></tr>
+					<tr class="even"><th>${session.fee }:</th><td>$<fmt:formatNumber value="${transaction.fee }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber></td></tr>
+					<tr class="odd"><th>${session.total }:</th><td>
+						<c:if test="${transaction.paymentTransactionType == 2 || transaction.paymentTransactionType == 3 || transaction.paymentTransactionType == 5 }"><span style="color: red"></c:if>
+							$<fmt:formatNumber value="${transaction.total }" pattern="##.##" minFractionDigits="2" ></fmt:formatNumber>
+						<c:if test="${transaction.paymentTransactionType == 2 || transaction.paymentTransactionType == 3 || transaction.paymentTransactionType == 5 }"></span></c:if>	
+					</td></tr>
 				</table>			
 			</div>
 		</div>
@@ -97,7 +108,7 @@
 
 <div id="search_input_panel" style="width: 100%; margin: 0px;">
                 <div class="container">
-                	<input id="backButton" name="backButton" class="greenButton" type="button" value="back" name="yt0" style="font-size: 14px; width: 70px;"/>
+                	<input id="backButton" name="backButton" class="greenButton" type="button" value="${session.button_back }" name="yt0" style="font-size: 14px; width: 70px;"/>
                 </div>
             </div>
 

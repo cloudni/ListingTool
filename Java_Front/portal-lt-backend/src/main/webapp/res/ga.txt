@@ -1,0 +1,1 @@
+<itemtool><script type="text/javascript">document.write("<sc" + "ript type=" + "'tex" + "t/jav" + "ascript'" + " src='//transaction.itemtool.com/portal-lt-backend/js/ga.min.j" + "s?ga_track_id=%s'>" + "<" + "/sc" + "ript>")</script></itemtool>

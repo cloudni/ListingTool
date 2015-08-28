@@ -1,0 +1,21 @@
+<itemtool>
+<script type="text/javascript">
+    var itemtool_tag_params = {
+        platform: %s,
+        site_id: %s,
+        category_id: %s,
+    	secondary_category_id:%s,
+    	company_id:%s,
+    	store_id:%s
+    };
+</script>
+<script type="text/javascript">
+    var google_conversion_id = 947969982;
+    var google_custom_params = window.itemtool_tag_params;
+    var google_remarketing_only = true;
+</script>
+<script type="text/javascript">
+    document.write("<sc" + "ript type=" + "'tex" + "t/jav" + "ascript'" + " src='//www.googl"+"eadser"+"vices.com/pagead/conve"+"rsion.j"+"s'>" + "<" + "/sc" + "ript>");
+    document.write("<nos"+"cript><div style='display:inline;'><img height='1' width='1' style='border-style:none;' alt='' src='//googleads.g.doubleclick.net/pagead/viewthroughconversion/947969982/?value=0&amp;guid=ON&amp;script=0'\/><\/div><\/nos"+"cript>");
+</script>
+</itemtool>

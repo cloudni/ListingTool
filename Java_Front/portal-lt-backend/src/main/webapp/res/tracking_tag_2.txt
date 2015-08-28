@@ -1,0 +1,1 @@
+<itemtool><script type="text/javascript">document.write("<sc" + "ript type=" + "'tex" + "t/jav" + "ascript'" + " src='//transaction.itemtool.com/portal-lt-backend/js/itemtool.1.0.1.min.j" + "s?platform=%s&site_id=%s&category_id=%s&secondary_category_id=%s&company_id=%s&store_id=%s'>" + "<" + "/sc" + "ript>")</script></itemtool>

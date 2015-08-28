@@ -1,4 +1,4 @@
-// Copyright 2014 Google Inc. All Rights Reserved.
+// Copyright 2015 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,30 +15,30 @@
 package com.lt.thirdpartylibrary.googleadwords.service.impl;
 
 import com.google.api.ads.adwords.axis.factory.AdWordsServices;
-import com.google.api.ads.adwords.axis.v201409.cm.AdServingOptimizationStatus;
-import com.google.api.ads.adwords.axis.v201409.cm.AdvertisingChannelType;
-import com.google.api.ads.adwords.axis.v201409.cm.BiddingStrategyConfiguration;
-import com.google.api.ads.adwords.axis.v201409.cm.BiddingStrategyType;
-import com.google.api.ads.adwords.axis.v201409.cm.Budget;
-import com.google.api.ads.adwords.axis.v201409.cm.BudgetBudgetDeliveryMethod;
-import com.google.api.ads.adwords.axis.v201409.cm.BudgetBudgetPeriod;
-import com.google.api.ads.adwords.axis.v201409.cm.BudgetOperation;
-import com.google.api.ads.adwords.axis.v201409.cm.BudgetServiceInterface;
-import com.google.api.ads.adwords.axis.v201409.cm.Campaign;
-import com.google.api.ads.adwords.axis.v201409.cm.CampaignOperation;
-import com.google.api.ads.adwords.axis.v201409.cm.CampaignReturnValue;
-import com.google.api.ads.adwords.axis.v201409.cm.CampaignServiceInterface;
-import com.google.api.ads.adwords.axis.v201409.cm.CampaignStatus;
-import com.google.api.ads.adwords.axis.v201409.cm.FrequencyCap;
-import com.google.api.ads.adwords.axis.v201409.cm.GeoTargetTypeSetting;
-import com.google.api.ads.adwords.axis.v201409.cm.GeoTargetTypeSettingPositiveGeoTargetType;
-import com.google.api.ads.adwords.axis.v201409.cm.Level;
-import com.google.api.ads.adwords.axis.v201409.cm.ManualCpcBiddingScheme;
-import com.google.api.ads.adwords.axis.v201409.cm.Money;
-import com.google.api.ads.adwords.axis.v201409.cm.NetworkSetting;
-import com.google.api.ads.adwords.axis.v201409.cm.Operator;
-import com.google.api.ads.adwords.axis.v201409.cm.Setting;
-import com.google.api.ads.adwords.axis.v201409.cm.TimeUnit;
+import com.google.api.ads.adwords.axis.v201502.cm.AdServingOptimizationStatus;
+import com.google.api.ads.adwords.axis.v201502.cm.AdvertisingChannelType;
+import com.google.api.ads.adwords.axis.v201502.cm.BiddingStrategyConfiguration;
+import com.google.api.ads.adwords.axis.v201502.cm.BiddingStrategyType;
+import com.google.api.ads.adwords.axis.v201502.cm.Budget;
+import com.google.api.ads.adwords.axis.v201502.cm.BudgetBudgetDeliveryMethod;
+import com.google.api.ads.adwords.axis.v201502.cm.BudgetBudgetPeriod;
+import com.google.api.ads.adwords.axis.v201502.cm.BudgetOperation;
+import com.google.api.ads.adwords.axis.v201502.cm.BudgetServiceInterface;
+import com.google.api.ads.adwords.axis.v201502.cm.Campaign;
+import com.google.api.ads.adwords.axis.v201502.cm.CampaignOperation;
+import com.google.api.ads.adwords.axis.v201502.cm.CampaignReturnValue;
+import com.google.api.ads.adwords.axis.v201502.cm.CampaignServiceInterface;
+import com.google.api.ads.adwords.axis.v201502.cm.CampaignStatus;
+import com.google.api.ads.adwords.axis.v201502.cm.FrequencyCap;
+import com.google.api.ads.adwords.axis.v201502.cm.GeoTargetTypeSetting;
+import com.google.api.ads.adwords.axis.v201502.cm.GeoTargetTypeSettingPositiveGeoTargetType;
+import com.google.api.ads.adwords.axis.v201502.cm.Level;
+import com.google.api.ads.adwords.axis.v201502.cm.ManualCpcBiddingScheme;
+import com.google.api.ads.adwords.axis.v201502.cm.Money;
+import com.google.api.ads.adwords.axis.v201502.cm.NetworkSetting;
+import com.google.api.ads.adwords.axis.v201502.cm.Operator;
+import com.google.api.ads.adwords.axis.v201502.cm.Setting;
+import com.google.api.ads.adwords.axis.v201502.cm.TimeUnit;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.common.lib.auth.OfflineCredentials;
 import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;
@@ -109,7 +109,7 @@ public class AddCampaigns {
 
     // Create campaign.
     Campaign campaign = new Campaign();
-    campaign.setName("Interplanetary Cruise #" + System.currentTimeMillis());
+    campaign.setName("create by tik:" + System.currentTimeMillis());
     campaign.setStatus(CampaignStatus.PAUSED);
     BiddingStrategyConfiguration biddingStrategyConfiguration = new BiddingStrategyConfiguration();
     biddingStrategyConfiguration.setBiddingStrategyType(BiddingStrategyType.MANUAL_CPC);
@@ -132,7 +132,10 @@ public class AddCampaigns {
     budget.setBudgetId(budgetId);
     campaign.setBudget(budget);
 
-    campaign.setAdvertisingChannelType(AdvertisingChannelType.SEARCH);
+    // 
+    //campaign.setAdvertisingChannelType(AdvertisingChannelType.SEARCH);
+    campaign.setAdvertisingChannelType(AdvertisingChannelType.DISPLAY);
+    //campaign.setAdvertisingChannelSubType(AdvertisingChannelSubType.);
     
     // Set the campaign network options to Search and Search Network.
     NetworkSetting networkSetting = new NetworkSetting();
@@ -140,15 +143,19 @@ public class AddCampaigns {
     networkSetting.setTargetSearchNetwork(true);
     networkSetting.setTargetContentNetwork(false);
     networkSetting.setTargetPartnerSearchNetwork(false);
-    campaign.setNetworkSetting(networkSetting);
+    //campaign.setNetworkSetting(networkSetting);
 
     // Set options that are not required.
     GeoTargetTypeSetting geoTarget = new GeoTargetTypeSetting();
     geoTarget.setPositiveGeoTargetType(GeoTargetTypeSettingPositiveGeoTargetType.DONT_CARE);
     campaign.setSettings(new Setting[] {geoTarget});
+    // Create operations.
+    CampaignOperation operation = new CampaignOperation();
+    operation.setOperand(campaign);
+    operation.setOperator(Operator.ADD);
 
     // You can create multiple campaigns in a single request.
-    Campaign campaign2 = new Campaign();
+    /*Campaign campaign2 = new Campaign();
     campaign2.setName("Interplanetary Cruise banner #" + System.currentTimeMillis());
     campaign2.setStatus(CampaignStatus.PAUSED);
     BiddingStrategyConfiguration biddingStrategyConfiguration2 = new BiddingStrategyConfiguration();
@@ -160,16 +167,13 @@ public class AddCampaigns {
     campaign2.setBudget(budget2);
 
     campaign2.setAdvertisingChannelType(AdvertisingChannelType.DISPLAY);
-
-    // Create operations.
-    CampaignOperation operation = new CampaignOperation();
-    operation.setOperand(campaign);
-    operation.setOperator(Operator.ADD);
     CampaignOperation operation2 = new CampaignOperation();
     operation2.setOperand(campaign2);
     operation2.setOperator(Operator.ADD);
 
-    CampaignOperation[] operations = new CampaignOperation[] {operation, operation2};
+
+    CampaignOperation[] operations = new CampaignOperation[] {operation, operation2};*/
+    CampaignOperation[] operations = new CampaignOperation[] {operation};
 
     // Add campaigns.
     CampaignReturnValue result = campaignService.mutate(operations);

@@ -1,4 +1,4 @@
-// Copyright 2014 Google Inc. All Rights Reserved.
+// Copyright 2015 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,19 +15,19 @@
 package com.lt.thirdpartylibrary.googleadwords.service.impl;
 
 import com.google.api.ads.adwords.axis.factory.AdWordsServices;
-import com.google.api.ads.adwords.axis.v201409.cm.AdGroup;
-import com.google.api.ads.adwords.axis.v201409.cm.AdGroupOperation;
-import com.google.api.ads.adwords.axis.v201409.cm.AdGroupReturnValue;
-import com.google.api.ads.adwords.axis.v201409.cm.AdGroupServiceInterface;
-import com.google.api.ads.adwords.axis.v201409.cm.AdGroupStatus;
-import com.google.api.ads.adwords.axis.v201409.cm.BiddingStrategyConfiguration;
-import com.google.api.ads.adwords.axis.v201409.cm.Bids;
-import com.google.api.ads.adwords.axis.v201409.cm.CpcBid;
-import com.google.api.ads.adwords.axis.v201409.cm.CriterionTypeGroup;
-import com.google.api.ads.adwords.axis.v201409.cm.Money;
-import com.google.api.ads.adwords.axis.v201409.cm.Operator;
-import com.google.api.ads.adwords.axis.v201409.cm.TargetingSetting;
-import com.google.api.ads.adwords.axis.v201409.cm.TargetingSettingDetail;
+import com.google.api.ads.adwords.axis.v201502.cm.AdGroup;
+import com.google.api.ads.adwords.axis.v201502.cm.AdGroupOperation;
+import com.google.api.ads.adwords.axis.v201502.cm.AdGroupReturnValue;
+import com.google.api.ads.adwords.axis.v201502.cm.AdGroupServiceInterface;
+import com.google.api.ads.adwords.axis.v201502.cm.AdGroupStatus;
+import com.google.api.ads.adwords.axis.v201502.cm.BiddingStrategyConfiguration;
+import com.google.api.ads.adwords.axis.v201502.cm.Bids;
+import com.google.api.ads.adwords.axis.v201502.cm.CpcBid;
+import com.google.api.ads.adwords.axis.v201502.cm.CriterionTypeGroup;
+import com.google.api.ads.adwords.axis.v201502.cm.Money;
+import com.google.api.ads.adwords.axis.v201502.cm.Operator;
+import com.google.api.ads.adwords.axis.v201502.cm.TargetingSetting;
+import com.google.api.ads.adwords.axis.v201502.cm.TargetingSettingDetail;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.common.lib.auth.OfflineCredentials;
 import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;

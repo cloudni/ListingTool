@@ -1543,14 +1543,6 @@ class eBayTradingAPI
                         }
 
                         preg_match_all("/(<itemtool>[\s\S]*?<\/itemtool>)/im", $description, $matches);
-                        //reset all tracking code
-                        if(isset($matches[1]) && count($matches[1]) > 0 ){
-                            echo "found old item tool tag.\n";
-                            foreach($matches[1] as $match) $description = str_replace($match, '', $description);
-                            $replace = true;
-                        }
-
-                        $matches = array();
                         if(isset($matches[1]) && count($matches[1]) > 0 )
                         {
                             echo "Found itemtool tag ".count($matches[1])." times.\n\n";
